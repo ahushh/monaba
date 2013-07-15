@@ -1,8 +1,11 @@
 dist*
 static/tmp/
 static/files/*
+!static/files/.keep
 static/captcha/*
+!static/captcha/.keep
 static/thumb/*
+!static/thumb/.keep
 config/client_session_key.aes
 *.hi
 *.o

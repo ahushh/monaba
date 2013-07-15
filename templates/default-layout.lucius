@@ -1,0 +1,146 @@
+body {
+    margin: 0 0 auto;
+    padding: 8px;
+}
+
+a {
+    text-decoration: none;    
+}
+
+blockquote {
+    margin-left: 25px;
+}
+
+.thread {
+    height: auto;
+    overflow: auto; 
+}
+
+.multi-file {
+    vertical-align: top; 
+    display: inline-block;
+    margin: 7px;
+}
+
+.file {
+    margin: 7px 14px 7px 7px;
+    float: left;
+}
+
+.thumb {
+    margin: 6px;
+}
+
+#message {
+    text-align: center;
+    border-style: dotted;
+    padding: 5px;
+    margin: 5px;
+}
+
+.board-list {
+    text-align: left;
+}
+
+.poster-name {
+    font-weight: bolder;
+}
+
+.poster-name-admin {
+    font-weight: bolder;
+    color: red;
+}
+
+.poster-name-mod {
+    font-weight: bolder;
+    color: #d77d31;
+}
+
+.op-post {
+    word-wrap: break-word;
+}
+
+// .reply-post {
+    // word-wrap: break-word;
+    // min-width: 40em;
+   // display: table;
+// }
+
+.reply-post {
+    display: table;
+    min-width: 40em;
+    overflow: hidden;
+    width: 13px;
+    word-wrap: break-word;
+}
+
+#board-header {
+    text-align: center;
+    color: #800000;
+    margin: 5px;
+    font-size: 2em;
+    padding: 5px;
+}
+
+#thread-header {
+  text-align: center;
+}
+
+.thread-status {
+  display: inline;
+}
+
+.thread-sticked {
+  background-position: -989px -149px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
+}
+
+.thread-locked {
+  background-position: -173px -101px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
+}
+
+.thread-autosage {
+  background-position: -389px -101px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
+}
+
+
+.admin-table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 7px;
+}
+
+.admin-table td, .admin-table th {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 5px;
+  padding-right: 8px;
+}
+
+.admin-table input {
+    width: 100%;
+}

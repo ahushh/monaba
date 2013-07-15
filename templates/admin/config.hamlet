@@ -1,0 +1,18 @@
+^{headerWidget muser boards}
+^{adminNavbarWidget muser}
+<table .admin-table>
+    <tr>
+        <th>_{MsgCaptchaLength}
+        <th>_{MsgACaptchaGuards}
+        <th>_{MsgCaptchaTimeout}
+        <th>_{MsgReplyDelay}
+        <th>_{MsgThreadDelay}
+    <tr>
+        ^{formWidget}
+    <tr>
+            <td>#{configCaptchaLength  $ entityVal $ fromJust config}
+            <td>#{configACaptchaGuards $ entityVal $ fromJust config}
+            <td>#{configCaptchaTimeout $ entityVal $ fromJust config}
+            <td>#{configReplyDelay     $ entityVal $ fromJust config}
+            <td>#{configThreadDelay    $ entityVal $ fromJust config}
+^{footerWidget}            

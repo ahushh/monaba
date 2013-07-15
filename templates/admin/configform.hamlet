@@ -1,0 +1,9 @@
+<form .config method=post action=@{ConfigR}>
+    #{extra}
+    <input type=submit value=_{MsgUpdateConfig}>
+    <tr>
+        <td>^{fvInput captchaLengthView}
+        <td>^{fvInput acaptchaGuardsView}
+        <td>^{fvInput captchaTimeoutView}
+        <td>^{fvInput replyDelayView}
+        <td>^{fvInput threadDelayView}

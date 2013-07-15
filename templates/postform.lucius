@@ -1,0 +1,17 @@
+textarea {
+  width: 400px;
+  height: 100px;
+}
+
+#form-table {
+  width: 75%;
+  margin: 10px 25%;
+}
+
+#board-info {
+  font-size: 0.8em;
+}
+
+.post-block-name {
+  font-weight: bolder;
+}

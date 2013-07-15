@@ -1,0 +1,73 @@
+Person
+    name          Text
+    password      Text
+    salt          Text
+    PersonUniqueName name
+    role          RoleOfPerson -- Admin/Moderator
+    deriving      Typeable
+Board
+    name          Text
+    BoardUniqName name
+    description   Text
+    bumpLimit     Int
+    numberFiles   Int
+    allowedTypes  [String]
+    defaultName   Text
+    maxMsgLength  Int
+    thumbSize     Int
+    threadsPerPage    Int
+    previewsPerThread Int
+    hidden        Bool
+    enableCaptcha Bool
+    threadLimit   Int Maybe
+    deriving      Typeable
+Post
+    board        Text
+    localId      Int
+    parent       Int
+    owner        RoleOfPerson Maybe
+    date         UTCTime
+    bumped       UTCTime Maybe
+    ip           Text
+    sticked      Bool
+    locked       Bool
+    autosage     Bool
+    -- deleted      Bool
+    -- deletedByOp  Bool
+    -- form's values
+    message      Textarea
+    title        Text
+    name         Text
+    password     Text
+    deriving     Typeable
+    deriving     Eq
+    deriving     Ord
+Attachedfile
+    parentId     PostId
+    md5          Text
+    name         FilePath
+    origName     FilePath -- original name
+    type         String -- extension
+    thumbSize    Int
+    description  Text -- size, resolution
+    deriving     Typeable
+Ban
+    ip           Text
+    reason       Text
+    expires      UTCTime Maybe
+    board        Text Maybe
+    deriving     Typeable
+Captcha
+    ip           Text
+    localId      Int
+    CaptchaUniqueLocalId localId
+    info         Text 
+    value        Text
+    expires      UTCTime
+Config
+    captchaLength  Int
+     -- how many captchas needs to be solved to become able to post without captcha
+    aCaptchaGuards Int
+    captchaTimeout Int -- in seconds
+    replyDelay     Int
+    threadDelay    Int 

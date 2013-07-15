@@ -1,0 +1,43 @@
+<div .reply-post id="post-#{show $ postLocalId $ entityVal eReplyW }">
+    <div .post-header>
+        <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
+        <span .reply-title>#{postTitle $ entityVal eReplyW}
+        $maybe owner <- postOwner (entityVal eReplyW)
+            $if (map toLower $ show owner) == (map toLower $ unpack $ postName $ entityVal eReplyW)
+                $case owner
+                    $of Admin       
+                        <span .poster-name-admin>#admin
+                    $of Moderator    
+                        <span .poster-name-mod>#mod
+            $else
+                <span .poster-name>#{postName $ entityVal eReplyW}
+        $nothing
+            <span .poster-name>#{postName $ entityVal eReplyW}
+        <time>#{myFormatTime $ postDate $ entityVal eReplyW}
+        <span .reflink>
+            $with n <- show $ postLocalId $ entityVal eReplyW
+                <a name=#{n} href=#>No.#{n}
+        <span .thread-status>
+        <span .cpanel>
+            $maybe Entity _ user <- muserW
+                $if personRole user >= Moderator
+                    [ #{postIp $ entityVal eReplyW} ] 
+                    \[<a title="Ban by IP" href=@{BanByIpR (postBoard $ entityVal eReplyW) (postIp $ entityVal eReplyW)}>B</a>]  
+    $forall Entity _ file <- replyFilesW
+        $if length replyFilesW == 1
+            <div .file>
+                <span .file-name>
+                    <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
+                <br>
+                <span .file-info> (#{attachedfileDescription file})
+                <br>
+                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+        $else
+            <div .multi-file>
+                <span .file-name>
+                    <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
+                <br>
+                <span .file-info> (#{attachedfileDescription file})
+                <br>
+                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+    <blockquote>^{markupWidget $ postMessage $ entityVal eReplyW}

@@ -1,0 +1,25 @@
+^{headerWidget muser boards}
+^{adminNavbarWidget muser}
+^{formWidget}
+<table .admin-table>
+    <tr>
+        <th>         
+        <th>_{MsgBanIp}
+        <th>_{MsgBanReason}
+        <th>_{MsgBanExpires}
+        <th>_{MsgBanBoard }
+    $forall Entity bId b <- bans
+        <tr>
+            <td>
+                <a href=@{BanDeleteR $ fromIntegral $ fromKey bId}>_{MsgDeleteBtn}
+            <td>#{banIp b}
+            <td>#{banReason b}
+            $if isJust $ banExpires b
+                <td>#{show $ fromJust $ banExpires  b}
+            $else
+                <td>_{MsgNeverExpires}
+            $if isJust $ banBoard b
+                <td>#{fromJust $ banBoard  b}
+            $else
+                <td>_{MsgAllBoards}
+^{footerWidget}            

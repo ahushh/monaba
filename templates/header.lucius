@@ -1,0 +1,8 @@
+.board-list {
+    text-align: left;
+}
+
+#control-panel {
+    float: right;
+    text-align: right;
+}

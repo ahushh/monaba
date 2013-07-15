@@ -1,0 +1,68 @@
+#{extra}
+<table #form-table>
+    <tbody>
+        <tr .post-block>
+            <td .post-block-named>_{MsgName}
+            <td>
+                ^{fvInput nameView}
+        <tr .post-block>
+            <td .post-block-named>_{MsgSubject}
+            <td>
+                ^{fvInput subjectView}
+                <input type=submit value=_{MsgSubmitBtn}>
+        <tr .post-block>
+            <td .post-block-named>_{MsgMessage}
+            <td>
+                ^{fvInput messageView}
+                <div .button> []
+        <tr .post-block>
+            <td .post-block-named>_{MsgPassword}
+            <td>
+                ^{fvInput passwordView}
+        $if enableCaptchaW
+            <tr .post-block>
+                <td .post-block-named>_{MsgCaptcha}
+                <td>
+                    $maybe _ <- acaptchaW
+                        _{MsgYouDontNeedCaptcha}
+                    $nothing
+                        <img src=@{CaptchaR}>
+                        <br>
+                        ^{fvInput captchaView} 
+                        $maybe c <- maybeCaptchaInfoW
+                            _{MsgTypeOnly} 
+                            $if c == "Bold"
+                                _{MsgBoldChars}
+                            $elseif c == "Italic"
+                                _{MsgItalicChars}
+                            $elseif c == "Underline"
+                                _{MsgUnderlineChars}
+                            $elseif c == "Regular"
+                                _{MsgRegularChars}
+                        $nothing
+                            _{MsgReloadPage}
+        $if length fileviews > 0
+            <tr .post-block>
+                <td .post-block-named>_{MsgFile}
+                <td>
+                    <div .form-files>
+                        $forall fv <- fileviews
+                            <div .file-input>
+                                ^{fvInput fv}
+        <tr .post-block>
+            <td post-block>_{MsgGoback}
+            <td>
+                ^{fvInput gobackView}
+        $if isthreadW
+            <tr .post-block>
+                <td post-block>_{MsgNobump}
+                <td>
+                    ^{fvInput nobumpView}
+        <tr .post-block>
+            <td>
+            <td>
+                <div #board-info>
+                    <ul>
+                        <li>_{MsgSupportedFileTypes}: #{unwords $ boardAllowedTypes boardW}
+                        <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
+                        <li>_{MsgMaxFileSize}: #{show $ maxFileSize} MB

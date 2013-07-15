@@ -1,0 +1,114 @@
+html, body {
+    background-color: #EEEEEE;
+    color: #333333;
+    font-family: serif;
+    font-size: 1em;
+    padding: 10px;
+}
+
+form {
+    font-size: 0.9em;
+}
+
+/* #replyForm { */
+/*     padding: 10px; */
+/*     background: none repeat scroll 0% 0% #DDDDDD; */
+/*     border-radius: 5px 5px 5px 5px; */
+/*     border: 1px solid #CCCCCC; */
+/* } */
+
+input.submit {
+    border: 0px;
+    background: none;
+    text-decoration: underline;
+    cursor: pointer;
+} 
+
+time {
+    text-size: 0.9em;
+}
+
+a {
+    color: #995b46;
+    padding: 0px;
+}
+
+a:hover {
+    color: #FF6600;
+}
+
+header {
+    clear: both;
+    color: #995b46;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    margin: 2em 0pt 0pt;
+    text-align: center;
+}
+
+blockquote {
+    line-height: 1.3em;
+    margin: 0.5em 0.5em 0.5em 1em;
+}
+
+.reflink {
+    font-size: 85%;
+    font-weight: bold;
+}
+
+.file-info {
+    color: #666666;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.reply-post {
+    background: none repeat scroll 0% 0% #DDDDDD;
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid #CCCCCC;
+    margin: 3px;
+    padding: 5px;
+}
+
+.thread {
+    margin: 2px;
+    padding: 2px;
+}
+
+.reply-post blockquote {
+    margin: 0.5em;
+}
+
+.reply-title {
+    color: #002244;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+hr {
+    border-color: #BBBBBB;
+    border-style: solid none none;
+    border-width: 1px;
+}
+
+table {
+    border-style: none;
+}
+
+table td {
+    border-style: none;
+}
+
+#delete-container {
+    text-align: right;
+}

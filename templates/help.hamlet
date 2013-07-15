@@ -1,0 +1,152 @@
+^{headerWidget muser boards}
+<br>
+<hr>
+<h3>_{MsgMarkup}
+<div style="margin-left:30px">
+    <p>**bold**      →  <strong>bold</strong>
+    <p>__bold__      →  <strong>bold</strong>
+    <p>[b]bold[/b]   →  <strong>bold</strong>
+    <p>*italic*      →  <em>italic</em>
+    <p>_italic_      →  <em>italic</em>
+    <p>[i]italic[/i] →  <em>italic</em>
+    <p>[spoiler]spoiler[/spoiler]  → <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span>
+    <p>%%spoiler%%                 → <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span
+    <p>[s]strike[/s]       → <strike>strike</strike>
+    <p>[s]underline[/s]    → <u>underline</u>
+    <p>http://yesodweb.com → <a href="http://yesodweb.com">http://yesodweb.com</a>
+    <p>>text               → <span .quote style="color:green">>text</span>
+    <p>>>1234              → <a href=/b/1234/#1234>>>1234</a>
+    <p>>>/b/1234           → <a href=/b/1234#1234>>>/b/1234</a>
+    <p>[code=<em>haskell</em>] rats2 = fix ((1:) . (>>= \x -> [1+x, 1/(1+x)])) :: [Rational] [/code]
+    <p>↓↓↓
+    <pre class="haskell" style="font-family:monospace;">  rats2 <span style="color: #339933; font-weight: bold;">=</span> fix <span style="color: green;">&#40;</span><span style="color: green;">&#40;</span><span style="color: red;">1</span>:<span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">.</span> <span style="color: green;">&#40;</span><span style="color: #339933; font-weight: bold;">>>=</span> \x <span style="color: #339933; font-weight: bold;">-></span> <span style="color: green;">&#91;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: #339933; font-weight: bold;">,</span> <span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">/</span><span style="color: green;">&#40;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: green;">&#41;</span><span style="color: green;">&#93;</span><span style="color: green;">&#41;</span><span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">::</span> <span style="color: green;">&#91;</span><a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Prelude.html#t:Rational"><span style="color: #cccc00; font-weight: bold;">Rational</span></a><span style="color: green;">&#93;</span></pre> 
+    _{MsgSupportedLanguages}:
+    <ul>
+        <li><strong>abap</strong> → ABAP
+        <li><strong>actionscript</strong> → ActionScript
+        <li><strong>actionscript3</strong> → ActionScript 3
+        <li><strong>ada</strong> → Ada
+        <li><strong>apache</strong> → Apache configuration
+        <li><strong>applescript</strong> → AppleScript
+        <li><strong>apt</strong>_sources → Apt sources
+        <li><strong>asm</strong> → ASM
+        <li><strong>asp</strong> → ASP
+        <li><strong>avisynth</strong> → AviSynth
+        <li><strong>bash</strong> → Bash
+        <li><strong>basic4gl</strong> → Basic4GL
+        <li><strong>bf</strong> → Brainfuck
+        <li><strong>blitzbasic</strong> → BlitzBasic
+        <li><strong>bnf</strong> → bnf
+        <li><strong>boo</strong> → Boo
+        <li><strong>c</strong> → C
+        <li><strong>c</strong>_mac → C (Mac)
+        <li><strong>caddcl</strong> → CAD DCL
+        <li><strong>cadlisp</strong> → CAD Lisp
+        <li><strong>cfdg</strong> → CFDG
+        <li><strong>cfm</strong> → ColdFusion
+        <li><strong>cil</strong> → CIL
+        <li><strong>cobol</strong> → COBOL
+        <li><strong>cpp</strong>-qt → C++ (QT)
+        <li><strong>cpp</strong> → C++
+        <li><strong>csharp</strong> → C#
+        <li><strong>css</strong> → CSS
+        <li><strong>d</strong> → D
+        <li><strong>delphi</strong> → Delphi
+        <li><strong>diff</strong> → Diff
+        <li><strong>div</strong> → DIV
+        <li><strong>dos</strong> → DOS
+        <li><strong>dot</strong> → dot
+        <li><strong>eiffel</strong> → Eiffel
+        <li><strong>email</strong> → eMail (mbox)
+        <li><strong>fortran</strong>→Fortran
+        <li><strong>freebasic</strong> → FreeBasic
+        <li><strong>genero</strong> → genero
+        <li><strong>gettext</strong> → GNU Gettext
+        <li><strong>glsl</strong> → glSlang
+        <li><strong>gml</strong> → GML
+        <li><strong>gnuplot</strong> → Gnuplot
+        <li><strong>groovy</strong> → Groovy
+        <li><strong>haskell</strong> → Haskell
+        <li><strong>hq9plus</strong> → HQ9+
+        <li><strong>html4strict</strong> → HTML
+        <li><strong>idl</strong> → Uno Idl
+        <li><strong>ini</strong> → INI
+        <li><strong>inno</strong> → Inno
+        <li><strong>intercal</strong> → INTERCAL
+        <li><strong>io</strong> → Io
+        <li><strong>java</strong> → Java
+        <li><strong>java5</strong> → Java(TM) 2 Platform Standard Edition 5.0
+        <li><strong>javascript</strong> → Javascript
+        <li><strong>kixtart</strong> → KiXtart
+        <li><strong>klonec</strong> → KLone C
+        <li><strong>klonecpp</strong> → KLone C++
+        <li><strong>latex</strong> → LaTeX
+        <li><strong>lisp</strong> → Lisp
+        <li><strong>lolcode</strong> → LOLcode
+        <li><strong>lotusformulas</strong> → Lotus Notes @Formulas
+        <li><strong>lotusscript</strong> → LotusScript
+        <li><strong>lscript</strong> → LScript
+        <li><strong>lua</strong> → Lua
+        <li><strong>m68k</strong> → Motorola 68000 Assembler
+        <li><strong>make</strong> → GNU make
+        <li><strong>matlab</strong> → Matlab M
+        <li><strong>mirc</strong> → mIRC Scripting
+        <li><strong>mpasm</strong> → Microchip Assembler
+        <li><strong>mxml</strong> → MXML
+        <li><strong>mysql</strong> → MySQL
+        <li><strong>nsis</strong> → NSIS
+        <li><strong>objc</strong> → Objective-C
+        <li><strong>ocaml</strong>-brief → OCaml (brief)
+        <li><strong>ocaml</strong> → OCaml
+        <li><strong>oobas</strong> → OpenOffice.org Basic
+        <li><strong>oracle11</strong> → Oracle 11 SQL
+        <li><strong>oracle8</strong> → Oracle 8 SQL
+        <li><strong>pascal</strong> → Pascal
+        <li><strong>per</strong> → per
+        <li><strong>perl</strong> → Perl
+        <li><strong>php</strong>-brief → PHP (brief)
+        <li><strong>php</strong> → PHP
+        <li><strong>pic16</strong> → PIC16
+        <li><strong>pixelbender</strong> → Pixel Bender 1.0
+        <li><strong>plsql</strong> → PL/SQL
+        <li><strong>povray</strong> → POVRAY
+        <li><strong>powershell</strong> → posh
+        <li><strong>progress</strong> → Progress
+        <li><strong>prolog</strong> → Prolog
+        <li><strong>providex</strong> → ProvideX
+        <li><strong>python</strong> → Python
+        <li><strong>qbasic</strong> → QBasic/QuickBASIC
+        <li><strong>rails</strong> → Rails
+        <li><strong>reg</strong> → Microsoft Registry
+        <li><strong>robots</strong> → robots.txt
+        <li><strong>ruby</strong> → Ruby
+        <li><strong>sas</strong> → SAS
+        <li><strong>scala</strong> → Scala
+        <li><strong>scheme</strong> → Scheme
+        <li><strong>scilab</strong> → SciLab
+        <li><strong>sdlbasic</strong> → sdlBasic
+        <li><strong>smalltalk</strong> → Smalltalk
+        <li><strong>smarty</strong> → Smarty
+        <li><strong>sql</strong> → SQL
+        <li><strong>tcl</strong> → TCL
+        <li><strong>teraterm</strong> → Tera Term Macro
+        <li><strong>text</strong> → Text
+        <li><strong>thinbasic</strong> → thinBasic
+        <li><strong>tsql</strong> → T-SQL
+        <li><strong>typoscript</strong> → TypoScript
+        <li><strong>vb</strong> → Visual Basic
+        <li><strong>vbnet</strong> → vb.net
+        <li><strong>verilog</strong> → Verilog
+        <li><strong>vhdl</strong> → VHDL
+        <li><strong>vim</strong> → Vim Script
+        <li><strong>visualfoxpro</strong> → Visual Fox Pro
+        <li><strong>visualprolog</strong> → Visual Prolog
+        <li><strong>whitespace</strong> → Whitespace
+        <li><strong>winbatch</strong> → Winbatch
+        <li><strong>xml</strong> → XML
+        <li><strong>xorg</strong>_conf → Xorg configuration
+        <li><strong>xpp</strong> → X++
+        <li><strong>z80</strong> → ZiLOG Z80 Assembler
+    <a href="http://qbnz.com/highlighter">
+        <img src="http://qbnz.com/highlighter/images/powered-by-geshi.png" alt="Powered by GeSHi">
+^{footerWidget}

@@ -1,0 +1,19 @@
+<form .update-board method=post action=@{ManageBoardsR}>
+    #{extra}
+    <input type=submit value=_{MsgUpdateBoardsBtn}> _{MsgHelpUpdateBoard}
+    <tr>
+        <td> 
+        <td>^{fvInput boardIdView}
+        <td>^{fvInput nameView}
+        <td>^{fvInput descriptionView}
+        <td>^{fvInput bumpLimitView}
+        <td>^{fvInput numberFilesView}
+        <td>^{fvInput allowedTypesView}
+        <td>^{fvInput defaultNameView}
+        <td>^{fvInput maxMsgLengthView}
+        <td>^{fvInput thumbSizeView}
+        <td>^{fvInput threadsPerPageView}
+        <td>^{fvInput previewsPerThreadView}
+        <td>^{fvInput threadLimitView}
+        <td>^{fvInput isHiddenView}
+        <td>^{fvInput enableCaptchaView}

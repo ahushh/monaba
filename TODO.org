@@ -1,0 +1,122 @@
+* Current
+** DONE IP
+** DONE image size, resolution, md5 sum
+  CLOSED: [2013-07-04 Чт 12:46]
+** DONE don't minify small pics
+    CLOSED: [2013-07-04 Чт 15:54]
+** DONE thumbnails
+  CLOSED: [2013-07-04 Чт 11:10]
+** DONE sage
+   CLOSED: [2013-07-04 Чт 13:31]
+** DONE go back to
+   CLOSED: [2013-07-04 Чт 15:55]
+** DONE fix postform
+   CLOSED: [2013-07-04 Чт 21:28]
+** DONE fix templates
+   CLOSED: [2013-07-04 Чт 22:07]
+** DONE post and image deletion
+   CLOSED: [2013-07-05 Пт 09:57]
+** DONE i18n
+   CLOSED: [2013-07-05 Пт 10:38]
+** DONE N post(s) omitted
+   CLOSED: [2013-07-05 Пт 11:27]
+** DONE bump limit
+   CLOSED: [2013-07-05 Пт 11:27]
+** DONE truncate too long messages
+   CLOSED: [2013-07-05 Пт 15:51]
+** DONE optional name
+   CLOSED: [2013-07-05 Пт 19:10]
+** DONE allow uploading .zip, .rar, etc.
+   CLOSED: [2013-07-05 Пт 19:10]
+** DONE multiple file upload
+   CLOSED: [2013-07-06 Сб 03:36]
+** DONE N post(s) omitted
+   CLOSED: [2013-07-06 Сб 03:37]
+*** DONE check if file type isn't allowed
+    CLOSED: [2013-07-06 Сб 03:37]
+*** DONE remove posts and _files_
+    CLOSED: [2013-07-06 Сб 03:37]
+** DONE fix css and js
+   CLOSED: [2013-07-06 Сб 07:02]
+** DONE error handling via setMessageI
+   CLOSED: [2013-07-06 Сб 15:08]
+** DONE remember last input
+   CLOSED: [2013-07-06 Сб 15:34]
+** DONE bug: any post is available like thread via /thread/N
+   CLOSED: [2013-07-06 Сб 18:09]
+** DONE replies and thread counter; seems file deletion isn't working
+   CLOSED: [2013-07-06 Сб 18:09]
+*** removed replies counter
+*** fxd: files couldn't be removed from DB
+** DONE add sticked, locked, autosage
+   CLOSED: [2013-07-06 Сб 23:58]
+** DONE move constants from Import.hs to DB
+   CLOSED: [2013-07-07 Вс 04:12]
+** DONE board deletion
+   CLOSED: [2013-07-08 Пн 12:30]
+** DONE using default.png for unknown file types
+   CLOSED: [2013-07-08 Пн 12:30]
+** CANCELED goback field i18n
+   CLOSED: [2013-07-08 Пн 12:33]
+*** impossible...
+** DONE dynamic header template
+   CLOSED: [2013-07-08 Пн 14:30]
+** DONE request body too large to process
+   CLOSED: [2013-07-08 Пн 15:01]
+** DONE resize images less than width X height
+   CLOSED: [2013-07-08 Пн 15:17]
+** DONE truncate subject and name fields
+   CLOSED: [2013-07-08 Пн 15:48]
+** DONE board cleaning
+   CLOSED: [2013-07-08 Пн 16:14]
+** DONE start page with 0
+   CLOSED: [2013-07-09 Вт 01:11]
+** DONE making thumbs for each board
+   CLOSED: [2013-07-09 Вт 01:18]
+** DONE ban by ip for each board
+   CLOSED: [2013-07-10 Ср 04:01]
+** DONE markup
+   CLOSED: [2013-07-11 Чт 00:39]
+** DONE name of the site
+   CLOSED: [2013-07-11 Чт 04:46]
+** DONE admin/mod access
+   CLOSED: [2013-07-11 Чт 16:46]
+** DONE admin/mode red name
+   CLOSED: [2013-07-11 Чт 18:02]
+** DONE allow file types in upper case
+   CLOSED: [2013-07-11 Чт 18:30]
+** DONE hiding boards
+   CLOSED: [2013-07-11 Чт 18:54]
+** DONE delete old threads
+   CLOSED: [2013-07-11 Чт 19:37]
+** DONE move sitename to settings.yml
+   CLOSED: [2013-07-11 Чт 20:12]
+** DONE icons of locked, sticked, aautosage threads via css-sprites
+   CLOSED: [2013-07-12 Пт 23:20]
+** DONE Captcha
+   CLOSED: [2013-07-13 Сб 01:20]
+*** DONE adaptive captcha
+    CLOSED: [2013-07-12 Пт 23:19]
+*** DONE optional disabling
+    CLOSED: [2013-07-13 Сб 01:20]
+** DONE global config table
+   CLOSED: [2013-07-13 Сб 17:27]
+** DONE (!) "you're posting too fast" error
+   CLOSED: [2013-07-13 Сб 21:31]
+** DONE proper reflinks
+   CLOSED: [2013-07-14 Вс 06:22]
+** DONE delete repeating \n from message
+   CLOSED: [2013-07-14 Вс 06:31]
+** TODO write some test, huh?
+** TODO black/spam list
+** TODO posting without captcha for the staff
+** TODO tags for threads
+** TODO post deletion by OP
+** TODO don't really delete posts, but mark them up "deleted" (?)
+** TODO CRUD
+** TODO UTC -> local time, store timezone in cookies/session
+** TODO check if all dirs exist before starting
+** TODO remove exccess scaffolded stuff
+** TODO style switcher
+** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
+** TODO return files with their real names (HOW??)

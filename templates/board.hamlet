@@ -1,0 +1,49 @@
+^{headerWidget muser boards}
+
+<br>
+<div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
+<br>
+<hr>
+<form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+    ^{formWidget (entityVal $ fromJust maybeBoard) False maybeCaptchaInfo acaptcha enableCaptcha}
+<hr>
+$if null threadsAndPreviews
+    <p> _{MsgNoThreads}
+$else
+    <form #delete-form method=get action=@{DeleteR}>
+        $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
+            <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+                ^{opPostWidget muser eOpPost opPostFiles False}
+                <br>
+                $if omitted > 0
+                    <div .omitted>
+                        _{MsgPostsOmitted omitted}
+                $forall (ePreview, previewFiles)  <- ps
+                    ^{replyPostWidget muser ePreview previewFiles}
+            <hr>
+        <div #delete-container>
+            $maybe _ <- muser
+                <span style=display:none>
+                    _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+            $nothing
+                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+            <input type=submit value=_{MsgDeleteBtn}>
+
+_{MsgPages} #
+$if page == 0
+    [ _{MsgPrevious} ]
+$else
+    [ <a href=@{BoardR board $ page - 1}>_{MsgPrevious}</a> ]
+
+$forall p <- pages
+    $if p == page
+        [ #{ p } ]
+    $else
+        [ <a href=@{BoardR board p}>#{ p }</a> ]
+
+$if (page + 1) < length pages
+    [ <a href=@{BoardR board $ page + 1}>_{MsgNext}</a> ]
+$else
+    [ _{MsgNext} ]
+
+^{footerWidget}

@@ -1,0 +1,15 @@
+^{headerWidget muser boards}
+^{adminNavbarWidget muser}
+<h3> _{MsgLatestPosts}
+<form .delete-form method=get action=@{DeleteR}>
+    $forall (e, files) <- postsAndFiles
+        $if (postParent $ entityVal e) > 0
+            ^{replyPostWidget muser e files}
+        $else
+            ^{opPostWidget muser e files False}
+
+    <div #delete-container>
+        <input type=password style="display:none" value="" size=15 name=postpassword>
+        <input type=submit value=_{MsgDeleteBtn}>
+
+^{footerWidget}            

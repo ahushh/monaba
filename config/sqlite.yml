@@ -1,0 +1,20 @@
+Default: &defaults
+  database: Monaba.sqlite3
+  poolsize: 10
+
+Development:
+  <<: *defaults
+
+Testing:
+  database: Monaba_test.sqlite3
+  <<: *defaults
+
+Staging:
+  database: Monaba_staging.sqlite3
+  poolsize: 100
+  <<: *defaults
+
+Production:
+  database: Monaba_production.sqlite3
+  poolsize: 100
+  <<: *defaults

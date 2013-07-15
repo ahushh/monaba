@@ -1,0 +1,11 @@
+<br>
+<div .admin-navbar>
+    <a href=@{AdminR}>_{MsgLatestPosts}</a> |
+    <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
+    $maybe Entity _ user <- muserW
+        $if personRole user == Admin
+            <a href=@{ManageBoardsR}>_{MsgBoards}</a> |
+            <a href=@{StaffR}>_{MsgStaff}</a> |
+            <a href=@{ConfigR}>_{MsgConfig}</a> |
+    <a href=@{AccountR}>_{MsgAccount}
+<hr>

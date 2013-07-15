@@ -1,0 +1,27 @@
+^{headerWidget muser boards}
+
+<br>
+<div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
+<br>
+<hr>
+<div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+<br>
+<form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+    ^{formWidget (entityVal $ fromJust maybeBoard) True maybeCaptchaInfo acaptcha enableCaptcha}
+<hr>
+<form .delete-form method=get action=@{DeleteR}>
+    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+        ^{opPostWidget muser eOpPost opPostFiles True}
+    
+        $forall (eReply, files) <- repliesAndFiles
+            ^{replyPostWidget muser eReply files }
+    <hr>
+    <div #delete-container>
+        $maybe _ <- muser
+            <span style=display:none>
+                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+        $nothing
+            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+        <input type=submit value=_{MsgDeleteBtn}>
+
+^{footerWidget}

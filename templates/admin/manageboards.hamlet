@@ -1,0 +1,43 @@
+^{headerWidget muser boards}
+^{adminNavbarWidget muser}
+<table .admin-table>
+    <tr>
+        <th>         
+        <th>_{MsgBoardId}
+        <th>_{MsgBoardName}
+        <th>_{MsgBoardDescription }
+        <th>_{MsgBoardBumpLimit   }
+        <th>_{MsgBoardNumberFiles }
+        <th>_{MsgBoardAllowedTypes}
+        <th>_{MsgBoardDefaultName }
+        <th>_{MsgBoardMaxMsgLength}
+        <th>_{MsgBoardThumbSize }
+        <th>_{MsgBoardThreadsPerPage}
+        <th>_{MsgBoardPreviewsPerThread}
+        <th>_{MsgBoardThreadLimit}
+        <th>_{MsgBoardHidden}
+        <th>_{MsgBoardEnableCaptcha}
+    ^{formWidget}
+    $forall Entity bId b <- boards
+        <tr>
+            <td>
+                <a href=@{DeleteBoardR $ fromIntegral $ fromKey $ bId}>_{MsgDeleteBtn}
+                <a href=@{CleanBoardR  $ fromIntegral $ fromKey $ bId}>_{MsgCleanBoard}
+            <td>#{show $ fromKey $ bId}
+            <td>#{boardName b}
+            <td>#{boardDescription  b}
+            <td>#{boardBumpLimit    b}
+            <td>#{boardNumberFiles  b}
+            <td>#{unwords $ boardAllowedTypes b}
+            <td>#{boardDefaultName  b}
+            <td>#{boardMaxMsgLength b}
+            <td>#{boardThumbSize  b}
+            <td>#{boardThreadsPerPage b}
+            <td>#{boardPreviewsPerThread b}
+            $maybe l <- boardThreadLimit b
+                <td>#{l}
+            $nothing
+                <td>   
+            <td>#{boardHidden b}
+            <td>#{boardEnableCaptcha b}
+^{footerWidget}            

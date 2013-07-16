@@ -15,7 +15,7 @@ import qualified Data.ByteString                   as B hiding (take,drop,length
 import           System.Process
 -------------------------------------------------------------------------------------------------------------------
 geshi :: String
-geshi = "/home/user/geshi/highlight.php"
+geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
 -------------------------------------------------------------------------------------------------------------------

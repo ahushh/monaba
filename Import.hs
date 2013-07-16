@@ -74,10 +74,10 @@ markupWidget :: Textarea -> Widget
 markupWidget = toWidget . preEscapedToHtml . unTextarea
 
 opPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThread = $(widgetFile "oppost")
+opPostWidget muserW eOpPostW opPostFilesW isInThread = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW = $(widgetFile "replypost")
+replyPostWidget muserW eReplyW replyFilesW = $(widgetFile "reply-post")
 
 headerWidget :: Maybe (Entity Person) -> [Entity Board] -> WidgetT App IO ()
 headerWidget muserW boardsW = $(widgetFile "header")

@@ -58,7 +58,7 @@ banByIpForm ip board extra = do
   (boardRes  , boardView  ) <- mopt textField  "" (Just $ Just board)
   (expiresRes, expiresView) <- mopt intField   "" Nothing
   let result = (,,,) <$> ipRes <*> reasonRes <*> boardRes <*> expiresRes
-      widget = $(widgetFile "admin/banbyipform")
+      widget = $(widgetFile "admin/ban-form")
   return (result, widget)
                                           
 getBanByIpR :: Text -> Text -> Handler Html    
@@ -70,7 +70,7 @@ getBanByIpR board ip = do
   nameOfTheBoard <- extraSiteName <$> getExtra
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Ban management"]
-    $(widgetFile "admin/banbyip")
+    $(widgetFile "admin/ban")
   
 postBanByIpR :: Text -> Text -> Handler Html
 postBanByIpR _ _ = do
@@ -102,7 +102,7 @@ getManageBoardsR = do
   nameOfTheBoard <- extraSiteName <$> getExtra
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Board management"]
-    $(widgetFile "admin/manageboards")
+    $(widgetFile "admin/boards")
     
 updateBoardForm :: Html -> MForm Handler (FormResult ( Maybe Int  -- board id
                                                    , Maybe Text -- name
@@ -140,7 +140,7 @@ updateBoardForm extra = do
                defaultNameRes <*> maxMsgLengthRes <*> thumbSizeRes <*>
                threadsPerPageRes <*> previewsPerThreadRes <*> threadLimitRes <*>
                isHiddenRes <*> enableCaptchaRes
-      widget = $(widgetFile "admin/manageboardsform")
+      widget = $(widgetFile "admin/boards-form")
   return (result, widget)
 
 postManageBoardsR :: Handler Html
@@ -226,7 +226,7 @@ staffForm extra = do
   (personPasswordRes , personPasswordView ) <- mreq textField               "" Nothing
   (personRoleRes     , personRoleView     ) <- mreq (selectFieldList roles) "" Nothing
   let result = (,,) <$> personNameRes <*> personPasswordRes <*> personRoleRes
-      widget = $(widgetFile "admin/staffform")
+      widget = $(widgetFile "admin/staff-form")
   return (result, widget)
     where roles :: [(Text, RoleOfPerson)]
           roles = [("admin",Admin), ("mod",Moderator)]
@@ -321,7 +321,7 @@ configForm extra = do
   (threadDelayRes   , threadDelayView    ) <- mopt intField "" Nothing
   let result = (,,,,) <$> captchaLengthRes <*> acaptchaGuardsRes <*>
                captchaTimeoutRes <*> replyDelayRes <*> threadDelayRes
-      widget = $(widgetFile "admin/configform")
+      widget = $(widgetFile "admin/config-form")
   return (result, widget)
 
 getConfigR :: Handler Html

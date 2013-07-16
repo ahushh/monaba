@@ -109,6 +109,8 @@
    CLOSED: [2013-07-14 Вс 06:31]
 ** DONE posting without captcha for the staff
    CLOSED: [2013-07-16 Вт 19:19]
+** DONE remove exccess scaffolded stuff
+   CLOSED: [2013-07-16 Вт 19:59]
 ** TODO write some tests, huh?
 ** TODO black/spam list
 ** TODO tags for threads
@@ -117,7 +119,6 @@
 ** TODO CRUD
 ** TODO UTC -> local time, store timezone in cookies/session
 ** TODO check if all dirs exist before starting
-** TODO remove exccess scaffolded stuff
 ** TODO style switcher
 ** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
 ** TODO return files with their real names (HOW??)

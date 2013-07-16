@@ -38,7 +38,7 @@ postForm numberFiles extra = do
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,,) <$> nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
                FormSuccess fileresults <*> gobackRes <*> nobumpRes
-      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "postform")
+      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
     where urls :: [(Text, GoBackTo)]
           urls = [("thread",ToThread), ("board",ToBoard)]
@@ -82,11 +82,10 @@ bumpThread board thread now = do
 -------------------------------------------------------------------------------------------------------------------
 isBanExpired :: Entity Ban -> Handler Bool
 isBanExpired (Entity banId ban) = do
-  let expires = banExpires ban
-  case expires of
+  case banExpires ban of
     Nothing   -> return False
     Just t    -> do
       now <- liftIO getCurrentTime
-      if (floor $ utctDayTime now :: Int) > (floor $ utctDayTime t :: Int)
+      if now > t
         then runDB (delete banId) >> return True
         else return False

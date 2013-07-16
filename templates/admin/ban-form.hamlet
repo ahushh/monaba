@@ -1,0 +1,8 @@
+<form method=post action=@{BanByIpR "" ""}>
+    #{extra}
+    _{MsgBanIp}: ^{fvInput ipView}
+    _{MsgBanReason}: ^{fvInput reasonView}
+    _{MsgBanExpiresInHours} ^{fvInput expiresView}
+    _{MsgBanBoard}: ^{fvInput boardView}
+    <input type=submit value=_{MsgBan}>
+

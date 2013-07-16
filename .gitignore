@@ -1,4 +1,5 @@
 dist*
+cabal-dev/*
 static/tmp/
 static/files/*
 !static/files/.keep
@@ -11,4 +12,5 @@ config/client_session_key.aes
 *.o
 *.sqlite3
 .hsenv*
+.ghci
 yesod-devel/

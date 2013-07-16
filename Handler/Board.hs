@@ -53,7 +53,7 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   now       <- liftIO getCurrentTime
   acaptcha  <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha) $ recordCaptcha =<< getConfig configCaptchaLength
+  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
   nameOfTheBoard   <- extraSiteName <$> getExtra
@@ -67,6 +67,7 @@ postBoardR :: Text -> Int -> Handler Html
 postBoardR board _ = do
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
+  muser      <- maybeAuth
   -------------------------------------------------------------------------------------------------------   
   let msgRedirect msg      = setMessageI msg >> redirect (BoardNoPageR board)
       maxMessageLength     = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
@@ -98,7 +99,7 @@ postBoardR board _ = do
             redirect (BoardNoPageR board)
         -- check captcha
         acaptcha <- lookupSession "acaptcha"
-        when enableCaptcha $ do
+        when (enableCaptcha && isNothing muser) $ do
           when (isNothing acaptcha) $ do
             void $ when (isNothing captcha) (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
             checkCaptcha (fromJust captcha) (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
@@ -113,7 +114,6 @@ postBoardR board _ = do
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------           
-        muser  <- maybeAuth
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted <- doAwfulMarkup message board
         let newPost = Post { postBoard        = board

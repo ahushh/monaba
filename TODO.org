@@ -81,7 +81,7 @@
    CLOSED: [2013-07-11 Чт 04:46]
 ** DONE admin/mod access
    CLOSED: [2013-07-11 Чт 16:46]
-** DONE admin/mode red name
+** DONE admin/mod red name
    CLOSED: [2013-07-11 Чт 18:02]
 ** DONE allow file types in upper case
    CLOSED: [2013-07-11 Чт 18:30]
@@ -107,9 +107,10 @@
    CLOSED: [2013-07-14 Вс 06:22]
 ** DONE delete repeating \n from message
    CLOSED: [2013-07-14 Вс 06:31]
-** TODO write some test, huh?
+** DONE posting without captcha for the staff
+   CLOSED: [2013-07-16 Вт 19:19]
+** TODO write some tests, huh?
 ** TODO black/spam list
-** TODO posting without captcha for the staff
 ** TODO tags for threads
 ** TODO post deletion by OP
 ** TODO don't really delete posts, but mark them up "deleted" (?)

@@ -7,7 +7,7 @@
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 <br>
 <form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
-    ^{formWidget (entityVal $ fromJust maybeBoard) True maybeCaptchaInfo acaptcha enableCaptcha}
+    ^{formWidget (entityVal $ fromJust maybeBoard) True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">

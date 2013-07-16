@@ -18,11 +18,12 @@ postForm :: Int -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
                                                   , [FormResult (Maybe FileInfo)] -- files
                                                   , GoBackTo       -- go back to
                                                   , Maybe Bool)    -- sage (no bump)
-                                       , Board      -> -- boardW
-                                         Bool       -> -- isthreadW
-                                         Maybe Text -> -- maybeCaptchaInfoW
-                                         Maybe Text -> -- acaptchaW
-                                         Bool       -> -- enableCaptchaW
+                                       , Board        -> -- boardW
+                                         Bool         -> -- isthreadW
+                                         Maybe Text   -> -- maybeCaptchaInfoW
+                                         Maybe Text   -> -- acaptchaW
+                                         Bool         -> -- enableCaptchaW
+                                         Maybe (Entity Person) -> -- muserW
                                          Widget)
 postForm numberFiles extra = do
   lastName   <- lookupSession "name"
@@ -37,7 +38,7 @@ postForm numberFiles extra = do
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,,) <$> nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
                FormSuccess fileresults <*> gobackRes <*> nobumpRes
-      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW = $(widgetFile "postform")
+      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "postform")
   return (result, widget)
     where urls :: [(Text, GoBackTo)]
           urls = [("thread",ToThread), ("board",ToBoard)]

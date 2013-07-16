@@ -38,7 +38,7 @@ getThreadR  board thread = do
       pagetitle       = (\t -> if T.null t then pack $ show $ postLocalId (entityVal eOpPost) else t) $ postTitle (entityVal eOpPost)
   -------------------------------------------------------------------------------------------------------
   acaptcha  <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha) $ recordCaptcha =<< getConfig configCaptchaLength
+  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
   nameOfTheBoard   <- extraSiteName <$> getExtra
@@ -52,6 +52,7 @@ postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   maybeBoard  <- runDB $ getBy $ BoardUniqName board
+  muser       <- maybeAuth
   -------------------------------------------------------------------------------------------------------     
   when (isNothing maybeParent) notFound
   when (isNothing maybeBoard ) notFound
@@ -87,7 +88,7 @@ postThreadR board thread = do
                                           (maybe "never" (pack . myFormatTime) (banExpires $ entityVal $ fromJust ban))
             redirect (ThreadR board thread)
         -- check captcha
-        when enableCaptcha $ do
+        when (enableCaptcha && isNothing muser) $ do
           acaptcha  <- lookupSession "acaptcha"
           when (isNothing acaptcha) $ do
             void $ when (isNothing captcha) (setMessageI MsgWrongCaptcha >> redirect (ThreadR board thread))
@@ -103,7 +104,6 @@ postThreadR board thread = do
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (ThreadR board thread)
         ------------------------------------------------------------------------------------------------------           
-        muser            <- maybeAuth
         messageFormatted <- doAwfulMarkup message board
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- replying to non-existent thread

@@ -5,7 +5,7 @@
 <br>
 <hr>
 <form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
-    ^{formWidget (entityVal $ fromJust maybeBoard) False maybeCaptchaInfo acaptcha enableCaptcha}
+    ^{formWidget (entityVal $ fromJust maybeBoard) False maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}

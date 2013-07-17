@@ -25,7 +25,7 @@ getHomeR = do
                             , configThreadDelay    = 30
                             }
       redirect HomeR
-      
+    nameOfTheBoard <- extraSiteName <$> getExtra
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle $ toHtml nameOfTheBoard
         $(widgetFile "homepage")

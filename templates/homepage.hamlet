@@ -1,2 +1,7 @@
 ^{headerWidget muser boards}
+<br>
+<div #main-title">
+    <h1>#{nameOfTheBoard}
+<div #main-image>
+    <img #main-image src=#{staticDir ++ "/home.jpg"}>
 ^{footerWidget}            

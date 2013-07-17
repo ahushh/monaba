@@ -74,9 +74,10 @@ escapeHtml = renderHtml . toHtml
 
 doTags :: B.ByteString -> B.ByteString -> Handler B.ByteString
 doTags board s = doReflinks s board >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
-  where clickableUrls = (=~$ ("(https?://[^(?\n<>\\[\\])]+)"  , "<a href='\\1'>\\1</a>"                              ))
-        quotes        = (=~$ ("&gt;([^\n]+)"                  , "<span class='quote' style='color:green'>>\\1</span>"))
-        newlines      = (=~$ ("(\n|\r)+"                      , "<br>"                                               ))
+  where clickableUrls = (=~$ ("((?:https?|ftp|gopher)://[^(\\s<>\\[\\])]+)"  , "<a href='\\1'>\\1</a>"                   ))
+        quotes        = (=~$ ("(?:(?:\n\r)|(?:\n))&gt;(.+)"   , "<br><span class='quote' style='color:green'>>\\1</span>"))
+        quotes'       = (=~$ ("^&gt;(.+)"                     , "<span class='quote' style='color:green'>>\\1</span>"))
+        newlines      = (=~$ ("(?:(?:\n\r)|(?:\n))+"          , "<br>"                                               ))
         bold          = (=~$ ("\\[b\\]((?:.|\n)+?)\\[/b\\]"   , "<strong>\\1</strong>"                               )) 
         bold'         = (=~$ ("\\*\\*((?:.|\n)+?)\\*\\*"      , "<strong>\\1</strong>"                               ))
         bold''        = (=~$ ("__((?:.|\n)+?)__"              , "<strong>\\1</strong>"                               ))
@@ -87,9 +88,9 @@ doTags board s = doReflinks s board >>= (\s' -> liftIO $ foldr (=<<) (clickableU
         strike        = (=~$ ("\\[s\\]((?:.|\n)+?)\\[/s\\]"   , "<s>\\1</s>"                                         ))
         spoiler'      = (=~$ ("%%((?:.|\n)+?)%%"              , B.concat [openSpoiler, "\\1", closeSpoiler]          ))
         spoiler       = (=~$ ("\\[spoiler\\]((?:.|\n)+?)\\[/spoiler\\]", B.concat [openSpoiler, "\\1", closeSpoiler] ))
-        openSpoiler   = "<span onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\" style=\"color:black; background-color:black\">"
+        openSpoiler   = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\" style=\"color:black; background-color:black\">"
         closeSpoiler  = "</span>"
-        allTags       = [newlines, spoiler, spoiler', underline, italic, italic', italic'', strike, bold, bold', bold'', quotes]
+        allTags       = [newlines, spoiler, spoiler', underline, italic, italic', italic'', strike, bold, bold', bold'', quotes, quotes']
 
 doReflinks :: B.ByteString -> B.ByteString -> Handler B.ByteString
 doReflinks s' currentBoard = helper s' (B.fromString "")

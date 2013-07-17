@@ -12,7 +12,7 @@
     <p>[spoiler]spoiler[/spoiler]  → <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span>
     <p>%%spoiler%%                 → <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span
     <p>[s]strike[/s]       → <strike>strike</strike>
-    <p>[s]underline[/s]    → <u>underline</u>
+    <p>[u]underline[/u]    → <u>underline</u>
     <p>http://yesodweb.com → <a href="http://yesodweb.com">http://yesodweb.com</a>
     <p>>text               → <span .quote style="color:green">>text</span>
     <p>>>1234              → <a href=/b/1234/#1234>>>1234</a>

@@ -14,7 +14,20 @@
             <td .post-block-named>_{MsgMessage}
             <td>
                 ^{fvInput messageView}
-                <div .button> []
+                <div .buttons>
+                     [
+                     <a href=# id=button-bold class=buttons>bold
+                     |
+                     <a href=# id=button-italic class=buttons>italic
+                     |
+                     <a href=# id=button-underline class=buttons>underline
+                     |
+                     <a href=# id=button-strike class=buttons>strike
+                     |
+                     <a href=# id=button-spoiler class=buttons>spoiler
+                     |
+                     <a href=# id=button-code class=buttons>code
+                     ]                    
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}
             <td>

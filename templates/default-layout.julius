@@ -1,0 +1,4 @@
+$('.reflink').click(function() {
+    insert(">>" + this.children[0].getAttribute('name'));
+});
+

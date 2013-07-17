@@ -1,5 +1,3 @@
-Hello: Hello
-
 Name: Name
 Subject: Subject
 SubmitBtn: Submit
@@ -37,7 +35,6 @@ LockedThread: This thread is locked and can't be posted in
 
 BoardId: ID
 BoardName: Name
-BoardThreadsCount: Threads counter
 BoardDescription : Description
 BoardBumpLimit   : Bump limit
 BoardNumberFiles : Max number of files

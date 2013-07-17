@@ -79,6 +79,6 @@
             <td>
                 <div #board-info>
                     <ul>
-                        <li>_{MsgSupportedFileTypes}: #{unwords $ boardAllowedTypes boardW}
+                        <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
                         <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
-                        <li>_{MsgMaxFileSize}: #{show $ maxFileSize} MB
+                        <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB

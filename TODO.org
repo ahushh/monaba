@@ -113,6 +113,7 @@
    CLOSED: [2013-07-16 Вт 19:59]
 ** DONE style switcher
    CLOSED: [2013-07-17 Ср 19:30]
+** TODO board groups
 ** TODO write some tests, huh?
 ** TODO black/spam list
 ** TODO tags for threads

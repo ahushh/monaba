@@ -95,7 +95,8 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            addStylesheet $ StaticR css_monaba_css
+            -- addStylesheet $ StaticR css_ash_css
+            -- addStylesheet $ StaticR css_futaba_css
             addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"
             $(combineStylesheets 'StaticR
                 [

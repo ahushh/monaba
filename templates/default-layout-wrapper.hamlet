@@ -9,6 +9,8 @@ $newline never
         <meta charset="UTF-8">
 
         <title>#{pageTitle pc}
+        <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+        <link rel="alternate stylesheet" type=text/css title=Futaba href=@{StaticR css_futaba_css}>
         <meta name="description" content="">
         <meta name="author" content="">
 

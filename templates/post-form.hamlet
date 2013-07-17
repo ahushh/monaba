@@ -66,7 +66,7 @@
                             <div .file-input>
                                 ^{fvInput fv}
         <tr .post-block>
-            <td post-block>_{MsgGoback}
+            <td .post-block-named>_{MsgGoback}
             <td>
                 ^{fvInput gobackView}
         $if isthreadW

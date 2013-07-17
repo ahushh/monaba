@@ -1,6 +1,6 @@
 html, body {
-    background-color: #EEEEEE;
-    color: #333333;
+    background-color: #FFFFEE;
+    color: #600000;
     font-family: serif;
     font-size: 1em;
     padding: 10px;
@@ -10,12 +10,13 @@ form {
     font-size: 0.9em;
 }
 
-/* #replyForm { */
-/*     padding: 10px; */
-/*     background: none repeat scroll 0% 0% #DDDDDD; */
-/*     border-radius: 5px 5px 5px 5px; */
-/*     border: 1px solid #CCCCCC; */
-/* } */
+textarea {
+    /* background-color: #FFFFFF; */
+}
+
+input {
+    /* background-color: #FFFFFF; */
+}
 
 input.submit {
     border: 0px;
@@ -24,17 +25,26 @@ input.submit {
     cursor: pointer;
 } 
 
+.poster-name {
+    color: #117743;
+}
+
+.post-block-named {
+    background-color: #EEAA88;
+    padding: 5px;
+}
+
 time {
     text-size: 0.9em;
 }
 
 a {
-    color: #995b46;
+    color: #0000EE;
     padding: 0px;
 }
 
 a:hover {
-    color: #FF6600;
+    color: #DD0000;
 }
 
 header {
@@ -73,9 +83,9 @@ blockquote {
 }
 
 .reply-post {
-    background: none repeat scroll 0% 0% #DDDDDD;
+    background: none repeat scroll 0% 0% #F0E0D6;
     border-radius: 5px 5px 5px 5px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #DDCCC5;
     margin: 3px;
     padding: 5px;
 }
@@ -111,4 +121,10 @@ table td {
 
 #delete-container {
     text-align: right;
+}
+
+pre {
+    background-color: #EEEEEE;
+    border: 1px dashed #DFDFDF;
+    padding: 10px;
 }

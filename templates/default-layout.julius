@@ -1,4 +1,64 @@
+setStylesheet();
+
+var style = get_cookie('stylesheet')
+if (style) {
+    $('#style-'+style).attr("selected","selected");
+}
+
 $('.reflink').click(function() {
     insert(">>" + this.children[0].getAttribute('name'));
 });
 
+$('#stylebar').change(function() {
+   setStylesheet($('#stylebar').val());
+});
+
+function setStylesheet(title) {
+    if (title) {
+        set_cookie("stylesheet", title, 365);
+    }
+    var styletitle = title ? title : get_cookie("stylesheet");
+    if (styletitle) {
+        var links = document.getElementsByTagName("link");
+        for (var i = 0; i < links.length; i++ ) {
+            if (links[i].title) {
+                links[i].disabled = true;
+                if (links[i].title == styletitle) {
+                    links[i].disabled = false;
+                }
+            }
+        }
+    }
+} 
+
+// ---------------------------------------------------------
+//  wakaba3.js
+// ---------------------------------------------------------
+function get_cookie(name)
+{
+    if (document.cookie)
+    {
+        var regexp = new RegExp("(^|;\\s+)" + name + "=(.*?)(;|$)");
+        var hit = regexp.exec(document.cookie);
+        if(hit && hit.length > 2)
+            return unescape(hit[2]);
+        else
+            return '';
+    }
+}
+
+function set_cookie(name,value,days)
+{
+    if(days)
+    {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        var expires = "; expires="+ date.toGMTString();
+    } else {
+        expires="";
+    }       
+    document.cookie = name + "=" + value + expires + "; path=/";
+}  
+// ---------------------------------------------------------
+//  end of wakaba3.js
+// ---------------------------------------------------------

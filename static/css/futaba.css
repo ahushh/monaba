@@ -31,6 +31,7 @@ input.submit {
 
 .post-block-named {
     background-color: #EEAA88;
+    font-weight: bold;
     padding: 5px;
 }
 

@@ -16,17 +16,17 @@
                 ^{fvInput messageView}
                 <div .buttons>
                      [
-                     <a href=# id=button-bold class=buttons>bold
+                     <a href=javascript:void(0) id=button-bold class=buttons>bold
                      |
-                     <a href=# id=button-italic class=buttons>italic
+                     <a href=javascript:void(0) id=button-italic class=buttons>italic
                      |
-                     <a href=# id=button-underline class=buttons>underline
+                     <a href=javascript:void(0) id=button-underline class=buttons>underline
                      |
-                     <a href=# id=button-strike class=buttons>strike
+                     <a href=javascript:void(0) id=button-strike class=buttons>strike
                      |
-                     <a href=# id=button-spoiler class=buttons>spoiler
+                     <a href=javascript:void(0) id=button-spoiler class=buttons>spoiler
                      |
-                     <a href=# id=button-code class=buttons>code
+                     <a href=javascript:void(0) id=button-code class=buttons>code
                      ]                    
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}
@@ -71,14 +71,14 @@
                 ^{fvInput gobackView}
         $if isthreadW
             <tr .post-block>
-                <td post-block>_{MsgNobump}
+                <td .post-block-named>_{MsgNobump}
                 <td>
                     ^{fvInput nobumpView}
-        <tr .post-block>
-            <td>
-            <td>
-                <div #board-info>
-                    <ul>
-                        <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
-                        <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
-                        <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
+<table #info-table>
+    <tr .post-block>
+        <td>
+            <div #board-info>
+                <ul>
+                    <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
+                    <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
+                    <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB

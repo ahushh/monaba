@@ -1,10 +1,46 @@
+//-----------------------------------------------------------------
+// youtube
+//-----------------------------------------------------------------
+$("blockquote a").each(function() {
+    var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/
+    var result = regex.exec(this.text);
+    if (null == result) {
+        return false;
+    }
+    $(this).attr('href','javascript:void(0)');
+    $(this).attr('class','youtube');
+    $(this).attr('id', result[1]);
+});
+
+$('.youtube').click(function() {
+    if ($(this).children('iframe').width() == null) { // kostyl: check if "a" tag has iframe
+        var iframe = document.createElement("iframe");
+        $(iframe).css('width', 480);
+        $(iframe).css('height', 360);
+        // $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ $(this).attr('id') +"?v=2&alt=json", function(data){
+        //     var width = data.entry.media$group.media$thumbnail[2].width;
+        //     var height = data.entry.media$group.media$thumbnail[2].height;
+        //     $(iframe).css('width', width);
+        //     $(iframe).css('height', height);
+        // });
+        $(iframe).attr("src", "https://www.youtube.com/embed/" + $(this).attr('id') + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
+        $(this).append('<br>');
+        $(this).append(iframe);
+    } else {
+        $(this).children('br').slideToggle();
+        $(this).children('iframe').slideToggle();
+    }
+});
+//-----------------------------------------------------------------
+// end of youtube
+//-----------------------------------------------------------------
 setStylesheet();
 
 var style = get_cookie('stylesheet')
 if (style) {
     $('#style-'+style).attr("selected","selected");
 }
-
+//-----------------------------------------------------------------
 $('.reflink').click(function() {
     insert(">>" + this.children[0].getAttribute('name'));
 });
@@ -12,6 +48,7 @@ $('.reflink').click(function() {
 $('#stylebar').change(function() {
    setStylesheet($('#stylebar').val());
 });
+//-----------------------------------------------------------------
 
 function setStylesheet(title) {
     if (title) {

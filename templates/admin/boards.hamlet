@@ -1,4 +1,4 @@
-^{headerWidget muser boards}
+^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
 <table .admin-table>
     <tr>
@@ -17,6 +17,7 @@
         <th>_{MsgBoardThreadLimit}
         <th>_{MsgBoardHidden}
         <th>_{MsgBoardEnableCaptcha}
+        <th>_{MsgBoardCategory}
     ^{formWidget}
     $forall Entity bId b <- boards
         <tr>
@@ -40,4 +41,8 @@
                 <td>   
             <td>#{boardHidden b}
             <td>#{boardEnableCaptcha b}
+            $maybe c <- boardCategory b
+                <td>#{c}
+            $nothing
+                <td>   
 ^{footerWidget}            

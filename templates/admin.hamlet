@@ -1,4 +1,4 @@
-^{headerWidget muser boards}
+^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
 <h3> _{MsgLatestPosts}
 <form .delete-form method=get action=@{DeleteR}>

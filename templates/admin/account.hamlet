@@ -1,4 +1,4 @@
-^{headerWidget muser boards}
+^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
 <br>
 ^{formWidget}

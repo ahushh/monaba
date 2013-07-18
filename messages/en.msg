@@ -47,6 +47,8 @@ BoardPreviewsPerThread: Previews per thread
 BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
+BoardCategory: Category
+BoardCategories: Board categories (separate by comma)
 HelpUpdateBoard: Leave ID field empty if you want to create a new board
 UpdateBoardsBtn: Update boards
 UpdateBoardsInvalidInput: Invalid input

@@ -15,6 +15,7 @@ getAdminR = do
   posts     <- runDB $ selectList [] [Desc PostDate, LimitTo 10]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   nameOfTheBoard <- extraSiteName <$> getExtra
+  boardCategories <- getConfig configBoardCategories
   let postsAndFiles = zip posts postFiles
   setUltDestCurrent
   defaultLayout $ do
@@ -68,6 +69,7 @@ getBanByIpR board ip = do
   boards <- runDB $ selectList ([]::[Filter Board]) []
   bans   <- runDB $ selectList ([]::[Filter Ban])   []
   nameOfTheBoard <- extraSiteName <$> getExtra
+  boardCategories <- getConfig configBoardCategories
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Ban management"]
     $(widgetFile "admin/ban")
@@ -99,6 +101,7 @@ getManageBoardsR = do
   (formWidget, formEnctype) <- generateFormPost updateBoardForm
   muser  <- maybeAuth
   boards <- runDB $ selectList ([]::[Filter Board]) []
+  boardCategories <- getConfig configBoardCategories
   nameOfTheBoard <- extraSiteName <$> getExtra
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Board management"]
@@ -118,6 +121,7 @@ updateBoardForm :: Html -> MForm Handler (FormResult ( Maybe Int  -- board id
                                                    , Maybe Int  -- thread limit
                                                    , Maybe Bool -- is hidden
                                                    , Maybe Bool -- enable captcha
+                                                   , Maybe Text -- category
                                                    )
                                        , Widget)
 updateBoardForm extra = do
@@ -134,12 +138,13 @@ updateBoardForm extra = do
   (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" Nothing
   (threadLimitRes      , threadLimitView      ) <- mopt intField      "" Nothing
   (isHiddenRes         , isHiddenView         ) <- mopt checkBoxField "" Nothing
+  (categoryRes         , categoryView         ) <- mopt textField     "" Nothing
   (enableCaptchaRes    , enableCaptchaView    ) <- mopt checkBoxField "" (Just $ Just True)
-  let result = (,,,,,,,,,,,,,) <$> boardIdRes <*> nameRes <*> descriptionRes <*>
+  let result = (,,,,,,,,,,,,,,) <$> boardIdRes <*> nameRes <*> descriptionRes <*>
                bumpLimitRes <*> numberFilesRes <*> allowedTypesRes <*>
                defaultNameRes <*> maxMsgLengthRes <*> thumbSizeRes <*>
                threadsPerPageRes <*> previewsPerThreadRes <*> threadLimitRes <*>
-               isHiddenRes <*> enableCaptchaRes
+               isHiddenRes <*> enableCaptchaRes <*> categoryRes
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
 
@@ -153,7 +158,7 @@ postManageBoardsR = do
     FormSuccess (bId, bName, bDesc, bBumpLimit, bNumberFiles, bAllowedTypes,
                 bDefaultName, bMaxMsgLen, bThumbSize, bThreadsPerPage,
                 bPrevPerThread, bThreadLimit, bIsHidden,
-                bEnableCaptcha) ->
+                bEnableCaptcha, bCategory) ->
       case bId of
         Just i -> do -- update existing board
           maybeBoard <- runDB $ get $ toKey i
@@ -172,6 +177,7 @@ postManageBoardsR = do
                                , boardThreadLimit       = mplus bThreadLimit Nothing
                                , boardHidden            = fromMaybe (boardHidden            oldBoard) bIsHidden
                                , boardEnableCaptcha     = fromMaybe (boardEnableCaptcha     oldBoard) bEnableCaptcha
+                               , boardCategory          = mplus bCategory Nothing
                                }
           runDB $ replace (toKey i) newBoard
           msgRedirect MsgBoardUpdated
@@ -192,6 +198,7 @@ postManageBoardsR = do
                                , boardThreadLimit       = bThreadLimit
                                , boardHidden            = fromJust bIsHidden
                                , boardEnableCaptcha     = fromJust bEnableCaptcha
+                               , boardCategory          = bCategory
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -238,6 +245,7 @@ getStaffR = do
   persons   <- runDB $ selectList ([]::[Filter Person]) []
   (formWidget, formEnctype) <- generateFormPost staffForm
   nameOfTheBoard <- extraSiteName <$> getExtra
+  boardCategories <- getConfig configBoardCategories
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Staff"]
     $(widgetFile "admin/staff")
@@ -286,6 +294,7 @@ getAccountR = do
   boards    <- runDB $ selectList ([]::[Filter Board ]) []
   (formWidget, formEnctype) <- generateFormPost newPasswordForm
   nameOfTheBoard <- extraSiteName <$> getExtra
+  boardCategories <- getConfig configBoardCategories
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Account"]
     $(widgetFile "admin/account")
@@ -311,16 +320,18 @@ configForm :: Html -> MForm Handler (FormResult ( Maybe Int -- captcha length
                                               , Maybe Int -- captcha timeout
                                               , Maybe Int -- reply delay
                                               , Maybe Int -- new thread delay
+                                              , Maybe Text -- board categories
                                               )
                                     , Widget)
 configForm extra = do
-  (captchaLengthRes , captchaLengthView  ) <- mopt intField "" Nothing
-  (acaptchaGuardsRes, acaptchaGuardsView ) <- mopt intField "" Nothing
-  (captchaTimeoutRes, captchaTimeoutView ) <- mopt intField "" Nothing
-  (replyDelayRes    , replyDelayView     ) <- mopt intField "" Nothing
-  (threadDelayRes   , threadDelayView    ) <- mopt intField "" Nothing
-  let result = (,,,,) <$> captchaLengthRes <*> acaptchaGuardsRes <*>
-               captchaTimeoutRes <*> replyDelayRes <*> threadDelayRes
+  (captchaLengthRes   , captchaLengthView  ) <- mopt intField  "" Nothing
+  (acaptchaGuardsRes  , acaptchaGuardsView ) <- mopt intField  "" Nothing
+  (captchaTimeoutRes  , captchaTimeoutView ) <- mopt intField  "" Nothing
+  (replyDelayRes      , replyDelayView     ) <- mopt intField  "" Nothing
+  (threadDelayRes     , threadDelayView    ) <- mopt intField  "" Nothing
+  (boardCategoriesRes , boardCategoriesView) <- mopt textField "" Nothing
+  let result = (,,,,,) <$> captchaLengthRes <*> acaptchaGuardsRes <*>
+               captchaTimeoutRes <*> replyDelayRes <*> threadDelayRes <*> boardCategoriesRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
 
@@ -331,6 +342,7 @@ getConfigR = do
   config <- runDB $ selectFirst ([]::[Filter Config]) []
   (formWidget, formEnctype) <- generateFormPost configForm
   nameOfTheBoard <- extraSiteName <$> getExtra
+  boardCategories <- getConfig configBoardCategories
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Config"]
     $(widgetFile "admin/config")
@@ -342,13 +354,14 @@ postConfigR = do
   case result of
     FormFailure _                      -> msgRedirect MsgBadFormData
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay) -> do
+    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories) -> do
       oldConfig <- fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
-      let newConfig = Config { configCaptchaLength  = fromMaybe (configCaptchaLength  $ entityVal oldConfig) captchaLength
-                             , configACaptchaGuards = fromMaybe (configACaptchaGuards $ entityVal oldConfig) aCaptchaGuards
-                             , configCaptchaTimeout = fromMaybe (configCaptchaTimeout $ entityVal oldConfig) captchaTimeout
-                             , configReplyDelay     = fromMaybe (configReplyDelay     $ entityVal oldConfig) replyDelay
-                             , configThreadDelay    = fromMaybe (configThreadDelay    $ entityVal oldConfig) threadDelay
+      let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   $ entityVal oldConfig) captchaLength
+                             , configACaptchaGuards  = fromMaybe (configACaptchaGuards  $ entityVal oldConfig) aCaptchaGuards
+                             , configCaptchaTimeout  = fromMaybe (configCaptchaTimeout  $ entityVal oldConfig) captchaTimeout
+                             , configReplyDelay      = fromMaybe (configReplyDelay      $ entityVal oldConfig) replyDelay
+                             , configThreadDelay     = fromMaybe (configThreadDelay     $ entityVal oldConfig) threadDelay
+                             , configBoardCategories = maybe     (configBoardCategories $ entityVal oldConfig) (T.splitOn ",") boardCategories
                              }
       void $ runDB $ replace (entityKey oldConfig) newConfig
       msgRedirect MsgConfigUpdated

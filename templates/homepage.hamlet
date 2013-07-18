@@ -1,7 +1,17 @@
-^{headerWidget muser boards}
+^{headerWidget muser boards boardCategories}
 <br>
-<div #main-title">
+<hr>
+<div #main-title>
     <h1>#{nameOfTheBoard}
-<div #main-image>
-    <img #main-image src=#{staticDir ++ "/home.jpg"}>
+<div #home-container>
+    <div #board-list-full>
+        $forall c <- boardCategories
+            <div .board-category>#{c}
+            $forall Entity _ b <- boards
+                $if not (boardHidden b)
+                    $if isJust (boardCategory b)
+                        $if c == fromJust (boardCategory b)
+                            <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
+    <div #main-image>
+        <img #main-image src=#{staticDir ++ "/home.jpg"}>
 ^{footerWidget}            

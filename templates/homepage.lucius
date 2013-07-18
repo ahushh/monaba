@@ -2,11 +2,26 @@
     text-align: center;
 }
 
+#home-container {
+   overflow:hidden;
+}
+
+#board-list-full {
+   margin-left: 15%;
+   width: 15%;
+   float: left;
+   padding: 10px;
+}
+
+.board-category {
+   margin: 3px 3px 3px -4px;
+   padding: 3px 3px 3px 5px;
+   width: 90%;
+}
+
 #main-image {
+   margin-left: 35%;
 }
 
 #main-image img {
-   width: 50%;
-   margin-left: 25%;
-   margin-right: 25%;
 }

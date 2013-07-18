@@ -9,5 +9,15 @@
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
     $forall Entity _ b <- boardsW
-        $if not $ boardHidden b
-            [ <a href=@{BoardNoPageR $ boardName b}>#{boardName b}</a> ] 
+        $if not (boardHidden b)
+            $if isNothing (boardCategory b)
+                $if not (boardHidden b)
+                    [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
+    $forall c <- categoriesW
+        [ 
+        $forall Entity _ b <- boardsW
+            $if not (boardHidden b)
+                $if isJust (boardCategory b)
+                    $if c == fromJust (boardCategory b)
+                        <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a>
+        ] 

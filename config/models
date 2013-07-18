@@ -20,6 +20,7 @@ Board
     hidden        Bool
     enableCaptcha Bool
     threadLimit   Int Maybe
+    category      Text Maybe
     deriving      Typeable
 Post
     board        Text
@@ -71,3 +72,4 @@ Config
     captchaTimeout Int -- in seconds
     replyDelay     Int
     threadDelay    Int 
+    boardCategories [Text]

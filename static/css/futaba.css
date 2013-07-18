@@ -128,3 +128,12 @@ pre {
     border: 1px dashed #DFDFDF;
     padding: 10px;
 }
+
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #EEAA88;
+}
+
+#board-list-full {
+   border: 1px solid #EEAA88;
+}

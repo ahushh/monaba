@@ -31,7 +31,8 @@ infixr 5 <>
 #endif
 -------------------------------------------------------------------------------------------------------------------
 import Data.Time     as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
-import Data.Maybe    as Import (fromMaybe, fromJust, isJust, isNothing)
+import Data.Maybe    as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
+import Data.List     as Import (nub)
 import Control.Monad as Import (unless, when, forM, forM_, void)
 import ModelTypes    as Import 
 -------------------------------------------------------------------------------------------------------------------
@@ -79,8 +80,8 @@ opPostWidget muserW eOpPostW opPostFilesW isInThread = $(widgetFile "op-post")
 replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW = $(widgetFile "reply-post")
 
-headerWidget :: Maybe (Entity Person) -> [Entity Board] -> WidgetT App IO ()
-headerWidget muserW boardsW = $(widgetFile "header")
+headerWidget :: Maybe (Entity Person) -> [Entity Board] -> [Text] -> WidgetT App IO ()
+headerWidget muserW boardsW categoriesW = $(widgetFile "header")
 
 footerWidget :: WidgetT App IO ()
 footerWidget = $(widgetFile "footer")

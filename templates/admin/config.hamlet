@@ -1,4 +1,4 @@
-^{headerWidget muser boards}
+^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
 <table .admin-table>
     <tr>
@@ -7,12 +7,14 @@
         <th>_{MsgCaptchaTimeout}
         <th>_{MsgReplyDelay}
         <th>_{MsgThreadDelay}
+        <th>_{MsgBoardCategories}
     <tr>
         ^{formWidget}
     <tr>
-            <td>#{configCaptchaLength  $ entityVal $ fromJust config}
-            <td>#{configACaptchaGuards $ entityVal $ fromJust config}
-            <td>#{configCaptchaTimeout $ entityVal $ fromJust config}
-            <td>#{configReplyDelay     $ entityVal $ fromJust config}
-            <td>#{configThreadDelay    $ entityVal $ fromJust config}
+            <td>#{configCaptchaLength   $ entityVal $ fromJust config}
+            <td>#{configACaptchaGuards  $ entityVal $ fromJust config}
+            <td>#{configCaptchaTimeout  $ entityVal $ fromJust config}
+            <td>#{configReplyDelay      $ entityVal $ fromJust config}
+            <td>#{configThreadDelay     $ entityVal $ fromJust config}
+            <td>#{T.intercalate ", " $ configBoardCategories $ entityVal $ fromJust config}
 ^{footerWidget}            

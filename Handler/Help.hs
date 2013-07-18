@@ -8,6 +8,7 @@ getHelpR :: Handler Html
 getHelpR = do
     muser  <- maybeAuth
     boards <- runDB $ selectList ([]::[Filter Board]) []
+    boardCategories  <- getConfig configBoardCategories
     defaultLayout $ do
         setTitleI MsgHelp
         $(widgetFile "help")

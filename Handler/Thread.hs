@@ -43,6 +43,7 @@ getThreadR  board thread = do
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
+  boardCategories  <- getConfig configBoardCategories
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]

@@ -47,6 +47,8 @@ BoardPreviewsPerThread: Превью-постов
 BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
+BoardCategory: Категория
+BoardCategories: Категории досок (через запятую)
 HelpUpdateBoard: Оставьте ID пустым для создания новой борды
 UpdateBoardsBtn: Обновить борды
 UpdateBoardsInvalidInput: Неверный тип данных
@@ -98,7 +100,7 @@ YouAreTheOnlyAdmin: Вы единственный админ!
 Captcha: Капча
 WrongCaptcha: Неверная капча
 ReloadPage: Перезагрузить страницу
-TypeOnly: Вводите только
+TypeOnly: Введите только
 ItalicChars: курсивные символы
 UnderlineChars: подчеркнутые символы
 BoldChars: жирные символы

@@ -17,3 +17,4 @@
         <td>^{fvInput threadLimitView}
         <td>^{fvInput isHiddenView}
         <td>^{fvInput enableCaptchaView}
+        <td>^{fvInput categoryView}

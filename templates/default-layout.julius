@@ -48,8 +48,26 @@ $('.reflink').click(function() {
 $('#stylebar').change(function() {
    setStylesheet($('#stylebar').val());
 });
-//-----------------------------------------------------------------
 
+$('.file, .multi-file').each(function() {
+    var fullUrl = $(this).find('a').attr('href');
+    if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
+        return "";
+    }
+    var thumbUrl = $(this).find('img').attr('src');
+    $(this).find('img').click(function(){
+        if ($(this).attr('src') == fullUrl) {
+            $(this).attr('src', thumbUrl);
+            $(this).css('opacity', 0.4);
+            $(this).load(function() {
+                $(this).css('opacity', 1);
+            });
+        } else {
+            $(this).attr('src', fullUrl);
+        }
+    });
+});
+//-----------------------------------------------------------------
 function setStylesheet(title) {
     if (title) {
         set_cookie("stylesheet", title, 365);

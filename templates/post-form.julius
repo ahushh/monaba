@@ -1,3 +1,15 @@
+function generatePassword(n) {
+    if(!n) {
+        n = 8;
+    }
+    var password = '';
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < n; i++) {
+        password += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+    return password;
+}
+
 function insertTag(open, close) {
     var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
     var start = textarea.selectionStart; 
@@ -24,24 +36,36 @@ function insert(text) {
         textarea.focus();
     }
 } 
+// ----------------------------------------------------------------------------------------------------------
+$(document).ready(function() {
+    var password = get_cookie("password")
+    if (!password) {
+        password = generatePassword();
+        set_cookie('password', password);
+    }
 
-$('#button-bold').click(function() {
-    insertTag('[b]', '[/b]');
-});
+    $('input[type=password]').val(password);
 
-$('#button-italic').click(function() {
-    insertTag('[i]', '[/i]');
-});
 
-$('#button-underline').click(function() {
-    insertTag('[u]', '[/u]');
+    $('#button-bold').click(function() {
+        insertTag('[b]', '[/b]');
+    });
+
+    $('#button-italic').click(function() {
+        insertTag('[i]', '[/i]');
+    });
+
+    $('#button-underline').click(function() {
+        insertTag('[u]', '[/u]');
+    });
+    $('#button-strike').click(function() {
+        insertTag('[s]', '[/s]');
+    });
+    $('#button-spoiler').click(function() {
+        insertTag('[spoiler]', '[/spoiler]');
+    });
+    $('#button-code').click(function() {
+        insertTag('[code=text]', '[/code]');
+    });
 });
-$('#button-strike').click(function() {
-    insertTag('[s]', '[/s]');
-});
-$('#button-spoiler').click(function() {
-    insertTag('[spoiler]', '[/spoiler]');
-});
-$('#button-code').click(function() {
-    insertTag('[code=text]', '[/code]');
-});
+// ----------------------------------------------------------------------------------------------------------

@@ -51,6 +51,8 @@ import           Text.Blaze.Html         (preEscapedToHtml)
 import           Data.Char               (toLower)
 import           Data.Time               (addUTCTime, secondsToDiffTime)
 import qualified Data.Map.Strict          as Map
+
+import qualified Data.ByteString.UTF8              as B
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -194,10 +196,22 @@ keyValuesToMap = Map.fromListWith (++) . map (\(k,v) -> (k,[v]))
 isImageFile :: String -> Bool
 isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
 
-getIp :: MonadHandler f => f String
-getIp = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
-
 addUTCTime' :: Int -> UTCTime -> UTCTime
 addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 
 getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+-------------------------------------------------------------------------------------------------------------------
+getIp :: forall (m :: * -> *). MonadHandler m => m String
+getIp = do
+  maybeIp <- getIpFromHeader 
+  case maybeIp of
+    Just ip -> return $ B.toString ip
+    Nothing -> getIpFromHost
+       
+getIpFromHeader :: forall (f :: * -> *). MonadHandler f => f (Maybe B.ByteString)
+getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
+
+getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
+getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+-------------------------------------------------------------------------------------------------------------------
+

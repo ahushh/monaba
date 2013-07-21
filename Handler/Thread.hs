@@ -26,8 +26,8 @@ getThreadR  board thread = do
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
     E.where_ ((post E.^. PostBoard ) E.==. (E.val board ) E.&&.
-              (post E.^. PostParent) E.==. (E.val thread) E.||.
-             ((post E.^. PostParent) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread)))
+             ((post E.^. PostParent) E.==. (E.val thread) E.||.
+             ((post E.^. PostParent) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
   when (null allPosts') notFound

@@ -70,7 +70,6 @@ blockquote {
     display: table;
     min-width: 40em;
     overflow: hidden;
-    width: 13px;
     word-wrap: break-word;
 }
 

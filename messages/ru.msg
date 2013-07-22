@@ -85,6 +85,10 @@ YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#
 Staff: Персонал
 Help: Помощь
 Markup: Разметка
+IfYouAreOp: Если вы ОП
+IfYouAreNotOp: Если вы не ОП
+IfPostBelongs: Если данный пост принадлежит вам
+IfPostDoesntBelong: Если данный пост не принадлежит вам
 
 SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
 

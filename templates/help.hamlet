@@ -3,6 +3,10 @@
 <hr>
 <h3>_{MsgMarkup}
 <div style="margin-left:30px">
+    <p>##OP → <span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
+    <p>##OP → <span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
+    <p>##123 → <span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
+    <p>##123 → <span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
     <p>**bold**      →  <strong>bold</strong>
     <p>__bold__      →  <strong>bold</strong>
     <p>[b]bold[/b]   →  <strong>bold</strong>

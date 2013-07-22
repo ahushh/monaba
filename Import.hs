@@ -52,7 +52,11 @@ import           Data.Char               (toLower)
 import           Data.Time               (addUTCTime, secondsToDiffTime)
 import qualified Data.Map.Strict          as Map
 
-import qualified Data.ByteString.UTF8              as B
+import qualified Data.ByteString.UTF8     as B
+
+import           Control.Applicative     (liftA2)
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+import           System.Random           (randomIO)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -214,4 +218,12 @@ getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
 getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
 getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
 -------------------------------------------------------------------------------------------------------------------
-
+getPosterId :: Handler Text
+getPosterId = do
+  maybePosterId <- lookupSession "posterId"
+  case maybePosterId of
+    Just posterId -> return posterId
+    Nothing       -> do
+      posterId <- liftIO $ pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
+      setSession "posterId" posterId
+      return posterId

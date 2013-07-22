@@ -144,3 +144,10 @@ blockquote {
     width: 100%;
 }
 
+.pLabelTrue, .pLabelTrue a {
+    color: green;
+}
+
+.pLabelFalse, .pLabelFalse a {
+    color: red;
+}

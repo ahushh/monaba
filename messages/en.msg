@@ -85,6 +85,10 @@ YouAreBanned reason@Text expires@Text: You are banned! Reason: "#{reason}". Your
 Staff: Staff
 Help: Help
 Markup: Markup
+IfYouAreOp: If you are OP
+IfYouAreNotOp: If you are not OP
+IfPostBelongs: If this post belongs to you
+IfPostDoesntBelong: If this post doesn't belong to you
 
 SupportedLanguages: Supported languages for tag [code=<language>]
 

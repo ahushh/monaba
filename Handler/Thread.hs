@@ -104,8 +104,9 @@ postThreadR board thread = do
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (ThreadR board thread)
-        ------------------------------------------------------------------------------------------------------           
-        messageFormatted <- doAwfulMarkup message board
+        ------------------------------------------------------------------------------------------------------
+        posterId         <- getPosterId
+        messageFormatted <- doAwfulMarkup message board thread
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- replying to non-existent thread
           setMessageI MsgNoSuchThread >> redirect (BoardNoPageR board)
@@ -126,6 +127,7 @@ postThreadR board thread = do
                            -- , postDeleted      = False
                            -- , postDeletedByOp  = False
                            , postOwner        = (personRole . entityVal) <$> muser
+                           , postPosterId     = posterId
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         ------------------------------------------------------------------------------------------------------- 

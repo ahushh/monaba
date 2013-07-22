@@ -114,9 +114,10 @@ postBoardR board _ = do
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
-        ------------------------------------------------------------------------------------------------------           
+        ------------------------------------------------------------------------------------------------------
+        posterId <- getPosterId
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        messageFormatted <- doAwfulMarkup message board
+        messageFormatted <- doAwfulMarkup message board 0
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
@@ -133,6 +134,7 @@ postBoardR board _ = do
                            -- , postDeleted      = False
                            -- , postDeletedByOp  = False
                            , postOwner        = personRole . entityVal <$> muser
+                           , postPosterId     = posterId
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -- delete old threads

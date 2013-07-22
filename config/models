@@ -35,6 +35,7 @@ Post
     autosage     Bool
     -- deleted      Bool
     -- deletedByOp  Bool
+    posterId     Text default="nope"
     -- form's values
     message      Textarea
     title        Text

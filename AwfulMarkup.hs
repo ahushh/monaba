@@ -19,13 +19,14 @@ geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
 -------------------------------------------------------------------------------------------------------------------
-doAwfulMarkup :: Maybe Textarea -> Text -> Handler Textarea
-doAwfulMarkup Nothing  _      = return $ Textarea ""
-doAwfulMarkup (Just s) board  = do
+doAwfulMarkup :: Maybe Textarea -> Text -> Int -> Handler Textarea
+doAwfulMarkup Nothing  _     _      = return $ Textarea ""
+doAwfulMarkup (Just s) board thread = do
   let (sources, htmlWithoutSources) = cutSourceCodes $ unpack $ unTextarea s
   formattedSources <- liftIO $ mapM codeHighlight sources
-  escapedHtmls     <- mapM ((B.toString <$>) . doTags (B.fromString $ unpack board) . B.fromString . escapeHtml) htmlWithoutSources
-  return $ Textarea $ pack $ pasteSourceCodes (formattedSources, escapedHtmls)
+  formattedText    <- mapM ((B.toString <$>) . doMarkup thread (B.fromString $ unpack board) . B.fromString . escapeHtml)
+                          htmlWithoutSources
+  return $ Textarea $ pack $ pasteSourceCodes (formattedSources, formattedText)
 -------------------------------------------------------------------------------------------------------------------
 -- regex replace  
 -------------------------------------------------------------------------------------------------------------------
@@ -72,8 +73,8 @@ codeHighlight (lang,source) = do
 escapeHtml :: String -> String
 escapeHtml = renderHtml . toHtml
 
-doTags :: B.ByteString -> B.ByteString -> Handler B.ByteString
-doTags board s = doReflinks s board >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
+doMarkup :: Int -> B.ByteString -> B.ByteString -> Handler B.ByteString
+doMarkup thread board s = doProofLabels thread s board >>= (`doReflinks` board) >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
   where clickableUrls = (=~$ ("((?:https?|ftp|gopher)://[^(\\s<>\\[\\])]+)"  , "<a href='\\1'>\\1</a>"                   ))
         quotes        = (=~$ ("(?:(?:\n\r)|(?:\n))&gt;(.+)"   , "<br><span class='quote' style='color:green'>>\\1</span>"))
         quotes'       = (=~$ ("^&gt;(.+)"                     , "<span class='quote' style='color:green'>>\\1</span>"))
@@ -90,24 +91,26 @@ doTags board s = doReflinks s board >>= (\s' -> liftIO $ foldr (=<<) (clickableU
         spoiler       = (=~$ ("\\[spoiler\\]((?:.|\n)+?)\\[/spoiler\\]", B.concat [openSpoiler, "\\1", closeSpoiler] ))
         openSpoiler   = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\" style=\"color:black; background-color:black\">"
         closeSpoiler  = "</span>"
-        allTags       = [newlines, spoiler, spoiler', underline, italic, italic', italic'', strike, bold, bold', bold'', quotes, quotes']
-
+        allTags       = [ newlines, spoiler, spoiler', underline, italic, italic', italic''
+                        , strike, bold, bold', bold'', quotes, quotes']
+-------------------------------------------------------------------------------------------------------------------
 doReflinks :: B.ByteString -> B.ByteString -> Handler B.ByteString
-doReflinks s' currentBoard = helper s' (B.fromString "")
-  where regex = "&gt;&gt;(?:/?(\\w+)/)?(\\d+)" :: B.ByteString
+doReflinks s' currentBoard = helper s' ""
+  where regex = "((?:&gt;&gt;)|(?:##))(?:/?(\\w+)/)?(\\d+)" :: B.ByteString
         helper source acc = do
           let maybeFound = source =~ regex :: Maybe [B.ByteString]
           case maybeFound of
             Just found -> do
-              let board' = found !! 1
-                  postId = found !! 2
+              let linkType = found !! 1
+                  board' = found !! 2
+                  postId = found !! 3
                   x      = head found -- full match
                   i      = B.length x + fromJust (B.findSubstring x source) -- suppose findSubstring always succeeds...
                   left   = B.take i source
                   right  = B.drop i source
                   isCrossBoard = not (B.null board')
                   board  = if isCrossBoard then board' else currentBoard
-              result <- replaceLink regex left board isCrossBoard postId
+              result <- replaceLink regex left board isCrossBoard postId linkType
               case result of
                 Right z   -> helper right (B.concat [acc, z])
                 Left  err -> error $ "error at substituteCompile:" ++ err
@@ -118,15 +121,50 @@ replaceLink :: B.ByteString -> -- regex
               B.ByteString -> -- found board
               Bool         -> -- is a cross board link
               B.ByteString -> -- post id
+              B.ByteString -> -- regular link or proof label — &gt;&gt; or ##
               Handler (Either String B.ByteString)
-replaceLink regex source board isCrossBoard postId = do
+replaceLink regex source board isCrossBoard postId linkType' = do
   maybePost <- runDB $ selectFirst [PostLocalId ==. read (B.toString postId), PostBoard ==. pack (B.toString board)] []
   case maybePost of
     Just post -> do
-      let localBoard thr = B.concat ["<a href='/thread/", board, "/", thr, "/#", postId, "'>>>" , postId, "</a>"]
-          crossBoard thr = B.concat ["<a href='/thread/", board, "/", thr, "/#", postId, "'>>>/", board , "/", postId, "</a>"]
+      let linkType       = if B.toString linkType' == "&gt;&gt;" then ">>" else "##"
+          localBoard thr = B.concat ["<a href='/thread/", board, "/", thr, "/#", postId, "'>", linkType, postId, "</a>"]
+          crossBoard thr = B.concat ["<a href='/thread/", board, "/", thr, "/#", postId, "'>", linkType, "/", board , "/", postId, "</a>"]
           parent'        = postParent $ entityVal post
           parent         = if parent' == 0  then postId     else B.fromString $ show parent'
           f              = if isCrossBoard then crossBoard else localBoard
       liftIO $ substituteCompile regex source (f parent)
     Nothing -> return (Right source)
+-------------------------------------------------------------------------------------------------------------------
+doProofLabels :: Int -> B.ByteString -> B.ByteString -> Handler B.ByteString
+doProofLabels thread s' board = helper s' ""
+  where regex = "##((?:\\d+)|(?:OP))" :: B.ByteString
+        helper source acc = do
+          let maybeFound = source =~ regex :: Maybe [B.ByteString]
+          case maybeFound of
+            Just found -> do
+              let postId = found !! 1
+                  x      = head found -- full match
+                  i      = B.length x + fromJust (B.findSubstring x source) -- suppose findSubstring always succeeds...
+                  left   = B.take i source
+                  right  = B.drop i source
+              result <- replaceProofLabel regex left board (B.toString postId) thread
+              case result of
+                Right z   -> helper right (B.concat [acc, z])
+                Left  err -> error $ "error at substituteCompile:" ++ err
+            Nothing -> return $ B.concat [acc,source]
+
+replaceProofLabel :: B.ByteString -> -- regex
+                    B.ByteString -> -- source string
+                    B.ByteString -> -- board
+                    String       -> -- post id
+                    Int          -> -- thread local id
+                    Handler (Either String B.ByteString)
+replaceProofLabel regex source board postId' thread = do
+  let postId = if postId' == "OP" then thread else read postId'
+  posterId  <- getPosterId
+  maybePost <- runDB $ selectFirst [PostBoard ==. pack (B.toString board), PostLocalId ==. postId] []
+  case maybePost of
+    Nothing -> return (Right source)
+    Just (Entity _ post) -> let spanClass = if posterId == postPosterId post then "pLabelTrue" else "pLabelFalse"
+                            in liftIO $ substituteCompile regex source (B.concat ["<span class='", spanClass, "'>##\\1</span>"])

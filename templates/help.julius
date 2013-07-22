@@ -1,0 +1,3 @@
+$('#supported-languages-toggle').click(function() {
+    $('#supported-languages').toggle();
+});

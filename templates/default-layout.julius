@@ -58,9 +58,11 @@ $('.file, .multi-file').each(function() {
     $(this).find('img').click(function(){
         if ($(this).attr('src') == fullUrl) {
             $(this).attr('src', thumbUrl);
+            $(this).css('width', "");
         } else {
             $(this).css('opacity', 0.7);
             $(this).attr('src', fullUrl);
+            $(this).css('width', '93%');
             $(this).load(function() {
                 $(this).css('opacity', 1);
             });

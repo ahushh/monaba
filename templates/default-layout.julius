@@ -4,12 +4,11 @@
 $("blockquote a").each(function() {
     var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/
     var result = regex.exec(this.text);
-    if (null == result) {
-        return false;
+    if (result) {
+        $(this).attr('href','javascript:void(0)');
+        $(this).attr('class','youtube');
+        $(this).attr('id', result[1]);
     }
-    $(this).attr('href','javascript:void(0)');
-    $(this).attr('class','youtube');
-    $(this).attr('id', result[1]);
 });
 
 $('.youtube').click(function() {

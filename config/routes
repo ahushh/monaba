@@ -9,8 +9,10 @@
 /board/#Text/#Int    BoardR        GET POST
 /thread/#Text/#Int   ThreadR       GET POST
 /delete              DeleteR       GET 
-/help                HelpR         GET
 /captcha             CaptchaR      GET
+
+/help                HelpR         GET
+/help/markup         HelpMarkupR   GET
 
 /admin                     AdminR        GET
 /admin/stick/#Text/#Int    StickR        GET

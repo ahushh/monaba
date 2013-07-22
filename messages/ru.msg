@@ -83,7 +83,7 @@ AllBoards: Все борды
 YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#{reason}". Бан истекает #{expires}
 
 Staff: Персонал
-Help: Помощь
+Help: Справка
 Markup: Разметка
 IfYouAreOp: Если вы ОП
 IfYouAreNotOp: Если вы не ОП

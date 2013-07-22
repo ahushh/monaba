@@ -80,6 +80,8 @@ postThreadR board thread = do
       | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> msgRedirect MsgNoImgOrText
       | not $ all isFileAllowed files                                                -> msgRedirect MsgTypeNotAllowed
       | otherwise                                                                  -> do
+        setSession "message"    (maybe     "" unTextarea message)
+        setSession "post-title" (fromMaybe "" title)
         ip  <- pack <$> getIp
         -- check ban
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
@@ -134,6 +136,8 @@ postThreadR board thread = do
         isBumpLimit <- (>= bumpLimit) <$> runDB (count [PostParent ==. thread])
         unless (nobump || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         when (isJust name) $ setSession "name" (fromMaybe defaultName name)
+        deleteSession "message"
+        deleteSession "post-title"
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board thread)

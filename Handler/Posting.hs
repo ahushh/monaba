@@ -26,11 +26,15 @@ postForm :: Int -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
                                          Maybe (Entity Person) -> -- muserW
                                          Widget)
 postForm numberFiles extra = do
-  lastName   <- lookupSession "name"
-  lastGoback <- lookupSession "goback"
+  lastName    <- lookupSession "name"
+  lastGoback  <- lookupSession "goback"
+  lastMessage <- lookupSession "message"
+  lastTitle   <- lookupSession "post-title"
+  deleteSession "message"
+  deleteSession "post-title"
   (nameRes     , nameView    ) <- mopt textField              "" (maybe Nothing (Just . Just) lastName)
-  (subjectRes  , subjectView ) <- mopt textField              "" Nothing
-  (messageRes  , messageView ) <- mopt textareaField          "" Nothing
+  (subjectRes  , subjectView ) <- mopt textField              "" (maybe Nothing (Just . Just) lastTitle)
+  (messageRes  , messageView ) <- mopt textareaField          "" (maybe Nothing (Just . Just . Textarea) lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
   (captchaRes  , captchaView ) <- mopt textField              "" Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)

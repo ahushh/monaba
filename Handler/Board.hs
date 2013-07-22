@@ -90,6 +90,8 @@ postBoardR board _ = do
       | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> msgRedirect MsgNoImgOrText
       | not $ all isFileAllowed files                                                -> msgRedirect MsgTypeNotAllowed
       | otherwise                                                                  -> do
+        setSession "message"    (maybe     "" unTextarea message)
+        setSession "post-title" (fromMaybe "" title)
         -- check ban
         ip  <- pack <$> getIp
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
@@ -142,7 +144,9 @@ postBoardR board _ = do
           in when (isJust tl) $
                deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy (fromJust tl)])
         -------------------------------------------------------------------------------------------------------           
-        when (isJust name) $ setSession "name" (fromMaybe defaultName name)
+        when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
+        deleteSession "message"
+        deleteSession "post-title"
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)

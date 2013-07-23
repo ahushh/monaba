@@ -44,7 +44,7 @@ plural 1 x _ = x
 plural _ _ y = y
 
 maxFileSize :: Word64
-maxFileSize = 3 -- in MBs
+maxFileSize = 15 -- in MB
 ---------------------------------------------------------------------------------------------------------
 -- Set up i18n messages. See the message folder.
 mkMessage "App" "messages" "en"

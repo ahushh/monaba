@@ -32,10 +32,12 @@ blockquote {
 }
 
 #message {
-    text-align: center;
-    border-style: dotted;
-    padding: 5px;
+    border: 2px dashed black;
+    color: red;
+    font-size: 1.5em;
     margin: 5px;
+    padding: 5px;
+    text-align: center;
 }
 
 .board-list {

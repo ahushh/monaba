@@ -6,6 +6,8 @@ Password: Пароль
 File: Файл
 Goback: Перейти к
 Nobump: Не бампать
+ToThread: треду
+ToBoard: борде
 
 DeleteBtn: Удалить
 Open: Открыть
@@ -109,7 +111,7 @@ TypeOnly: Введите только
 ItalicChars: курсивные символы
 UnderlineChars: подчеркнутые символы
 BoldChars: жирные символы
-RegularChars: обычные символы
+RegularChars: обычные (не жирные, не курсив, не подчеркнутые) символы
 YouDontNeedCaptcha: Вам не нужно вводить капчу
 
 Config: Настройки

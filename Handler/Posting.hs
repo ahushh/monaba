@@ -32,6 +32,10 @@ postForm numberFiles extra = do
   lastTitle   <- lookupSession "post-title"
   deleteSession "message"
   deleteSession "post-title"
+  msgrender   <- getMessageRender
+  let urls :: [(Text, GoBackTo)]
+      urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
+  ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              "" (maybe Nothing (Just . Just) lastName)
   (subjectRes  , subjectView ) <- mopt textField              "" (maybe Nothing (Just . Just) lastTitle)
   (messageRes  , messageView ) <- mopt textareaField          "" (maybe Nothing (Just . Just . Textarea) lastMessage)
@@ -44,8 +48,6 @@ postForm numberFiles extra = do
                FormSuccess fileresults <*> gobackRes <*> nobumpRes
       widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
-    where urls :: [(Text, GoBackTo)]
-          urls = [("thread",ToThread), ("board",ToBoard)]
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> Int -> Key Post -> HandlerT App IO ()
 insertFiles []    _           _      = return ()

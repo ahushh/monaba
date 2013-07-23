@@ -4,8 +4,10 @@ SubmitBtn: Submit
 Message: Message
 Password: Password
 File: File
-Goback: Go back
+Goback: Go back to
 Nobump: No bump
+ToThread: thread
+ToBoard: board
 
 DeleteBtn: Delete
 Open: Open
@@ -109,7 +111,7 @@ TypeOnly: Type only
 ItalicChars: italic characters
 UnderlineChars: underlined characters
 BoldChars: bolded characters
-RegularChars: regular characters
+RegularChars: regular (not bolded, not italic, not underlined) characters
 YouDontNeedCaptcha: You don't have to enter captcha
 
 Config: Config

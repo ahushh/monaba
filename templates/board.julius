@@ -1,0 +1,32 @@
+function expandThread(board, thread) {
+    var replies = Monaba['expThreads'][thread];
+    delete Monaba['expThreads'][thread];
+    Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
+    $("#thread-"+thread+" .omitted").toggle();
+    if (replies) {
+        $("#thread-"+thread+" .reply-post").remove();
+        $("#thread-"+thread+" .truncate-thread").after(replies);
+    } else {
+        $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
+            $("#thread-"+thread+" .reply-post").remove();
+            $("#thread-"+thread+" .truncate-thread").after(data);
+        });
+    }
+    $("#thread-"+thread+" .truncate-thread").toggle();
+    $("#thread-"+thread+" .truncate-thread-after").toggle();
+}
+
+function truncateThread(thread,scrollToThreadBottom) {
+    var replies = Monaba['expThreads'][thread];
+    delete Monaba['expThreads'][thread];    
+    Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
+    $("#thread-"+thread+" .omitted").toggle();
+    $("#thread-"+thread+" .truncate-thread").toggle();
+    $("#thread-"+thread+" .truncate-thread-after").toggle();
+    $("#thread-"+thread+" .reply-post").remove();
+    $("#thread-"+thread+" .truncate-thread").after(replies);
+    if (scrollToThreadBottom) {
+        var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
+        location.href = "#"+n;
+    }
+}

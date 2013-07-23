@@ -1,3 +1,7 @@
+var Monaba = {
+    expThreads: {},
+};
+//-----------------------------------------------------------------
 setStylesheet();
 
 var style = get_cookie('stylesheet')

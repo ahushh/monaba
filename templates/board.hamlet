@@ -17,9 +17,13 @@ $else
                 <br>
                 $if omitted > 0
                     <div .omitted>
-                        _{MsgPostsOmitted omitted}
+                        _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
+                    <div style="display:none" .truncate-thread>
+                        _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
                     ^{replyPostWidget muser ePreview previewFiles}
+                <div style="display:none" .truncate-thread-after>
+                    _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
             <hr>
         <div #delete-container>
             $maybe _ <- muser

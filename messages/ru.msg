@@ -16,7 +16,10 @@ Back: Назад
 Next: Вперед
 Previous: Назад
 ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
-PostsOmitted n@Int: #{show n} #{plural n "пост" "постов"} пропущено
+PostsOmitted n@Int: #{show n} #{plural n "пост" "постов"} пропущено.
+ExpandThread: Развернуть тред.
+ThreadIsExpanded: Тред развернут.
+TruncateThread: Свернуть.
 NoThreads: Нет тредов
 Manage: Управление
 Login: Войти

@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
+1^{headerWidget muser boards boardCategories}
 
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
@@ -16,7 +16,7 @@
         $forall (eReply, files) <- repliesAndFiles
             ^{replyPostWidget muser eReply files }
     <br>
-    [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost}); href=javascript:void(0)>_{MsgGetNewPosts}</a> ]
+    [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     <hr>
     <div #delete-container>
         $maybe _ <- muser

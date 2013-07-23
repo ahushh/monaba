@@ -16,17 +16,17 @@
                 ^{fvInput messageView}
                 <div .buttons>
                      [
-                     <a href=javascript:void(0) id=button-bold class=buttons>bold
+                     <a id=button-bold class=buttons>bold
                      |
-                     <a href=javascript:void(0) id=button-italic class=buttons>italic
+                     <a id=button-italic class=buttons>italic
                      |
-                     <a href=javascript:void(0) id=button-underline class=buttons>underline
+                     <a id=button-underline class=buttons>underline
                      |
-                     <a href=javascript:void(0) id=button-strike class=buttons>strike
+                     <a id=button-strike class=buttons>strike
                      |
-                     <a href=javascript:void(0) id=button-spoiler class=buttons>spoiler
+                     <a id=button-spoiler class=buttons>spoiler
                      |
-                     <a href=javascript:void(0) id=button-code class=buttons>code
+                     <a id=button-code class=buttons>code
                      ]                    
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}

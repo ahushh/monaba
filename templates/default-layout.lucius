@@ -5,6 +5,7 @@ body {
 
 a {
     text-decoration: none;    
+    cursor: pointer;
 }
 
 blockquote {
@@ -29,6 +30,7 @@ blockquote {
 
 .thumb {
     margin: 6px;
+    cursor: pointer;
 }
 
 #message {

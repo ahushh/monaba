@@ -16,7 +16,10 @@ Back: Back
 Next: Next
 Previous: Previous
 ThreadHeaderReplyTo t@Int: Reply to #{show t} thread
-PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted
+PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted.
+ExpandThread: Expand thread.
+ThreadIsExpanded: Thread is expanded.
+TruncateThread: Truncate.
 NoThreads: No threads yet
 Manage: Manage
 Login: Login

@@ -59,7 +59,6 @@ checkCaptcha captcha wrongCaptchaRedirect = do
     Just cId -> do
       maybeCaptchaEntity <- runDB $ getBy (CaptchaUniqueLocalId (read $ unpack cId))
       let value = captchaValue $ entityVal $ fromJust maybeCaptchaEntity
-      when (T.map toLower captcha /= value) wrongCaptchaRedirect
       -- delete entered captcha from DB
       deleteSession "captchaId"
       deleteSession "captchaInfo"
@@ -72,6 +71,7 @@ checkCaptcha captcha wrongCaptchaRedirect = do
       void $ runDB $ deleteWhere [CaptchaId <-. oldCaptchaIds]
       forM_ oldCaptchas $ \cap -> 
         liftIO $ removeFile $ captchaFilePath (show (captchaLocalId $ entityVal cap) ++ captchaExt)
+      when (T.map toLower captcha /= value) wrongCaptchaRedirect
     _        -> wrongCaptchaRedirect
 ---------------------------------------------------------------------------------------------------------------------------
 updateAdaptiveCaptcha :: Maybe Text -> HandlerT App IO ()

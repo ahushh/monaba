@@ -44,6 +44,7 @@ getThreadR  board thread = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   boardCategories  <- getConfig configBoardCategories
+  msgrender        <- getMessageRender   
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]

@@ -1,3 +1,14 @@
+setStylesheet();
+
+var style = get_cookie('stylesheet')
+if (style) {
+    $('#style-'+style).attr("selected","selected");
+}
+
+$('#stylebar').change(function() {
+   setStylesheet($('#stylebar').val());
+});
+
 //-----------------------------------------------------------------
 // youtube
 //-----------------------------------------------------------------
@@ -33,19 +44,8 @@ $('.youtube').click(function() {
 //-----------------------------------------------------------------
 // end of youtube
 //-----------------------------------------------------------------
-setStylesheet();
-
-var style = get_cookie('stylesheet')
-if (style) {
-    $('#style-'+style).attr("selected","selected");
-}
-//-----------------------------------------------------------------
 $('.reflink').click(function() {
     insert(">>" + this.children[0].getAttribute('name'));
-});
-
-$('#stylebar').change(function() {
-   setStylesheet($('#stylebar').val());
 });
 
 $('.file, .multi-file').each(function() {
@@ -87,6 +87,15 @@ function setStylesheet(title) {
     }
 } 
 
+function popupMessage(text, delay) {
+    if (delay == null) delay = 1000;
+    if ($('#popupMessage').get() == '') {
+        $('body').children().last().after('<div id=popupMessage></div>');
+        $('#popupMessage').hide();
+    }
+    $('#popupMessage').html(text);
+    $('#popupMessage').fadeIn(150).delay(delay).fadeOut(300);
+}
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------

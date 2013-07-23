@@ -114,7 +114,9 @@
 ** DONE style switcher
    CLOSED: [2013-07-17 Ср 19:30]
 ** DONE board groups
-** TODO API
+** DONE API
+   CLOSED: [2013-07-23 Вт 07:57]
+** DONE API good error handling
 ** TODO ajax
 ** TODO refmap
 ** TODO write some tests, huh?

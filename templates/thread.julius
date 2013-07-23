@@ -1,0 +1,11 @@
+function refreshThread(board, threadId) {
+    var lastPost   = $("#thread-"+threadId+" .reply-post:last");
+    var lastPostId = /post-(\d+)/.exec(lastPost.attr("id"))[1];
+    $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
+        if (/reply/.test(data)) {
+            $("#thread-"+threadId).append(data);
+        } else {
+            popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+        }
+    });
+}

@@ -128,3 +128,9 @@ pre {
 #board-list-full {
    border: 1px dotted black;
 }
+
+#popupMessage {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid black;
+}

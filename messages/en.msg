@@ -122,3 +122,6 @@ ConfigUpdated: Config successufly updated
 PostingTooFast: You're posting too fast!
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
+
+GetNewPosts: Get new posts
+NoNewPosts: No new posts

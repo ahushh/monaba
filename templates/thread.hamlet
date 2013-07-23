@@ -15,6 +15,8 @@
     
         $forall (eReply, files) <- repliesAndFiles
             ^{replyPostWidget muser eReply files }
+    <br>
+    [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost}); href=javascript:void(0)>_{MsgGetNewPosts}</a> ]
     <hr>
     <div #delete-container>
         $maybe _ <- muser
@@ -23,5 +25,4 @@
         $nothing
             _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
-
 ^{footerWidget}

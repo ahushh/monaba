@@ -13,6 +13,12 @@
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET
+/help/api            HelpApiR      GET
+
+/api/thread/#Text/#Int           ApiEntireThreadR GET
+/api/thread/#Text/#Int/new/#Int  ApiNewPostsR     GET
+/api/thread/#Text/#Int/last/#Int ApiLastPostsR    GET
+/api/post/#Text/#Int             ApiPostR         GET
 
 /admin                     AdminR        GET
 /admin/stick/#Text/#Int    StickR        GET

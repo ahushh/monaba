@@ -21,3 +21,13 @@ getHelpMarkupR = do
     defaultLayout $ do
         setTitleI MsgMarkup
         $(widgetFile "help/markup")
+
+getHelpApiR :: Handler Html
+getHelpApiR = do
+    muser  <- maybeAuth
+    boards <- runDB $ selectList ([]::[Filter Board]) []
+    boardCategories  <- getConfig configBoardCategories
+    defaultLayout $ do
+        setTitleI MsgApi
+        $(widgetFile "help/api")
+  

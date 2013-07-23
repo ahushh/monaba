@@ -84,6 +84,7 @@ YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#
 
 Staff: Персонал
 Help: Справка
+Api: API
 Markup: Разметка
 IfYouAreOp: Если вы ОП
 IfYouAreNotOp: Если вы не ОП

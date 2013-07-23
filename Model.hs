@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards   #-}
 module Model where
 
 import Prelude
@@ -23,3 +24,34 @@ instance HashDBUser Person where
     setSaltAndPasswordHash s h p = p { personSalt     = s
                                      , personPassword = h
                                      }
+                                   
+------------------------------------------------------------------------------
+-- API    
+------------------------------------------------------------------------------
+instance ToJSON Textarea where
+  toJSON Textarea {..} = String unTextarea
+
+instance ToJSON Post where
+    toJSON Post {..} = object
+        [ "board"    .= postBoard
+        , "id"       .= postLocalId
+        , "parent"   .= postParent
+        , "date"     .= postDate
+        , "bumped"   .= postBumped
+        , "sticked"  .= postSticked
+        , "locked"   .= postLocked
+        , "autosage" .= postAutosage
+        , "message"  .= postMessage
+        , "title"    .= postTitle
+        , "name"     .= postName
+        ]
+
+instance ToJSON Attachedfile where
+    toJSON Attachedfile {..} = object
+        [ "md5"         .= attachedfileMd5
+        , "name"        .= attachedfileName
+        , "origName"    .= attachedfileOrigName
+        , "type"        .= attachedfileType
+        , "thumbSize"   .= attachedfileThumbSize
+        , "description" .= attachedfileDescription
+        ]

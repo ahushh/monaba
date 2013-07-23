@@ -1,0 +1,14 @@
+^{headerWidget muser boards boardCategories}
+<br>
+<hr>
+<h2 style=text-align:center>_{MsgHelp} — _{MsgApi}
+<br>
+<div style="margin-left:30px">
+    <p>/api/thread/{board}/{thread id}/new/{post id}
+    <p>/api/thread/{board}/{thread id}/last/{count}
+    <p>/api/post/{board}/{post id}
+    <p><strong>Headers: </strong>
+    <ul>
+        <li>accept: application/json
+        <li>accept: text/html
+^{footerWidget}

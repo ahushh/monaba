@@ -27,6 +27,7 @@ import Handler.Thread
 import Handler.Board
 import Handler.Delete
 import Handler.Admin
+import Handler.Api
 import Handler.Captcha
 
 -- This line actually creates our YesodDispatch instance. It is the second half

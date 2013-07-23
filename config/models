@@ -44,6 +44,7 @@ Post
     deriving     Typeable
     deriving     Eq
     deriving     Ord
+    deriving     Show
 Attachedfile
     parentId     PostId
     md5          Text

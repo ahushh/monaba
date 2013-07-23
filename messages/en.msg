@@ -87,11 +87,22 @@ YouAreBanned reason@Text expires@Text: You are banned! Reason: "#{reason}". Your
 Staff: Staff
 Help: Help
 Markup: Markup
-Api: API
 IfYouAreOp: If you are OP
 IfYouAreNotOp: If you are not OP
 IfPostBelongs: If this post belongs to you
 IfPostDoesntBelong: If this post doesn't belong to you
+
+Api: API
+ApiPostsAfter: All posts after {post id} in the thread
+ApiLastPosts: Last {count} posts in the thread
+ApiAllPosts: All posts in the thread
+ApiPost: One post
+ApiThread: One thread (original post)
+ApiParameters: Parameters
+ApiBoardName: Board name (e.g., b, d, rm)
+ApiThreadId: Displayed thread ID
+ApiPostId: Displayed post ID
+ApiCount: Number of posts
 
 SupportedLanguages: Supported languages for tag [code=<language>]
 

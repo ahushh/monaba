@@ -86,12 +86,23 @@ YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#
 
 Staff: Персонал
 Help: Справка
-Api: API
 Markup: Разметка
 IfYouAreOp: Если вы ОП
 IfYouAreNotOp: Если вы не ОП
 IfPostBelongs: Если данный пост принадлежит вам
 IfPostDoesntBelong: Если данный пост не принадлежит вам
+
+Api: API
+ApiPostsAfter: Все посты после {post id} в данном треде
+ApiLastPosts: Вернуть последние {count} постов в треде
+ApiAllPosts: Все посты в треде
+ApiPost: Один пост
+ApiThread: Один тред (оп-пост)
+ApiParameters: Параметры
+ApiBoardName: Название борды (e.g., b, d, rm)
+ApiThreadId: Видимый ID треда
+ApiPostId: Видимый ID поста
+ApiCount: Количество постов
 
 SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
 

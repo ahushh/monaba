@@ -78,6 +78,13 @@ blockquote {
     word-wrap: break-word;
 }
 
+.highlighted-post {
+    display: table;
+    min-width: 40em;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
 #board-header {
     text-align: center;
     color: #800000;

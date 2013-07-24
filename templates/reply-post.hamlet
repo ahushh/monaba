@@ -16,8 +16,8 @@
         <time>#{myFormatTime $ postDate $ entityVal eReplyW}
         <span .reflink>
             $with n <- show $ postLocalId $ entityVal eReplyW
-                <a name=#{n} href=#>No.#{n}
-        <span .thread-status>
+                <a onclick=highlightPost(#{n}) href=@{ThreadR (postBoard $ entityVal eReplyW) $ postParent $ entityVal $ eReplyW}##{n}>No.
+                <a onclick="insert('>>#{n}')" name=#{n}>#{n}
         <span .cpanel>
             $maybe Entity _ user <- muserW
                 $if personRole user >= Moderator

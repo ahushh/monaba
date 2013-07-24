@@ -81,9 +81,21 @@ blockquote {
     padding: 5px;
 }
 
+.highlighted-post {
+    background: none repeat scroll 0% 0% #EEDACB;
+    border-radius: 5px 5px 5px 5px;
+    border: 2px dashed #EE6600;
+    margin: 3px;
+    padding: 5px;
+}
+
 .thread {
     margin: 2px;
     padding: 2px;
+}
+
+.highlighted-post blockquote {
+    margin: 0.5em;
 }
 
 .reply-post blockquote {

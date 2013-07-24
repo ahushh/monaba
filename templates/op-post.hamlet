@@ -16,7 +16,8 @@
         <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
         <span .reflink>
             $with n <- show $ postLocalId $ entityVal $ eOpPostW
-                <a name=#{n} href=#>No.#{n}
+                <a onclick=highlightPost(#{n}) href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}##{n}>No.
+                <a onclick="insert('>>#{n}')" name=#{n}>#{n}
         <div .thread-status>
             $if postSticked $ entityVal $ eOpPostW
                 <img src=/static/img/blank.gif border=0 title=sticked alt=sticked .thread-sticked>

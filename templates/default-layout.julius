@@ -3,8 +3,8 @@ var Monaba = {
 };
 //-----------------------------------------------------------------
 setStylesheet();
+checkHighlighted();
 addEmbeddedPlayer();
-doRefLinks();
 doImageExpanding();
 
 var style = get_cookie('stylesheet')
@@ -52,7 +52,6 @@ function addEmbeddedPlayer() {
 //-----------------------------------------------------------------
 // end of youtube
 //-----------------------------------------------------------------
-//-----------------------------------------------------------------
 function setStylesheet(title) {
     if (title) {
         set_cookie("stylesheet", title, 365);
@@ -81,12 +80,6 @@ function popupMessage(text, delay) {
     $('#popupMessage').fadeIn(150).delay(delay).fadeOut(300);
 }
 
-function doRefLinks() {
-    $('.reflink').click(function() {
-        insert(">>" + this.children[0].getAttribute('name'));
-    });
-}
-
 function doImageExpanding() {
     $('.file, .multi-file').each(function() {
         var fullUrl = $(this).find('a').attr('href');
@@ -108,6 +101,21 @@ function doImageExpanding() {
             }
         });
     });
+}
+
+function checkHighlighted() {
+    var postId = window.location.hash.substr(1);
+    if (postId) {
+        highlightPost(postId);
+    }
+}
+
+function highlightPost(postId) {
+    $(".highlighted-post").removeClass().addClass('reply-post');
+    if ($("#post-"+postId).attr('class') == 'reply-post') {
+        $("#post-"+postId).removeClass();
+        $("#post-"+postId).addClass('highlighted-post');
+    }
 }
 // ---------------------------------------------------------
 //  wakaba3.js

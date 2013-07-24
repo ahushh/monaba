@@ -34,9 +34,10 @@ blockquote {
 }
 
 #message {
-    border: 2px dashed black;
-    color: red;
-    font-size: 1.5em;
+    border: 2px dashed red;
+    color: black;
+    font-size: 1.7em;
+    font-weight: bold;
     margin: 5px;
     padding: 5px;
     text-align: center;
@@ -128,7 +129,6 @@ blockquote {
   margin-top: 1px;
   width: 14px;
 }
-
 
 .admin-table {
   border: 1px solid black;

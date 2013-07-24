@@ -3,6 +3,9 @@ var Monaba = {
 };
 //-----------------------------------------------------------------
 setStylesheet();
+addEmbeddedPlayer();
+doRefLinks();
+doImageExpanding();
 
 var style = get_cookie('stylesheet')
 if (style) {
@@ -12,66 +15,43 @@ if (style) {
 $('#stylebar').change(function() {
    setStylesheet($('#stylebar').val());
 });
-
 //-----------------------------------------------------------------
 // youtube
 //-----------------------------------------------------------------
-$("blockquote a").each(function() {
-    var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/
-    var result = regex.exec(this.text);
-    if (result) {
-        $(this).attr('href','javascript:void(0)');
-        $(this).attr('class','youtube');
-        $(this).attr('id', result[1]);
-    }
-});
+function addEmbeddedPlayer() {
+    $("blockquote a").each(function() {
+        var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/
+            var result = regex.exec(this.text);
+        if (result) {
+            $(this).attr('href','javascript:void(0)');
+            $(this).attr('class','youtube');
+            $(this).attr('id', result[1]);
+        }
+    });
 
-$('.youtube').click(function() {
-    if ($(this).children('iframe').width() == null) { // kostyl: check if "a" tag has iframe
-        var iframe = document.createElement("iframe");
-        $(iframe).css('width', 480);
-        $(iframe).css('height', 360);
-        // $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ $(this).attr('id') +"?v=2&alt=json", function(data){
-        //     var width = data.entry.media$group.media$thumbnail[2].width;
-        //     var height = data.entry.media$group.media$thumbnail[2].height;
-        //     $(iframe).css('width', width);
-        //     $(iframe).css('height', height);
-        // });
-        $(iframe).attr("src", "https://www.youtube.com/embed/" + $(this).attr('id') + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
-        $(this).append('<br>');
-        $(this).append(iframe);
-    } else {
-        $(this).children('br').slideToggle();
-        $(this).children('iframe').slideToggle();
-    }
-});
+    $('.youtube').click(function() {
+        if ($(this).children('iframe').width() == null) { // kostyl: check if "a" tag has iframe
+            var iframe = document.createElement("iframe");
+            $(iframe).css('width', 480);
+            $(iframe).css('height', 360);
+            // $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ $(this).attr('id') +"?v=2&alt=json", function(data){
+            //     var width = data.entry.media$group.media$thumbnail[2].width;
+            //     var height = data.entry.media$group.media$thumbnail[2].height;
+            //     $(iframe).css('width', width);
+            //     $(iframe).css('height', height);
+            // });
+            $(iframe).attr("src", "https://www.youtube.com/embed/" + $(this).attr('id') + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
+            $(this).append('<br>');
+            $(this).append(iframe);
+        } else {
+            $(this).children('br').slideToggle();
+            $(this).children('iframe').slideToggle();
+        }
+    });
+}
 //-----------------------------------------------------------------
 // end of youtube
 //-----------------------------------------------------------------
-$('.reflink').click(function() {
-    insert(">>" + this.children[0].getAttribute('name'));
-});
-
-$('.file, .multi-file').each(function() {
-    var fullUrl = $(this).find('a').attr('href');
-    if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
-        return "";
-    }
-    var thumbUrl = $(this).find('img').attr('src');
-    $(this).find('img').click(function(){
-        if ($(this).attr('src') == fullUrl) {
-            $(this).attr('src', thumbUrl);
-            $(this).css('width', "");
-        } else {
-            $(this).css('opacity', 0.7);
-            $(this).attr('src', fullUrl);
-            $(this).css('width', '93%');
-            $(this).load(function() {
-                $(this).css('opacity', 1);
-            });
-        }
-    });
-});
 //-----------------------------------------------------------------
 function setStylesheet(title) {
     if (title) {
@@ -99,6 +79,35 @@ function popupMessage(text, delay) {
     }
     $('#popupMessage').html(text);
     $('#popupMessage').fadeIn(150).delay(delay).fadeOut(300);
+}
+
+function doRefLinks() {
+    $('.reflink').click(function() {
+        insert(">>" + this.children[0].getAttribute('name'));
+    });
+}
+
+function doImageExpanding() {
+    $('.file, .multi-file').each(function() {
+        var fullUrl = $(this).find('a').attr('href');
+        if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
+            return "";
+        }
+        var thumbUrl = $(this).find('img').attr('src');
+        $(this).find('img').click(function(){
+            if ($(this).attr('src') == fullUrl) {
+                $(this).attr('src', thumbUrl);
+                $(this).css('width', "");
+            } else {
+                $(this).css('opacity', 0.7);
+                $(this).attr('src', fullUrl);
+                $(this).css('width', '93%');
+                $(this).load(function() {
+                    $(this).css('opacity', 1);
+                });
+            }
+        });
+    });
 }
 // ---------------------------------------------------------
 //  wakaba3.js

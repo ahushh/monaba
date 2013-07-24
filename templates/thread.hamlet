@@ -1,4 +1,4 @@
-1^{headerWidget muser boards boardCategories}
+^{headerWidget muser boards boardCategories}
 
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}

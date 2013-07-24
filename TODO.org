@@ -117,8 +117,9 @@
 ** DONE API
    CLOSED: [2013-07-23 Вт 07:57]
 ** DONE API good error handling
+** DONE refmap
+   CLOSED: [2013-07-24 Ср 18:14]
 ** TODO ajax
-** TODO refmap
 ** TODO write some tests, huh?
 ** TODO black/spam list
 ** TODO tags for threads

@@ -91,6 +91,14 @@ blockquote {
     padding: 5px;
 }
 
+.popup-post {
+    background: none repeat scroll 0% 0% #F0E0D6;
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid #DDCCC5;
+    margin: 3px;
+    padding: 5px;
+}
+
 .highlighted-post {
     background: none repeat scroll 0% 0% #EEDACB;
     border-radius: 5px 5px 5px 5px;
@@ -105,6 +113,10 @@ blockquote {
 }
 
 .highlighted-post blockquote {
+    margin: 0.5em;
+}
+
+.popup-post blockquote {
     margin: 0.5em;
 }
 

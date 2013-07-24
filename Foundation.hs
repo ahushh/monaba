@@ -86,8 +86,8 @@ instance Yesod App where
 
     defaultLayout widget = do
         master <- getYesod
-        mmsg <- getMessage
-
+        mmsg   <- getMessage
+        msgrender <- getMessageRender   
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final
@@ -121,6 +121,7 @@ instance Yesod App where
     -- users receiving stale content.
     addStaticContent =
         addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
+        -- addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
       where
         -- Generate a unique filename based on the content itself
         genFileName lbs

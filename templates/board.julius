@@ -10,8 +10,7 @@ function expandThread(board, thread) {
         $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
             $("#thread-"+thread+" .reply-post").remove();
             $("#thread-"+thread+" .truncate-thread").after(data);
-            doImageExpanding();
-            addEmbeddedPlayer();
+            baseInit();
         });
     }
     $("#thread-"+thread+" .truncate-thread").toggle();

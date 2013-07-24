@@ -65,17 +65,47 @@ blockquote {
     word-wrap: break-word;
 }
 
-// .reply-post {
-    // word-wrap: break-word;
-    // min-width: 40em;
-   // display: table;
-// }
-
 .reply-post {
     display: table;
     min-width: 40em;
     overflow: hidden;
     word-wrap: break-word;
+}
+
+.popup-post {
+    position: absolute;
+    display: block;
+    min-width: 30em;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.close-popup-container {
+    margin-left: 2px;
+}
+
+.close-popup-all {
+  background-position: -1085px -77px;//-269px -101px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
+}
+
+.close-popup-one {
+  background-position: -29px -101px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
 }
 
 .highlighted-post {
@@ -172,4 +202,9 @@ blockquote {
     top: 10px;
     width: 15%;
     word-wrap: break-word;
+}
+
+.refmap-list {
+    font-size: 75%;
+    font-style: italic;
 }

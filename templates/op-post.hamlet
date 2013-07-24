@@ -1,4 +1,4 @@
-<div .op-post id="post-#{show $ postLocalId $ entityVal $ eOpPostW }">
+<div .op-post id="post-#{show $ postLocalId $ entityVal $ eOpPostW }-0-#{postBoard $ entityVal $ eOpPostW }">
     <div .post-header>
         <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
         <span .reply-title>#{postTitle $ entityVal $ eOpPostW}

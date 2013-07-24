@@ -141,3 +141,7 @@ ThreadDelay: New thread delay
 
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
+
+Replies: Replies:
+CloseAllPopup: Close all popups
+CloseOnePopup: Close one

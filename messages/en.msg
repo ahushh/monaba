@@ -144,3 +144,8 @@ NoNewPosts: No new posts
 Replies: Replies:
 CloseAllPopup: Close all popups
 CloseOnePopup: Close one
+
+NewThread: New thread
+ClosePostForm: Close form
+Reply: Reply
+ReplyToThread: Reply to thread №

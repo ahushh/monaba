@@ -158,3 +158,11 @@ pre {
     border-radius: 5px 5px 5px 5px;
     border: 1px solid black;
 }
+
+.quick-post-form {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+

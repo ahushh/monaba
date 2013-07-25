@@ -144,3 +144,8 @@ NoNewPosts: Нет новых постов
 Replies: Ответы:
 CloseAllPopup: Закрыть все
 CloseOnePopup: Закрыть
+
+NewThread: Новый тред
+ClosePostForm: Закрыть форму
+Reply: Ответить
+ReplyToThread: Ответ в тред №

@@ -4,7 +4,9 @@
 <div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
 <br>
 <hr>
-<form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+<div .show-plain-form>
+    [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
+<form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
     ^{formWidget (entityVal $ fromJust maybeBoard) False maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>
 $if null threadsAndPreviews

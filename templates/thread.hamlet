@@ -6,7 +6,9 @@
 <hr>
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 <br>
-<form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+<div .show-plain-form>
+    [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
+<form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
     ^{formWidget (entityVal $ fromJust maybeBoard) True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>
 <form .delete-form method=get action=@{DeleteR}>

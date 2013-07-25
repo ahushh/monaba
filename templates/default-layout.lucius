@@ -208,3 +208,20 @@ blockquote {
     font-size: 75%;
     font-style: italic;
 }
+
+.reply-icon {
+  cursor: pointer;
+  background-position: -605px -173px;
+  vertical-align: text-top;
+  background-image: url("/static/img/glyphicons.png");
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: -1px;
+  width: 14px;
+}
+
+.show-plain-form {
+  text-align: center;
+}

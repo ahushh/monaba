@@ -1,5 +1,5 @@
 #{extra}
-<table #form-table>
+<table>
     <tbody>
         <tr .post-block>
             <td .post-block-named>_{MsgName}
@@ -69,11 +69,10 @@
             <td .post-block-named>_{MsgGoback}
             <td>
                 ^{fvInput gobackView}
-        $if isthreadW
-            <tr .post-block>
-                <td .post-block-named>_{MsgNobump}
-                <td>
-                    ^{fvInput nobumpView}
+        <tr #no-bump-block .post-block>
+            <td .post-block-named>_{MsgNobump}
+            <td>
+                ^{fvInput nobumpView}
 <table #info-table>
     <tr .post-block>
         <td>
@@ -82,3 +81,5 @@
                     <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
                     <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
                     <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
+<div .close-post-form>
+    [ <a onclick="closePostForm();">_{MsgClosePostForm}</a> ]

@@ -245,6 +245,48 @@ function timeout(elem, f, time) {
     var t = setTimeout(f, time);
     elem.onmouseout = function(){ clearTimeout(t) };
 }
+//-----------------------------------------------------------------
+function showQuickPostForm(postId) {
+    $("#post-form").removeClass().addClass("quick-post-form");
+    $("#"+postId).after($("#post-form"));
+    $("#post-form").css("display","table");
+    if (/\/board\/[\w_-]+/.test(document.URL)) {
+        var action = $("#post-form").attr('action');
+        var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
+
+        $("#post-form").children().find('.reply-to').remove();
+        $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
+        $("#no-bump-block").css("display","");
+
+        var newUrl;
+        if (/\/board\/[\w_-]+/.test(action)) {
+            newUrl = action.replace(/\/board\/([\w_-]+)/, "/thread/$1/"+thread);
+        } else {
+            newUrl = action.replace(/\/thread\/([\w_-]+)\/(\d+)/, "/thread/$1/"+thread);
+        }
+        $("#post-form").attr('action', newUrl);
+    }
+}
+
+function showPlainPostForm() {
+    $("#post-form").removeClass().addClass("plain-post-form");
+    $("#post-form").children().find('.reply-to').remove();
+    $('.show-plain-form').after($("#post-form"));
+    $(".show-plain-form").css("display","none");
+    $("#post-form").css("display","block");
+    if (/\/board\/[\w_-]+/.test(document.URL)) {
+        $("#no-bump-block").css("display","none");
+        var action = $("#post-form").attr('action');
+        if (/\/thread\/[\w_-]+\/\d+/.test(action)) {
+            var newUrl = action.replace(/\/thread\/([\w_-]+)\/\d+/, "/board/$1");
+            $("#post-form").attr('action', newUrl);
+        }
+    }
+}
+function closePostForm() {
+    $(".show-plain-form").css("display","block");
+    $("#post-form").css("display","none");
+}
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------

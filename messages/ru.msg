@@ -100,7 +100,6 @@ ApiPostsAfter: Все посты после {post id} в данном треде
 ApiLastPosts: Вернуть последние {count} постов в треде
 ApiAllPosts: Все посты в треде
 ApiPost: Один пост
-ApiThread: Один тред (оп-пост)
 ApiParameters: Параметры
 ApiBoardName: Название борды (e.g., b, d, rm)
 ApiThreadId: Видимый ID треда

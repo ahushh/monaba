@@ -40,21 +40,11 @@ getApiPostR board postId = do
       postKey = entityKey $ fromJust maybePost
   files <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
+      widget       = if (postParent (entityVal $ fromJust maybePost)) == 0
+                       then opPostWidget muser post files False
+                       else replyPostWidget muser post files
   selectRep $ do
-    provideRep $ bareLayout $ replyPostWidget muser post files
-    provideJson postAndFiles
-
-getApiThreadR :: Text -> Int -> Handler TypedContent
-getApiThreadR board threadId = do
-  muser     <- maybeAuth
-  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. threadId, PostParent ==. 0] []
-  when (isNothing maybePost) notFound -- TODO: fix error handling
-  let post    = fromJust maybePost
-      postKey = entityKey $ fromJust maybePost
-  files <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  let postAndFiles = (entityVal post, map entityVal files)
-  selectRep $ do
-    provideRep $ bareLayout $ opPostWidget muser post files False
+    provideRep $ bareLayout widget
     provideJson postAndFiles
 ---------------------------------------------------------------------------------------------------------     
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html

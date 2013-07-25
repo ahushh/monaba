@@ -15,7 +15,6 @@
 /help/markup         HelpMarkupR   GET
 /help/api            HelpApiR      GET
 
-/api/thread/#Text/#Int           ApiThreadR    GET
 /api/thread/#Text/#Int/new/#Int  ApiNewPostsR  GET
 /api/thread/#Text/#Int/last/#Int ApiLastPostsR GET
 /api/thread/#Text/#Int/all       ApiAllPostsR  GET

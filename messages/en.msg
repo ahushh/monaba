@@ -100,7 +100,6 @@ ApiPostsAfter: All posts after {post id} in the thread
 ApiLastPosts: Last {count} posts in the thread
 ApiAllPosts: All posts in the thread
 ApiPost: One post
-ApiThread: One thread (original post)
 ApiParameters: Parameters
 ApiBoardName: Board name (e.g., b, d, rm)
 ApiThreadId: Displayed thread ID

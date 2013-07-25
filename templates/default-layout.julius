@@ -219,11 +219,6 @@ function showPopupPost(event, elem, board, postId) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-            if (match[1] == 0) { // kostyl: it's a thread, so fix the ID and URL. I should use /api/thread/board/id instead.
-                post.attr('id', post.attr('id').replace(/post-(\d+)-(\d+)-/,"post-$1-$1-"));
-                var l = $(post.find('.reflink a').get(0));
-                l.attr('href', l.attr('href').replace(/\/thread\/([\w_-]+)\/(\d+)#(\d+)/,"\/thread/$1/$3#$3"));                
-            }
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' src='/static/img/blank.gif' class='close-popup-all'>";
             var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' src='/static/img/blank.gif' class='close-popup-one'>";
             var delPopup = "<span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";

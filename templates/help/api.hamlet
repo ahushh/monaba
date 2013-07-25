@@ -10,8 +10,6 @@
         <li>{thread id} — _{MsgApiThreadId}
         <li>{post id} — _{MsgApiPostId}
         <li>{count} — _{MsgApiCount}
-    <p><strong>_{MsgApiThread}:</strong>
-    <p>/api/thread/{board}/{thread id}
     <p><strong>_{MsgApiPostsAfter}:</strong>
     <p>/api/thread/{board}/{thread id}/new/{post id}
     <p><strong>_{MsgApiLastPosts}:</strong>

@@ -8,13 +8,28 @@ a {
     cursor: pointer;
 }
 
+hr {
+   clear: left;
+}
+
 blockquote {
     margin-left: 25px;
 }
 
+[class^="icon-"], [class*=" icon-"] {
+  vertical-align: text-top;
+  background-image: url(@{StaticR img_glyphicons_png});
+  background-repeat: no-repeat;
+  display: inline;
+  height: 14px;
+  line-height: 14px;
+  margin-top: 1px;
+  width: 14px;
+}
+
 .thread {
     height: auto;
-    overflow: auto; 
+    overflow: visible;
 }
 
 .multi-file {
@@ -76,6 +91,7 @@ blockquote {
     position: absolute;
     display: block;
     min-width: 30em;
+    max-width: 60%;
     overflow: hidden;
     word-wrap: break-word;
 }
@@ -84,28 +100,12 @@ blockquote {
     margin-left: 2px;
 }
 
-.close-popup-all {
-  background-position: -1085px -77px;//-269px -101px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
+.icon-close-popup-all {
+  background-position: -1085px -77px;
 }
 
-.close-popup-one {
+.icon-close-popup-one {
   background-position: -29px -101px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
 }
 
 .highlighted-post {
@@ -131,40 +131,16 @@ blockquote {
   display: inline;
 }
 
-.thread-sticked {
+.icon-thread-sticked {
   background-position: -989px -149px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
 }
 
-.thread-locked {
+.icon-thread-locked {
   background-position: -173px -101px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
 }
 
-.thread-autosage {
+.icon-thread-autosage {
   background-position: -389px -101px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
 }
 
 .admin-table {
@@ -209,17 +185,10 @@ blockquote {
     font-style: italic;
 }
 
-.reply-icon {
+.icon-reply {
   cursor: pointer;
   background-position: -605px -173px;
-  vertical-align: text-top;
-  background-image: url("/static/img/glyphicons.png");
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
   margin-top: -1px;
-  width: 14px;
 }
 
 .show-plain-form {

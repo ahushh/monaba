@@ -18,7 +18,7 @@
             $with n <- show $ postLocalId $ entityVal eReplyW
                 <a onclick=highlightPost(#{n}) href=@{ThreadR (postBoard $ entityVal eReplyW) $ postParent $ entityVal $ eReplyW}##{n}>No.
                 <a onclick="insert('>>#{n}')" name=#{n}>#{n}
-                <img onclick="showQuickPostForm('post-#{show $ postLocalId $ entityVal eReplyW}-#{show $ postParent $ entityVal eReplyW}-#{postBoard $ entityVal eReplyW}');insert('>>#{n}');" src=/static/img/blank.gif border=0 .reply-icon>
+                <img onclick="showQuickPostForm('post-#{show $ postLocalId $ entityVal eReplyW}-#{show $ postParent $ entityVal eReplyW}-#{postBoard $ entityVal eReplyW}');insert('>>#{n}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
         <span .cpanel>
             $maybe Entity _ user <- muserW
                 $if personRole user >= Moderator

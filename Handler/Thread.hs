@@ -15,6 +15,7 @@ import           Handler.Posting
 -------------------------------------------------------------------------------------------------------------------
 getThreadR :: Text -> Int -> Handler Html
 getThreadR  board thread = do
+  when (thread == 0) notFound
   muser       <- maybeAuth
   maybeBoard  <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard ) notFound

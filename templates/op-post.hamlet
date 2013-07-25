@@ -16,16 +16,16 @@
         <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
         <div .thread-status>
             $if postSticked $ entityVal $ eOpPostW
-                <img src=/static/img/blank.gif border=0 title=sticked alt=sticked .thread-sticked>
+                <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
             $if postLocked $ entityVal $ eOpPostW
-                <img src=/static/img/blank.gif border=0 title=locked alt=locked .thread-locked>
+                <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
             $if postAutosage $ entityVal $ eOpPostW
-                <img src=/static/img/blank.gif border=0 title=autosage alt=autosage .thread-autosage>
+                <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
         <span .reflink>
             $with n <- show $ postLocalId $ entityVal $ eOpPostW
                 <a onclick=highlightPost(#{n}) href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}##{n}>No.
                 <a onclick="insert('>>#{n}')" name=#{n}>#{n}
-                <img onclick="showQuickPostForm('post-#{show $ postLocalId $ entityVal eOpPostW}-0-#{postBoard $ entityVal eOpPostW}');insert('>>#{n}');" src=/static/img/blank.gif border=0 .reply-icon>
+                <img onclick="showQuickPostForm('post-#{show $ postLocalId $ entityVal eOpPostW}-0-#{postBoard $ entityVal eOpPostW}');insert('>>#{n}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
         <span .cpanel>
             $if not $ isInThread
                 [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]

@@ -116,24 +116,25 @@ function doImageExpanding(post) {
 function checkHighlighted() {
     var postId = window.location.hash.substr(1);
     if (postId) {
-        highlightPost(postId);
+        var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
+        var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
+        highlightPost("post-"+postId+"-"+thread+"-"+board);
     }
 }
 
 function highlightPost(postId) {
     $(".highlighted-post").removeClass().addClass('reply-post');
-    if ($("#post-"+postId).attr('class') == 'reply-post') {
-        $("#post-"+postId).removeClass();
-        $("#post-"+postId).addClass('highlighted-post');
+    if ($("#"+postId).attr('class') == 'reply-post') {
+        $("#"+postId).removeClass().addClass('highlighted-post');
     }
 }
 //-----------------------------------------------------------------
 function doRefMap(post) {
     var selector = post ? post : $(".reply-post, .op-post");
     selector.each(function() {
-        var postId = /post-(\d+)/.exec( $(this).attr('id') )[1];
-        var board  = /post-\d+-\d+-([\w_-]+)/.exec( $(this).attr('id') )[1];
-        var threadId = /post-\d+-(\d+)-[\w_-]+/.exec( $(this).attr('id') )[1];
+        var postId = extractPost( $(this).attr('id') );
+        var board  = extractBoard( $(this).attr('id') );
+        var threadId = extractThread( $(this).attr('id') );
         
         var links  = $(this).find('a').get();
         for (var i = 0; i < links.length; i++) {
@@ -152,7 +153,7 @@ function doRefMap(post) {
     });
     selector.each(function() {
         $(this).find('.refmap-list').remove();
-        var postId = /post-(\d+)/.exec( $(this).attr('id') )[1];
+        var postId = extractPost( $(this).attr('id') );
         var allLinks = Monaba.refMap[postId];
         if (!allLinks) return "";
         var result = "";
@@ -171,8 +172,8 @@ function doRefMap(post) {
 //-----------------------------------------------------------------
 function cachePopupPosts() {
     $(".reply-post, .op-post").each(function() {
-        var postId = /post-(\d+)/.exec( $(this).attr('id') )[1];
-        var board  = /post-\d+-\d+-([\w_-]+)/.exec( $(this).attr('id') )[1];
+        var postId = extractPost( $(this).attr('id') );
+        var board  = extractBoard( $(this).attr('id') );
         if (!Monaba.postCache[board]) {
             Monaba.postCache[board] = {};
         }
@@ -286,6 +287,18 @@ function showPlainPostForm() {
 function closePostForm() {
     $(".show-plain-form").css("display","block");
     $("#post-form").css("display","none");
+}
+//-----------------------------------------------------------------
+function extractPost(postId) {
+    return postId.split('-')[1];
+}
+
+function extractThread(postId) {
+    return postId.split('-')[2];
+}
+
+function extractBoard(postId) {
+    return postId.split('-')[3];
 }
 // ---------------------------------------------------------
 //  wakaba3.js

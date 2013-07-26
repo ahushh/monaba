@@ -3,7 +3,7 @@ function refreshThread(board, threadId) {
     if (lastPost.length == 0) {
         lastPost = $("#thread-"+threadId+" .op-post");
     }
-    var lastPostId = /post-(\d+)/.exec(lastPost.attr("id"))[1];
+    var lastPostId = extractPost( lastPost.attr("id") );
     $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
         if (/reply/.test(data)) {
             $("#thread-"+threadId).append(data);

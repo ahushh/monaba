@@ -128,8 +128,8 @@ replaceLink regex source board isCrossBoard postId linkType' = do
   case maybePost of
     Just post -> do
       let linkType       = if B.toString linkType' == "&gt;&gt;" then ">>" else "##"
-          localBoard thr = B.concat ["<a onmouseover='timeout(this, function(){showPopupPost(event, this,\"",board,"\",",postId,")},700)' onclick='highlightPost(",postId,")' href='/thread/",board,"/",thr,"#",postId,"'>",linkType,postId,"</a>"]
-          crossBoard thr = B.concat ["<a onmouseover='timeout(this, function(){showPopupPost(event, this,\"",board,"\",",postId,")},700)' onclick='highlightPost(",postId,")' href='/thread/",board,"/",thr,"#",postId,"'>",linkType,"/",board,"/",postId,"</a>"]
+          localBoard thr = B.concat ["<a onmouseover='timeout(this, function(){showPopupPost(event, this,\"",board,"\",",postId,")},700)' onclick='highlightPost(\"post-",postId,"-",thr,"-",board,"\")' href='/thread/",board,"/",thr,"#",postId,"'>",linkType,postId,"</a>"]
+          crossBoard thr = B.concat ["<a onmouseover='timeout(this, function(){showPopupPost(event, this,\"",board,"\",",postId,")},700)' onclick='highlightPost(\"post-",postId,"-",thr,"-",board,"\")' href='/thread/",board,"/",thr,"#",postId,"'>",linkType,"/",board,"/",postId,"</a>"]
           parent'        = postParent $ entityVal post
           parent         = if parent' == 0  then postId     else B.fromString $ show parent'
           f              = if isCrossBoard then crossBoard else localBoard

@@ -1,58 +1,58 @@
-<div .op-post id="post-#{show $ postLocalId $ entityVal $ eOpPostW}-0-#{postBoard $ entityVal $ eOpPostW}">
-    <div .post-header>
-        <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
-        <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
-        $maybe owner <- postOwner (entityVal eOpPostW)
-            $if (map toLower $ show owner) == (map toLower $ unpack $ postName $ entityVal eOpPostW)
-                $case owner
-                    $of Admin       
-                        <span .poster-name-admin>#admin
-                    $of Moderator    
-                        <span .poster-name-mod>#mod
-            $else
-                <span .poster-name>#{postName $ entityVal eOpPostW}
-        $nothing
-            <span .poster-name>#{postName $ entityVal eOpPostW}
-        <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
-        <div .thread-status>
-            $if postSticked $ entityVal $ eOpPostW
-                <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
-            $if postLocked $ entityVal $ eOpPostW
-                <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
-            $if postAutosage $ entityVal $ eOpPostW
-                <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
-        <span .reflink>
-            $with n <- show $ postLocalId $ entityVal $ eOpPostW
-                <a onclick=highlightPost(#{n}) href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}##{n}>No.
-                <a onclick="insert('>>#{n}')" name=#{n}>#{n}
-                <img onclick="showQuickPostForm('post-#{show $ postLocalId $ entityVal eOpPostW}-0-#{postBoard $ entityVal eOpPostW}');insert('>>#{n}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
-        <span .cpanel>
-            $if not $ isInThread
-                [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
-            $maybe Entity _ user <- muserW
-                $if personRole user >= Moderator
-                    [ #{postIp $ entityVal $ eOpPostW} ] #
-                    \[<a title="Ban by IP" href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
-                    \[<a title="Stick thread" href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
-                    \<a title="Lock thread" href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
-                    \<a title="Auto sage" href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
-
-    $forall Entity _ file <- opPostFilesW
-        $if length opPostFilesW == 1
-            <div .file >
-                <span .file-name>
-                    <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                <br>
-                <span .file-info> (#{attachedfileDescription file})
-                <br>
-                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-        $else
-            <div .multi-file >
-                <span .file-name>
-                    <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                <br>
-                <span .file-info> (#{attachedfileDescription file})
-                <br>
-                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-
-    <blockquote>^{markupWidget $ postMessage $ entityVal $ eOpPostW}
+$with thread <- show $ postLocalId $ entityVal eOpPostW
+  $with board <- postBoard $ entityVal eOpPostW
+      <div .op-post id="post-#{thread}-0-#{board}">
+          <div .post-header>
+              <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
+              <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
+              $maybe owner <- postOwner (entityVal eOpPostW)
+                  $if (map toLower $ show owner) == (map toLower $ unpack $ postName $ entityVal eOpPostW)
+                      $case owner
+                          $of Admin       
+                              <span .poster-name-admin>#admin
+                          $of Moderator    
+                              <span .poster-name-mod>#mod
+                  $else
+                      <span .poster-name>#{postName $ entityVal eOpPostW}
+              $nothing
+                  <span .poster-name>#{postName $ entityVal eOpPostW}
+              <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
+              <div .thread-status>
+                  $if postSticked $ entityVal $ eOpPostW
+                      <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
+                  $if postLocked $ entityVal $ eOpPostW
+                      <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
+                  $if postAutosage $ entityVal $ eOpPostW
+                      <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
+              <span .reflink>
+                  <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
+                  <a onclick="insert('>>#{thread}')" name=#{thread}>#{thread}
+                  <img onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+              <span .cpanel>
+                  $if not $ isInThread
+                      [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
+                  $maybe Entity _ user <- muserW
+                      $if personRole user >= Moderator
+                          [ #{postIp $ entityVal $ eOpPostW} ] #
+                          \[<a title="Ban by IP" href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
+                          \[<a title="Stick thread" href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
+                          \<a title="Lock thread" href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
+                          \<a title="Auto sage" href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
+      
+          $forall Entity _ file <- opPostFilesW
+              $if length opPostFilesW == 1
+                  <div .file >
+                      <span .file-name>
+                          <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
+                      <br>
+                      <span .file-info> (#{attachedfileDescription file})
+                      <br>
+                      <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+              $else
+                  <div .multi-file >
+                      <span .file-name>
+                          <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
+                      <br>
+                      <span .file-info> (#{attachedfileDescription file})
+                      <br>
+                      <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+          <blockquote>^{markupWidget $ postMessage $ entityVal $ eOpPostW}

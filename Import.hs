@@ -95,6 +95,11 @@ footerWidget = $(widgetFile "footer")
 adminNavbarWidget :: Maybe (Entity Person) -> WidgetT App IO ()
 adminNavbarWidget muserW = $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
+bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
+bareLayout widget = do
+    pc <- widgetToPageContent widget
+    giveUrlRenderer [hamlet| ^{pageBody pc} |]
+-------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
 uploadDirectory :: FilePath
@@ -217,6 +222,10 @@ getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
 
 getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
 getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+
+isAjaxRequest = do
+  maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
+  return $ maybe False (=="XMLHttpRequest") maybeHeader
 -------------------------------------------------------------------------------------------------------------------
 getPosterId :: Handler Text
 getPosterId = do

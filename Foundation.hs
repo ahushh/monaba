@@ -102,6 +102,7 @@ instance Yesod App where
             -- addStylesheet $ StaticR css_ash_css
             -- addStylesheet $ StaticR css_futaba_css
             addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"
+            addScriptRemote "http://malsup.github.com/jquery.form.js"
             $(combineStylesheets 'StaticR
                 [
                 -- css_normalize_css
@@ -124,8 +125,8 @@ instance Yesod App where
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
     addStaticContent =
-        addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
-        -- addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
+        -- addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
+        addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
       where
         -- Generate a unique filename based on the content itself
         genFileName lbs

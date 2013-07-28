@@ -28,7 +28,6 @@ getBoardR board page = do
       threadsPerPage    = boardThreadsPerPage    $ entityVal $ fromJust maybeBoard
       previewsPerThread = boardPreviewsPerThread $ entityVal $ fromJust maybeBoard
       enableCaptcha     = boardEnableCaptcha     $ entityVal $ fromJust maybeBoard
-      msgRedirect msg   = setMessageI msg >> redirect HomeR
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
       pagesFix x

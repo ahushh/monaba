@@ -173,7 +173,7 @@ blockquote {
 #popupMessage {
     border-radius: 5px 5px 5px 5px;
     right: 10px;
-    padding: 30px 25px;
+    padding: 10px 10px;
     position: fixed;
     text-align: center;
     top: 10px;

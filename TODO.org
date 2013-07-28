@@ -120,7 +120,8 @@
    CLOSED: [2013-07-28 Вс 04:25]
 ** DONE better API error handling (!)
    CLOSED: [2013-07-28 Вс 08:56]
-** TODO ajax posting (!)
+** DONE ajax posting (!)
+   CLOSED: [2013-07-28 Вс 15:41]
 ** TODO better board management (!)
 ** TODO admin/mod logging
 ** TODO truncate message using JS

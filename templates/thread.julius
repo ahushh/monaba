@@ -1,21 +1,17 @@
-function refreshThread(board, threadId) {
-    var lastPost = $("#thread-"+threadId+" .reply-post:last");
-    if (lastPost.length == 0) {
-        lastPost = $("#thread-"+threadId+" .op-post");
-    }
-    var lastPostId = extractPost( lastPost.attr("id") );
-    $(".delete-form .icon-thread-refresh").toggle();
-    $(".delete-form .ajax-loading").toggle();
-    $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
-        $(".delete-form .icon-thread-refresh").toggle();
-        $(".delete-form .ajax-loading").toggle();
-        if (/reply/.test(data)) {
-            $("#thread-"+threadId).append(data);
-            baseInit();
-        } else if (data == "No such thread ") {
-            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-        } else if (data == "No new posts ") {
-            popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+$('#post-form').ajaxForm({
+    beforeSend: function() {
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+    },
+    success: function(data) {
+        if (data.ok) {
+            $('#post-form input[type=text]').clearFields();
+            $('#post-form textarea').clearFields();
+            popupMessage(data.ok,2000);
+            closePostForm();
+            refreshThread(#{toJSON $ board}, #{toJSON $ show $ postLocalId $ entityVal eOpPost});
+        } else {
+            popupMessage(data.error,2000);
         }
-    });
-}
+        refreshCaptcha();
+    }
+}); 

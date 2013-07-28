@@ -10,6 +10,7 @@
 /thread/#Text/#Int   ThreadR       GET POST
 /delete              DeleteR       GET 
 /captcha             CaptchaR      GET
+/captcha/!info       CaptchaInfoR  GET
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET
@@ -19,6 +20,7 @@
 /api/thread/#Text/#Int/last/#Int ApiLastPostsR GET
 /api/thread/#Text/#Int/all       ApiAllPostsR  GET
 /api/post/#Text/#Int             ApiPostR      GET
+/jsonfrommsg/#Text               JsonFromMsgR  GET
 
 /admin                     AdminR        GET
 /admin/stick/#Text/#Int    StickR        GET

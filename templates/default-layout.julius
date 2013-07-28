@@ -85,14 +85,23 @@ function setStylesheet(title) {
     }
 } 
 //-----------------------------------------------------------------
-function popupMessage(text, delay) {
-    if (delay == null) delay = 1000;
+function popupMessage(text, delay, icon) {
     if ($('#popupMessage').get() == '') {
         $('body').children().last().after('<div id=popupMessage></div>');
         $('#popupMessage').hide();
     }
+    if (icon) {
+        text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
+    }
     $('#popupMessage').html(text);
-    $('#popupMessage').fadeIn(150).delay(delay).fadeOut(300);
+    $('#popupMessage').fadeIn(150);
+    if (delay) {
+        $('#popupMessage').delay(delay).fadeOut(300);
+    }
+}
+
+function closePopupMessage() {
+    $('#popupMessage').fadeOut(300);
 }
 //-----------------------------------------------------------------
 function doImageExpanding(post) {
@@ -257,13 +266,33 @@ function showQuickPostForm(postId) {
     $("#post-form").removeClass().addClass("quick-post-form");
     $("#"+postId).after($("#post-form"));
     $("#post-form").css("display","table");
-    if (/\/board\/[\w_-]+/.test(document.URL)) {
+    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
         var action = $("#post-form").attr('action');
         var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
+
+        $('#post-form').ajaxForm({
+            beforeSend: function() {
+                popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+            },
+            success: function(data) {
+                if (data.ok) {
+                    $('#post-form input[type=text]').clearFields();
+                    $('#post-form textarea').clearFields();
+                    popupMessage(data.ok,2000);
+                    closePostForm();
+                    var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
+                    refreshThread(board, thread)
+                } else {
+                    popupMessage(data.error,2000);
+                }
+                refreshCaptcha();
+            }
+        }); 
 
         $("#post-form").children().find('.reply-to').remove();
         $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
         $("#no-bump-block").css("display","");
+        $("#go-back-block").css("display","none");
 
         var newUrl;
         if (/\/board\/[\w_-]+/.test(action)) {
@@ -276,13 +305,15 @@ function showQuickPostForm(postId) {
 }
 
 function showPlainPostForm() {
+    $("#post-form").unbind();
     $("#post-form").removeClass().addClass("plain-post-form");
     $("#post-form").children().find('.reply-to').remove();
     $('.show-plain-form').after($("#post-form"));
     $(".show-plain-form").css("display","none");
     $("#post-form").css("display","block");
-    if (/\/board\/[\w_-]+/.test(document.URL)) {
+    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
         $("#no-bump-block").css("display","none");
+        $("#go-back-block").css("display","");
         var action = $("#post-form").attr('action');
         if (/\/thread\/[\w_-]+\/\d+/.test(action)) {
             var newUrl = action.replace(/\/thread\/([\w_-]+)\/\d+/, "/board/$1");
@@ -305,6 +336,38 @@ function extractThread(postId) {
 
 function extractBoard(postId) {
     return postId.split('-')[3];
+}
+//-----------------------------------------------------------------
+function refreshCaptcha() {
+    if ( $("#captcha") ) {
+        $.get('@{CaptchaInfoR}', function(data) {
+            $("#captcha-info").html(data);
+            $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
+        });
+    }
+}
+
+
+function refreshThread(board, threadId) {
+    var lastPost = $("#thread-"+threadId+" .reply-post:last");
+    if (lastPost.length == 0) {
+        lastPost = $("#thread-"+threadId+" .op-post");
+    }
+    var lastPostId = extractPost( lastPost.attr("id") );
+    $(".delete-form .icon-thread-refresh").toggle();
+    $(".delete-form .ajax-loading").toggle();
+    $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
+        $(".delete-form .icon-thread-refresh").toggle();
+        $(".delete-form .ajax-loading").toggle();
+        if (/reply/.test(data)) {
+            $("#thread-"+threadId).append(data);
+            baseInit();
+        } else if (data == "No such thread ") {
+            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+        } else if (data == "No new posts ") {
+            popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+        }
+    });
 }
 // ---------------------------------------------------------
 //  wakaba3.js

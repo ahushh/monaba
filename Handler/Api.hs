@@ -57,8 +57,3 @@ getApiPostR board postId = do
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
----------------------------------------------------------------------------------------------------------     
-bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
-bareLayout widget = do
-    pc <- widgetToPageContent widget
-    giveUrlRenderer [hamlet| ^{pageBody pc} |]

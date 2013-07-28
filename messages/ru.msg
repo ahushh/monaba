@@ -37,6 +37,7 @@ TypeNotAllowed: Данный тип файла не разрешен к загр
 NoSuchThread: Нет такого треда
 NoSuchBoard: Нет такой борды
 LockedThread: Тред закрыт
+PostSent: Пост отправлен
 
 BoardId: ID
 BoardName: Имя
@@ -152,3 +153,4 @@ ReplyToThread: Ответ в тред №
 
 ThreadNotExist: Похоже, этот тред больше не существует
 NoPostsAnymore: Внезапно, в этом треде постов нет вообще
+Loading: Загрузка...

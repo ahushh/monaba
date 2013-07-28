@@ -2,6 +2,7 @@
 module Handler.Captcha where
 
 import           Import
+import           Yesod.Auth
 import           Data.Char        (toLower)
 import qualified Data.Text        as T
 import           System.Directory (removeFile)
@@ -10,11 +11,38 @@ import           SillyCaptcha     (makeCaptcha)
 ---------------------------------------------------------------------------------------------------------------------------
 getCaptchaR :: Handler Html
 getCaptchaR = do
+  -- muser     <- maybeAuth
+  -- acaptcha  <- lookupSession "acaptcha"  
+  -- when (isNothing acaptcha && isNothing muser) $
+  --   recordCaptcha =<< getConfig configCaptchaLength
+
   maybeCaptchaId <- lookupSession "captchaId"
   when (isJust maybeCaptchaId) $
       sendFile typePng $ captchaFilePath (unpack (fromJust maybeCaptchaId) ++ captchaExt)
   notFound
----------------------------------------------------------------------------------------------
+
+getCaptchaInfoR :: Handler Html
+getCaptchaInfoR = do
+  acaptcha  <- lookupSession "acaptcha"
+  muser     <- maybeAuth  
+  when (isNothing acaptcha && isNothing muser) $
+    recordCaptcha =<< getConfig configCaptchaLength
+    
+  maybeCaptchaInfo <- getCaptchaInfo
+  bareLayout [whamlet|
+            $maybe c <- maybeCaptchaInfo
+                _{MsgTypeOnly} 
+                $if c == "Bold"
+                    _{MsgBoldChars}
+                $elseif c == "Italic"
+                    _{MsgItalicChars}
+                $elseif c == "Underline"
+                    _{MsgUnderlineChars}
+                $elseif c == "Regular"
+                    _{MsgRegularChars}
+           |]
+
+---------------------------------------------------------------------------------------------------------------------------
 -- used in Handler/Thread and Handler/Board
 ---------------------------------------------------------------------------------------------------------------------------
 recordCaptcha :: Int -> HandlerT App IO ()

@@ -37,6 +37,7 @@ TypeNotAllowed: This filetype isn't allowed
 NoSuchThread: No such thread
 NoSuchBoard: No such board
 LockedThread: This thread is locked and can't be posted in
+PostSent: Post successfully sent
 
 BoardId: ID
 BoardName: Name
@@ -152,3 +153,4 @@ ReplyToThread: Reply to thread №
 
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!
+Loading: Loading...

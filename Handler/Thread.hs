@@ -12,6 +12,15 @@ import           Control.Arrow      (second)
 import           AwfulMarkup        (doAwfulMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
+
+import           Text.Blaze.Html.Renderer.String
+-------------------------------------------------------------------------------------------------------------------
+-- Костыли-костылики...
+getJsonFromMsgR :: Text -> Handler TypedContent
+getJsonFromMsgR status = do
+  msg <- getMessage
+  selectRep $
+    provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
 -------------------------------------------------------------------------------------------------------------------
 getThreadR :: Text -> Int -> Handler Html
 getThreadR  board thread = do
@@ -45,7 +54,7 @@ getThreadR  board thread = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   boardCategories  <- getConfig configBoardCategories
-  msgrender        <- getMessageRender   
+  msgrender        <- getMessageRender
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
@@ -67,20 +76,20 @@ postThreadR board thread = do
       numberFiles          = boardNumberFiles   $ entityVal $ fromJust maybeBoard
       bumpLimit            = boardBumpLimit     $ entityVal $ fromJust maybeBoard
       enableCaptcha        = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
-      msgRedirect msg      = setMessageI msg >> redirect (ThreadR board thread)
+      threadUrl            = ThreadR board thread
       isFileAllowed (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypesToUpload
       isFileAllowed _                      = True
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm numberFiles
   case result of
-    FormFailure _                            -> msgRedirect MsgBadFormData
-    FormMissing                              -> msgRedirect MsgNoFormData
+    FormFailure _                            -> trickyRedirect "error" MsgBadFormData threadUrl
+    FormMissing                              -> trickyRedirect "error" MsgNoFormData  threadUrl
     FormSuccess (name, title, message, pswd, captcha, files, goback, Just nobump)
-      | (\(Just (Entity _ p)) -> postLocked p) maybeParent                          -> msgRedirect MsgLockedThread
-      | isNothing message && all (\(FormSuccess f) -> isNothing f) files             -> msgRedirect MsgNoImgOrText
-      | maxMessageLength <= T.length (unTextarea $ fromMaybe (Textarea "") message) -> msgRedirect $ MsgTooLongMessage maxMessageLength
-      | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> msgRedirect MsgNoImgOrText
-      | not $ all isFileAllowed files                                                -> msgRedirect MsgTypeNotAllowed
+      | (\(Just (Entity _ p)) -> postLocked p) maybeParent                          -> trickyRedirect "error" MsgLockedThread threadUrl
+      | isNothing message && all (\(FormSuccess f) -> isNothing f) files             -> trickyRedirect "error" MsgNoImgOrText  threadUrl
+      | maxMessageLength <= T.length (unTextarea $ fromMaybe (Textarea "") message) -> trickyRedirect "error" (MsgTooLongMessage maxMessageLength) threadUrl
+      | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> trickyRedirect "error" MsgNoImgOrText    threadUrl
+      | not $ all isFileAllowed files                                                -> trickyRedirect "error" MsgTypeNotAllowed threadUrl
       | otherwise                                                                  -> do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
@@ -89,15 +98,15 @@ postThreadR board thread = do
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $
           unlessM (isBanExpired $ fromJust ban) $ do
-            setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                          (maybe "never" (pack . myFormatTime) (banExpires $ entityVal $ fromJust ban))
-            redirect (ThreadR board thread)
+            let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
+                                     (maybe "never" (pack . myFormatTime) (banExpires $ entityVal $ fromJust ban))
+            trickyRedirect "error" m threadUrl
         -- check captcha
         when (enableCaptcha && isNothing muser) $ do
           acaptcha  <- lookupSession "acaptcha"
           when (isNothing acaptcha) $ do
-            void $ when (isNothing captcha) (setMessageI MsgWrongCaptcha >> redirect (ThreadR board thread))
-            checkCaptcha (fromJust captcha) (setMessageI MsgWrongCaptcha >> redirect (ThreadR board thread))
+            void $ when (isNothing captcha) (trickyRedirect "error" MsgWrongCaptcha threadUrl)
+            checkCaptcha (fromJust captcha) (trickyRedirect "error" MsgWrongCaptcha threadUrl)
           updateAdaptiveCaptcha acaptcha
         ------------------------------------------------------------------------------------------------------           
         now      <- liftIO getCurrentTime
@@ -107,13 +116,13 @@ postThreadR board thread = do
           let diff = ceiling $ realToFrac (diffUTCTime now (postDate $ entityVal $ fromJust lastPost))
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
             deleteSession "acaptcha" >>
-            setMessageI MsgPostingTooFast >> redirect (ThreadR board thread)
+            trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
         posterId         <- getPosterId
         messageFormatted <- doAwfulMarkup message board thread
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        when (isNothing lastPost') $  -- replying to non-existent thread
-          setMessageI MsgNoSuchThread >> redirect (BoardNoPageR board)
+        when (isNothing lastPost') $  -- reply to non-existent thread
+          trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost')
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId
@@ -141,6 +150,6 @@ postThreadR board thread = do
         deleteSession "message"
         deleteSession "post-title"
         case goback of
-          ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
-          ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board thread)
-    _  -> msgRedirect MsgUnknownError
+          ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
+          ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
+    _  -> trickyRedirect "error" MsgUnknownError threadUrl

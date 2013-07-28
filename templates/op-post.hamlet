@@ -27,9 +27,11 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
                   <a onclick="insert('>>#{thread}')" name=#{thread}>#{thread}
                   <img onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+              &nbsp;&nbsp;
               <span .cpanel>
                   $if not $ isInThread
                       [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
+                      &nbsp;&nbsp;
                   $maybe Entity _ user <- muserW
                       $if personRole user >= Moderator
                           [ #{postIp $ entityVal $ eOpPostW} ] #

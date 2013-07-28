@@ -4,7 +4,11 @@ function refreshThread(board, threadId) {
         lastPost = $("#thread-"+threadId+" .op-post");
     }
     var lastPostId = extractPost( lastPost.attr("id") );
+    $(".delete-form .icon-thread-refresh").toggle();
+    $(".delete-form .ajax-loading").toggle();
     $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
+        $(".delete-form .icon-thread-refresh").toggle();
+        $(".delete-form .ajax-loading").toggle();
         if (/reply/.test(data)) {
             $("#thread-"+threadId).append(data);
             baseInit();

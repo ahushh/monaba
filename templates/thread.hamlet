@@ -18,6 +18,8 @@
         $forall (eReply, files) <- repliesAndFiles
             ^{replyPostWidget muser eReply files }
     <br>
+    <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
+    <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     <hr>
     <div #delete-container>

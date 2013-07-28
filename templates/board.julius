@@ -2,19 +2,24 @@ function expandThread(board, thread) {
     var replies = Monaba['expThreads'][thread];
     delete Monaba['expThreads'][thread];
     Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
-    $("#thread-"+thread+" .omitted").toggle();
     if (replies) {
+        $("#thread-"+thread+" .omitted").toggle();
         $("#thread-"+thread+" .reply-post").remove();
+        $("#thread-"+thread+" .truncate-thread").toggle();
+        $("#thread-"+thread+" .truncate-thread-after").toggle();
         $("#thread-"+thread+" .truncate-thread").after(replies);
     } else {
+        $("#thread-"+thread+" .omitted .ajax-loading").toggle();
         $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
+            $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+            $("#thread-"+thread+" .omitted").toggle();
             $("#thread-"+thread+" .reply-post").remove();
+            $("#thread-"+thread+" .truncate-thread").toggle();
+            $("#thread-"+thread+" .truncate-thread-after").toggle();
             $("#thread-"+thread+" .truncate-thread").after(data);
             baseInit();
         });
     }
-    $("#thread-"+thread+" .truncate-thread").toggle();
-    $("#thread-"+thread+" .truncate-thread-after").toggle();
 }
 
 function truncateThread(thread,scrollToThreadBottom) {

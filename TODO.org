@@ -56,9 +56,7 @@
    CLOSED: [2013-07-08 Пн 12:30]
 ** DONE using default.png for unknown file types
    CLOSED: [2013-07-08 Пн 12:30]
-** CANCELED goback field i18n
-   CLOSED: [2013-07-08 Пн 12:33]
-*** impossible...
+** DONE goback field i18n
 ** DONE dynamic header template
    CLOSED: [2013-07-08 Пн 14:30]
 ** DONE request body too large to process
@@ -116,17 +114,31 @@
 ** DONE board groups
 ** DONE API
    CLOSED: [2013-07-23 Вт 07:57]
-** DONE API good error handling
 ** DONE refmap
    CLOSED: [2013-07-24 Ср 18:14]
-** TODO ajax
-** TODO write some tests, huh?
+** DONE more icons
+   CLOSED: [2013-07-28 Вс 04:25]
+** TODO ajax posting (!)
+** TODO better API error handling (!)
+** TODO better board management (!)
+** TODO admin/mod logging
+** TODO truncate message using JS
+** TODO search
+** TODO ban by session (!)
+** TODO thread catalog
 ** TODO black/spam list
 ** TODO tags for threads
 ** TODO post deletion by OP
+** TODO post editing
+** TODO Settings
+*** TODO UTC -> local time, store timezone in cookies/session
+*** TODO Switchable youtube player
+*** TODO post hiding
+*** TODO favorite threads
 ** TODO don't really delete posts, but mark them up "deleted" (?)
-** TODO CRUD
-** TODO UTC -> local time, store timezone in cookies/session
+* Further
 ** TODO check if all dirs exist before starting
 ** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
 ** TODO return files with their real names (HOW??)
+** TODO CRUD
+** TODO write some tests, huh?

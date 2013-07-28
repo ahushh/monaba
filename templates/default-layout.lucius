@@ -97,7 +97,8 @@ blockquote {
 }
 
 .close-popup-container {
-    margin-left: 2px;
+    margin-left: 2px;  
+    float: right;
 }
 
 .icon-close-popup-all {
@@ -193,4 +194,8 @@ blockquote {
 
 .show-plain-form {
   text-align: center;
+}
+
+.icon-thread-refresh {
+   background-position: -773px -29px;
 }

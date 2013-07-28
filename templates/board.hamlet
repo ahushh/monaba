@@ -20,6 +20,7 @@ $else
                 $if omitted > 0
                     <div .omitted>
                         _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
+                        <img style="display:none" .ajax-loading src=@{StaticR img_ajax_loader_gif}>
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps

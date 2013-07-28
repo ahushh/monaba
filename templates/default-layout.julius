@@ -181,8 +181,8 @@ function cachePopupPosts() {
             var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+$(this).attr('id'));
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
             var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-            var delPopup = "<span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
-            post.find('input').after(delPopup);
+            var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
+            post.find('.cpanel').after(delPopup);
             Monaba.postCache[board][postId] = post;
         // }
     });
@@ -222,8 +222,8 @@ function showPopupPost(event, elem, board, postId) {
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
             var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-            var delPopup = "<span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
-            post.find('input').after(delPopup);
+            var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
+            post.find('.cpanel').after(delPopup);
 
             Monaba.postCache[board][postId] = post;
             reallyShowPopupPost(event, elem, post);

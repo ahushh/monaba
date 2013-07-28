@@ -11,13 +11,23 @@ function expandThread(board, thread) {
     } else {
         $("#thread-"+thread+" .omitted .ajax-loading").toggle();
         $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
-            $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-            $("#thread-"+thread+" .omitted").toggle();
-            $("#thread-"+thread+" .reply-post").remove();
-            $("#thread-"+thread+" .truncate-thread").toggle();
-            $("#thread-"+thread+" .truncate-thread-after").toggle();
-            $("#thread-"+thread+" .truncate-thread").after(data);
-            baseInit();
+            if (data == "No such thread ") {
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+                delete Monaba['expThreads'][thread];
+                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+            } else if (data == "No posts in this thread ") {
+                popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
+                delete Monaba['expThreads'][thread];
+                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+            } else {
+                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+                $("#thread-"+thread+" .omitted").toggle();
+                $("#thread-"+thread+" .reply-post").remove();
+                $("#thread-"+thread+" .truncate-thread").toggle();
+                $("#thread-"+thread+" .truncate-thread-after").toggle();
+                $("#thread-"+thread+" .truncate-thread").after(data);
+                baseInit();
+            }
         });
     }
 }

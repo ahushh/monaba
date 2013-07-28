@@ -118,8 +118,9 @@
    CLOSED: [2013-07-24 Ср 18:14]
 ** DONE more icons
    CLOSED: [2013-07-28 Вс 04:25]
+** DONE better API error handling (!)
+   CLOSED: [2013-07-28 Вс 08:56]
 ** TODO ajax posting (!)
-** TODO better API error handling (!)
 ** TODO better board management (!)
 ** TODO admin/mod logging
 ** TODO truncate message using JS
@@ -137,6 +138,7 @@
 *** TODO favorite threads
 ** TODO don't really delete posts, but mark them up "deleted" (?)
 * Further
+** TODO best API error handling
 ** TODO check if all dirs exist before starting
 ** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
 ** TODO return files with their real names (HOW??)

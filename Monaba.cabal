@@ -105,6 +105,7 @@ library
                  , random
                  , esqueleto
                  , containers
+                 , http-types
 
 executable         Monaba
     if flag(library-only)
@@ -139,6 +140,7 @@ executable         Monaba
                      , random
                      , esqueleto
                      , containers
+                     , http-types
 
     ghc-options:       -threaded -O2
 

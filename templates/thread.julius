@@ -12,7 +12,9 @@ function refreshThread(board, threadId) {
         if (/reply/.test(data)) {
             $("#thread-"+threadId).append(data);
             baseInit();
-        } else {
+        } else if (data == "No such thread ") {
+            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+        } else if (data == "No new posts ") {
             popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
         }
     });

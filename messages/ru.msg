@@ -149,3 +149,6 @@ NewThread: Новый тред
 ClosePostForm: Закрыть форму
 Reply: Ответить
 ReplyToThread: Ответ в тред №
+
+ThreadNotExist: Похоже, этот тред больше не существует
+NoPostsAnymore: Внезапно, в этом треде постов нет вообще

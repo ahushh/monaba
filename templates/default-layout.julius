@@ -24,6 +24,12 @@ $('#stylebar').change(function() {
    setStylesheet($('#stylebar').val());
 });
 //-----------------------------------------------------------------
+$.ajaxSetup({
+    error: function(x, e) {
+        popupMessage(x.responseText+" ("+x.status+")", 2000);
+    }
+});
+//-----------------------------------------------------------------
 // youtube
 //-----------------------------------------------------------------
 function addEmbeddedPlayer(post) {

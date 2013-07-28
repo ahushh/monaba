@@ -25,6 +25,10 @@ import qualified Data.Text as T
 
 import GHC.Word (Word64)
 
+import Network.HTTP.Types (mkStatus)
+import Network.Wai (Request(..))
+import Control.Monad (when)
+
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -152,6 +156,23 @@ instance Yesod App where
     isAuthorized AccountR         _ = isAuthorized' Moderator
     isAuthorized ConfigR          _ = isAuthorized' Admin
     isAuthorized _                _ = return Authorized
+
+    errorHandler errorResponse = do
+        $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
+        req <- waiRequest
+        let reqwith = lookup "X-Requested-With" $ requestHeaders req
+            errorText NotFound = (404, "Not Found", "Sorry, not found")
+            errorText (InternalError msg) = (400, "Bad Request", msg)
+            errorText (InvalidArgs m) = (400, "Bad Request", T.unwords m)
+            errorText (PermissionDenied msg) = (403, "Forbidden", msg)
+            errorText (BadMethod _) = (405, "Method Not Allowed",
+                                            "Method not supported")
+        when (maybe False (== "XMLHttpRequest") reqwith) $ do
+            let (code, brief, full) = errorText errorResponse
+            sendResponseStatus
+                (mkStatus code brief)
+                $ RepPlain $ toContent $ T.append "Error: " full
+        defaultErrorHandler errorResponse
 
 isAuthorized' role = do
   mauth <- maybeAuth

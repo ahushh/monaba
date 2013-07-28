@@ -149,3 +149,6 @@ NewThread: New thread
 ClosePostForm: Close form
 Reply: Reply
 ReplyToThread: Reply to thread №
+
+ThreadNotExist: This thread doesn't exist anymore
+NoPostsAnymore: Ooops, no posts in this thread!

@@ -18,13 +18,13 @@ getHomeR = do
 
     c <- runDB $ count ([]::[Filter Config])
     when (c == 0) $ do
-      runDB $ insert Config { configCaptchaLength   = 10
-                            , configACaptchaGuards  = 3
-                            , configCaptchaTimeout  = 36000
-                            , configReplyDelay      = 7
-                            , configThreadDelay     = 30
-                            , configBoardCategories = []
-                            }
+      void $ runDB $ insert Config { configCaptchaLength   = 10
+                                   , configACaptchaGuards  = 3
+                                   , configCaptchaTimeout  = 36000
+                                   , configReplyDelay      = 7
+                                   , configThreadDelay     = 30
+                                   , configBoardCategories = []
+                                   }
       redirect HomeR
     nameOfTheBoard <- extraSiteName <$> getExtra
     boardCategories <- getConfig configBoardCategories

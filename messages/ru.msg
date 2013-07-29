@@ -39,7 +39,7 @@ NoSuchBoard: Нет такой борды
 LockedThread: Тред закрыт
 PostSent: Пост отправлен
 
-BoardId: ID
+NewBoard: Новая борда
 BoardName: Имя
 BoardDescription : Описание
 BoardBumpLimit   : Бамп-лимит
@@ -54,14 +54,14 @@ BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
 BoardCategory: Категория
+Optional: Необязательно
 BoardCategories: Категории досок (через запятую)
-HelpUpdateBoard: Оставьте ID пустым для создания новой борды
-UpdateBoardsBtn: Обновить борды
+UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных
 DeleteAll: Удалить все
 
 WrongBoardId: Неправильное ID борды
-BoardUpdated: Борда обновлена
+BoardsUpdated: Борды обновлены
 BoardAdded: Борда добавлена
 BoardCleaned: Борда очищена от всех постов
 BoardDeleted: Борда удалена

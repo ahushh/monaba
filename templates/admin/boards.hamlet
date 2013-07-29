@@ -1,48 +1,20 @@
 ^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
-<table .admin-table>
-    <tr>
-        <th>         
-        <th>_{MsgBoardId}
-        <th>_{MsgBoardName}
-        <th>_{MsgBoardDescription }
-        <th>_{MsgBoardBumpLimit   }
-        <th>_{MsgBoardNumberFiles }
-        <th>_{MsgBoardAllowedTypes}
-        <th>_{MsgBoardDefaultName }
-        <th>_{MsgBoardMaxMsgLength}
-        <th>_{MsgBoardThumbSize }
-        <th>_{MsgBoardThreadsPerPage}
-        <th>_{MsgBoardPreviewsPerThread}
-        <th>_{MsgBoardThreadLimit}
-        <th>_{MsgBoardHidden}
-        <th>_{MsgBoardEnableCaptcha}
-        <th>_{MsgBoardCategory}
-    ^{formWidget}
-    $forall Entity bId b <- boards
-        <tr>
-            <td>
-                <a href=@{DeleteBoardR $ fromIntegral $ fromKey $ bId}>_{MsgDeleteBtn}
-                <a href=@{CleanBoardR  $ fromIntegral $ fromKey $ bId}>_{MsgCleanBoard}
-            <td>#{show $ fromKey $ bId}
-            <td>#{boardName b}
-            <td>#{boardDescription  b}
-            <td>#{boardBumpLimit    b}
-            <td>#{boardNumberFiles  b}
-            <td>#{unwords $ boardAllowedTypes b}
-            <td>#{boardDefaultName  b}
-            <td>#{boardMaxMsgLength b}
-            <td>#{boardThumbSize  b}
-            <td>#{boardThreadsPerPage b}
-            <td>#{boardPreviewsPerThread b}
-            $maybe l <- boardThreadLimit b
-                <td>#{l}
-            $nothing
-                <td>   
-            <td>#{boardHidden b}
-            <td>#{boardEnableCaptcha b}
-            $maybe c <- boardCategory b
-                <td>#{c}
-            $nothing
-                <td>   
+<a href=@{CleanBoardR  board}><button>_{MsgCleanBoard}</button></a>
+<a href=@{DeleteBoardR board}><button>_{MsgDeleteBtn}</button></a>
+^{formWidget}
+<select onchange="location = '/admin/boards/'+this.options[this.selectedIndex].value;">
+    $if board == "all"
+        <option selected=selected value=all>_{MsgAllBoards}
+    $else
+        <option value=all>_{MsgAllBoards}
+    $if board == "new"
+        <option selected=selected value=new>_{MsgNewBoard}
+    $else
+        <option value=new>_{MsgNewBoard}
+    $forall Entity _ b <- boards
+        $if board == boardName b
+            <option selected=selected value=#{boardName b}>#{boardName b}
+        $else
+            <option value=#{boardName b}>#{boardName b}
 ^{footerWidget}            

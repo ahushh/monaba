@@ -112,7 +112,7 @@ postBoardR board _ = do
         -- check too fast posting
         lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent ==. 0] [Desc PostDate] -- last thread by IP
         when (isJust lastPost) $ do
-          let diff = ceiling $ realToFrac (diffUTCTime now (postDate $ entityVal $ fromJust lastPost))
+          let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)

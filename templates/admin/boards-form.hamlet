@@ -1,20 +1,48 @@
-<form .update-board method=post action=@{ManageBoardsR}>
+<form style=display:inline method=post action=@{ManageBoardsR bname}>
     #{extra}
-    <input type=submit value=_{MsgUpdateBoardsBtn}> _{MsgHelpUpdateBoard}
-    <tr>
-        <td> 
-        <td>^{fvInput boardIdView}
-        <td>^{fvInput nameView}
-        <td>^{fvInput descriptionView}
-        <td>^{fvInput bumpLimitView}
-        <td>^{fvInput numberFilesView}
-        <td>^{fvInput allowedTypesView}
-        <td>^{fvInput defaultNameView}
-        <td>^{fvInput maxMsgLengthView}
-        <td>^{fvInput thumbSizeView}
-        <td>^{fvInput threadsPerPageView}
-        <td>^{fvInput previewsPerThreadView}
-        <td>^{fvInput threadLimitView}
-        <td>^{fvInput isHiddenView}
-        <td>^{fvInput enableCaptchaView}
-        <td>^{fvInput categoryView}
+    <input type=submit value=_{MsgUpdateBoardsBtn}>
+        <table>
+            <tr>
+                <td>_{MsgBoardName}
+                <td> ^{fvInput nameView}
+            <tr>
+                <td>_{MsgBoardDescription }
+                <td>^{fvInput descriptionView}
+            <tr>
+                <td>_{MsgBoardBumpLimit}
+                <td>^{fvInput bumpLimitView}
+            <tr>
+                <td>_{MsgBoardNumberFiles}
+                <td>^{fvInput numberFilesView}
+            <tr>
+                <td>_{MsgBoardAllowedTypes}
+                <td>^{fvInput allowedTypesView}
+            <tr>
+                <td>_{MsgBoardDefaultName }
+                <td>^{fvInput defaultNameView}
+            <tr>
+                <td>_{MsgBoardMaxMsgLength}
+                <td>^{fvInput maxMsgLengthView}
+            <tr>
+                <td>_{MsgBoardThumbSize}
+                <td>^{fvInput thumbSizeView}
+            <tr>
+                <td>_{MsgBoardThreadsPerPage}
+                <td>^{fvInput threadsPerPageView}
+            <tr>
+                <td>_{MsgBoardPreviewsPerThread}
+                <td>^{fvInput previewsPerThreadView}
+            <tr>
+                <td>_{MsgBoardThreadLimit}
+                <td>^{fvInput threadLimitView}
+                <td>(_{MsgOptional})
+            <tr>
+                <td>_{MsgBoardHidden}
+                <td>^{fvInput isHiddenView}
+            <tr>
+                <td>_{MsgBoardEnableCaptcha}
+                <td>^{fvInput enableCaptchaView}
+            <tr>
+                <td>_{MsgBoardCategory}
+                <td>^{fvInput categoryView}
+                <td>(_{MsgOptional})

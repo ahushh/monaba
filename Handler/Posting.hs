@@ -1,7 +1,8 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
+{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Posting where
 
 import           Import
+import           Yesod.Routes.Class      (Route)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Conduit            (($$))
 import qualified Data.ByteString         as BS
@@ -96,6 +97,13 @@ isBanExpired (Entity banId ban) = do
         then runDB (delete banId) >> return True
         else return False
 -------------------------------------------------------------------------------------------------------------------
+trickyRedirect :: forall (m :: * -> *) b msg url.
+                  (RedirectUrl
+                   (HandlerSite m)
+                   (Route App),
+                   RedirectUrl (HandlerSite m) url, MonadHandler m,
+                   RenderMessage (HandlerSite m) msg) =>
+                  Text -> msg -> url -> m b
 trickyRedirect status msg url = do
   setMessageI msg
   t <- isAjaxRequest

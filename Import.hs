@@ -37,6 +37,7 @@ import Control.Monad as Import (unless, when, forM, forM_, void)
 import ModelTypes    as Import 
 -------------------------------------------------------------------------------------------------------------------
 import           Yesod.Auth
+import           Database.Persist.Sql    (SqlBackend)
 import           System.FilePath         ((</>))
 import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
@@ -208,6 +209,13 @@ isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
 addUTCTime' :: Int -> UTCTime -> UTCTime
 addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 
+
+getConfig :: forall b site.
+             (YesodPersist site,
+              PersistQuery (YesodPersistBackend site (HandlerT site IO)),
+              PersistMonadBackend (YesodPersistBackend site (HandlerT site IO))
+              ~ SqlBackend) =>
+             (Config -> b) -> HandlerT site IO b
 getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
 -------------------------------------------------------------------------------------------------------------------
 getIp :: forall (m :: * -> *). MonadHandler m => m String
@@ -223,6 +231,7 @@ getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
 getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
 getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
 
+isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
 isAjaxRequest = do
   maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
   return $ maybe False (=="XMLHttpRequest") maybeHeader

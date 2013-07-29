@@ -7,7 +7,6 @@ import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           Data.Maybe         (catMaybes)
 import           Control.Arrow      (second)
 import           AwfulMarkup        (doAwfulMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
@@ -113,7 +112,7 @@ postThreadR board thread = do
         -- check too fast posting
         lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent !=. 0] [Desc PostDate] -- last reply by IP
         when (isJust lastPost) $ do
-          let diff = ceiling $ realToFrac (diffUTCTime now (postDate $ entityVal $ fromJust lastPost))
+          let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
             deleteSession "acaptcha" >>
             trickyRedirect "error" MsgPostingTooFast threadUrl

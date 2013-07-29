@@ -106,6 +106,7 @@ library
                  , esqueleto
                  , containers
                  , http-types
+                 , yesod-routes
 
 executable         Monaba
     if flag(library-only)
@@ -141,6 +142,7 @@ executable         Monaba
                      , esqueleto
                      , containers
                      , http-types
+                     , yesod-routes
 
     ghc-options:       -threaded -O2
 

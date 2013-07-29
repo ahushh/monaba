@@ -4,7 +4,7 @@
     <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
     $maybe Entity _ user <- muserW
         $if personRole user == Admin
-            <a href=@{ManageBoardsR}>_{MsgBoards}</a> |
+            <a href=@{ManageBoardsR "all"}>_{MsgBoards}</a> |
             <a href=@{StaffR}>_{MsgStaff}</a> |
             <a href=@{ConfigR}>_{MsgConfig}</a> |
     <a href=@{AccountR}>_{MsgAccount}

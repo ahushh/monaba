@@ -122,11 +122,13 @@
    CLOSED: [2013-07-28 Вс 08:56]
 ** DONE ajax posting (!)
    CLOSED: [2013-07-28 Вс 15:41]
-** TODO better board management (!)
+** DONE better board management (!)
+   CLOSED: [2013-07-29 Пн 05:58]
+** TODO ban by session (!)
+** TODO LaTex - Mathjax
 ** TODO admin/mod logging
 ** TODO truncate message using JS
 ** TODO search
-** TODO ban by session (!)
 ** TODO thread catalog
 ** TODO black/spam list
 ** TODO tags for threads

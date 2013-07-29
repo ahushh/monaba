@@ -39,7 +39,7 @@ NoSuchBoard: No such board
 LockedThread: This thread is locked and can't be posted in
 PostSent: Post successfully sent
 
-BoardId: ID
+NewBoard: New board
 BoardName: Name
 BoardDescription : Description
 BoardBumpLimit   : Bump limit
@@ -54,14 +54,14 @@ BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
 BoardCategory: Category
+Optional: Optional
 BoardCategories: Board categories (separate by comma)
-HelpUpdateBoard: Leave ID field empty if you want to create a new board
-UpdateBoardsBtn: Update boards
+UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
 DeleteAll: Delete all
 
 WrongBoardId: Wrong board ID
-BoardUpdated: Board successfully updated
+BoardsUpdated: Boards successfully updated
 BoardAdded: Board successfully added
 BoardCleaned: Board successfully cleaned
 BoardDeleted: Board successfully deleted

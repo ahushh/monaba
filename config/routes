@@ -28,9 +28,9 @@
 /admin/autosage/#Text/#Int AutoSageR     GET
 /admin/ban/#Text/#Text     BanByIpR      GET POST
 /admin/bandelete/#Int      BanDeleteR    GET
-/admin/boards              ManageBoardsR GET POST
-/admin/boards/delete/#Int  DeleteBoardR  GET
-/admin/boards/clean/#Int   CleanBoardR   GET
+/admin/boards/#Text        ManageBoardsR GET POST
+/admin/boards/delete/#Text DeleteBoardR  GET
+/admin/boards/clean/#Text  CleanBoardR   GET
 /admin/staff               StaffR        GET POST
 /admin/staff/delete/#Int   StaffDeleteR  GET
 /admin/account             AccountR      GET

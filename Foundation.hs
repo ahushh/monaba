@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 module Foundation where
 
 import Prelude
@@ -11,7 +12,7 @@ import Network.HTTP.Conduit (Manager)
 import qualified Settings
 import Settings.Development (development)
 import qualified Database.Persist
-import Database.Persist.Sql (SqlPersistT)
+import Database.Persist.Sql (SqlPersistT, SqlBackend)
 import Settings.StaticFiles
 import Settings (widgetFile, Extra (..))
 import Model
@@ -125,8 +126,8 @@ instance Yesod App where
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
     addStaticContent =
-        -- addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
-        addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
+        addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
+        -- addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
       where
         -- Generate a unique filename based on the content itself
         genFileName lbs
@@ -143,20 +144,20 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
-    isAuthorized (StickR    _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (LockR     _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (AutoSageR _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (BanByIpR  _ _ ) _ = isAuthorized' Moderator
-    isAuthorized ManageBoardsR    _ = isAuthorized' Admin
-    isAuthorized AdminR           _ = isAuthorized' Moderator
-    isAuthorized (DeleteBoardR _) _ = isAuthorized' Admin
-    isAuthorized (CleanBoardR  _) _ = isAuthorized' Admin
-    isAuthorized StaffR           _ = isAuthorized' Admin
-    isAuthorized (StaffDeleteR _) _ = isAuthorized' Admin
-    isAuthorized NewPasswordR     _ = isAuthorized' Moderator
-    isAuthorized AccountR         _ = isAuthorized' Moderator
-    isAuthorized ConfigR          _ = isAuthorized' Admin
-    isAuthorized _                _ = return Authorized
+    isAuthorized (StickR     _ _ ) _ = isAuthorized' Moderator
+    isAuthorized (LockR      _ _ ) _ = isAuthorized' Moderator
+    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' Moderator
+    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' Moderator
+    isAuthorized (ManageBoardsR _) _ = isAuthorized' Admin
+    isAuthorized AdminR            _ = isAuthorized' Moderator
+    isAuthorized (DeleteBoardR  _) _ = isAuthorized' Admin
+    isAuthorized (CleanBoardR   _) _ = isAuthorized' Admin
+    isAuthorized StaffR            _ = isAuthorized' Admin
+    isAuthorized (StaffDeleteR  _) _ = isAuthorized' Admin
+    isAuthorized NewPasswordR      _ = isAuthorized' Moderator
+    isAuthorized AccountR          _ = isAuthorized' Moderator
+    isAuthorized ConfigR           _ = isAuthorized' Admin
+    isAuthorized _                 _ = return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -175,6 +176,18 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
+
+isAuthorized' :: forall master.
+                 (YesodPersist master,
+                  PersistStore (YesodPersistBackend master (HandlerT master IO)),
+                  YesodAuth master,
+                  AuthId master
+                  ~ KeyBackend
+                  SqlBackend Person,
+                  PersistMonadBackend
+                  (YesodPersistBackend master (HandlerT master IO))
+                  ~ SqlBackend) =>
+                 RoleOfPerson -> HandlerT master IO AuthResult
 isAuthorized' role = do
   mauth <- maybeAuth
   case mauth of

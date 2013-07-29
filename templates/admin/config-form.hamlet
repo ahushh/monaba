@@ -1,10 +1,22 @@
 <form .config method=post action=@{ConfigR}>
     #{extra}
     <input type=submit value=_{MsgUpdateConfig}>
-    <tr>
-        <td>^{fvInput captchaLengthView}
-        <td>^{fvInput acaptchaGuardsView}
-        <td>^{fvInput captchaTimeoutView}
-        <td>^{fvInput replyDelayView}
-        <td>^{fvInput threadDelayView}
-        <td>^{fvInput boardCategoriesView}
+    <table>
+        <tr>
+            <td>_{MsgCaptchaLength}
+            <td>^{fvInput captchaLengthView}
+        <tr>
+            <td>_{MsgACaptchaGuards}
+            <td>^{fvInput acaptchaGuardsView}
+        <tr>
+            <td>_{MsgCaptchaTimeout}
+            <td>^{fvInput captchaTimeoutView}
+        <tr>
+            <td>_{MsgReplyDelay}
+            <td>^{fvInput replyDelayView}
+        <tr>
+            <td>_{MsgThreadDelay}
+            <td>^{fvInput threadDelayView}
+        <tr>
+            <td>_{MsgBoardCategories}
+            <td>^{fvInput boardCategoriesView}

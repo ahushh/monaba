@@ -27,6 +27,7 @@ function expandThread(board, thread) {
                 $("#thread-"+thread+" .truncate-thread-after").toggle();
                 $("#thread-"+thread+" .truncate-thread").after(data);
                 baseInit();
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }
         });
     }

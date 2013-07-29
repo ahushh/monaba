@@ -27,6 +27,10 @@
                      <a id=button-spoiler class=buttons>spoiler
                      |
                      <a id=button-code class=buttons>code
+                     |
+                     <a id=button-inline-latex class=buttons>inline LaTeX
+                     |
+                     <a id=button-latex class=buttons>LaTeX
                      ]                    
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}

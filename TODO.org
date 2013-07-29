@@ -124,8 +124,10 @@
    CLOSED: [2013-07-28 Вс 15:41]
 ** DONE better board management (!)
    CLOSED: [2013-07-29 Пн 05:58]
+** DONE LaTex - Mathjax
+   CLOSED: [2013-07-29 Пн 11:07]
+** TODO fix JS and stylesheet loading
 ** TODO ban by session (!)
-** TODO LaTex - Mathjax
 ** TODO admin/mod logging
 ** TODO truncate message using JS
 ** TODO search

@@ -4,10 +4,6 @@
 <h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
 <br>
 <div style="margin-left:30px">
-    <p>##OP → <span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
-    <p>##OP → <span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
-    <p>##123 → <span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
-    <p>##123 → <span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
     <p>**bold**      →  <strong>bold</strong>
     <p>__bold__      →  <strong>bold</strong>
     <p>[b]bold[/b]   →  <strong>bold</strong>
@@ -22,6 +18,32 @@
     <p>>text               → <span .quote style="color:green">>text</span>
     <p>>>1234              → <a href=/b/1234/#1234>>>1234</a>
     <p>>>/b/1234           → <a href=/b/1234#1234>>>/b/1234</a>
+    <hr>
+
+    <p>##OP → <span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
+    <p>##OP → <span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
+    <p>##123 → <span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
+    <p>##123 → <span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
+    <hr>
+
+    <pre> \(\sqrt{3x-1}+(1+x)^2\) 
+    <p>↓↓↓
+    <pre> $\sqrt{3x-1}+(1+x)^2$
+    <p>↓↓↓
+    <pre> [l]\sqrt{3x-1}+(1+x)^2[/l]
+    <p>↓↓↓
+    <p> [l]\sqrt{3x-1}+(1+x)^2[/l]
+    <hr>
+
+    <pre> \[\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} \]
+    <p>↓↓↓
+    <pre> $$\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} $$
+    <p>↓↓↓
+    <pre> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
+    <p>↓↓↓
+    <p> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
+    <hr>
+
     <p>[code=<em>haskell</em>] rats2 = fix ((1:) . (>>= \x -> [1+x, 1/(1+x)])) :: [Rational] [/code]
     <p>↓↓↓
     <pre class="haskell" style="font-family:monospace;">  rats2 <span style="color: #339933; font-weight: bold;">=</span> fix <span style="color: green;">&#40;</span><span style="color: green;">&#40;</span><span style="color: red;">1</span>:<span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">.</span> <span style="color: green;">&#40;</span><span style="color: #339933; font-weight: bold;">>>=</span> \x <span style="color: #339933; font-weight: bold;">-></span> <span style="color: green;">&#91;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: #339933; font-weight: bold;">,</span> <span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">/</span><span style="color: green;">&#40;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: green;">&#41;</span><span style="color: green;">&#93;</span><span style="color: green;">&#41;</span><span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">::</span> <span style="color: green;">&#91;</span><a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Prelude.html#t:Rational"><span style="color: #cccc00; font-weight: bold;">Rational</span></a><span style="color: green;">&#93;</span></pre> 

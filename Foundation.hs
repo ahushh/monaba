@@ -104,6 +104,7 @@ instance Yesod App where
             -- addStylesheet $ StaticR css_futaba_css
             addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"
             addScriptRemote "http://malsup.github.com/jquery.form.js"
+            addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
             $(combineStylesheets 'StaticR
                 [
                 -- css_normalize_css

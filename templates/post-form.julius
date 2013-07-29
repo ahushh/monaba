@@ -46,15 +46,12 @@ $(document).ready(function() {
 
     $('input[type=password]').val(password);
 
-
     $('#button-bold').click(function() {
         insertTag('[b]', '[/b]');
     });
-
     $('#button-italic').click(function() {
         insertTag('[i]', '[/i]');
     });
-
     $('#button-underline').click(function() {
         insertTag('[u]', '[/u]');
     });
@@ -66,6 +63,12 @@ $(document).ready(function() {
     });
     $('#button-code').click(function() {
         insertTag('[code=text]', '[/code]');
+    });
+    $('#button-inline-latex').click(function() {
+        insertTag('[l]', '[/l]');
+    });
+    $('#button-latex').click(function() {
+        insertTag('[latex]', '[/latex]');
     });
 });
 // ----------------------------------------------------------------------------------------------------------

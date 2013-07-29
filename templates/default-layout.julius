@@ -23,6 +23,20 @@ if (style) {
 $('#stylebar').change(function() {
    setStylesheet($('#stylebar').val());
 });
+
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath : [ ['[l]','[/l]'],
+                       ['$','$'],
+                       ['\\(','\\)']
+                     ],
+        displayMath: [ ['[latex]','[/latex]'],
+                       ['$$','$$'],
+                       ["\\[","\\]"]
+                     ],
+        processEscapes: true
+    },
+});
 //-----------------------------------------------------------------
 $.ajaxSetup({
     error: function(x, e) {
@@ -225,6 +239,7 @@ function reallyShowPopupPost(event, elem, post) {
     var postFullId = post.attr('id');
     addEmbeddedPlayer(postFullId);
     doImageExpanding(postFullId);
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
 function showPopupPost(event, elem, board, postId) {
@@ -350,7 +365,6 @@ function refreshCaptcha() {
     }
 }
 
-
 function refreshThread(board, threadId) {
     var lastPost = $("#thread-"+threadId+" .reply-post:last");
     if (lastPost.length == 0) {
@@ -365,6 +379,7 @@ function refreshThread(board, threadId) {
         if (/reply/.test(data)) {
             $("#thread-"+threadId).append(data);
             baseInit();
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         } else if (data == "No such thread ") {
             popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
         } else if (data == "No new posts ") {

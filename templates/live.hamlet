@@ -1,0 +1,10 @@
+^{headerWidget muser boards boardCategories}
+<br>
+<h2 style=text-align:center> _{MsgLatestPosts}
+$forall (e, files) <- postsAndFiles
+    $if (postParent $ entityVal e) > 0
+        ^{replyPostWidget muser e files}
+    $else
+        ^{opPostWidget muser e files False}
+
+^{footerWidget}            

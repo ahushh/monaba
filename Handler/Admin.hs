@@ -12,12 +12,8 @@ getAdminR :: Handler Html
 getAdminR = do
   muser     <- maybeAuth
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  posts     <- runDB $ selectList [] [Desc PostDate, LimitTo 10]
-  postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
-  nameOfTheBoard <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
-  let postsAndFiles = zip posts postFiles
-  setUltDestCurrent
+  nameOfTheBoard  <- extraSiteName <$> getExtra
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Management"]
     $(widgetFile "admin")

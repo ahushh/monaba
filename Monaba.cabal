@@ -23,6 +23,7 @@ library
                      Handler.Help
                      Handler.Thread
                      Handler.Board
+                     Handler.Live
                      Handler.Posting
                      Handler.Delete
                      Handler.Admin

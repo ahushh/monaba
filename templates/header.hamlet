@@ -8,6 +8,7 @@
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
+    [ <a href=@{LiveR}>/~/</a> ] 
     $forall Entity _ b <- boardsW
         $if not (boardHidden b)
             $if isNothing (boardCategory b)

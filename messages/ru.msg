@@ -154,3 +154,7 @@ ReplyToThread: Ответ в тред №
 ThreadNotExist: Похоже, этот тред больше не существует
 NoPostsAnymore: Внезапно, в этом треде постов нет вообще
 Loading: Загрузка...
+
+Management: Админка
+BanManagement: Баны
+BoardManagement: Настройки досок

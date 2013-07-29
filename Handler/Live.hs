@@ -13,10 +13,10 @@ getLiveR = do
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
+  msgrender       <- getMessageRender
   let postsAndFiles = zip posts postFiles
-  setUltDestCurrent
-
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Last posts"]
+    setUltDestCurrent
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgLatestPosts]
     $(widgetFile "live")
   

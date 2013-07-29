@@ -14,8 +14,9 @@ getAdminR = do
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   boardCategories <- getConfig configBoardCategories
   nameOfTheBoard  <- extraSiteName <$> getExtra
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Management"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgManagement]
     $(widgetFile "admin")
 -------------------------------------------------------------------------------------------------------------
 -- Thread options    
@@ -64,10 +65,11 @@ getBanByIpR board ip = do
   muser  <- maybeAuth
   boards <- runDB $ selectList ([]::[Filter Board]) []
   bans   <- runDB $ selectList ([]::[Filter Ban])   []
-  nameOfTheBoard <- extraSiteName <$> getExtra
+  nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Ban management"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgBanManagement]
     $(widgetFile "admin/ban")
   
 postBanByIpR :: Text -> Text -> Handler Html
@@ -99,9 +101,10 @@ getManageBoardsR board = do
   muser  <- maybeAuth
   boards <- runDB $ selectList ([]::[Filter Board]) []
   boardCategories <- getConfig configBoardCategories
-  nameOfTheBoard <- extraSiteName <$> getExtra
+  nameOfTheBoard  <- extraSiteName <$> getExtra
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Board management"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgBoardManagement]
     $(widgetFile "admin/boards")
     
 updateBoardForm :: Maybe (Entity Board) -> 
@@ -272,10 +275,11 @@ getStaffR = do
   boards    <- runDB $ selectList ([]::[Filter Board ]) []
   persons   <- runDB $ selectList ([]::[Filter Person]) []
   (formWidget, formEnctype) <- generateFormPost staffForm
-  nameOfTheBoard <- extraSiteName <$> getExtra
+  nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Staff"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgStaff]
     $(widgetFile "admin/staff")
 
 postStaffR :: Handler Html
@@ -321,10 +325,11 @@ getAccountR = do
   muser     <- maybeAuth
   boards    <- runDB $ selectList ([]::[Filter Board ]) []
   (formWidget, formEnctype) <- generateFormPost newPasswordForm
-  nameOfTheBoard <- extraSiteName <$> getExtra
+  nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Account"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgAccount]
     $(widgetFile "admin/account")
                  
 postNewPasswordR :: Handler Html
@@ -370,10 +375,11 @@ getConfigR = do
   boards <- runDB $ selectList  ([]::[Filter Board ]) []
   config <- runDB $ selectFirst ([]::[Filter Config]) []
   (formWidget, formEnctype) <- generateFormPost $ configForm (entityVal $ fromJust config)
-  nameOfTheBoard <- extraSiteName <$> getExtra
+  nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories
+  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", "Config"]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgConfig]
     $(widgetFile "admin/config")
 
 postConfigR :: Handler Html

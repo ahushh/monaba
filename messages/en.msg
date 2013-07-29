@@ -154,3 +154,7 @@ ReplyToThread: Reply to thread №
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!
 Loading: Loading...
+
+Management: Management
+BanManagement: Ban management
+BoardManagement: Board management

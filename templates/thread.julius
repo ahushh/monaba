@@ -5,10 +5,13 @@ $('#post-form').ajaxForm({
     success: function(data) {
         if (data.ok) {
             $('#post-form input[type=text]').clearFields();
+            $('#post-form input[type=file]').clearFields();
             $('#post-form textarea').clearFields();
             popupMessage(data.ok,2000);
             closePostForm();
-            refreshThread(#{toJSON $ board}, #{toJSON $ show $ postLocalId $ entityVal eOpPost});
+            var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
+            var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
+            refreshThread(board, thread)
         } else {
             popupMessage(data.error,2000);
         }

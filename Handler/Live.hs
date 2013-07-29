@@ -9,7 +9,8 @@ getLiveR :: Handler Html
 getLiveR = do
   muser     <- maybeAuth
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  posts     <- runDB $ selectList [] [Desc PostDate, LimitTo 15]
+  let hiddenBoards = catMaybes $ map (\(Entity _ b) -> if boardHidden b then Just $ boardName b else Nothing) boards
+  posts     <- runDB $ selectList [PostBoard /<-. hiddenBoards] [Desc PostDate, LimitTo 15]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories

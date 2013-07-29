@@ -24,7 +24,7 @@ getCaptchaR = do
 getCaptchaInfoR :: Handler Html
 getCaptchaInfoR = do
   acaptcha  <- lookupSession "acaptcha"
-  muser     <- maybeAuth  
+  muser     <- maybeAuth
   when (isNothing acaptcha && isNothing muser) $
     recordCaptcha =<< getConfig configCaptchaLength
     

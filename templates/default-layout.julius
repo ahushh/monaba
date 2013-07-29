@@ -266,6 +266,7 @@ function showQuickPostForm(postId) {
     $("#post-form").removeClass().addClass("quick-post-form");
     $("#"+postId).after($("#post-form"));
     $("#post-form").css("display","table");
+    $("#go-back-block").css("display","none");
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
         var action = $("#post-form").attr('action');
         var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
@@ -277,6 +278,7 @@ function showQuickPostForm(postId) {
             success: function(data) {
                 if (data.ok) {
                     $('#post-form input[type=text]').clearFields();
+                    $('#post-form input[type=file]').clearFields();
                     $('#post-form textarea').clearFields();
                     popupMessage(data.ok,2000);
                     closePostForm();
@@ -292,7 +294,6 @@ function showQuickPostForm(postId) {
         $("#post-form").children().find('.reply-to').remove();
         $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
         $("#no-bump-block").css("display","");
-        $("#go-back-block").css("display","none");
 
         var newUrl;
         if (/\/board\/[\w_-]+/.test(action)) {
@@ -302,16 +303,16 @@ function showQuickPostForm(postId) {
         }
         $("#post-form").attr('action', newUrl);
     }
-}
+} 
 
 function showPlainPostForm() {
-    $("#post-form").unbind();
     $("#post-form").removeClass().addClass("plain-post-form");
     $("#post-form").children().find('.reply-to').remove();
     $('.show-plain-form').after($("#post-form"));
     $(".show-plain-form").css("display","none");
     $("#post-form").css("display","block");
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
+        $("#post-form").unbind();
         $("#no-bump-block").css("display","none");
         $("#go-back-block").css("display","");
         var action = $("#post-form").attr('action');
@@ -319,6 +320,8 @@ function showPlainPostForm() {
             var newUrl = action.replace(/\/thread\/([\w_-]+)\/\d+/, "/board/$1");
             $("#post-form").attr('action', newUrl);
         }
+    } else {
+        $("#go-back-block").css("display","none");
     }
 }
 function closePostForm() {

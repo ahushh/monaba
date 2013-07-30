@@ -16,5 +16,6 @@ Staging:
   <<: *defaults
 
 Production:
-  #approot: "http://www.example.com"
+  approot: "http://haibane.ru"
+  sitename: "Хайбане.ru"
   <<: *defaults

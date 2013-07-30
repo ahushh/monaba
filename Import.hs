@@ -93,7 +93,7 @@ widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe (Entity Person) -> [
 widgetHelperFilterBoards boards category muser = filter p boards
   where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
         notHidden     b = not $ boardHidden b
-        checkCategory b | T.null category = True
+        checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = (Just category) == boardCategory b
         checkAccess   b = case muser of
           Just (Entity _ user) -> Just (personRole user) >= boardViewAccess b

@@ -165,7 +165,7 @@ function doRefMap(post) {
         var board  = extractBoard( $(this).attr('id') );
         var threadId = extractThread( $(this).attr('id') );
         
-        var links  = $(this).find('a').get();
+        var links  = $(this).find('blockquote a').get();
         for (var i = 0; i < links.length; i++) {
             var match = /(?:##|&gt;&gt;)(\d+)/.exec( $(links[i]).html() );
             if (match) {

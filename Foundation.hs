@@ -90,7 +90,7 @@ instance Yesod App where
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend _ = fmap Just $ defaultClientSessionBackend
-        (60 * 60 * 24 * 2) -- 2 days
+        (60 * 60 * 24 * 7) -- 7 days
         "config/client_session_key.aes"
 
     defaultLayout widget = do
@@ -106,8 +106,8 @@ instance Yesod App where
         pc <- widgetToPageContent $ do
             -- addStylesheet $ StaticR css_ash_css
             -- addStylesheet $ StaticR css_futaba_css
-            addScriptRemote "http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"
-            addScriptRemote "http://malsup.github.com/jquery.form.js"
+            addScript (StaticR js_jquery_min_js)
+            addScript (StaticR js_jquery_form_js)
             addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
             $(combineStylesheets 'StaticR
                 [

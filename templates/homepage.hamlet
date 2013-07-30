@@ -6,12 +6,11 @@
 <div #home-container>
     <div #board-list-full>
         $forall c <- boardCategories
-            <div .board-category>#{c}
-            $forall Entity _ b <- boards
-                $if not (boardHidden b)
-                    $if isJust (boardCategory b)
-                        $if c == fromJust (boardCategory b)
-                            <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
+          $with bs <- widgetHelperFilterBoards boards c muser
+            $if not (null bs)
+              <div .board-category>#{c}
+              $forall Entity _ b <- bs
+                <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
     <div #main-image>
         <img #main-image src=#{staticDir ++ "/home.jpg"}>
 ^{footerWidget}            

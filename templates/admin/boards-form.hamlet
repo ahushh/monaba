@@ -41,8 +41,21 @@
                 <td>_{MsgBoardHidden}
                 <td>^{fvInput isHiddenView}
             <tr>
+                <td>_{MsgBoardOpWithoutFile}
+                <td>^{fvInput opWithoutFileView}
+            <tr>
                 <td>_{MsgBoardEnableCaptcha}
                 <td>^{fvInput enableCaptchaView}
             <tr>
                 <td>_{MsgBoardCategory}
                 <td>^{fvInput categoryView}
+            <tr>
+                <td>_{MsgBoardViewAccess} 
+                <td>^{fvInput viewAccessView}
+                <td>( _{MsgNoneForAny} )
+            <tr>
+                <td>_{MsgBoardReplyAccess}
+                <td>^{fvInput replyAccessView}
+            <tr>
+                <td>_{MsgBoardThreadAccess}
+                <td>^{fvInput threadAccessView}

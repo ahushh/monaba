@@ -168,12 +168,12 @@ instance Yesod App where
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
         req <- waiRequest
         let reqwith = lookup "X-Requested-With" $ requestHeaders req
-            errorText NotFound = (404, "Not Found", "Sorry, not found")
-            errorText (InternalError msg) = (400, "Bad Request", msg)
-            errorText (InvalidArgs m) = (400, "Bad Request", T.unwords m)
+            errorText NotFound               = (404, "Not Found", "Sorry, not found")
+            errorText (InternalError msg)    = (400, "Bad Request", msg)
+            errorText (InvalidArgs m)        = (400, "Bad Request", T.unwords m)
             errorText (PermissionDenied msg) = (403, "Forbidden", msg)
-            errorText (BadMethod _) = (405, "Method Not Allowed",
-                                            "Method not supported")
+            errorText (BadMethod _)          = (405, "Method Not Allowed", "Method not supported")
+            errorText NotAuthenticated       = (401, "Not authenticated", "You don't have permission to do this")
         when (maybe False (== "XMLHttpRequest") reqwith) $ do
             let (code, brief, full) = errorText errorResponse
             sendResponseStatus

@@ -18,10 +18,11 @@ postBoardNoPageR board = postBoardR board 0
 getBoardR :: Text -> Int -> Handler Html
 getBoardR board page = do
   muser      <- maybeAuth
-  ------------------------------------------------------------------------------------------------------- 
   maybeBoard <- runDB $ getBy $ BoardUniqName board
-  boards     <- runDB $ selectList ([]::[Filter Board]) []
   when (isNothing maybeBoard) notFound
+  let userRole = maybe Nothing (Just . personRole . entityVal) muser
+    in when (userRole < (boardViewAccess $ entityVal $ fromJust maybeBoard)) notFound
+  boards     <- runDB $ selectList ([]::[Filter Board]) []
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
   let numberFiles       = boardNumberFiles       $ entityVal $ fromJust maybeBoard
@@ -59,6 +60,9 @@ getBoardR board page = do
   maybeCaptchaInfo <- getCaptchaInfo
   boardCategories  <- getConfig configBoardCategories
   msgrender        <- getMessageRender
+
+  let userRole             = maybe Nothing (Just . personRole . entityVal) muser
+      hasAccessToNewThread = userRole >= (boardThreadAccess $ entityVal $ fromJust maybeBoard)
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
@@ -69,27 +73,28 @@ postBoardR board _ = do
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
   muser      <- maybeAuth
+  let userRole = maybe Nothing (Just . personRole . entityVal) muser
+    in when (userRole < (boardThreadAccess $ entityVal $ fromJust maybeBoard)) notAuthenticated
   -------------------------------------------------------------------------------------------------------   
-  let msgRedirect msg      = setMessageI msg >> redirect (BoardNoPageR board)
-      maxMessageLength     = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
-      defaultName          = boardDefaultName   $ entityVal $ fromJust maybeBoard
-      allowedTypesToUpload = boardAllowedTypes  $ entityVal $ fromJust maybeBoard
-      thumbSize            = boardThumbSize     $ entityVal $ fromJust maybeBoard
-      numberFiles          = boardNumberFiles   $ entityVal $ fromJust maybeBoard
-      enableCaptcha        = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
-      isFileAllowed (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypesToUpload
-      isFileAllowed _                      = True
+  let msgRedirect msg  = setMessageI msg >> redirect (BoardNoPageR board)
+      maxMessageLength = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
+      defaultName      = boardDefaultName   $ entityVal $ fromJust maybeBoard
+      allowedTypes     = boardAllowedTypes  $ entityVal $ fromJust maybeBoard
+      thumbSize        = boardThumbSize     $ entityVal $ fromJust maybeBoard
+      numberFiles      = boardNumberFiles   $ entityVal $ fromJust maybeBoard
+      enableCaptcha    = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
+      opWithoutFile    = boardOpWithoutFile $ entityVal $ fromJust maybeBoard      
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm numberFiles
   case result of
     FormFailure _                            -> msgRedirect MsgBadFormData
     FormMissing                              -> msgRedirect MsgNoFormData
     FormSuccess (name, title, message, pswd, captcha, files, goback, Just _)
-      | isNothing message && all (\(FormSuccess f) -> isNothing f) files             -> msgRedirect MsgNoImgOrText
-      | maxMessageLength <= T.length (unTextarea $ fromMaybe (Textarea "") message) -> msgRedirect $ MsgTooLongMessage maxMessageLength
-      | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> msgRedirect MsgNoImgOrText
-      | not $ all isFileAllowed files                                                -> msgRedirect MsgTypeNotAllowed
-      | otherwise                                                                  -> do
+      | not opWithoutFile   && noFiles files           -> msgRedirect MsgNoFile
+      | noMessage message && noFiles files           -> msgRedirect MsgNoFileOrText
+      | tooLongMessage message maxMessageLength     -> msgRedirect $ MsgTooLongMessage maxMessageLength
+      | not $ all (isFileAllowed allowedTypes) files  -> msgRedirect MsgTypeNotAllowed
+      | otherwise                                   -> do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         -- check ban

@@ -5,6 +5,7 @@ import           Import
 import           Yesod.Routes.Class      (Route)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Conduit            (($$))
+import qualified Data.Text               as T
 import qualified Data.ByteString         as BS
 import qualified Data.Conduit.List       as CL
 -------------------------------------------------------------------------------------------------------------------
@@ -49,6 +50,19 @@ postForm numberFiles extra = do
                FormSuccess fileresults <*> gobackRes <*> nobumpRes
       widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
+-------------------------------------------------------------------------------------------------------------------
+isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
+isFileAllowed allowedTypes (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypes
+isFileAllowed _            _                      = True
+
+noMessage :: Maybe Textarea -> Bool
+noMessage message = maybe True (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message
+
+noFiles :: forall a. [FormResult (Maybe a)] -> Bool
+noFiles files = all (\(FormSuccess f) -> isNothing f) files
+
+tooLongMessage :: Maybe Textarea -> Int -> Bool
+tooLongMessage message maxLen =  maxLen <= T.length (unTextarea $ fromMaybe (Textarea "") message)
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> Int -> Key Post -> HandlerT App IO ()
 insertFiles []    _           _      = return ()

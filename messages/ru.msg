@@ -26,7 +26,8 @@ Login: Войти
 Logout: Выйти
 Home: Домой
 
-NoImgOrText: Необходимо ввести текст или прикрепить файл
+NoFileOrText: Необходимо ввести текст или прикрепить файл
+NoFile: Для создания нового треда нужно приложить файл
 UnknownError: Неизвестная ошибка
 BadFormData: Введены неверные данные
 NoFormData: Ничего не введено
@@ -50,11 +51,16 @@ BoardMaxMsgLength: Макс. длина текста
 BoardThumbSize : Размер превью
 BoardThreadsPerPage: Тредов на странице
 BoardPreviewsPerThread: Превью-постов
+BoardOpWithoutFile: Разрешить ОП-посты без файлов
 BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
 BoardCategory: Категория
 BoardCategories: Категории досок (через запятую)
+BoardViewAccess: Просмотр доски доступен
+BoardReplyAccess: Ответ в тред доступен
+BoardThreadAccess: Создание нового треда доступно
+NoneForAny: <None> — для всех
 UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных
 DeleteAll: Удалить все

@@ -3,14 +3,17 @@ module Handler.Live where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
+import qualified Data.Text  as T
 -------------------------------------------------------------------------------------------------------------
 getLiveR :: Handler Html
 getLiveR = do
   muser     <- maybeAuth
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  let hiddenBoards = catMaybes $ map (\(Entity _ b) -> if boardHidden b then Just $ boardName b else Nothing) boards
-  posts     <- runDB $ selectList [PostBoard /<-. hiddenBoards] [Desc PostDate, LimitTo 15]
+  let userRole = maybe Nothing (Just . personRole . entityVal) muser
+      f (Entity _ b) | boardHidden b || userRole < boardViewAccess b = Just $ boardName b
+                     | otherwise                                    = Nothing
+      boards'  = catMaybes $ map f boards
+  posts     <- runDB $ selectList [PostBoard /<-. boards'] [Desc PostDate, LimitTo 15]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories

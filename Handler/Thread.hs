@@ -22,11 +22,13 @@ getJsonFromMsgR status = do
     provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
 -------------------------------------------------------------------------------------------------------------------
 getThreadR :: Text -> Int -> Handler Html
-getThreadR  board thread = do
+getThreadR board thread = do
   when (thread == 0) notFound
   muser       <- maybeAuth
   maybeBoard  <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard ) notFound
+  when (isNothing maybeBoard) notFound
+  let userRole = maybe Nothing (Just . personRole . entityVal) muser
+    in when (userRole < (boardViewAccess $ entityVal $ fromJust maybeBoard)) notFound
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   -------------------------------------------------------------------------------------------------------  
   let numberFiles   = boardNumberFiles   $ entityVal $ fromJust maybeBoard
@@ -54,6 +56,9 @@ getThreadR  board thread = do
   maybeCaptchaInfo <- getCaptchaInfo
   boardCategories  <- getConfig configBoardCategories
   msgrender        <- getMessageRender
+
+  let userRole         = maybe Nothing (Just . personRole . entityVal) muser
+      hasAccessToReply = userRole >= (boardReplyAccess $ entityVal $ fromJust maybeBoard)
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
@@ -64,32 +69,29 @@ postThreadR board thread = do
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   maybeBoard  <- runDB $ getBy $ BoardUniqName board
   muser       <- maybeAuth
+  when (isNothing maybeBoard) notFound
+  let userRole = maybe Nothing (Just . personRole . entityVal) muser
+    in when (userRole < (boardReplyAccess $ entityVal $ fromJust maybeBoard)) notAuthenticated
   -------------------------------------------------------------------------------------------------------     
-  when (isNothing maybeParent) notFound
-  when (isNothing maybeBoard ) notFound
-  -------------------------------------------------------------------------------------------------------     
-  let maxMessageLength     = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
-      defaultName          = boardDefaultName   $ entityVal $ fromJust maybeBoard
-      allowedTypesToUpload = boardAllowedTypes  $ entityVal $ fromJust maybeBoard
-      thumbSize            = boardThumbSize     $ entityVal $ fromJust maybeBoard
-      numberFiles          = boardNumberFiles   $ entityVal $ fromJust maybeBoard
-      bumpLimit            = boardBumpLimit     $ entityVal $ fromJust maybeBoard
-      enableCaptcha        = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
-      threadUrl            = ThreadR board thread
-      isFileAllowed (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypesToUpload
-      isFileAllowed _                      = True
+  let maxMessageLength = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
+      defaultName      = boardDefaultName   $ entityVal $ fromJust maybeBoard
+      allowedTypes     = boardAllowedTypes  $ entityVal $ fromJust maybeBoard
+      thumbSize        = boardThumbSize     $ entityVal $ fromJust maybeBoard
+      numberFiles      = boardNumberFiles   $ entityVal $ fromJust maybeBoard
+      bumpLimit        = boardBumpLimit     $ entityVal $ fromJust maybeBoard
+      enableCaptcha    = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
+      threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm numberFiles
   case result of
     FormFailure _                            -> trickyRedirect "error" MsgBadFormData threadUrl
     FormMissing                              -> trickyRedirect "error" MsgNoFormData  threadUrl
     FormSuccess (name, title, message, pswd, captcha, files, goback, Just nobump)
-      | (\(Just (Entity _ p)) -> postLocked p) maybeParent                          -> trickyRedirect "error" MsgLockedThread threadUrl
-      | isNothing message && all (\(FormSuccess f) -> isNothing f) files             -> trickyRedirect "error" MsgNoImgOrText  threadUrl
-      | maxMessageLength <= T.length (unTextarea $ fromMaybe (Textarea "") message) -> trickyRedirect "error" (MsgTooLongMessage maxMessageLength) threadUrl
-      | maybe False (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message  -> trickyRedirect "error" MsgNoImgOrText    threadUrl
-      | not $ all isFileAllowed files                                                -> trickyRedirect "error" MsgTypeNotAllowed threadUrl
-      | otherwise                                                                  -> do
+      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread  threadUrl
+      | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText  threadUrl
+      | tooLongMessage message maxMessageLength           -> trickyRedirect "error" (MsgTooLongMessage maxMessageLength) threadUrl
+      | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed threadUrl
+      | otherwise                                         -> do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         ip  <- pack <$> getIp

@@ -58,6 +58,8 @@ import qualified Data.ByteString.UTF8     as B
 import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
+
+import qualified Data.Text               as T (null)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -86,6 +88,16 @@ opPostWidget muserW eOpPostW opPostFilesW isInThread = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW = $(widgetFile "reply-post")
+
+widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe (Entity Person) -> [Entity Board]
+widgetHelperFilterBoards boards category muser = filter p boards
+  where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
+        notHidden     b = not $ boardHidden b
+        checkCategory b | T.null category = True
+                        | otherwise       = (Just category) == boardCategory b
+        checkAccess   b = case muser of
+          Just (Entity _ user) -> Just (personRole user) >= boardViewAccess b
+          Nothing              -> Nothing == boardViewAccess b
 
 headerWidget :: Maybe (Entity Person) -> [Entity Board] -> [Text] -> WidgetT App IO ()
 headerWidget muserW boardsW categoriesW = $(widgetFile "header")

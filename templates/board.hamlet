@@ -3,9 +3,10 @@
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
 <br>
-<hr>
-<div .show-plain-form>
-    [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
+$if hasAccessToNewThread
+    <hr>
+    <div .show-plain-form>
+        [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
     ^{formWidget (entityVal $ fromJust maybeBoard) False maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>

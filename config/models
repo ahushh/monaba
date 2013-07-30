@@ -1,27 +1,31 @@
 Person
-    name          Text
-    password      Text
-    salt          Text
+    name             Text
+    password         Text
+    salt             Text
     PersonUniqueName name
-    role          RoleOfPerson -- Admin/Moderator
-    deriving      Typeable
+    role             RoleOfPerson -- Admin/Moderator
+    deriving         Typeable
 Board
-    name          Text
-    BoardUniqName name
-    description   Text
-    bumpLimit     Int
-    numberFiles   Int
-    allowedTypes  [String]
-    defaultName   Text
-    maxMsgLength  Int
-    thumbSize     Int
+    name              Text
+    BoardUniqName     name
+    description       Text
+    bumpLimit         Int
+    numberFiles       Int
+    allowedTypes      [String]
+    defaultName       Text
+    maxMsgLength      Int
+    thumbSize         Int
     threadsPerPage    Int
     previewsPerThread Int
-    hidden        Bool
-    enableCaptcha Bool
-    threadLimit   Int default=-1
-    category      Text Maybe
-    deriving      Typeable
+    hidden            Bool
+    enableCaptcha     Bool
+    threadLimit       Int          default=-1
+    opWithoutFile     Bool         default=0
+    viewAccess        RoleOfPerson Maybe default=null
+    replyAccess       RoleOfPerson Maybe default=null
+    threadAccess      RoleOfPerson Maybe default=null
+    category          Text         Maybe
+    deriving          Typeable
 Post
     board        Text
     localId      Int
@@ -69,7 +73,6 @@ Captcha
     expires      UTCTime
 Config
     captchaLength  Int
-     -- how many captchas you need to solve in order to become able to post without captcha
     aCaptchaGuards Int
     captchaTimeout Int -- in seconds
     replyDelay     Int

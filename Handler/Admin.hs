@@ -1,4 +1,4 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
+{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin where
 
 import           Import
@@ -42,7 +42,6 @@ getAutoSageR board thread = do
   case maybePost of
     Just (Entity pId p) -> runDB (update pId [PostAutosage =. not (postAutosage p)]) >> redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
-    
 -------------------------------------------------------------------------------------------------------------
 ---------------------------------- WHERE IS YESOD'S BUILTIN CRUD ??? ----------------------------------------
 -------------------------------------------------------------------------------------------------------------
@@ -124,9 +123,13 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Int  -- threads per page
                                             , Maybe Int  -- previews per thread
                                             , Maybe Int  -- thread limit
+                                            , Maybe Text -- allow OP without file (Enable,Disable,DoNotChange)
                                             , Maybe Text -- is hidden (Enable,Disable,DoNotChange)
                                             , Maybe Text -- enable captcha (Enable,Disable,DoNotChange)
                                             , Maybe Text -- category
+                                            , Maybe RoleOfPerson -- view access
+                                            , Maybe RoleOfPerson -- reply access
+                                            , Maybe RoleOfPerson -- thread access
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories extra = do
@@ -142,6 +145,9 @@ updateBoardForm board bname' bCategories extra = do
       helper' g = maybe Nothing (bool2Text . g . entityVal) board
       onoff     = map (first msgrender) [(MsgEnable,"Enable"),(MsgDisable,"Disable")]
       onoff     :: [(Text, Text)]
+      -----------------------------------------------------------------------------
+      helper'' :: forall a. (Board -> a) -> Maybe a
+      helper'' g = maybe Nothing (Just . g . entityVal) board
       
   (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
   (descriptionRes      , descriptionView      ) <- mopt textField     "" (helper boardDescription)
@@ -154,14 +160,20 @@ updateBoardForm board bname' bCategories extra = do
   (threadsPerPageRes   , threadsPerPageView   ) <- mopt intField      "" (helper boardThreadsPerPage)
   (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (helper boardPreviewsPerThread)
   (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (helper boardThreadLimit)
-  (categoryRes         , categoryView         ) <- mopt (selectFieldList bCategories) "" (maybe Nothing (Just . boardCategory . entityVal) board)
-  (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper' boardHidden)
-  (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper' boardEnableCaptcha)
-  let result = (,,,,,,,,,,,,,) <$> nameRes <*> descriptionRes <*>
-               bumpLimitRes <*> numberFilesRes <*> allowedTypesRes <*>
-               defaultNameRes <*> maxMsgLengthRes <*> thumbSizeRes <*>
-               threadsPerPageRes <*> previewsPerThreadRes <*> threadLimitRes <*>
-               isHiddenRes <*> enableCaptchaRes <*> categoryRes
+  (categoryRes         , categoryView         ) <- mopt (selectFieldList bCategories) "" (helper'' boardCategory)
+  (opWithoutFileRes    , opWithoutFileView    ) <- mopt (selectFieldList onoff) "" (helper'  boardOpWithoutFile)
+  (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper'  boardHidden)
+  (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableCaptcha)
+  (viewAccessRes       , viewAccessView       ) <- mopt (selectFieldList roles) "" (helper'' boardViewAccess)
+  (replyAccessRes      , replyAccessView      ) <- mopt (selectFieldList roles) "" (helper'' boardReplyAccess)
+  (threadAccessRes     , threadAccessView     ) <- mopt (selectFieldList roles) "" (helper'' boardThreadAccess)
+  let result = (,,,,,,,,,,,,,,,,,)  <$>
+               nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
+               numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
+               maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
+               previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
+               isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
+               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -173,12 +185,13 @@ postManageBoardsR board = do
   ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board bCategories
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
   case result of
-    FormFailure _                            -> msgRedirect MsgBadFormData
-    FormMissing                              -> msgRedirect MsgNoFormData
-    FormSuccess (bName, bDesc, bBumpLimit, bNumberFiles, bAllowedTypes,
-                bDefaultName, bMaxMsgLen, bThumbSize, bThreadsPerPage,
-                bPrevPerThread, bThreadLimit, bIsHidden,
-                bEnableCaptcha, bCategory) ->
+    FormFailure _  -> msgRedirect MsgBadFormData
+    FormMissing    -> msgRedirect MsgNoFormData
+    FormSuccess ( bName        , bDesc          , bBumpLimit    , bNumberFiles    , bAllowedTypes
+                , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
+                , bViewAccess  , bReplyAccess   , bThreadAccess
+                ) ->
       case board of
         "new" -> do
           when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName] ||
@@ -198,9 +211,13 @@ postManageBoardsR board = do
                                , boardThreadsPerPage    = fromJust bThreadsPerPage
                                , boardPreviewsPerThread = fromJust bPrevPerThread
                                , boardThreadLimit       = fromJust bThreadLimit
+                               , boardOpWithoutFile     = onoff bOpWithoutFile
                                , boardHidden            = onoff bIsHidden
                                , boardEnableCaptcha     = onoff bEnableCaptcha
                                , boardCategory          = bCategory
+                               , boardViewAccess        = bViewAccess
+                               , boardReplyAccess       = bReplyAccess
+                               , boardThreadAccess      = bThreadAccess
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -221,9 +238,13 @@ postManageBoardsR board = do
                                    , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                    , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
                                    , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                                   , boardOpWithoutFile     = onoff bOpWithoutFile
                                    , boardHidden            = onoff bIsHidden
                                    , boardEnableCaptcha     = onoff bEnableCaptcha
                                    , boardCategory          = mplus bCategory (boardCategory oldBoard)
+                                   , boardViewAccess        = bViewAccess
+                                   , boardReplyAccess       = bReplyAccess
+                                   , boardThreadAccess      = bThreadAccess
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -244,9 +265,13 @@ postManageBoardsR board = do
                                , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
                                , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                               , boardOpWithoutFile     = onoff bOpWithoutFile
                                , boardHidden            = onoff bIsHidden
                                , boardEnableCaptcha     = onoff bEnableCaptcha
                                , boardCategory          = mplus bCategory Nothing
+                               , boardViewAccess        = bViewAccess
+                               , boardReplyAccess       = bReplyAccess
+                               , boardThreadAccess      = bThreadAccess
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -290,8 +315,6 @@ staffForm extra = do
   let result = (,,) <$> personNameRes <*> personPasswordRes <*> personRoleRes
       widget = $(widgetFile "admin/staff-form")
   return (result, widget)
-    where roles :: [(Text, RoleOfPerson)]
-          roles = [("admin",Admin), ("mod",Moderator)]
 
 getStaffR :: Handler Html
 getStaffR = do
@@ -424,3 +447,6 @@ postConfigR = do
                              }
       void $ runDB $ replace (entityKey oldConfig) newConfig
       msgRedirect MsgConfigUpdated
+-------------------------------------------------------------------------------------------------------------
+roles :: [(Text, RoleOfPerson)]
+roles = map (pack . show &&& id) [minBound..maxBound]

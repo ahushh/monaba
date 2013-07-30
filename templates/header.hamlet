@@ -9,16 +9,12 @@
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
     [ <a href=@{LiveR}>/~/</a> ] 
-    $forall Entity _ b <- boardsW
-        $if not (boardHidden b)
-            $if isNothing (boardCategory b)
-                $if not (boardHidden b)
-                    [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
+    $forall Entity _ b <- widgetHelperFilterBoards boardsW "" muserW
+      [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categoriesW
-        [ 
-        $forall Entity _ b <- boardsW
-            $if not (boardHidden b)
-                $if isJust (boardCategory b)
-                    $if c == fromJust (boardCategory b)
-                        <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a>
-        ] 
+      $with bs <- widgetHelperFilterBoards boardsW c muserW
+        $if not (null bs)
+          [ 
+          $forall Entity _ b <- bs
+            <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> 
+          ] 

@@ -26,7 +26,8 @@ Login: Login
 Logout: Logout
 Home: Home
 
-NoImgOrText: File or image is required
+NoFileOrText: File or message is required
+NoFile: File required
 UnknownError: Unknown error
 BadFormData: Bad input
 NoFormData: No input
@@ -50,11 +51,16 @@ BoardMaxMsgLength: Max message length
 BoardThumbSize : Thumb max size 
 BoardThreadsPerPage: Threads per page        
 BoardPreviewsPerThread: Previews per thread 
+BoardOpWithoutFile: Allow OPs without file
 BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
 BoardCategory: Category
 BoardCategories: Board categories (separate by comma)
+BoardViewAccess: View access
+BoardReplyAccess: Reply access
+BoardThreadAccess: New thread access
+NoneForAny: <None> for any
 UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
 DeleteAll: Delete all
@@ -158,8 +164,8 @@ Management: Management
 BanManagement: Ban management
 BoardManagement: Board management
 
-Enable: Enable
-Disable: Disable
+Enable: Enabled
+Disable: Disabled
 
 XForUnlim x@Text: #{x} for unlimited
 PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}

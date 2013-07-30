@@ -126,13 +126,16 @@
    CLOSED: [2013-07-29 Пн 05:58]
 ** DONE LaTex - Mathjax
    CLOSED: [2013-07-29 Пн 11:07]
+** TODO management
+*** TODO logging
+*** TODO bans
+**** TODO ban by session
+**** TODO R/O or no access at all
 ** TODO geoip
 ** TODO fix refmap bug (extra reflinks)
 ** TODO add news to home page
 ** TODO allow thread moving
 ** TODO fix JS and stylesheet loading
-** TODO ban by session (!)
-** TODO admin/mod logging
 ** TODO truncate message using JS
 ** TODO search
 ** TODO thread catalog
@@ -140,7 +143,7 @@
 ** TODO tags for threads
 ** TODO post deletion by OP
 ** TODO post editing
-** TODO Settings
+** TODO user settings
 *** TODO UTC -> local time, store timezone in cookies/session
 *** TODO Switchable youtube player
 *** TODO post hiding

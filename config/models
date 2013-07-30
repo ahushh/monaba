@@ -19,7 +19,7 @@ Board
     previewsPerThread Int
     hidden        Bool
     enableCaptcha Bool
-    threadLimit   Int Maybe
+    threadLimit   Int default=-1
     category      Text Maybe
     deriving      Typeable
 Post
@@ -69,7 +69,7 @@ Captcha
     expires      UTCTime
 Config
     captchaLength  Int
-     -- how many captchas needs to be solved to become able to post without captcha
+     -- how many captchas you need to solve in order to become able to post without captcha
     aCaptchaGuards Int
     captchaTimeout Int -- in seconds
     replyDelay     Int

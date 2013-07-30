@@ -143,7 +143,7 @@ postThreadR board thread = do
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         ------------------------------------------------------------------------------------------------------- 
-        isBumpLimit <- (>= bumpLimit) <$> runDB (count [PostParent ==. thread])
+        isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
         unless (nobump || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         when (isJust name) $ setSession "name" (fromMaybe defaultName name)
         deleteSession "message"

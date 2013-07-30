@@ -48,6 +48,10 @@ plural :: Int -> String -> String -> String
 plural 1 x _ = x
 plural _ _ y = y
 
+unlimitedBump :: Int -> String -> String
+unlimitedBump 0 s = s
+unlimitedBump n _ = show n
+
 maxFileSize :: Word64
 maxFileSize = 15 -- in MB
 ---------------------------------------------------------------------------------------------------------

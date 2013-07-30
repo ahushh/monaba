@@ -141,8 +141,8 @@ postBoardR board _ = do
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -- delete old threads
         let tl = boardThreadLimit $ entityVal $ fromJust maybeBoard
-          in when (isJust tl) $
-               deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy (fromJust tl)])
+          in when (tl >= 0) $
+               deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------           
         when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
         deleteSession "message"

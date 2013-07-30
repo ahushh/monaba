@@ -42,7 +42,7 @@ PostSent: Пост отправлен
 NewBoard: Новая борда
 BoardName: Имя
 BoardDescription : Описание
-BoardBumpLimit   : Бамп-лимит
+BoardBumpLimit: Бамп-лимит
 BoardNumberFiles : Макс. число файлов
 BoardAllowedTypes: Типы файлов
 BoardDefaultName : Стандартное имя
@@ -54,7 +54,6 @@ BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
 BoardCategory: Категория
-Optional: Необязательно
 BoardCategories: Категории досок (через запятую)
 UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных
@@ -158,3 +157,10 @@ Loading: Загрузка...
 Management: Админка
 BanManagement: Баны
 BoardManagement: Настройки досок
+
+Enable: Включено
+Disable: Выключено
+
+XForUnlim x@Text: #{x} — неограничено
+PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
+

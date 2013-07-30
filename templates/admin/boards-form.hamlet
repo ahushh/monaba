@@ -11,6 +11,7 @@
             <tr>
                 <td>_{MsgBoardBumpLimit}
                 <td>^{fvInput bumpLimitView}
+                <td>( _{MsgXForUnlim "0"} )
             <tr>
                 <td>_{MsgBoardNumberFiles}
                 <td>^{fvInput numberFilesView}
@@ -35,7 +36,7 @@
             <tr>
                 <td>_{MsgBoardThreadLimit}
                 <td>^{fvInput threadLimitView}
-                <td>(_{MsgOptional})
+                <td>( _{MsgXForUnlim "-1"} )
             <tr>
                 <td>_{MsgBoardHidden}
                 <td>^{fvInput isHiddenView}
@@ -45,4 +46,3 @@
             <tr>
                 <td>_{MsgBoardCategory}
                 <td>^{fvInput categoryView}
-                <td>(_{MsgOptional})

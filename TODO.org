@@ -126,6 +126,10 @@
    CLOSED: [2013-07-29 Пн 05:58]
 ** DONE LaTex - Mathjax
    CLOSED: [2013-07-29 Пн 11:07]
+** TODO geoip
+** TODO fix refmap bug (extra reflinks)
+** TODO add news to home page
+** TODO allow thread moving
 ** TODO fix JS and stylesheet loading
 ** TODO ban by session (!)
 ** TODO admin/mod logging

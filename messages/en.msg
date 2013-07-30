@@ -42,7 +42,7 @@ PostSent: Post successfully sent
 NewBoard: New board
 BoardName: Name
 BoardDescription : Description
-BoardBumpLimit   : Bump limit
+BoardBumpLimit: Bump limit
 BoardNumberFiles : Max number of files
 BoardAllowedTypes: Allowed file types
 BoardDefaultName : Default name
@@ -54,7 +54,6 @@ BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
 BoardCategory: Category
-Optional: Optional
 BoardCategories: Board categories (separate by comma)
 UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
@@ -158,3 +157,9 @@ Loading: Loading...
 Management: Management
 BanManagement: Ban management
 BoardManagement: Board management
+
+Enable: Enable
+Disable: Disable
+
+XForUnlim x@Text: #{x} for unlimited
+PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}

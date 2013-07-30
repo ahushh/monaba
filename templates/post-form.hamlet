@@ -84,7 +84,7 @@
             <div #board-info>
                 <ul>
                     <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
-                    <li>_{MsgBoardBumpLimit}: #{boardBumpLimit boardW}
+                    <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
                     <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
 <div .close-post-form>
     [ <a onclick="closePostForm();">_{MsgClosePostForm}</a> ]

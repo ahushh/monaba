@@ -7,6 +7,7 @@ import qualified Data.Text         as T
 import           Yesod.Auth.HashDB (setPassword)
 import           Handler.Delete    (deletePosts)
 import           Control.Monad     (mplus)
+import           Control.Arrow     (first, (&&&))
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
@@ -96,8 +97,9 @@ getBanDeleteR bId = runDB (delete (toKey bId :: Key Ban)) >> setMessageI MsgBanD
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: Text -> Handler Html
 getManageBoardsR board = do
-  maybeBoard <- runDB $ selectFirst [BoardName ==. board] []
-  (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard board
+  maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
+  bCategories <- map (id &&& id) <$> getConfig configBoardCategories  
+  (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard board bCategories
   muser  <- maybeAuth
   boards <- runDB $ selectList ([]::[Filter Board]) []
   boardCategories <- getConfig configBoardCategories
@@ -108,8 +110,9 @@ getManageBoardsR board = do
     $(widgetFile "admin/boards")
     
 updateBoardForm :: Maybe (Entity Board) -> 
-                  Text -> -- board name
-                  Html -> -- extra
+                  Text ->          -- board name
+                  [(Text,Text)] -> -- board categoreis
+                  Html ->          -- extra
                   MForm Handler (FormResult ( Maybe Text -- name
                                             , Maybe Text -- description
                                             , Maybe Int  -- bump limit
@@ -121,28 +124,39 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Int  -- threads per page
                                             , Maybe Int  -- previews per thread
                                             , Maybe Int  -- thread limit
-                                            , Maybe Bool -- is hidden
-                                            , Maybe Bool -- enable captcha
+                                            , Maybe Text -- is hidden (Enable,Disable,DoNotChange)
+                                            , Maybe Text -- enable captcha (Enable,Disable,DoNotChange)
                                             , Maybe Text -- category
                                             )
                                 , Widget)
-updateBoardForm board bname' extra = do
-  let f g = maybe Nothing (Just . Just . g . entityVal) board
-      f :: (Board -> a) -> Maybe (Maybe a)
-  (nameRes             , nameView             ) <- mopt textField     "" (f boardName)
-  (descriptionRes      , descriptionView      ) <- mopt textField     "" (f boardDescription)
-  (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (f boardBumpLimit)
-  (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (f boardNumberFiles)
-  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (f (pack . unwords . boardAllowedTypes))
-  (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (f boardDefaultName)
-  (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (f boardMaxMsgLength)
-  (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (f boardThumbSize)
-  (threadsPerPageRes   , threadsPerPageView   ) <- mopt intField      "" (f boardThreadsPerPage)
-  (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (f boardPreviewsPerThread)
-  (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (maybe Nothing (Just . boardThreadLimit . entityVal) board)
-  (isHiddenRes         , isHiddenView         ) <- mopt checkBoxField "" (f boardHidden)
-  (categoryRes         , categoryView         ) <- mopt textField     "" (maybe Nothing (Just . boardCategory . entityVal) board)
-  (enableCaptchaRes    , enableCaptchaView    ) <- mopt checkBoxField "" (f boardEnableCaptcha)
+updateBoardForm board bname' bCategories extra = do
+  msgrender   <- getMessageRender
+  let helper g  = maybe Nothing (Just . Just . g . entityVal) board
+      helper :: (Board -> a) -> Maybe (Maybe a)
+      -----------------------------------------------------------------------------
+      bool2Text True  = Just $ Just "Enable"
+      bool2Text False = Just $ Just "Disable"
+      bool2Text _     = Nothing
+      bool2Text :: Bool -> Maybe (Maybe Text)
+      -----------------------------------------------------------------------------
+      helper' g = maybe Nothing (bool2Text . g . entityVal) board
+      onoff     = map (first msgrender) [(MsgEnable,"Enable"),(MsgDisable,"Disable")]
+      onoff     :: [(Text, Text)]
+      
+  (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
+  (descriptionRes      , descriptionView      ) <- mopt textField     "" (helper boardDescription)
+  (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit)
+  (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles)
+  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes))
+  (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (helper boardDefaultName)
+  (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (helper boardMaxMsgLength)
+  (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (helper boardThumbSize)
+  (threadsPerPageRes   , threadsPerPageView   ) <- mopt intField      "" (helper boardThreadsPerPage)
+  (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (helper boardPreviewsPerThread)
+  (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (helper boardThreadLimit)
+  (categoryRes         , categoryView         ) <- mopt (selectFieldList bCategories) "" (maybe Nothing (Just . boardCategory . entityVal) board)
+  (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper' boardHidden)
+  (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper' boardEnableCaptcha)
   let result = (,,,,,,,,,,,,,) <$> nameRes <*> descriptionRes <*>
                bumpLimitRes <*> numberFilesRes <*> allowedTypesRes <*>
                defaultNameRes <*> maxMsgLengthRes <*> thumbSizeRes <*>
@@ -154,8 +168,9 @@ updateBoardForm board bname' extra = do
 
 postManageBoardsR :: Text -> Handler Html
 postManageBoardsR board = do
-  maybeBoard <- runDB $ selectFirst [BoardName ==. board] []
-  ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board
+  maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
+  bCategories <- map (id &&& id) <$> getConfig configBoardCategories
+  ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board bCategories
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
   case result of
     FormFailure _                            -> msgRedirect MsgBadFormData
@@ -167,8 +182,11 @@ postManageBoardsR board = do
       case board of
         "new" -> do
           when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName] ||
-                any isNothing [bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
+                any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
+          let onoff (Just "Enable" ) = True
+              onoff (Just "Disable") = False
+              onoff _                = False
           let newBoard = Board { boardName              = fromJust bName
                                , boardDescription       = fromJust bDesc
                                , boardBumpLimit         = fromJust bBumpLimit
@@ -179,9 +197,9 @@ postManageBoardsR board = do
                                , boardThumbSize         = fromJust bThumbSize
                                , boardThreadsPerPage    = fromJust bThreadsPerPage
                                , boardPreviewsPerThread = fromJust bPrevPerThread
-                               , boardThreadLimit       = bThreadLimit
-                               , boardHidden            = fromJust bIsHidden
-                               , boardEnableCaptcha     = fromJust bEnableCaptcha
+                               , boardThreadLimit       = fromJust bThreadLimit
+                               , boardHidden            = onoff bIsHidden
+                               , boardEnableCaptcha     = onoff bEnableCaptcha
                                , boardCategory          = bCategory
                                }
           void $ runDB $ insert newBoard
@@ -189,7 +207,10 @@ postManageBoardsR board = do
         "all" -> do
           boards <- runDB $ selectList ([]::[Filter Board]) []
           forM_ boards $ \(Entity oldBoardId oldBoard) ->
-              let newBoard = Board { boardName              = boardName oldBoard
+              let onoff (Just "Enable" ) = True
+                  onoff (Just "Disable") = False
+                  onoff _                = boardHidden oldBoard
+                  newBoard = Board { boardName              = boardName oldBoard
                                    , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
                                    , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                                    , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
@@ -199,16 +220,19 @@ postManageBoardsR board = do
                                    , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
                                    , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                    , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
-                                   , boardThreadLimit       = mplus bThreadLimit Nothing
-                                   , boardHidden            = fromMaybe (boardHidden            oldBoard) bIsHidden
-                                   , boardEnableCaptcha     = fromMaybe (boardEnableCaptcha     oldBoard) bEnableCaptcha
-                                   , boardCategory          = mplus bCategory Nothing
+                                   , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                                   , boardHidden            = onoff bIsHidden
+                                   , boardEnableCaptcha     = onoff bEnableCaptcha
+                                   , boardCategory          = mplus bCategory (boardCategory oldBoard)
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
         _     -> do -- update existing board
           let oldBoard   = entityVal $ fromJust maybeBoard
               oldBoardId = entityKey $ fromJust maybeBoard
+              onoff (Just "Enable" ) = True
+              onoff (Just "Disable") = False
+              onoff _                = boardHidden oldBoard
               newBoard = Board { boardName              = fromMaybe (boardName oldBoard) bName
                                , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
                                , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
@@ -219,9 +243,9 @@ postManageBoardsR board = do
                                , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
                                , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
-                               , boardThreadLimit       = mplus bThreadLimit Nothing
-                               , boardHidden            = fromMaybe (boardHidden            oldBoard) bIsHidden
-                               , boardEnableCaptcha     = fromMaybe (boardEnableCaptcha     oldBoard) bEnableCaptcha
+                               , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                               , boardHidden            = onoff bIsHidden
+                               , boardEnableCaptcha     = onoff bEnableCaptcha
                                , boardCategory          = mplus bCategory Nothing
                                }
           runDB $ replace oldBoardId newBoard

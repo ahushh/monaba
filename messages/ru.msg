@@ -47,6 +47,7 @@ BoardDescription : Описание
 BoardBumpLimit: Бамп-лимит
 BoardNumberFiles : Макс. число файлов
 BoardAllowedTypes: Типы файлов
+BoardExtraRules: Дополнительные правила
 BoardDefaultName : Стандартное имя
 BoardMaxMsgLength: Макс. длина текста
 BoardThumbSize : Размер превью
@@ -67,6 +68,8 @@ UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных
 DeleteAll: Удалить все
 
+SeparateBy d@Text: Разделять с помощью '#{d}'
+
 WrongBoardId: Неправильное ID борды
 BoardsUpdated: Борды обновлены
 BoardAdded: Борда добавлена
@@ -76,6 +79,8 @@ InvalidData: Неверные данные
 
 SupportedFileTypes: Поддерживаемые типы файлов:
 MaxFileSize: Маскимальный размер файла:
+ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
+OpModerationIsEnabled: На этой доске включена ОП-модерация.
 
 CleanBoard: Очистить
 

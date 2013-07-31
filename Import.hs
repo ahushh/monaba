@@ -32,7 +32,7 @@ infixr 5 <>
 -------------------------------------------------------------------------------------------------------------------
 import Data.Time     as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
 import Data.Maybe    as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
-import Data.List     as Import (nub)
+import Data.List     as Import (nub, intercalate)
 import Control.Monad as Import (unless, when, forM, forM_, void)
 import ModelTypes    as Import 
 -------------------------------------------------------------------------------------------------------------------

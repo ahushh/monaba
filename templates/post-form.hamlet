@@ -87,8 +87,14 @@
         <td>
             <div #board-info>
                 <ul>
-                    <li>_{MsgSupportedFileTypes} #{unwords $ boardAllowedTypes boardW}
+                    <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
                     <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
                     <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
+                    $with s <- boardThumbSize boardW
+                       <li>_{MsgImgsWillBeThumbnailed s}
+                    $if boardOpModeration boardW
+                       <li>_{MsgOpModerationIsEnabled}
+                    $forall r <- boardExtraRules boardW
+                       <li>#{r}
 <div .close-post-form>
     [ <a onclick="closePostForm();">_{MsgClosePostForm}</a> ]

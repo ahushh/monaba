@@ -128,16 +128,17 @@
    CLOSED: [2013-07-29 Пн 11:07]
 ** DONE post deletion by OP
    CLOSED: [2013-07-31 Ср 16:42]
-** TODO more info below post form
-** TODO i18n fixes
+** DONE i18n fixes
+** DONE fix refmap bug (extra reflinks)
+** DONE add news to home page
+** DONE more info below post form
+   CLOSED: [2013-07-31 Ср 20:07]
 ** TODO management
 *** TODO logging
 *** TODO bans
 **** TODO ban by session
 **** TODO R/O or no access at all
 ** TODO geoip
-** TODO fix refmap bug (extra reflinks)
-** TODO add news to home page
 ** TODO allow thread moving
 ** TODO fix JS and stylesheet loading
 ** TODO truncate message using JS

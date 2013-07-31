@@ -19,6 +19,10 @@
                 <td>_{MsgBoardAllowedTypes}
                 <td>^{fvInput allowedTypesView}
             <tr>
+                <td>_{MsgBoardExtraRules}
+                <td>^{fvInput extraRulesView}
+                <td>( _{MsgSeparateBy ";"} )
+            <tr>
                 <td>_{MsgBoardDefaultName }
                 <td>^{fvInput defaultNameView}
             <tr>

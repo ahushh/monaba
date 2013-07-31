@@ -131,12 +131,13 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe RoleOfPerson -- reply access
                                             , Maybe RoleOfPerson -- thread access
                                             , Maybe Text -- allow OP moderate his/her thread
+                                            , Maybe Text -- extra rules
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories extra = do
   msgrender   <- getMessageRender
   let helper g  = maybe Nothing (Just . Just . g . entityVal) board
-      helper :: (Board -> a) -> Maybe (Maybe a)
+      helper :: forall a. (Board -> a) -> Maybe (Maybe a)
       -----------------------------------------------------------------------------
       bool2Text True  = Just $ Just "Enable"
       bool2Text False = Just $ Just "Disable"
@@ -169,14 +170,15 @@ updateBoardForm board bname' bCategories extra = do
   (replyAccessRes      , replyAccessView      ) <- mopt (selectFieldList roles) "" (helper'' boardReplyAccess)
   (threadAccessRes     , threadAccessView     ) <- mopt (selectFieldList roles) "" (helper'' boardThreadAccess)
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
-  let result = (,,,,,,,,,,,,,,,,,,) <$>
+  (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
+  let result = (,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
                previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
                isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
                viewAccessRes        <*> replyAccessRes   <*> threadAccessRes   <*>
-               opModerationRes
+               opModerationRes      <*> extraRulesRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -193,11 +195,11 @@ postManageBoardsR board = do
     FormSuccess ( bName        , bDesc          , bBumpLimit    , bNumberFiles    , bAllowedTypes
                 , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
-                , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration
+                , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
                 ) ->
       case board of
         "new" -> do
-          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName] ||
+          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bExtraRules] ||
                 any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
           let onoff (Just "Enable" ) = True
@@ -207,7 +209,7 @@ postManageBoardsR board = do
                                , boardDescription       = fromJust bDesc
                                , boardBumpLimit         = fromJust bBumpLimit
                                , boardNumberFiles       = fromJust bNumberFiles
-                               , boardAllowedTypes      = words    $ unpack $ fromJust bAllowedTypes
+                               , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
                                , boardDefaultName       = fromJust bDefaultName
                                , boardMaxMsgLength      = fromJust bMaxMsgLen
                                , boardThumbSize         = fromJust bThumbSize
@@ -222,6 +224,7 @@ postManageBoardsR board = do
                                , boardReplyAccess       = bReplyAccess
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
+                               , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -250,6 +253,7 @@ postManageBoardsR board = do
                                    , boardReplyAccess       = bReplyAccess
                                    , boardThreadAccess      = bThreadAccess
                                    , boardOpModeration      = onoff bOpModeration
+                                   , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -278,6 +282,7 @@ postManageBoardsR board = do
                                , boardReplyAccess       = bReplyAccess
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
+                               , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated

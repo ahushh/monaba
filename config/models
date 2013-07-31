@@ -26,6 +26,7 @@ Board
     threadAccess      RoleOfPerson Maybe default=null
     category          Text         Maybe
     opModeration      Bool         default=0
+    extraRules        [Text]       default='["s"]'
     deriving          Typeable
 Post
     board        Text

@@ -47,6 +47,7 @@ BoardDescription : Description
 BoardBumpLimit: Bump limit
 BoardNumberFiles : Max number of files
 BoardAllowedTypes: Allowed file types
+BoardExtraRules: Extra rules
 BoardDefaultName : Default name
 BoardMaxMsgLength: Max message length
 BoardThumbSize : Thumb max size 
@@ -67,6 +68,8 @@ UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
 DeleteAll: Delete all
 
+SeparateBy d@Text: Separate by '#{d}'
+
 WrongBoardId: Wrong board ID
 BoardsUpdated: Boards successfully updated
 BoardAdded: Board successfully added
@@ -76,6 +79,8 @@ InvalidData: Invalid data
 
 SupportedFileTypes: Supported file types are
 MaxFileSize: Max file size allowed is
+ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.
+OpModerationIsEnabled: OP moderation is enabled on this board.
 
 CleanBoard: Clean
 

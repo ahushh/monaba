@@ -28,9 +28,14 @@ getDeleteR = do
 ---------------------------------------------------------------------------------------------
 deletePosts :: [Entity Post] -> HandlerT App IO ()
 deletePosts posts = do
-  let postLocalIds = map (postLocalId . entityVal) posts
-  childs <- runDB $ selectList [PostParent <-. postLocalIds] [] -- fetch replies
-  let idsToRemove = map entityKey posts ++ map entityKey childs
+  let boards         = nub $ map (postBoard . entityVal) posts
+      boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards
+      boardsAndPosts :: [(Text,[Entity Post])]
+
+  childs <- runDB $ forM boardsAndPosts $ \(b,ps) ->
+    selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
+
+  let idsToRemove = (concat $ map ((map entityKey) . snd) boardsAndPosts) ++ map entityKey (concat childs)
   runDB $ deleteWhere [PostId <-. idsToRemove]
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   

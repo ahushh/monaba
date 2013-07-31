@@ -78,3 +78,5 @@ Config
     replyDelay     Int
     threadDelay    Int 
     boardCategories [Text]
+    newsBoard      Text default=news
+    showNews       Int  default=2

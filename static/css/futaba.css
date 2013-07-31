@@ -163,6 +163,15 @@ pre {
    border: 1px solid #EEAA88;
 }
 
+#latest-news {
+   border: 1px solid #EEAA88;
+}
+
+#news-title {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #EEAA88;
+}
+
 #popupMessage {
     background: none repeat scroll 0% 0% #F0E0D6;
     border-radius: 5px 5px 5px 5px;

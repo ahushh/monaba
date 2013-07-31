@@ -153,6 +153,15 @@ pre {
    border: 1px dotted black;
 }
 
+#latest-news {
+   border: 1px dotted black;
+}
+
+#news-title {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #CFCFCF;
+}
+
 #popupMessage {
     background: none repeat scroll 0% 0% #CFCFCF;
     border-radius: 5px 5px 5px 5px;

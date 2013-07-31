@@ -137,6 +137,8 @@ Config: Config
 CaptchaLength: Captcha length
 ACaptchaGuards: Guards of adaptive captcha
 CaptchaTimeout: Captcha timeout
+ShowNews: How many news show
+NewsBoard: Board for news
 UpdateConfig: Update config
 ConfigUpdated: Config successufly updated
 
@@ -169,3 +171,5 @@ Disable: Disabled
 
 XForUnlim x@Text: #{x} for unlimited
 PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}
+
+News: News

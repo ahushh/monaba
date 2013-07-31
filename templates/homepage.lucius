@@ -3,25 +3,48 @@
 }
 
 #home-container {
-   overflow:hidden;
+    overflow:hidden;
+    margin-left: 15%;
+    margin-right: 15%;
+/* width: 80%; */
 }
 
 #board-list-full {
-   margin-left: 15%;
-   width: 15%;
-   float: left;
-   padding: 10px;
+    margin-left: 2%;
+    width: 25%;
+    float: left;
+    padding: 10px;
 }
 
 .board-category {
-   margin: 3px 3px 3px -4px;
-   padding: 3px 3px 3px 5px;
-   width: 90%;
+    margin: 3px 3px 3px -4px;
+    padding: 3px 3px 3px 5px;
+    width: 90%;
 }
 
 #main-image {
-   margin-left: 35%;
+    margin-left: 10%;
 }
 
 #main-image img {
+}
+
+#news-title {
+    padding: 3px 3px 3px 5px;
+    text-align: center;
+}
+
+#latest-news {
+    margin-top: 5%;
+    padding-bottom: 2%;
+}
+
+.news {
+    padding: 5px;
+}
+
+.title {
+    width: 50%;
+    margin: 5px auto -15px;
+    text-align: center;
 }

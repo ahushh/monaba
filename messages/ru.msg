@@ -137,6 +137,8 @@ Config: Настройки
 CaptchaLength: Длина капчи
 ACaptchaGuards: Капч нужно ввести для постинга без капчи
 CaptchaTimeout: Таймаут капчи
+ShowNews: Сколько показывать новостей
+NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки
 ConfigUpdated: Настройки обновлены
 
@@ -170,3 +172,4 @@ Disable: Выключено
 XForUnlim x@Text: #{x} — неограничено
 PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
 
+News: Новости

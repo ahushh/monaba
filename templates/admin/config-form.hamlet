@@ -20,3 +20,9 @@
         <tr>
             <td>_{MsgBoardCategories}
             <td>^{fvInput boardCategoriesView}
+        <tr>
+            <td>_{MsgNewsBoard}
+            <td>^{fvInput newsBoardView}
+        <tr>
+            <td>_{MsgShowNews}
+            <td>^{fvInput showNewsView}

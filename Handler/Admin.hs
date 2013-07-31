@@ -401,18 +401,25 @@ configForm :: Config -> Html -> MForm Handler (FormResult ( Maybe Int -- captcha
                                                        , Maybe Int -- reply delay
                                                        , Maybe Int -- new thread delay
                                                        , Maybe Text -- board categories
+                                                       , Maybe Text -- news board
+                                                       , Maybe Int  -- show news
                                                        )
                                            , Widget)
 configForm config extra = do
   let f g = Just $ Just $ g config
+      f :: forall a. (Config -> a) -> Maybe (Maybe a)
   (captchaLengthRes   , captchaLengthView  ) <- mopt intField  "" (f configCaptchaLength  )
   (acaptchaGuardsRes  , acaptchaGuardsView ) <- mopt intField  "" (f configACaptchaGuards )
   (captchaTimeoutRes  , captchaTimeoutView ) <- mopt intField  "" (f configCaptchaTimeout )
   (replyDelayRes      , replyDelayView     ) <- mopt intField  "" (f configReplyDelay     )
   (threadDelayRes     , threadDelayView    ) <- mopt intField  "" (f configThreadDelay    )
   (boardCategoriesRes , boardCategoriesView) <- mopt textField "" (Just $ Just $ T.intercalate "," $ configBoardCategories config)
-  let result = (,,,,,) <$> captchaLengthRes <*> acaptchaGuardsRes <*>
-               captchaTimeoutRes <*> replyDelayRes <*> threadDelayRes <*> boardCategoriesRes
+  (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
+  (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
+  let result = (,,,,,,,) <$>
+               captchaLengthRes <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
+               replyDelayRes    <*> threadDelayRes    <*> boardCategoriesRes <*>
+               newsBoardRes     <*> showNewsRes 
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
 
@@ -437,13 +444,17 @@ postConfigR = do
   case result of
     FormFailure _                      -> msgRedirect MsgBadFormData
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories) -> do
+    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories,
+                 newsBoard    , showNews
+                ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   $ entityVal oldConfig) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  $ entityVal oldConfig) aCaptchaGuards
                              , configCaptchaTimeout  = fromMaybe (configCaptchaTimeout  $ entityVal oldConfig) captchaTimeout
                              , configReplyDelay      = fromMaybe (configReplyDelay      $ entityVal oldConfig) replyDelay
                              , configThreadDelay     = fromMaybe (configThreadDelay     $ entityVal oldConfig) threadDelay
                              , configBoardCategories = maybe     (configBoardCategories $ entityVal oldConfig) (T.splitOn ",") boardCategories
+                             , configNewsBoard       = fromMaybe (configNewsBoard       $ entityVal oldConfig) newsBoard
+                             , configShowNews        = fromMaybe (configShowNews        $ entityVal oldConfig) showNews
                              }
       void $ runDB $ replace (entityKey oldConfig) newConfig
       msgRedirect MsgConfigUpdated

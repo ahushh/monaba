@@ -3,6 +3,7 @@ module Handler.Home where
 
 import Import
 import Yesod.Auth
+import qualified Prelude as P (head)
 ---------------------------------------------------------------------------------------------
 getHomeR :: Handler Html
 getHomeR = do
@@ -24,10 +25,16 @@ getHomeR = do
                                    , configReplyDelay      = 7
                                    , configThreadDelay     = 30
                                    , configBoardCategories = []
+                                   , configNewsBoard       = "news"
+                                   , configShowNews        = 2
                                    }
       redirect HomeR
-    nameOfTheBoard <- extraSiteName <$> getExtra
+    nameOfTheBoard  <- extraSiteName <$> getExtra
     boardCategories <- getConfig configBoardCategories
+
+    newsBoard  <- getConfig configNewsBoard
+    showNews   <- getConfig configShowNews
+    latestNews <- runDB $ selectList [PostBoard ==. newsBoard, PostParent ==. 0] [Desc PostLocalId, LimitTo showNews]
     defaultLayout $ do
         setTitle $ toHtml nameOfTheBoard
         $(widgetFile "homepage")

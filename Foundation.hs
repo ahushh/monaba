@@ -44,6 +44,19 @@ data App = App
     }
 
 ---------------------------------------------------------------------------------------------------------
+omittedRus :: Int -> String
+omittedRus n
+  | n <= 0               = error "incorrect number at omittedRus"
+  | n == 1               = "пост пропущен"
+  | n `elem` [2..5]     = "поста пропущено"
+  | n `elem` [5..19]    = "постов пропущено"
+  | lastN == 0           = "постов пропущено"
+  | lastN `elem` [2..5] = "поста пропущено"
+  | lastN `elem` [6..9] = "постов пропущено"
+  | otherwise           = error "incorrect number at omittedRus"
+    where lastN = read $ (:[]) $ head $ reverse $ show n
+          lastN :: Int
+
 plural :: Int -> String -> String -> String
 plural 1 x _ = x
 plural _ _ y = y

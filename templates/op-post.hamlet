@@ -35,10 +35,10 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   $maybe Entity _ user <- muserW
                       $if personRole user >= Moderator
                           [ #{postIp $ entityVal $ eOpPostW} ] #
-                          \[<a title="Ban by IP" href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
-                          \[<a title="Stick thread" href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
-                          \<a title="Lock thread" href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
-                          \<a title="Auto sage" href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
+                          \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
+                          \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
+                          \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
+                          \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
       
           $forall Entity _ file <- opPostFilesW
               $if length opPostFilesW == 1

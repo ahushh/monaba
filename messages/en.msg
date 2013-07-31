@@ -180,3 +180,8 @@ News: News
 DeletedPosts: Deleted posts
 DeletedPostsIn z@Int: Deleted posts in thread №#{show z}
 ShowDeletedPosts: Show deleted posts
+
+BanPoster: Ban poster
+StickThread: Stick/unstick
+LockThread: Lock/unlock
+Autosage: Autosage

@@ -25,7 +25,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     $maybe Entity _ user <- muserW
                         $if personRole user >= Moderator
                             [ #{postIp $ entityVal eReplyW} ] 
-                            \[<a title="Ban by IP" href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
+                            \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
             $forall Entity _ file <- replyFilesW
                 $if length replyFilesW == 1
                     <div .file>

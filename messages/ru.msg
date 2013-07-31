@@ -16,7 +16,7 @@ Back: Назад
 Next: Вперед
 Previous: Назад
 ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
-PostsOmitted n@Int: #{show n} #{plural n "пост" "постов"} пропущено.
+PostsOmitted n@Int: #{show n} #{omittedRus n}.
 ExpandThread: Развернуть тред.
 ThreadIsExpanded: Тред развернут.
 TruncateThread: Свернуть.
@@ -180,3 +180,8 @@ News: Новости
 DeletedPosts: Удаленные посты
 DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}
 ShowDeletedPosts: Просмотреть удаленные посты
+
+BanPoster: Забанить!
+StickThread: Прикрепить/открепить
+LockThread: Заблокировать/разблокировать
+Autosage: Автосажа

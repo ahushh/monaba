@@ -1,4 +1,4 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
+{-# LANGUAGE TupleSections, OverloadedStrings, MultiWayIf #-}
 module Handler.Thread where
  
 import           Import
@@ -34,6 +34,7 @@ getThreadR board thread = do
   let numberFiles   = boardNumberFiles   $ entityVal $ fromJust maybeBoard
       enableCaptcha = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
       opModeration  = boardOpModeration  $ entityVal $ fromJust maybeBoard
+      boardDesc     = boardDescription   $ entityVal $ fromJust maybeBoard
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -47,8 +48,12 @@ getThreadR board thread = do
   let allPosts        = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
       repliesAndFiles = drop 1 allPosts
       eOpPost         = fst $ head allPosts
-      opPostFiles     = snd $ head allPosts 
-      pagetitle       = (\t -> if T.null t then pack $ show $ postLocalId (entityVal eOpPost) else t) $ postTitle (entityVal eOpPost)
+      opPostFiles     = snd $ head allPosts
+      pt              = postTitle  $ entityVal eOpPost
+      pm              = unTextarea $ postMessage $ entityVal eOpPost
+      pagetitle | not $ T.null pt                                 = pt
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = T.concat [T.take 60 pm, "…"]
+                | otherwise                                     = ""
   -------------------------------------------------------------------------------------------------------
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
@@ -65,7 +70,7 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html

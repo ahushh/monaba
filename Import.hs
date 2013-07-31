@@ -83,11 +83,11 @@ truncateFileName s = if len > maxLen then result else s
 markupWidget :: Textarea -> Widget
 markupWidget = toWidget . preEscapedToHtml . unTextarea
 
-opPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThread = $(widgetFile "op-post")
+opPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> Bool -> WidgetT App IO () 
+opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW = $(widgetFile "op-post")
 
-replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW = $(widgetFile "reply-post")
+replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> WidgetT App IO ()
+replyPostWidget muserW eReplyW replyFilesW canPostW = $(widgetFile "reply-post")
 
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe (Entity Person) -> [Entity Board]
 widgetHelperFilterBoards boards category muser = filter p boards
@@ -257,3 +257,6 @@ getPosterId = do
       posterId <- liftIO $ pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
       setSession "posterId" posterId
       return posterId
+-------------------------------------------------------------------------------------------------------------------
+enumerate :: forall b. [b] -> [(Int, b)]
+enumerate = zip [0..]

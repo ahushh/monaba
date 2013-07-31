@@ -18,9 +18,14 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <span .poster-name>#{postName $ entityVal eReplyW}
                 <time>#{myFormatTime $ postDate $ entityVal eReplyW}
                 <span .reflink>
-                    <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.
-                    <a onclick="insert('>>#{post}')" name=#{post}>#{post}
-                    <img onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+                    $if canPostW
+                        <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.
+                        <a onclick="insert('>>#{post}')" name=#{post}>#{post}
+                    $else
+                        <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.#{post}
+                $if canPostW
+                    <span .extra-buttons>
+                        <img onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
                 <span .cpanel>
                     $maybe Entity _ user <- muserW
                         $if personRole user >= Moderator

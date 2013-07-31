@@ -70,5 +70,16 @@ $(document).ready(function() {
     $('#button-latex').click(function() {
         insertTag('[latex]', '[/latex]');
     });
+
+    $('input[type=file]').change(function() {
+        var t = $(this);
+        $('.file-input').each(function() {
+            if ($(this).css('display') == 'none') {
+                $(this).css('display', 'block');
+                t.unbind();
+                return false;
+            }
+        });
+    });
 });
 // ----------------------------------------------------------------------------------------------------------

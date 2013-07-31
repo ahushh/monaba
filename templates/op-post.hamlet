@@ -24,12 +24,17 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   $if postAutosage $ entityVal $ eOpPostW
                       <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
               <span .reflink>
-                  <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
-                  <a onclick="insert('>>#{thread}')" name=#{thread}>#{thread}
-                  <img onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+                  $if canPostW
+                      <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
+                      <a onclick="insert('>>#{thread}')" name=#{thread}>#{thread}
+                  $else
+                      <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.#{thread}
+              $if canPostW
+                  <span .extra-buttons>
+                      <img onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
               &nbsp;&nbsp;
               <span .cpanel>
-                  $if not $ isInThread
+                  $if not $ isInThreadW
                       [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
                       &nbsp;&nbsp;
                   $maybe Entity _ user <- muserW

@@ -124,6 +124,12 @@ blockquote {
     padding: 5px;
 }
 
+#board-subtitle {
+    text-align: center;
+    color: #800000;
+    font-size: 1.2em;
+}
+
 #thread-header {
   text-align: center;
 }
@@ -189,7 +195,6 @@ blockquote {
 .icon-reply {
   cursor: pointer;
   background-position: -605px -173px;
-  margin-top: -1px;
 }
 
 .show-plain-form {

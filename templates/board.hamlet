@@ -1,7 +1,7 @@
 ^{headerWidget muser boards boardCategories}
 
 <br>
-<div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
+<div id="board-header"> #{nameOfTheBoard} - #{boardDesc}
 <br>
 $if hasAccessToNewThread
     <hr>
@@ -16,7 +16,7 @@ $else
     <form #delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-                ^{opPostWidget muser eOpPost opPostFiles False}
+                ^{opPostWidget muser eOpPost opPostFiles False True}
                 <br>
                 $if omitted > 0
                     <div .omitted>
@@ -25,7 +25,7 @@ $else
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
-                    ^{replyPostWidget muser ePreview previewFiles}
+                    ^{replyPostWidget muser ePreview previewFiles True}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
             <hr>

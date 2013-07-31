@@ -67,9 +67,13 @@
                 <td .post-block-named>_{MsgFile}
                 <td>
                     <div .form-files>
-                        $forall fv <- fileviews
-                            <div .file-input>
-                                ^{fvInput fv}
+                        $forall (i, fv) <- enumerate fileviews
+                            $if i == 0
+                                <div .file-input>
+                                    ^{fvInput fv}
+                            $else
+                                <div style=display:none .file-input>
+                                    ^{fvInput fv}
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

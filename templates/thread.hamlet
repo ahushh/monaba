@@ -1,7 +1,13 @@
 ^{headerWidget muser boards boardCategories}
 
 <br>
-<div id="board-header"> #{nameOfTheBoard} - #{board} - #{pagetitle}
+$if T.length pagetitle > 10
+    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    <div id="board-subtitle">#{pagetitle}
+$elseif T.null pagetitle
+    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+$else
+    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}  #{pagetitle}
 <br>
 <hr>
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
@@ -14,15 +20,16 @@ $if hasAccessToReply
 <hr>
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-        ^{opPostWidget muser eOpPost opPostFiles True}
+        ^{opPostWidget muser eOpPost opPostFiles True True}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{replyPostWidget muser eReply files }
+            ^{replyPostWidget muser eReply files True}
     <br>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     <hr>
+    [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
     <div #delete-container>
         $if opModeration
             <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>_{MsgOpModeration}

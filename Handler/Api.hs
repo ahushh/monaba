@@ -25,7 +25,7 @@ getPostsHelper selectPosts board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{replyPostWidget muser post files}
+                                   ^{replyPostWidget muser post files True}
                                |]
           provideJson $ map (entityVal *** (map entityVal)) postsAndFiles
 
@@ -60,8 +60,8 @@ getApiPostR board postId = do
   files <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if (postParent (entityVal $ fromJust maybePost)) == 0
-                       then opPostWidget muser post files False
-                       else replyPostWidget muser post files
+                       then opPostWidget muser post files False True
+                       else replyPostWidget muser post files True
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

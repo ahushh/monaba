@@ -29,12 +29,12 @@ getBoardR board page = do
       threadsPerPage    = boardThreadsPerPage    $ entityVal $ fromJust maybeBoard
       previewsPerThread = boardPreviewsPerThread $ entityVal $ fromJust maybeBoard
       enableCaptcha     = boardEnableCaptcha     $ entityVal $ fromJust maybeBoard
+      boardDesc         = boardDescription       $ entityVal $ fromJust maybeBoard
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
       pagesFix x
         | numberOfThreads > 0 && numberOfThreads `mod` threadsPerPage == 0 = x - 1
         | otherwise                                                      = x
-      pagetitle         = boardDescription $ entityVal $ fromJust maybeBoard      
       ---------------------------------------------------------------------------------
       selectThreads    = selectList [PostBoard ==. board, PostParent ==. 0]
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
@@ -66,7 +66,7 @@ getBoardR board page = do
       hasAccessToNewThread = userRole >= (boardThreadAccess $ entityVal $ fromJust maybeBoard)
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", boardDesc]
     $(widgetFile "board")
     
 postBoardR :: Text -> Int -> Handler Html

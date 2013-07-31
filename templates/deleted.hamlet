@@ -8,7 +8,7 @@
 <br>
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{replyPostWidget muser eReply files }
+        ^{replyPostWidget muser eReply files False}
     <br>
     <div #delete-container>
         $maybe _ <- muser

@@ -130,6 +130,7 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe RoleOfPerson -- view access
                                             , Maybe RoleOfPerson -- reply access
                                             , Maybe RoleOfPerson -- thread access
+                                            , Maybe Text -- allow OP moderate his/her thread
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories extra = do
@@ -167,13 +168,15 @@ updateBoardForm board bname' bCategories extra = do
   (viewAccessRes       , viewAccessView       ) <- mopt (selectFieldList roles) "" (helper'' boardViewAccess)
   (replyAccessRes      , replyAccessView      ) <- mopt (selectFieldList roles) "" (helper'' boardReplyAccess)
   (threadAccessRes     , threadAccessView     ) <- mopt (selectFieldList roles) "" (helper'' boardThreadAccess)
-  let result = (,,,,,,,,,,,,,,,,,)  <$>
+  (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
+  let result = (,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
                previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
                isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
-               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes
+               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes   <*>
+               opModerationRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -190,7 +193,7 @@ postManageBoardsR board = do
     FormSuccess ( bName        , bDesc          , bBumpLimit    , bNumberFiles    , bAllowedTypes
                 , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
-                , bViewAccess  , bReplyAccess   , bThreadAccess
+                , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration
                 ) ->
       case board of
         "new" -> do
@@ -218,6 +221,7 @@ postManageBoardsR board = do
                                , boardViewAccess        = bViewAccess
                                , boardReplyAccess       = bReplyAccess
                                , boardThreadAccess      = bThreadAccess
+                               , boardOpModeration      = onoff bOpModeration
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -245,6 +249,7 @@ postManageBoardsR board = do
                                    , boardViewAccess        = bViewAccess
                                    , boardReplyAccess       = bReplyAccess
                                    , boardThreadAccess      = bThreadAccess
+                                   , boardOpModeration      = onoff bOpModeration
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -272,6 +277,7 @@ postManageBoardsR board = do
                                , boardViewAccess        = bViewAccess
                                , boardReplyAccess       = bReplyAccess
                                , boardThreadAccess      = bThreadAccess
+                               , boardOpModeration      = onoff bOpModeration
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated

@@ -13,7 +13,7 @@ getLiveR = do
       f (Entity _ b) | boardHidden b || userRole < boardViewAccess b = Just $ boardName b
                      | otherwise                                    = Nothing
       boards'  = catMaybes $ map f boards
-  posts     <- runDB $ selectList [PostBoard /<-. boards'] [Desc PostDate, LimitTo 15]
+  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards'] [Desc PostDate, LimitTo 15]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   nameOfTheBoard  <- extraSiteName <$> getExtra
   boardCategories <- getConfig configBoardCategories

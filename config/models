@@ -25,6 +25,7 @@ Board
     replyAccess       RoleOfPerson Maybe default=null
     threadAccess      RoleOfPerson Maybe default=null
     category          Text         Maybe
+    opModeration      Bool         default=0
     deriving          Typeable
 Post
     board        Text
@@ -38,7 +39,7 @@ Post
     locked       Bool
     autosage     Bool
     -- deleted      Bool
-    -- deletedByOp  Bool
+    deletedByOp  Bool default=0
     posterId     Text default="nope"
     -- form's values
     message      Textarea

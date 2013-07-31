@@ -16,6 +16,8 @@
     <p>/api/thread/{board}/{thread id}/last/{count}
     <p><strong>_{MsgApiAllPosts}:</strong>
     <p>/api/thread/{board}/{thread id}/all
+    <p><strong>_{MsgApiDeletedPosts}:</strong>
+    <p>/api/thread/{board}/{thread id}/deleted
     <p><strong>_{MsgApiPost}:</strong>
     <p>/api/post/{board}/{post id}
     <p><strong>Accept headers:</strong>

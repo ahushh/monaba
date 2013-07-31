@@ -34,6 +34,7 @@ NoFormData: Ничего не введено
 TooLongMessage n@Int: Сообщение слишком длинное. Максимальная длина #{show n}
 DeleteNoPosts: Не отмечено постов к удалению
 DeleteWrongPassword: Неправильный пароль
+YouAreNotOp: Пароль/сессия не совпадает с тем, что в ОП-посте. Вы не можете модерировать этот тред.
 TypeNotAllowed: Данный тип файла не разрешен к загрузк
 NoSuchThread: Нет такого треда
 NoSuchBoard: Нет такой борды
@@ -61,6 +62,7 @@ BoardViewAccess: Просмотр доски доступен
 BoardReplyAccess: Ответ в тред доступен
 BoardThreadAccess: Создание нового треда доступно
 NoneForAny: <None> — для всех
+OpModeration: ОП-модерация
 UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных
 DeleteAll: Удалить все
@@ -105,6 +107,7 @@ Api: API
 ApiPostsAfter: Все посты после {post id} в данном треде
 ApiLastPosts: Вернуть последние {count} постов в треде
 ApiAllPosts: Все посты в треде
+ApiDeletedPosts: Удаленные ОПом посты в треде
 ApiPost: Один пост
 ApiParameters: Параметры
 ApiBoardName: Название борды (e.g., b, d, rm)
@@ -173,3 +176,7 @@ XForUnlim x@Text: #{x} — неограничено
 PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
 
 News: Новости
+
+DeletedPosts: Удаленные посты
+DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}
+ShowDeletedPosts: Просмотреть удаленные посты

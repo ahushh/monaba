@@ -24,6 +24,11 @@ $if hasAccessToReply
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     <hr>
     <div #delete-container>
+        $if opModeration
+            <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>_{MsgOpModeration}
+            $if not noDeletedPosts
+                [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
+            <br>
         $maybe _ <- muser
             <span style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>

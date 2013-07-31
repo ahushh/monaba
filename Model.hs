@@ -33,17 +33,18 @@ instance ToJSON Textarea where
 
 instance ToJSON Post where
     toJSON Post {..} = object
-        [ "board"    .= postBoard
-        , "id"       .= postLocalId
-        , "parent"   .= postParent
-        , "date"     .= postDate
-        , "bumped"   .= postBumped
-        , "sticked"  .= postSticked
-        , "locked"   .= postLocked
-        , "autosage" .= postAutosage
-        , "message"  .= postMessage
-        , "title"    .= postTitle
-        , "name"     .= postName
+        [ "board"       .= postBoard
+        , "id"          .= postLocalId
+        , "parent"      .= postParent
+        , "date"        .= postDate
+        , "bumped"      .= postBumped
+        , "sticked"     .= postSticked
+        , "locked"      .= postLocked
+        , "autosage"    .= postAutosage
+        , "message"     .= postMessage
+        , "title"       .= postTitle
+        , "name"        .= postName
+        , "deletedByOp" .= postDeletedByOp
         ]
 
 instance ToJSON Attachedfile where

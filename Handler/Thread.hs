@@ -33,12 +33,14 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------  
   let numberFiles   = boardNumberFiles   $ entityVal $ fromJust maybeBoard
       enableCaptcha = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
+      opModeration  = boardOpModeration  $ entityVal $ fromJust maybeBoard
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
-    E.where_ ((post E.^. PostBoard ) E.==. (E.val board ) E.&&.
-             ((post E.^. PostParent) E.==. (E.val thread) E.||.
-             ((post E.^. PostParent) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
+    E.where_ ((post E.^. PostBoard       ) E.==. (E.val board ) E.&&.
+              (post E.^. PostDeletedByOp ) E.==. (E.val False ) E.&&.
+             ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
+             ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
   when (null allPosts') notFound
@@ -59,6 +61,8 @@ getThreadR board thread = do
 
   let userRole         = maybe Nothing (Just . personRole . entityVal) muser
       hasAccessToReply = userRole >= (boardReplyAccess $ entityVal $ fromJust maybeBoard)
+  posterId         <- getPosterId  
+  noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", pagetitle]
@@ -139,7 +143,7 @@ postThreadR board thread = do
                            , postSticked      = False
                            , postAutosage     = False
                            -- , postDeleted      = False
-                           -- , postDeletedByOp  = False
+                           , postDeletedByOp  = False
                            , postOwner        = (personRole . entityVal) <$> muser
                            , postPosterId     = posterId
                            }

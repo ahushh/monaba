@@ -34,6 +34,7 @@ NoFormData: No input
 TooLongMessage n@Int: Your message is too long. Max length is #{show n}
 DeleteNoPosts: Didn't you forget to mark the posts you want to delete?
 DeleteWrongPassword: Wrong password
+YouAreNotOp: Wrong OP password or session. You can't moderate this thread.
 TypeNotAllowed: This filetype isn't allowed
 NoSuchThread: No such thread
 NoSuchBoard: No such board
@@ -60,6 +61,7 @@ BoardCategories: Board categories (separate by comma)
 BoardViewAccess: View access
 BoardReplyAccess: Reply access
 BoardThreadAccess: New thread access
+OpModeration: OP moderation
 NoneForAny: <None> for any
 UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
@@ -105,6 +107,7 @@ Api: API
 ApiPostsAfter: All posts after {post id} in the thread
 ApiLastPosts: Last {count} posts in the thread
 ApiAllPosts: All posts in the thread
+ApiDeletedPosts: All posts deleted by OP in the thread
 ApiPost: One post
 ApiParameters: Parameters
 ApiBoardName: Board name (e.g., b, d, rm)
@@ -173,3 +176,7 @@ XForUnlim x@Text: #{x} for unlimited
 PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}
 
 News: News
+
+DeletedPosts: Deleted posts
+DeletedPostsIn z@Int: Deleted posts in thread №#{show z}
+ShowDeletedPosts: Show deleted posts

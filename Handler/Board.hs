@@ -40,7 +40,8 @@ getBoardR board page = do
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
       selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
       selectPreviews t
-        | previewsPerThread > 0 = selectList [PostBoard ==. board, PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
+                                              PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
         | otherwise             = return []
   -------------------------------------------------------------------------------------------------------
   threadsAndPreviews <- runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
@@ -48,7 +49,7 @@ getBoardR board page = do
                            previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
                              previewFiles <- selectFiles $ entityKey pr
                              return (pr, previewFiles))
-                           postsInThread <- count [PostBoard ==. board, PostParent ==. postLocalId t]
+                           postsInThread <- count [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. postLocalId t]
                            return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
   ------------------------------------------------------------------------------------------------------- 
   now       <- liftIO getCurrentTime
@@ -139,7 +140,7 @@ postBoardR board _ = do
                            , postSticked      = False
                            , postAutosage     = False
                            -- , postDeleted      = False
-                           -- , postDeletedByOp  = False
+                           , postDeletedByOp  = False
                            , postOwner        = personRole . entityVal <$> muser
                            , postPosterId     = posterId
                            }

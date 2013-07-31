@@ -29,19 +29,24 @@ getPostsHelper selectPosts board thread errorString = do
                                |]
           provideJson $ map (entityVal *** (map entityVal)) postsAndFiles
 
+getApiDeletedPostsR :: Text -> Int -> Handler TypedContent
+getApiDeletedPostsR board thread = getPostsHelper selectPosts board thread errorString
+  where selectPosts = selectList [PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread] [Desc PostDate]
+        errorString = "No such posts"
+
 getApiAllPostsR :: Text -> Int -> Handler TypedContent
 getApiAllPostsR board thread = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostBoard ==. board, PostParent ==. thread] [Desc PostDate]
+  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread] [Desc PostDate]
         errorString = "No posts in this thread"
 
 getApiNewPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiNewPostsR board thread postId = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostBoard ==. board, PostParent ==. thread, PostLocalId >. postId] [Desc PostDate]
+  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostLocalId >. postId] [Desc PostDate]
         errorString = "No new posts"
 
 getApiLastPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiLastPostsR board thread postCount = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostBoard ==. board, PostParent ==. thread] [Desc PostDate, LimitTo postCount]
+  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread] [Desc PostDate, LimitTo postCount]
         errorString = "No such posts"
 ---------------------------------------------------------------------------------------------------------
 getApiPostR :: Text -> Int -> Handler TypedContent

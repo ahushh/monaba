@@ -126,6 +126,10 @@
    CLOSED: [2013-07-29 Пн 05:58]
 ** DONE LaTex - Mathjax
    CLOSED: [2013-07-29 Пн 11:07]
+** DONE post deletion by OP
+   CLOSED: [2013-07-31 Ср 16:42]
+** TODO more info below post form
+** TODO i18n fixes
 ** TODO management
 *** TODO logging
 *** TODO bans
@@ -141,7 +145,6 @@
 ** TODO thread catalog
 ** TODO black/spam list
 ** TODO tags for threads
-** TODO post deletion by OP
 ** TODO post editing
 ** TODO user settings
 *** TODO UTC -> local time, store timezone in cookies/session

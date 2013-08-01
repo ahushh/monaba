@@ -95,6 +95,7 @@
                     $if boardOpModeration boardW
                        <li>_{MsgOpModerationIsEnabled}
                     $forall r <- boardExtraRules boardW
-                       <li>#{r}
+                       $if not $ T.null r
+                           <li>#{r}
 <div .close-post-form>
     [ <a onclick="closePostForm();">_{MsgClosePostForm}</a> ]

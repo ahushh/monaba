@@ -59,11 +59,12 @@ BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
 BoardCategory: Category
 BoardCategories: Board categories (separate by comma)
-BoardViewAccess: View access
-BoardReplyAccess: Reply access
-BoardThreadAccess: New thread access
+BoardViewAccess: To view this board you must be a
+BoardReplyAccess: To reply you must be a
+BoardThreadAccess: To crate new thread you must be a
+WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
+Optional: Optional
 OpModeration: OP moderation
-NoneForAny: <None> for any
 UpdateBoardsBtn: Update
 UpdateBoardsInvalidInput: Invalid input
 DeleteAll: Delete all

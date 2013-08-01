@@ -1,17 +1,18 @@
 ^{headerWidget muser boards boardCategories}
 ^{adminNavbarWidget muser}
-<a href=@{CleanBoardR  board}><button>_{MsgCleanBoard}</button></a>
-<a href=@{DeleteBoardR board}><button>_{MsgDeleteBtn}</button></a>
+$if not (board == "new-f89d7fb43ef7")
+    <a href=@{CleanBoardR  board}><button>_{MsgCleanBoard}</button></a>
+    <a href=@{DeleteBoardR board}><button>_{MsgDeleteBtn}</button></a>
 ^{formWidget}
 <select onchange="location = '/admin/boards/'+this.options[this.selectedIndex].value;">
-    $if board == "all"
-        <option selected=selected value=all>_{MsgAllBoards}
+    $if board == "all-f89d7fb43ef7"
+        <option selected=selected value=all-f89d7fb43ef7>_{MsgAllBoards}
     $else
-        <option value=all>_{MsgAllBoards}
-    $if board == "new"
-        <option selected=selected value=new>_{MsgNewBoard}
+        <option value=all-f89d7fb43ef7>_{MsgAllBoards}
+    $if board == "new-f89d7fb43ef7"
+        <option selected=selected value=new-f89d7fb43ef7>_{MsgNewBoard}
     $else
-        <option value=new>_{MsgNewBoard}
+        <option value=new-f89d7fb43ef7>_{MsgNewBoard}
     $forall Entity _ b <- boards
         $if board == boardName b
             <option selected=selected value=#{boardName b}>#{boardName b}

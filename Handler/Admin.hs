@@ -198,7 +198,7 @@ postManageBoardsR board = do
                 , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
                 ) ->
       case board of
-        "new" -> do
+        "new-f89d7fb43ef7" -> do
           when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bExtraRules] ||
                 any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
@@ -228,7 +228,7 @@ postManageBoardsR board = do
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
-        "all" -> do
+        "all-f89d7fb43ef7" -> do -- update all boards
           boards <- runDB $ selectList ([]::[Filter Board]) []
           forM_ boards $ \(Entity oldBoardId oldBoard) ->
               let onoff (Just "Enable" ) = True
@@ -248,16 +248,16 @@ postManageBoardsR board = do
                                    , boardOpWithoutFile     = onoff bOpWithoutFile
                                    , boardHidden            = onoff bIsHidden
                                    , boardEnableCaptcha     = onoff bEnableCaptcha
-                                   , boardCategory          = mplus bCategory (boardCategory oldBoard)
-                                   , boardViewAccess        = bViewAccess
-                                   , boardReplyAccess       = bReplyAccess
-                                   , boardThreadAccess      = bThreadAccess
+                                   , boardCategory          = mplus bCategory     (boardCategory     oldBoard)
+                                   , boardViewAccess        = mplus bViewAccess   (boardViewAccess   oldBoard)
+                                   , boardReplyAccess       = mplus bReplyAccess  (boardReplyAccess  oldBoard)
+                                   , boardThreadAccess      = mplus bThreadAccess (boardThreadAccess oldBoard)
                                    , boardOpModeration      = onoff bOpModeration
-                                   , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
+                                   , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
-        _     -> do -- update existing board
+        _     -> do -- update one board
           let oldBoard   = entityVal $ fromJust maybeBoard
               oldBoardId = entityKey $ fromJust maybeBoard
               onoff (Just "Enable" ) = True
@@ -277,23 +277,23 @@ postManageBoardsR board = do
                                , boardOpWithoutFile     = onoff bOpWithoutFile
                                , boardHidden            = onoff bIsHidden
                                , boardEnableCaptcha     = onoff bEnableCaptcha
-                               , boardCategory          = mplus bCategory Nothing
-                               , boardViewAccess        = bViewAccess
-                               , boardReplyAccess       = bReplyAccess
+                               , boardCategory          = mplus bCategory    Nothing
+                               , boardViewAccess        = mplus bViewAccess  Nothing 
+                               , boardReplyAccess       = mplus bReplyAccess Nothing
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
-                               , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
+                               , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
 
 cleanBoard :: Text -> Handler ()
 cleanBoard board = case board of
-  "all" -> do
+  "all-f89d7fb43ef7" -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
     void $ deletePosts $ concat postIDs
-  "new" -> msgRedirect MsgNoSuchBoard
+  "new-f89d7fb43ef7" -> msgRedirect MsgNoSuchBoard
   _     -> do
     maybeBoard <- runDB $ selectFirst [BoardName ==. board] []  
     when (isNothing maybeBoard) $ msgRedirect MsgNoSuchBoard
@@ -311,10 +311,10 @@ getDeleteBoardR :: Text -> Handler ()
 getDeleteBoardR board = do
   cleanBoard board
   case board of
-    "all" -> runDB $ deleteWhere ([]::[Filter Board ])
+    "all-f89d7fb43ef7" -> runDB $ deleteWhere ([]::[Filter Board ])
     _     -> runDB $ deleteWhere [BoardName ==. board]
   setMessageI MsgBoardDeleted
-  redirect (ManageBoardsR "all")
+  redirect (ManageBoardsR "all-f89d7fb43ef7")
 -------------------------------------------------------------------------------------------------------------
 -- Staff  
 -------------------------------------------------------------------------------------------------------------

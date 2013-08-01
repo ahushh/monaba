@@ -59,10 +59,11 @@ BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
 BoardCategory: Категория
 BoardCategories: Категории досок (через запятую)
-BoardViewAccess: Просмотр доски доступен
-BoardReplyAccess: Ответ в тред доступен
-BoardThreadAccess: Создание нового треда доступно
-NoneForAny: <None> — для всех
+BoardViewAccess: Для просмотра доски нужно быть
+BoardReplyAccess: Для ответа в тред нужно быть
+BoardThreadAccess: Для создание треда нужно быть
+WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
+Optional: Необязательно
 OpModeration: ОП-модерация
 UpdateBoardsBtn: Обновить
 UpdateBoardsInvalidInput: Неверный тип данных

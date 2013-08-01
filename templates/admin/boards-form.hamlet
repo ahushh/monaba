@@ -2,9 +2,14 @@
     #{extra}
     <input type=submit value=_{MsgUpdateBoardsBtn}>
         <table>
-            <tr>
-                <td>_{MsgBoardName}
-                <td> ^{fvInput nameView}
+            $if bname == "all-f89d7fb43ef7"
+                <tr style=display:none>
+                    <td>_{MsgBoardName}
+                    <td> ^{fvInput nameView}
+            $else
+                <tr style>
+                    <td>_{MsgBoardName}
+                    <td> ^{fvInput nameView}
             <tr>
                 <td>_{MsgBoardDescription }
                 <td>^{fvInput descriptionView}
@@ -41,6 +46,9 @@
                 <td>_{MsgBoardThreadLimit}
                 <td>^{fvInput threadLimitView}
                 <td>( _{MsgXForUnlim "-1"} )
+            $if bname == "all-f89d7fb43ef7"
+                <tr>
+                    <td colspan=2><strong>_{MsgWontBeUpdatedIfNone}:</strong>
             <tr>
                 <td>_{MsgBoardHidden}
                 <td>^{fvInput isHiddenView}
@@ -51,18 +59,20 @@
                 <td>_{MsgBoardEnableCaptcha}
                 <td>^{fvInput enableCaptchaView}
             <tr>
+                <td>_{MsgOpModeration}
+                <td>^{fvInput opModerationView}
+            $if bname == "new-f89d7fb43ef7"
+                <tr>
+                    <td colspan=2><strong>_{MsgOptional}:</strong>
+            <tr>
                 <td>_{MsgBoardCategory}
                 <td>^{fvInput categoryView}
             <tr>
                 <td>_{MsgBoardViewAccess} 
                 <td>^{fvInput viewAccessView}
-                <td>( _{MsgNoneForAny} )
             <tr>
                 <td>_{MsgBoardReplyAccess}
                 <td>^{fvInput replyAccessView}
             <tr>
                 <td>_{MsgBoardThreadAccess}
                 <td>^{fvInput threadAccessView}
-            <tr>
-                <td>_{MsgOpModeration}
-                <td>^{fvInput opModerationView}

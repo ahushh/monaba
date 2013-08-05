@@ -29,6 +29,8 @@ import GHC.Word (Word64)
 import Network.HTTP.Types (mkStatus)
 import Network.Wai (Request(..))
 import Control.Monad (when)
+import Control.Applicative ((<$>))
+import Data.Maybe (fromJust)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -162,20 +164,42 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
-    isAuthorized (StickR     _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (LockR      _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' Moderator
-    isAuthorized (ManageBoardsR _) _ = isAuthorized' Admin
-    isAuthorized AdminR            _ = isAuthorized' Moderator
-    isAuthorized (DeleteBoardR  _) _ = isAuthorized' Admin
-    isAuthorized (CleanBoardR   _) _ = isAuthorized' Admin
-    isAuthorized StaffR            _ = isAuthorized' Admin
-    isAuthorized (StaffDeleteR  _) _ = isAuthorized' Admin
-    isAuthorized NewPasswordR      _ = isAuthorized' Moderator
-    isAuthorized AccountR          _ = isAuthorized' Moderator
-    isAuthorized ConfigR           _ = isAuthorized' Admin
-    isAuthorized _                 _ = return Authorized
+    isAuthorized AdminR            _ = isAuthorized' ManagePanelP
+    isAuthorized NewPasswordR      _ = isAuthorized' ManagePanelP
+    isAuthorized AccountR          _ = isAuthorized' ManagePanelP
+    isAuthorized (StickR     _ _ ) _ = isAuthorized' ManageThreadP
+    isAuthorized (LockR      _ _ ) _ = isAuthorized' ManageThreadP
+    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' ManageThreadP
+
+    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManageBanP
+    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManagePanelP
+    isAuthorized (ManageBoardsR _) _ = isAuthorized' ManageBoardP
+    isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManageBoardP
+    isAuthorized (CleanBoardR   _) _ = isAuthorized' ManageBoardP
+    isAuthorized (ManageBoardsR _) _ = isAuthorized' ManagePanelP
+    isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManagePanelP
+    isAuthorized (CleanBoardR   _) _ = isAuthorized' ManagePanelP
+    isAuthorized UsersR            _ = isAuthorized' ManageUsersP
+    isAuthorized UsersR            _ = isAuthorized' ManagePanelP
+    isAuthorized (ManageGroupsR _) _ = isAuthorized' ManageUsersP
+    isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManagePanelP
+
+    -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
+    -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP
+    -- isAuthorized (ManageBoardsR _) True  = isAuthorized' ManageBoardP
+    -- isAuthorized (DeleteBoardR  _) True  = isAuthorized' ManageBoardP
+    -- isAuthorized (CleanBoardR   _) True  = isAuthorized' ManageBoardP
+    -- isAuthorized (ManageBoardsR _) False = isAuthorized' ManagePanelP
+    -- isAuthorized (DeleteBoardR  _) False = isAuthorized' ManagePanelP
+    -- isAuthorized (CleanBoardR   _) False = isAuthorized' ManagePanelP
+    -- isAuthorized UsersR            True  = isAuthorized' ManageUsersP
+    -- isAuthorized UsersR            False = isAuthorized' ManagePanelP
+    -- isAuthorized (ManageGroupsR _) True  = isAuthorized' ManageUsersP
+    -- isAuthorized (UsersDeleteR  _) False = isAuthorized' ManagePanelP
+
+    isAuthorized ConfigR           True  = isAuthorized' ManageConfigP
+    isAuthorized ConfigR           False = isAuthorized' ManagePanelP
+    isAuthorized _                 _     = return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -194,25 +218,15 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
-
-isAuthorized' :: forall master.
-                 (YesodPersist master,
-                  PersistStore (YesodPersistBackend master (HandlerT master IO)),
-                  YesodAuth master,
-                  AuthId master
-                  ~ KeyBackend
-                  SqlBackend Person,
-                  PersistMonadBackend
-                  (YesodPersistBackend master (HandlerT master IO))
-                  ~ SqlBackend) =>
-                 RoleOfPerson -> HandlerT master IO AuthResult
-isAuthorized' role = do
+isAuthorized' permission = do
   mauth <- maybeAuth
   case mauth of
     Nothing -> return AuthenticationRequired
-    Just (Entity _ user)
-      | personRole user >= role -> return Authorized
-      | otherwise              -> return $ Unauthorized (T.concat ["You must be an ", T.pack (show role)])
+    Just (Entity _ user) -> do
+      group <- runDB $ getBy $ GroupUniqName (userGroup user)
+      if permission `elem` (groupPermissions $ entityVal $ fromJust group)
+        then return Authorized
+        else return $ Unauthorized "Not permitted"
 
 -- How to run database actions.
 instance YesodPersist App where
@@ -222,15 +236,15 @@ instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool
 
 instance YesodAuth App where
-    type AuthId App = PersonId
+    type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = AdminR
+    loginDest _ = HomeR
     -- Where to send a user after logout
     logoutDest _ = HomeR
     
-    authPlugins _   = [authHashDB (Just . PersonUniqueName)]
-    getAuthId creds = getAuthIdHashDB AuthR (Just . PersonUniqueName) creds
+    authPlugins _   = [authHashDB (Just . UserUniqName)]
+    getAuthId creds = getAuthIdHashDB AuthR (Just . UserUniqName) creds
     authHttpManager = httpManager
 
 -- This instance is required to use forms. You can modify renderMessage to

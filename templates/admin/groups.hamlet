@@ -1,0 +1,14 @@
+^{headerWidget muser boards boardCategories group}
+^{adminNavbarWidget muser permissions}
+^{formWidget}
+$forall g <- groups
+    <table .admin-table>
+        <tr>
+            <th>_{MsgName}
+            <td>#{groupName g}
+        <tr>
+            <th colspan=2 style=text-align:center>_{MsgPermissions}
+        $forall p <- groupPermissions g
+            <tr>
+                <td colspan=2>_{showPermission p}
+^{footerWidget}            

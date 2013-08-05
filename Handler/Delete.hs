@@ -12,11 +12,20 @@ import           System.Directory   (removeFile)
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
   when (thread == 0) notFound
-  muser       <- maybeAuth
+
+  muser   <- maybeAuth
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+
   maybeBoard  <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard || (boardOpModeration $ entityVal $ fromJust maybeBoard) == False) notFound  
-  let userRole = maybe Nothing (Just . personRole . entityVal) muser
-    in when (userRole < (boardViewAccess $ entityVal $ fromJust maybeBoard)) notFound
+
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess $ entityVal $ fromJust maybeBoard
+  when (isJust access && access /= group) notFound
+
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -39,10 +48,14 @@ getDeletedByOpR board thread = do
 
 getDeleteR :: Handler Html
 getDeleteR = do
-  query      <- reqGetParams <$> getRequest
-  muser      <- maybeAuth
+  query  <- reqGetParams <$> getRequest
+  muser  <- maybeAuth
+  mgroup <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+
   let errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
-      nopasreq          = maybe False (\u -> personRole (entityVal u) >= Moderator) muser
+      nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
       helper x          = toKey ((read $ unpack $ snd x) :: Int )
   case reverse query of
     ("postpassword",pswd):("opmoderation",threadId):xs | null xs   -> errorRedirect MsgDeleteNoPosts

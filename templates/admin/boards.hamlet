@@ -1,5 +1,5 @@
-^{headerWidget muser boards boardCategories}
-^{adminNavbarWidget muser}
+^{headerWidget muser boards boardCategories group}
+^{adminNavbarWidget muser permissions}
 $if not (board == "new-f89d7fb43ef7")
     <a href=@{CleanBoardR  board}><button>_{MsgCleanBoard}</button></a>
     <a href=@{DeleteBoardR board}><button>_{MsgDeleteBtn}</button></a>

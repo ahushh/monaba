@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
+^{headerWidget muser boards boardCategories group}
 
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{boardDesc}
@@ -16,7 +16,7 @@ $else
     <form #delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-                ^{opPostWidget muser eOpPost opPostFiles False True}
+                ^{opPostWidget muser eOpPost opPostFiles False True permissions}
                 <br>
                 $if omitted > 0
                     <div .omitted>
@@ -25,15 +25,15 @@ $else
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
-                    ^{replyPostWidget muser ePreview previewFiles True}
+                    ^{replyPostWidget muser ePreview previewFiles True permissions}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
             <hr>
         <div #delete-container>
-            $maybe _ <- muser
+            $if elem DeletePostsP permissions
                 <span style=display:none>
                     _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-            $nothing
+            $else
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
             <input type=submit value=_{MsgDeleteBtn}>
 

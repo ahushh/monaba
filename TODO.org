@@ -133,13 +133,21 @@
 ** DONE add news to home page
 ** DONE more info below post form
    CLOSED: [2013-07-31 Ср 20:07]
+** TODO fix template layouts
+** TODO autorefresh, new posts count via websockets
+** TODO reports
+** TODO refmap table (?)
+** TODO delete only image
 ** TODO management
 *** TODO logging
 *** TODO bans
 **** TODO ban by session
 **** TODO R/O or no access at all
+*** TODO allow thread moving
+*** TODO improve user groups
+*** DONE user groups
+    CLOSED: [2013-08-05 Пн 09:44]
 ** TODO geoip
-** TODO allow thread moving
 ** TODO fix JS and stylesheet loading
 ** TODO truncate message using JS
 ** TODO search

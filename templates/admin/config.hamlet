@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
-^{adminNavbarWidget muser}
+^{headerWidget muser boards boardCategories group}
+^{adminNavbarWidget muser permissions}
 ^{formWidget}
 ^{footerWidget}            

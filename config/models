@@ -1,9 +1,17 @@
-Person
+Group
     name             Text
+    GroupUniqName    name
+    permissions      [Permission]
+    deriving         Typeable
+    deriving         Eq
+    deriving         Ord
+    deriving         Show
+User
+    name             Text
+    UserUniqName     name
+    group            Text
     password         Text
     salt             Text
-    PersonUniqueName name
-    role             RoleOfPerson -- Admin/Moderator
     deriving         Typeable
 Board
     name              Text
@@ -19,20 +27,20 @@ Board
     previewsPerThread Int
     hidden            Bool
     enableCaptcha     Bool
-    threadLimit       Int          default=-1
-    opWithoutFile     Bool         default=0
-    viewAccess        RoleOfPerson Maybe default=null
-    replyAccess       RoleOfPerson Maybe default=null
-    threadAccess      RoleOfPerson Maybe default=null
-    category          Text         Maybe
-    opModeration      Bool         default=0
-    extraRules        [Text]       default='["s"]'
+    threadLimit       Int      default=-1
+    opWithoutFile     Bool     default=0
+    viewAccess        Text     Maybe default=null -- group name
+    replyAccess       Text     Maybe default=null -- group name
+    threadAccess      Text     Maybe default=null -- group name
+    category          Text     Maybe
+    opModeration      Bool     default=0
+    extraRules        [Text]   default='["s"]'
     deriving          Typeable
 Post
     board        Text
     localId      Int
     parent       Int
-    owner        RoleOfPerson Maybe
+    owner        Text Maybe default=null
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text

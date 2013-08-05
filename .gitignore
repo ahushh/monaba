@@ -1,6 +1,7 @@
 dist*
 cabal-dev/*
 static/tmp/
+static/combined/
 static/files/*
 !static/files/.keep
 static/captcha/*

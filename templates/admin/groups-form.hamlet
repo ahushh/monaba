@@ -1,0 +1,29 @@
+<form method=post action=1>
+    #{extra}
+    <table>
+        <tr>
+            <td>_{MsgName}
+            <td>^{fvInput nameView}
+        <tr>
+            <td>_{MsgManageThread}
+            <td>^{fvInput manageThreadView}
+        <tr>
+            <td>_{MsgManageBoard }
+            <td>^{fvInput manageBoardView }
+        <tr>
+            <td>_{MsgManageUsers }
+            <td>^{fvInput manageUsersView }
+        <tr>
+            <td>_{MsgManageConfig}
+            <td>^{fvInput manageConfigView}
+        <tr>
+            <td>_{MsgDeletePosts }
+            <td>^{fvInput deletePostsView }
+        <tr>
+            <td>_{MsgManagePanel }
+            <td>^{fvInput managePanelView }
+        <tr>
+            <td>_{MsgManageBan   }
+            <td>^{fvInput manageBanView   }
+
+    <input type=submit value=_{MsgGroupAdd}>

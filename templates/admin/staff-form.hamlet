@@ -1,6 +1,0 @@
-<form .staff method=post action=@{StaffR}>
-    #{extra}
-    _{MsgName}: ^{fvInput personNameView}
-    _{MsgPassword}: ^{fvInput personPasswordView}
-    _{MsgRole}: ^{fvInput personRoleView}
-    <input type=submit value=_{MsgAddNewPerson}>

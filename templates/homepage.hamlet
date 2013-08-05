@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
+^{headerWidget muser boards boardCategories group}
 <br>
 <hr>
 <div #main-title>
@@ -6,7 +6,7 @@
 <div #home-container>
     <div #board-list-full>
         $forall c <- boardCategories
-          $with bs <- widgetHelperFilterBoards boards c muser
+          $with bs <- widgetHelperFilterBoards boards c group
             $if not (null bs)
               <div .board-category>#{c}
               $forall Entity _ b <- bs
@@ -26,4 +26,4 @@
                             <time>#{myFormatTime $ postDate t}
                     &nbsp;&nbsp;
                     <blockquote>^{markupWidget $ postMessage t}
-^{footerWidget}            
+^{footerWidget}

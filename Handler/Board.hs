@@ -17,11 +17,19 @@ postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
 getBoardR :: Text -> Int -> Handler Html
 getBoardR board page = do
-  muser      <- maybeAuth
+  muser   <- maybeAuth
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
-  let userRole = maybe Nothing (Just . personRole . entityVal) muser
-    in when (userRole < (boardViewAccess $ entityVal $ fromJust maybeBoard)) notFound
+
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess $ entityVal $ fromJust maybeBoard
+  when (isJust access && access /= group) notFound
+ 
   boards     <- runDB $ selectList ([]::[Filter Board]) []
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
@@ -62,8 +70,9 @@ getBoardR board page = do
   boardCategories  <- getConfig configBoardCategories
   msgrender        <- getMessageRender
 
-  let userRole             = maybe Nothing (Just . personRole . entityVal) muser
-      hasAccessToNewThread = userRole >= (boardThreadAccess $ entityVal $ fromJust maybeBoard)
+  -- let userGroup             = maybe Nothing (Just . userGroup . entityVal) muser
+      -- hasAccessToNewThread = userGroup >= (boardThreadAccess $ entityVal $ fromJust maybeBoard)
+  let hasAccessToNewThread = True
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", boardDesc]
@@ -73,9 +82,16 @@ postBoardR :: Text -> Int -> Handler Html
 postBoardR board _ = do
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
-  muser      <- maybeAuth
-  let userRole = maybe Nothing (Just . personRole . entityVal) muser
-    in when (userRole < (boardThreadAccess $ entityVal $ fromJust maybeBoard)) notAuthenticated
+
+  muser   <- maybeAuth
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess $ entityVal $ fromJust maybeBoard
+  when (isJust access && access /= group) notFound
   -------------------------------------------------------------------------------------------------------   
   let msgRedirect msg  = setMessageI msg >> redirect (BoardNoPageR board)
       maxMessageLength = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
@@ -141,7 +157,7 @@ postBoardR board _ = do
                            , postAutosage     = False
                            -- , postDeleted      = False
                            , postDeletedByOp  = False
-                           , postOwner        = personRole . entityVal <$> muser
+                           , postOwner        = pack . show . userGroup . entityVal <$> muser
                            , postPosterId     = posterId
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
@@ -149,7 +165,7 @@ postBoardR board _ = do
         let tl = boardThreadLimit $ entityVal $ fromJust maybeBoard
           in when (tl >= 0) $
                deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
-        -------------------------------------------------------------------------------------------------------           
+        -------------------------------------------------------------------------------------------------------
         when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
         deleteSession "message"
         deleteSession "post-title"

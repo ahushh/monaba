@@ -18,11 +18,11 @@ import ModelTypes
 share [mkPersist sqlOnlySettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
-instance HashDBUser Person where
-    userPasswordHash = Just . personPassword
-    userPasswordSalt = Just . personSalt
-    setSaltAndPasswordHash s h p = p { personSalt     = s
-                                     , personPassword = h
+instance HashDBUser User where
+    userPasswordHash = Just . userPassword
+    userPasswordSalt = Just . userSalt
+    setSaltAndPasswordHash s h p = p { userSalt     = s
+                                     , userPassword = h
                                      }
                                    
 ------------------------------------------------------------------------------

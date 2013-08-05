@@ -4,15 +4,15 @@
         <option id=style-Futaba>Futaba
     [ <a href=@{HomeR}>_{MsgHome}</a> ][ <a href=@{HelpR}>_{MsgHelp}</a> ]
     $maybe Entity _ user <- muserW
-        [ #{personName user} | <a href=@{AdminR}>_{MsgManage}</a> | <a href=@{AuthR LogoutR}>_{MsgLogout}</a> ]
+        [ #{userName user} | <a href=@{AdminR}>_{MsgManage}</a> | <a href=@{AuthR LogoutR}>_{MsgLogout}</a> ]
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
     [ <a href=@{LiveR}>/~/</a> ] 
-    $forall Entity _ b <- widgetHelperFilterBoards boardsW "" muserW
+    $forall Entity _ b <- widgetHelperFilterBoards boardsW "" groupW
       [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categoriesW
-      $with bs <- widgetHelperFilterBoards boardsW c muserW
+      $with bs <- widgetHelperFilterBoards boardsW c groupW
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs

@@ -8,7 +8,12 @@ import           Database.Persist.Sql    (SqlBackend)
 --------------------------------------------------------------------------------------------------------- 
 getPostsHelper :: YesodDB App [Entity Post] -> Text -> Int -> Text -> HandlerT App IO TypedContent
 getPostsHelper selectPosts board thread errorString = do
-  muser <- maybeAuth
+  muser   <- maybeAuth
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+
   checkAccess muser board
   let selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> (runDB selectPosts) >>= mapM (\p -> do
@@ -25,7 +30,7 @@ getPostsHelper selectPosts board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{replyPostWidget muser post files True}
+                                   ^{replyPostWidget muser post files True permissions}
                                |]
           provideJson $ map (entityVal *** (map entityVal)) postsAndFiles
 
@@ -51,7 +56,12 @@ getApiLastPostsR board thread postCount = getPostsHelper selectPosts board threa
 ---------------------------------------------------------------------------------------------------------
 getApiPostR :: Text -> Int -> Handler TypedContent
 getApiPostR board postId = do
-  muser     <- maybeAuth
+  muser   <- maybeAuth
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+
   checkAccess muser board
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
   when (isNothing maybePost) notFound
@@ -60,22 +70,25 @@ getApiPostR board postId = do
   files <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if (postParent (entityVal $ fromJust maybePost)) == 0
-                       then opPostWidget muser post files False True
-                       else replyPostWidget muser post files True
+                       then opPostWidget muser post files False True permissions
+                       else replyPostWidget muser post files True permissions
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
 ---------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------
-checkAccess :: forall site.
-               (YesodPersist site,
-                PersistUnique (YesodPersistBackend site (HandlerT site IO)),
-                PersistMonadBackend (YesodPersistBackend site (HandlerT site IO))
-                ~ SqlBackend) =>
-               Maybe (Entity Person) -> Text -> HandlerT site IO ()
+-- checkAccess :: forall site.
+--                (YesodPersist site,
+--                 PersistUnique (YesodPersistBackend site (HandlerT site IO)),
+--                 PersistMonadBackend (YesodPersistBackend site (HandlerT site IO))
+--                 ~ SqlBackend) =>
+--                Maybe (Entity Person) -> Text -> HandlerT site IO ()
 checkAccess muser board = do
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
-  let userRole = maybe Nothing (Just . personRole . entityVal) muser
-    in when (userRole < (boardViewAccess $ entityVal $ fromJust maybeBoard)) notFound
-  
+  mgroup  <- case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess $ entityVal $ fromJust maybeBoard
+   in when (isJust access && access /= group) notFound

@@ -14,9 +14,11 @@
 /captcha             CaptchaR      GET
 /captcha/!info       CaptchaInfoR  GET
 
+
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET
 /help/api            HelpApiR      GET
+
 
 /api/thread/#Text/#Int/new/#Int  ApiNewPostsR     GET
 /api/thread/#Text/#Int/last/#Int ApiLastPostsR    GET
@@ -25,17 +27,24 @@
 /api/post/#Text/#Int             ApiPostR         GET
 /jsonfrommsg/#Text               JsonFromMsgR     GET
 
+
 /admin                     AdminR        GET
 /admin/stick/#Text/#Int    StickR        GET
 /admin/lock/#Text/#Int     LockR         GET
 /admin/autosage/#Text/#Int AutoSageR     GET
+
 /admin/ban/#Text/#Text     BanByIpR      GET POST
+
 /admin/bandelete/#Int      BanDeleteR    GET
 /admin/boards/#Text        ManageBoardsR GET POST
 /admin/boards/delete/#Text DeleteBoardR  GET
 /admin/boards/clean/#Text  CleanBoardR   GET
-/admin/staff               StaffR        GET POST
-/admin/staff/delete/#Int   StaffDeleteR  GET
+
+/admin/groups/#Text        ManageGroupsR GET POST
+/admin/users               UsersR        GET POST
+/admin/users/delete/#Int   UsersDeleteR  GET
+
 /admin/account             AccountR      GET
 /admin/account/password    NewPasswordR  POST
+
 /admin/config              ConfigR       GET POST

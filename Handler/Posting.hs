@@ -25,7 +25,7 @@ postForm :: Int -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
                                          Maybe Text   -> -- maybeCaptchaInfoW
                                          Maybe Text   -> -- acaptchaW
                                          Bool         -> -- enableCaptchaW
-                                         Maybe (Entity Person) -> -- muserW
+                                         Maybe (Entity User) -> -- muserW
                                          Widget)
 postForm numberFiles extra = do
   lastName    <- lookupSession "name"

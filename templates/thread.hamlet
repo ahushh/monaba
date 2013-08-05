@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
+^{headerWidget muser boards boardCategories group}
 
 <br>
 $if T.length pagetitle > 10
@@ -20,10 +20,10 @@ $if hasAccessToReply
 <hr>
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-        ^{opPostWidget muser eOpPost opPostFiles True True}
+        ^{opPostWidget muser eOpPost opPostFiles True True permissions}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{replyPostWidget muser eReply files True}
+            ^{replyPostWidget muser eReply files True permissions}
     <br>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
@@ -36,10 +36,10 @@ $if hasAccessToReply
             $if not noDeletedPosts
                 [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
             <br>
-        $maybe _ <- muser
+        $if elem DeletePostsP permissions
             <span style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $nothing
+        $else
             _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
 ^{footerWidget}

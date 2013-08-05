@@ -101,7 +101,7 @@ NeverExpires: Never
 AllBoards: All boards
 YouAreBanned reason@Text expires@Text: You are banned! Reason: "#{reason}". Your ban expires at #{expires}
 
-Staff: Staff
+Users: Users
 Help: Help
 Markup: Markup
 IfYouAreOp: If you are OP
@@ -123,14 +123,26 @@ ApiCount: Number of posts
 
 SupportedLanguages: Supported languages for tag [code=<language>]
 
-Role: Role
-AddNewPerson: New person
-StaffAdded: New person successufully added
-StaffDeleted: Person successufully deleted
+Permissions: Permissions
+GroupAdded: Group added
+GroupAdd: Add group
+ManageThread:Manage Thread
+ManageBoard :Manage Board
+ManageUsers :Manage Users
+ManageConfig:Manage Config
+DeletePosts :Delete Posts
+ManagePanel :Manage Panel
+ManageBan   :Manage Ban
+
+Group: Group
+Groups: Groups
+AddNewUser: New user
+UsersAdded: New user successufully added
+UsersDeleted: User successufully deleted
 Account: Account
 NewPassword: New password
 PasswordChanged: Password successully changed
-YouAreTheOnlyAdmin: You are the only Admin!
+YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 
 Captcha: Captcha
 WrongCaptcha: Wrong captcha

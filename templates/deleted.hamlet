@@ -1,4 +1,4 @@
-^{headerWidget muser boards boardCategories}
+^{headerWidget muser boards boardCategories group}
 
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{board}
@@ -8,7 +8,7 @@
 <br>
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{replyPostWidget muser eReply files False}
+        ^{replyPostWidget muser eReply files False permissions}
     <br>
     <div #delete-container>
         $maybe _ <- muser

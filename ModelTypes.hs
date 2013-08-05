@@ -1,13 +1,19 @@
 module ModelTypes
        (
-         RoleOfPerson(..)
+         Permission(..)
        ) where
 
 import Prelude
 import Yesod
 
-data RoleOfPerson = Moderator | Admin
-  deriving (Show, Read, Eq, Ord, Bounded, Enum)
+data Permission = ManageThreadP |
+                  ManageBoardP  |
+                  ManageUsersP  |
+                  ManageConfigP |
+                  DeletePostsP  |
+                  ManagePanelP  |
+                  ManageBanP
+                deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
-derivePersistField "RoleOfPerson"
+derivePersistField "Permission"
 

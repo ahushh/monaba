@@ -1,10 +1,14 @@
 <br>
 <div .admin-navbar>
-    <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
-    $maybe Entity _ user <- muserW
-        $if personRole user == Admin
-            <a href=@{ManageBoardsR "all"}>_{MsgBoards}</a> |
-            <a href=@{StaffR}>_{MsgStaff}</a> |
-            <a href=@{ConfigR}>_{MsgConfig}</a> |
+    $if elem ManageBanP permissionsW
+        <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
+    $if elem ManageBoardP permissionsW
+        <a href=@{ManageBoardsR "all"}>_{MsgBoards}</a> |
+    $if elem ManageUsersP permissionsW
+        <a href=@{UsersR}>_{MsgUsers}</a> |
+    $if elem ManageUsersP permissionsW
+        <a href=@{ManageGroupsR ""}>_{MsgGroups}</a> |
+    $if elem ManageConfigP permissionsW
+        <a href=@{ConfigR}>_{MsgConfig}</a> |
     <a href=@{AccountR}>_{MsgAccount}
 <hr>

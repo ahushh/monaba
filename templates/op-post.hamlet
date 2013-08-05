@@ -5,16 +5,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
               $maybe owner <- postOwner (entityVal eOpPostW)
-                  $if (map toLower $ show owner) == (map toLower $ unpack $ postName $ entityVal eOpPostW)
-                      $case owner
-                          $of Admin       
-                              <span .poster-name-admin>#admin
-                          $of Moderator    
-                              <span .poster-name-mod>#mod
-                  $else
-                      <span .poster-name>#{postName $ entityVal eOpPostW}
-              $nothing
-                  <span .poster-name>#{postName $ entityVal eOpPostW}
+              <span .poster-name>#{postName $ entityVal eOpPostW}
               <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
               <div .thread-status>
                   $if postSticked $ entityVal $ eOpPostW
@@ -37,13 +28,12 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   $if not $ isInThreadW
                       [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
                       &nbsp;&nbsp;
-                  $maybe Entity _ user <- muserW
-                      $if personRole user >= Moderator
-                          [ #{postIp $ entityVal $ eOpPostW} ] #
-                          \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
-                          \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
-                          \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
-                          \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
+                  $if elem ManageThreadP permissionsW
+                      [ #{postIp $ entityVal $ eOpPostW} ] #
+                      \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
+                      \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
+                      \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
+                      \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
       
           $forall Entity _ file <- opPostFilesW
               $if length opPostFilesW == 1

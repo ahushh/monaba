@@ -5,17 +5,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
             <div .post-header>
                 <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}
-                $maybe owner <- postOwner (entityVal eReplyW)
-                    $if (map toLower $ show owner) == (map toLower $ unpack $ postName $ entityVal eReplyW)
-                        $case owner
-                            $of Admin       
-                                <span .poster-name-admin>#admin
-                            $of Moderator    
-                                <span .poster-name-mod>#mod
-                    $else
-                        <span .poster-name>#{postName $ entityVal eReplyW}
-                $nothing
-                    <span .poster-name>#{postName $ entityVal eReplyW}
+                <span .poster-name>#{postName $ entityVal eReplyW}
                 <time>#{myFormatTime $ postDate $ entityVal eReplyW}
                 <span .reflink>
                     $if canPostW
@@ -27,10 +17,9 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <span .extra-buttons>
                         <img onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
                 <span .cpanel>
-                    $maybe Entity _ user <- muserW
-                        $if personRole user >= Moderator
-                            [ #{postIp $ entityVal eReplyW} ] 
-                            \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
+                    $if elem ManageThreadP permissionsW
+                        [ #{postIp $ entityVal eReplyW} ] 
+                        \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
             $forall Entity _ file <- replyFilesW
                 $if length replyFilesW == 1
                     <div .file>

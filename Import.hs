@@ -83,30 +83,39 @@ truncateFileName s = if len > maxLen then result else s
 markupWidget :: Textarea -> Widget
 markupWidget = toWidget . preEscapedToHtml . unTextarea
 
-opPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> Bool -> WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW = $(widgetFile "op-post")
+opPostWidget :: Maybe (Entity User)   ->
+               Entity Post           ->
+               [Entity Attachedfile] ->
+               Bool                  -> -- show or not "[ Open ]" link
+               Bool                  -> -- show or not extra buttons such as [>]
+               [Permission]          ->
+               WidgetT App IO () 
+opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW = $(widgetFile "op-post")
 
-replyPostWidget :: Maybe (Entity Person) -> Entity Post -> [Entity Attachedfile] -> Bool -> WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW canPostW = $(widgetFile "reply-post")
+replyPostWidget :: Maybe (Entity User)   ->
+                  Entity Post           ->
+                  [Entity Attachedfile] ->
+                  Bool                  -> -- show or not extra buttons such as [>]
+                  [Permission]          ->
+                  WidgetT App IO ()
+replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW = $(widgetFile "reply-post")
 
-widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe (Entity Person) -> [Entity Board]
-widgetHelperFilterBoards boards category muser = filter p boards
+widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
+widgetHelperFilterBoards boards category group = filter p boards
   where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
         notHidden     b = not $ boardHidden b
         checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = (Just category) == boardCategory b
-        checkAccess   b = case muser of
-          Just (Entity _ user) -> Just (personRole user) >= boardViewAccess b
-          Nothing              -> Nothing == boardViewAccess b
+        checkAccess   b = isJust (boardViewAccess b) && boardViewAccess b == group
 
-headerWidget :: Maybe (Entity Person) -> [Entity Board] -> [Text] -> WidgetT App IO ()
-headerWidget muserW boardsW categoriesW = $(widgetFile "header")
+headerWidget :: Maybe (Entity User) -> [Entity Board] -> [Text] -> Maybe Text -> WidgetT App IO ()
+headerWidget muserW boardsW categoriesW groupW = $(widgetFile "header")
 
 footerWidget :: WidgetT App IO ()
 footerWidget = $(widgetFile "footer")
 
-adminNavbarWidget :: Maybe (Entity Person) -> WidgetT App IO ()
-adminNavbarWidget muserW = $(widgetFile "admin/navbar")
+adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
+adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
 bareLayout widget = do

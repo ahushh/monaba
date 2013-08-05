@@ -101,7 +101,7 @@ NeverExpires: Никогда
 AllBoards: Все борды
 YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#{reason}". Бан истекает #{expires}
 
-Staff: Персонал
+Users: Пользователи
 Help: Справка
 Markup: Разметка
 IfYouAreOp: Если вы ОП
@@ -123,14 +123,26 @@ ApiCount: Количество постов
 
 SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
 
-Role: Роль
-AddNewPerson: Новый аккаунт
-StaffAdded: Аккаунт добавлен
-StaffDeleted: Аккаунт удален
+Permissions: Права
+GroupAdded: Группа добавлена
+GroupAdd: Добавить группу
+ManageThread: Управление тредами
+ManageBoard : Управление бордами
+ManageUsers : Управление пользователями
+ManageConfig: Изменение конфига
+DeletePosts : Удаление постов
+ManagePanel : Доступ в админку
+ManageBan   : Бан
+
+Group: Группа
+Groups: Группы
+AddNewUser: Новый аккаунт
+UsersAdded: Аккаунт добавлен
+UsersDeleted: Аккаунт удален
 Account: Мой аккаунт
 NewPassword: Новый пароль
 PasswordChanged: Пароль изменен
-YouAreTheOnlyAdmin: Вы единственный админ!
+YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
 
 Captcha: Капча
 WrongCaptcha: Неверная капча

@@ -17,27 +17,19 @@ postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
 getBoardR :: Text -> Int -> Handler Html
 getBoardR board page = do
-  muser   <- maybeAuth
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let permissions = maybe [] (groupPermissions . entityVal) mgroup
-
-  maybeBoard <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard) notFound
-
-  let group  = (groupName . entityVal) <$> mgroup
-      access = boardViewAccess $ entityVal $ fromJust maybeBoard
-  when (isJust access && access /= group) notFound
- 
-  boards     <- runDB $ selectList ([]::[Filter Board]) []
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
+      permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
-  let numberFiles       = boardNumberFiles       $ entityVal $ fromJust maybeBoard
-      threadsPerPage    = boardThreadsPerPage    $ entityVal $ fromJust maybeBoard
-      previewsPerThread = boardPreviewsPerThread $ entityVal $ fromJust maybeBoard
-      enableCaptcha     = boardEnableCaptcha     $ entityVal $ fromJust maybeBoard
-      boardDesc         = boardDescription       $ entityVal $ fromJust maybeBoard
+  let numberFiles       = boardNumberFiles       boardVal
+      threadsPerPage    = boardThreadsPerPage    boardVal
+      previewsPerThread = boardPreviewsPerThread boardVal
+      enableCaptcha     = boardEnableCaptcha     boardVal
+      boardDesc         = boardDescription       boardVal
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
       pagesFix x
@@ -67,40 +59,28 @@ getBoardR board page = do
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
-  boardCategories  <- getConfig configBoardCategories
   msgrender        <- getMessageRender
 
-  -- let userGroup             = maybe Nothing (Just . userGroup . entityVal) muser
-      -- hasAccessToNewThread = userGroup >= (boardThreadAccess $ entityVal $ fromJust maybeBoard)
-  let hasAccessToNewThread = True
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", boardDesc]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc]
     $(widgetFile "board")
     
 postBoardR :: Text -> Int -> Handler Html
 postBoardR board _ = do
-  maybeBoard <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard) notFound
-
-  muser   <- maybeAuth
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let permissions = maybe [] (groupPermissions . entityVal) mgroup
-
-  let group  = (groupName . entityVal) <$> mgroup
-      access = boardViewAccess $ entityVal $ fromJust maybeBoard
-  when (isJust access && access /= group) notFound
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
   -------------------------------------------------------------------------------------------------------   
   let msgRedirect msg  = setMessageI msg >> redirect (BoardNoPageR board)
-      maxMessageLength = boardMaxMsgLength  $ entityVal $ fromJust maybeBoard
-      defaultName      = boardDefaultName   $ entityVal $ fromJust maybeBoard
-      allowedTypes     = boardAllowedTypes  $ entityVal $ fromJust maybeBoard
-      thumbSize        = boardThumbSize     $ entityVal $ fromJust maybeBoard
-      numberFiles      = boardNumberFiles   $ entityVal $ fromJust maybeBoard
-      enableCaptcha    = boardEnableCaptcha $ entityVal $ fromJust maybeBoard
-      opWithoutFile    = boardOpWithoutFile $ entityVal $ fromJust maybeBoard      
+      maxMessageLength = boardMaxMsgLength  boardVal
+      defaultName      = boardDefaultName   boardVal
+      allowedTypes     = boardAllowedTypes  boardVal
+      thumbSize        = boardThumbSize     boardVal
+      numberFiles      = boardNumberFiles   boardVal
+      enableCaptcha    = boardEnableCaptcha boardVal
+      opWithoutFile    = boardOpWithoutFile boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm numberFiles
   case result of
@@ -162,7 +142,7 @@ postBoardR board _ = do
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -- delete old threads
-        let tl = boardThreadLimit $ entityVal $ fromJust maybeBoard
+        let tl = boardThreadLimit boardVal
           in when (tl >= 0) $
                deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------

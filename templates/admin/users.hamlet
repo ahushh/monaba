@@ -1,4 +1,3 @@
-^{headerWidget muser boards boardCategories group}
 ^{adminNavbarWidget muser permissions}
 ^{formWidget}
 <table .admin-table>
@@ -12,4 +11,3 @@
                 <a href=@{UsersDeleteR $ fromIntegral $ fromKey $ userId}>_{MsgDeleteBtn}
             <td>#{userName user}
             <td>#{show $ userGroup user}
-^{footerWidget}            

@@ -4,7 +4,6 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
           <div .post-header>
               <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
-              $maybe owner <- postOwner (entityVal eOpPostW)
               <span .poster-name>#{postName $ entityVal eOpPostW}
               <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}
               <div .thread-status>

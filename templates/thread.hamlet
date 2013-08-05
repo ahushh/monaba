@@ -1,5 +1,3 @@
-^{headerWidget muser boards boardCategories group}
-
 <br>
 $if T.length pagetitle > 10
     <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
@@ -16,7 +14,7 @@ $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
-        ^{formWidget (entityVal $ fromJust maybeBoard) True maybeCaptchaInfo acaptcha enableCaptcha muser}
+        ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <hr>
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
@@ -42,4 +40,3 @@ $if hasAccessToReply
         $else
             _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
-^{footerWidget}

@@ -30,7 +30,7 @@ import Network.HTTP.Types (mkStatus)
 import Network.Wai (Request(..))
 import Control.Monad (when)
 import Control.Applicative ((<$>))
-import Data.Maybe (fromJust)
+import Data.Maybe (fromMaybe, fromJust, isNothing)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -45,6 +45,14 @@ data App = App
     , appLogger :: Logger
     }
 
+---------------------------------------------------------------------------------------------------------
+widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
+widgetHelperFilterBoards boards category group = filter p boards
+  where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
+        notHidden     b = not $ boardHidden b
+        checkCategory b | T.null category = isNothing $ boardCategory b
+                        | otherwise       = (Just category) == boardCategory b
+        checkAccess   b = isNothing (boardViewAccess b) || boardViewAccess b == group
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
 omittedRus n
@@ -109,9 +117,16 @@ instance Yesod App where
         "config/client_session_key.aes"
 
     defaultLayout widget = do
+        muser  <- maybeAuth
         master <- getYesod
         mmsg   <- getMessage
-        msgrender <- getMessageRender   
+        msgrender  <- getMessageRender   
+        boards     <- runDB $ selectList ([]::[Filter Board]) []
+        categories <- configBoardCategories . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+        mgroup  <- case muser of
+          Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+          _                 -> return Nothing
+        let group  = (groupName . entityVal) <$> mgroup
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final
@@ -172,18 +187,15 @@ instance Yesod App where
     isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' ManageThreadP
 
     isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManageBanP
-    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManagePanelP
     isAuthorized (ManageBoardsR _) _ = isAuthorized' ManageBoardP
     isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManageBoardP
     isAuthorized (CleanBoardR   _) _ = isAuthorized' ManageBoardP
-    isAuthorized (ManageBoardsR _) _ = isAuthorized' ManagePanelP
-    isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManagePanelP
-    isAuthorized (CleanBoardR   _) _ = isAuthorized' ManagePanelP
     isAuthorized UsersR            _ = isAuthorized' ManageUsersP
-    isAuthorized UsersR            _ = isAuthorized' ManagePanelP
     isAuthorized (ManageGroupsR _) _ = isAuthorized' ManageUsersP
-    isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManagePanelP
+    isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
 
+    isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
+    isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
     -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
     -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP
     -- isAuthorized (ManageBoardsR _) True  = isAuthorized' ManageBoardP
@@ -196,10 +208,10 @@ instance Yesod App where
     -- isAuthorized UsersR            False = isAuthorized' ManagePanelP
     -- isAuthorized (ManageGroupsR _) True  = isAuthorized' ManageUsersP
     -- isAuthorized (UsersDeleteR  _) False = isAuthorized' ManagePanelP
+    -- isAuthorized ConfigR           True  = isAuthorized' ManageConfigP
+    -- isAuthorized ConfigR           False = isAuthorized' ManagePanelP
 
-    isAuthorized ConfigR           True  = isAuthorized' ManageConfigP
-    isAuthorized ConfigR           False = isAuthorized' ManagePanelP
-    isAuthorized _                 _     = return Authorized
+    isAuthorized _                 _ = return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))

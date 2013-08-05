@@ -12,21 +12,13 @@ import           System.Directory   (removeFile)
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
   when (thread == 0) notFound
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let permissions          = getPermissions mgroup
 
-  muser   <- maybeAuth
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let permissions = maybe [] (groupPermissions . entityVal) mgroup
-
-  maybeBoard  <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard || (boardOpModeration $ entityVal $ fromJust maybeBoard) == False) notFound  
-
-  let group  = (groupName . entityVal) <$> mgroup
-      access = boardViewAccess $ entityVal $ fromJust maybeBoard
-  when (isJust access && access /= group) notFound
-
-  boards      <- runDB $ selectList ([]::[Filter Board]) []
+  when (boardOpModeration boardVal == False) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -39,21 +31,17 @@ getDeletedByOpR board thread = do
   let allPosts = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
   ------------------------------------------------------------------------------------------------------- 
   nameOfTheBoard   <- extraSiteName <$> getExtra
-  boardCategories  <- getConfig configBoardCategories
   msgrender        <- getMessageRender
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", board, " - ", msgrender MsgDeletedPosts]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", msgrender MsgDeletedPosts]
     $(widgetFile "deleted")
 
 getDeleteR :: Handler Html
 getDeleteR = do
   query  <- reqGetParams <$> getRequest
   muser  <- maybeAuth
-  mgroup <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-
+  mgroup <- getMaybeGroup muser
   let errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
       nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
       helper x          = toKey ((read $ unpack $ snd x) :: Int )
@@ -64,8 +52,8 @@ getDeleteR = do
       when (isNothing thread) notFound
 
       let board = postBoard $ fromJust thread
-      maybeBoard  <- runDB $ getBy $ BoardUniqName board
-      when (isNothing maybeBoard || (boardOpModeration $ entityVal $ fromJust maybeBoard) == False) notFound
+      boardVal    <- getBoardVal404 board
+      when (boardOpModeration boardVal == False) notFound
 
       posterId <- getPosterId
       when (postPosterId (fromJust thread) /= posterId &&

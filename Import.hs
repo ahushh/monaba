@@ -36,8 +36,6 @@ import Data.List     as Import (nub, intercalate)
 import Control.Monad as Import (unless, when, forM, forM_, void)
 import ModelTypes    as Import 
 -------------------------------------------------------------------------------------------------------------------
-import           Yesod.Auth
-import           Database.Persist.Sql    (SqlBackend)
 import           System.FilePath         ((</>))
 import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
@@ -59,7 +57,7 @@ import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 
-import qualified Data.Text               as T (null)
+import qualified Data.Text               as T (null, concat)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -99,20 +97,6 @@ replyPostWidget :: Maybe (Entity User)   ->
                   [Permission]          ->
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW = $(widgetFile "reply-post")
-
-widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
-widgetHelperFilterBoards boards category group = filter p boards
-  where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
-        notHidden     b = not $ boardHidden b
-        checkCategory b | T.null category = isNothing $ boardCategory b
-                        | otherwise       = (Just category) == boardCategory b
-        checkAccess   b = isJust (boardViewAccess b) && boardViewAccess b == group
-
-headerWidget :: Maybe (Entity User) -> [Entity Board] -> [Text] -> Maybe Text -> WidgetT App IO ()
-headerWidget muserW boardsW categoriesW groupW = $(widgetFile "header")
-
-footerWidget :: WidgetT App IO ()
-footerWidget = $(widgetFile "footer")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
@@ -209,6 +193,38 @@ makeThumbNonImg filename filetype = do
 -------------------------------------------------------------------------------------------------------------------
 -- Misc stuff
 -------------------------------------------------------------------------------------------------------------------
+checkAccessToReply :: Maybe (Entity Group) -> Board -> Bool
+checkAccessToReply mgroup boardVal =
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardReplyAccess boardVal
+  in not (isJust access && access /= group)
+
+checkAccessToNewThread :: Maybe (Entity Group) -> Board -> Bool
+checkAccessToNewThread mgroup boardVal =
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardThreadAccess boardVal
+  in not (isJust access && access /= group)
+
+checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
+checkViewAccess mgroup boardVal =
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess boardVal
+  in when (isJust access && access /= group) notFound
+
+getPermissions :: Maybe (Entity Group) -> [Permission]
+getPermissions = maybe [] (groupPermissions . entityVal)
+
+getMaybeGroup :: Maybe (Entity User) -> Handler (Maybe (Entity Group))
+getMaybeGroup muser = case muser of
+    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
+    _                 -> return Nothing
+    
+getBoardVal404 :: Text -> Handler Board
+getBoardVal404 board = do
+  maybeBoard <- runDB $ getBy $ BoardUniqName board
+  when (isNothing maybeBoard) notFound
+  return $ entityVal $ fromJust maybeBoard
+-------------------------------------------------------------------------------------------------------------------    
 fromKey :: forall backend entity. KeyBackend backend entity -> Int64
 fromKey = (\(PersistInt64 n) -> n) . unKey 
 
@@ -230,13 +246,7 @@ isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
 addUTCTime' :: Int -> UTCTime -> UTCTime
 addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 
-
-getConfig :: forall b site.
-             (YesodPersist site,
-              PersistQuery (YesodPersistBackend site (HandlerT site IO)),
-              PersistMonadBackend (YesodPersistBackend site (HandlerT site IO))
-              ~ SqlBackend) =>
-             (Config -> b) -> HandlerT site IO b
+getConfig :: forall b. (Config -> b) -> Handler b
 getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
 -------------------------------------------------------------------------------------------------------------------
 getIp :: forall (m :: * -> *). MonadHandler m => m String

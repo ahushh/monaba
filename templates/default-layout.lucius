@@ -204,3 +204,12 @@ blockquote {
 .icon-thread-refresh {
    background-position: -773px -29px;
 }
+
+.board-list {
+    text-align: left;
+}
+
+#control-panel {
+    float: right;
+    text-align: right;
+}

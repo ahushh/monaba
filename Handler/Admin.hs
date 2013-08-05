@@ -11,20 +11,12 @@ import           Control.Arrow     (first, (&&&))
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
-  muser     <- maybeAuth
-  boards    <- runDB $ selectList ([]::[Filter Board]) []
-
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
-
-  boardCategories <- getConfig configBoardCategories
+  muser           <- maybeAuth
+  permissions     <- getPermissions <$> getMaybeGroup muser
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgManagement]
     $(widgetFile "admin")
 -------------------------------------------------------------------------------------------------------------
 -- Thread options    
@@ -68,23 +60,16 @@ banByIpForm ip board extra = do
                                           
 getBanByIpR :: Text -> Text -> Handler Html    
 getBanByIpR board ip = do
-  (formWidget, formEnctype) <- generateFormPost $ banByIpForm ip board
-  muser  <- maybeAuth
-  boards <- runDB $ selectList ([]::[Filter Board]) []
-  bans   <- runDB $ selectList ([]::[Filter Ban])   []
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
 
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
+  (formWidget, formEnctype) <- generateFormPost $ banByIpForm ip board
   
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
-  
+  bans            <- runDB $ selectList ([]::[Filter Ban]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
-  boardCategories <- getConfig configBoardCategories
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgBanManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgBanManagement]
     $(widgetFile "admin/ban")
   
 postBanByIpR :: Text -> Text -> Handler Html
@@ -111,28 +96,22 @@ getBanDeleteR bId = runDB (delete (toKey bId :: Key Ban)) >> setMessageI MsgBanD
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: Text -> Handler Html
 getManageBoardsR board = do
-  muser       <- maybeAuth
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
+      group       = (groupName . entityVal) <$> mgroup
+
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
-
-  groups'     <- runDB $ selectList ([]::[Filter Group]) []
-  let groups = map ((\x -> (x,x)) . groupName . entityVal) groups'
-      groups :: [(Text,Text)] 
-
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
-
+  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
+
   (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard board bCategories groups
+
   boards          <- runDB $ selectList ([]::[Filter Board]) []
-  boardCategories <- getConfig configBoardCategories
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgBoardManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgBoardManagement]
     $(widgetFile "admin/boards")
     
 updateBoardForm :: Maybe (Entity Board) -> 
@@ -379,22 +358,16 @@ showPermission p = fromJust $ lookup p xs
 getManageGroupsR :: Text -> Handler Html
 getManageGroupsR _ = do
   muser  <- maybeAuth
-  boards <- runDB $ selectList ([]::[Filter Board ]) []
+  mgroup   <- getMaybeGroup muser
+  let permissions          = getPermissions mgroup
+
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])
-
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
-  
   (formWidget, formEnctype) <- generateFormPost groupsForm
+
   nameOfTheBoard  <- extraSiteName <$> getExtra
-  boardCategories <- getConfig configBoardCategories
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgGroups]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgGroups]
     $(widgetFile "admin/groups")
   
 postManageGroupsR :: Text -> Handler Html
@@ -429,23 +402,17 @@ usersForm groups extra = do
 getUsersR :: Handler Html
 getUsersR = do
   muser  <- maybeAuth
-  boards <- runDB $ selectList ([]::[Filter Board ]) []
-  users  <- runDB $ selectList ([]::[Filter User]) []
+  mgroup <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
+
   groups <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
-
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
-  
   (formWidget, formEnctype) <- generateFormPost $ usersForm groups
+
+  users           <- runDB $ selectList ([]::[Filter User ]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
-  boardCategories <- getConfig configBoardCategories
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgUsers]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgUsers]
     $(widgetFile "admin/users")
 
 postUsersR :: Handler Html
@@ -491,22 +458,16 @@ newPasswordForm extra = do
 
 getAccountR :: Handler Html
 getAccountR = do
-  muser     <- maybeAuth
-  boards    <- runDB $ selectList ([]::[Filter Board ]) []
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
+
   (formWidget, formEnctype) <- generateFormPost newPasswordForm
+
   nameOfTheBoard  <- extraSiteName <$> getExtra
-  boardCategories <- getConfig configBoardCategories
   msgrender       <- getMessageRender
-
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)  
-
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgAccount]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgAccount]
     $(widgetFile "admin/account")
                  
 postNewPasswordR :: Handler Html
@@ -517,9 +478,9 @@ postNewPasswordR = do
     FormFailure _           -> msgRedirect MsgBadFormData
     FormMissing             -> msgRedirect MsgNoFormData
     FormSuccess newPassword -> do
-      muser <- maybeAuth
-      userWithNewPassword <- liftIO $ setPassword newPassword $ entityVal $ fromJust muser
-      void $ runDB $ replace (entityKey $ fromJust muser) userWithNewPassword
+      eUser               <- fromJust <$> maybeAuth
+      userWithNewPassword <- liftIO $ setPassword newPassword (entityVal eUser)
+      void $ runDB $ replace (entityKey eUser) userWithNewPassword
       msgRedirect MsgPasswordChanged
       
 -------------------------------------------------------------------------------------------------------------
@@ -556,43 +517,40 @@ configForm config extra = do
 getConfigR :: Handler Html
 getConfigR = do
   muser  <- maybeAuth
-  boards <- runDB $ selectList  ([]::[Filter Board ]) []
-  config <- runDB $ selectFirst ([]::[Filter Config]) []
+  mgroup <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
 
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
+  configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
 
-  permissions <- groupPermissions . entityVal . fromJust <$> runDB (getBy $ GroupUniqName $ userGroup $ entityVal $ fromJust muser)
+  (formWidget, formEnctype) <- generateFormPost $ configForm configVal
 
-  (formWidget, formEnctype) <- generateFormPost $ configForm (entityVal $ fromJust config)
   nameOfTheBoard  <- extraSiteName <$> getExtra
-  boardCategories <- getConfig configBoardCategories
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgConfig]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgConfig]
     $(widgetFile "admin/config")
 
 postConfigR :: Handler Html
 postConfigR = do
   oldConfig        <- fromJust <$> runDB (selectFirst ([]::[Filter Config]) []  )
   ((result, _), _) <- runFormPost $ configForm (entityVal oldConfig)
-  let msgRedirect msg = setMessageI msg >> redirect ConfigR
+  let oldConfigVal = entityVal oldConfig
+      oldConfigKey = entityKey oldConfig
+      msgRedirect msg = setMessageI msg >> redirect ConfigR
   case result of
     FormFailure _                      -> msgRedirect MsgBadFormData
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories,
                  newsBoard    , showNews
                 ) -> do
-      let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   $ entityVal oldConfig) captchaLength
-                             , configACaptchaGuards  = fromMaybe (configACaptchaGuards  $ entityVal oldConfig) aCaptchaGuards
-                             , configCaptchaTimeout  = fromMaybe (configCaptchaTimeout  $ entityVal oldConfig) captchaTimeout
-                             , configReplyDelay      = fromMaybe (configReplyDelay      $ entityVal oldConfig) replyDelay
-                             , configThreadDelay     = fromMaybe (configThreadDelay     $ entityVal oldConfig) threadDelay
-                             , configBoardCategories = maybe     (configBoardCategories $ entityVal oldConfig) (T.splitOn ",") boardCategories
-                             , configNewsBoard       = fromMaybe (configNewsBoard       $ entityVal oldConfig) newsBoard
-                             , configShowNews        = fromMaybe (configShowNews        $ entityVal oldConfig) showNews
+      let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
+                             , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
+                             , configCaptchaTimeout  = fromMaybe (configCaptchaTimeout  oldConfigVal) captchaTimeout
+                             , configReplyDelay      = fromMaybe (configReplyDelay      oldConfigVal) replyDelay
+                             , configThreadDelay     = fromMaybe (configThreadDelay     oldConfigVal) threadDelay
+                             , configBoardCategories = maybe     (configBoardCategories oldConfigVal) (T.splitOn ",") boardCategories
+                             , configNewsBoard       = fromMaybe (configNewsBoard       oldConfigVal) newsBoard
+                             , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              }
-      void $ runDB $ replace (entityKey oldConfig) newConfig
+      void $ runDB $ replace oldConfigKey newConfig
       msgRedirect MsgConfigUpdated

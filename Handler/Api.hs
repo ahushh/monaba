@@ -4,17 +4,15 @@ module Handler.Api where
 import           Import
 import           Yesod.Auth
 import           Control.Arrow ((***))
-import           Database.Persist.Sql    (SqlBackend)
 --------------------------------------------------------------------------------------------------------- 
 getPostsHelper :: YesodDB App [Entity Post] -> Text -> Int -> Text -> HandlerT App IO TypedContent
 getPostsHelper selectPosts board thread errorString = do
-  muser   <- maybeAuth
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let permissions = getPermissions mgroup
 
-  checkAccess muser board
   let selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> (runDB selectPosts) >>= mapM (\p -> do
     files <- selectFiles p
@@ -56,13 +54,12 @@ getApiLastPostsR board thread postCount = getPostsHelper selectPosts board threa
 ---------------------------------------------------------------------------------------------------------
 getApiPostR :: Text -> Int -> Handler TypedContent
 getApiPostR board postId = do
-  muser   <- maybeAuth
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let permissions = maybe [] (groupPermissions . entityVal) mgroup
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let permissions = getPermissions mgroup
 
-  checkAccess muser board
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
   when (isNothing maybePost) notFound
   let post    = fromJust maybePost
@@ -76,19 +73,3 @@ getApiPostR board postId = do
     provideRep $ bareLayout widget
     provideJson postAndFiles
 ---------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------
--- checkAccess :: forall site.
---                (YesodPersist site,
---                 PersistUnique (YesodPersistBackend site (HandlerT site IO)),
---                 PersistMonadBackend (YesodPersistBackend site (HandlerT site IO))
---                 ~ SqlBackend) =>
---                Maybe (Entity Person) -> Text -> HandlerT site IO ()
-checkAccess muser board = do
-  maybeBoard <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard) notFound
-  mgroup  <- case muser of
-    Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
-    _                 -> return Nothing
-  let group  = (groupName . entityVal) <$> mgroup
-      access = boardViewAccess $ entityVal $ fromJust maybeBoard
-   in when (isJust access && access /= group) notFound

@@ -44,6 +44,7 @@ Back: Back
 Next: Next
 Previous: Previous
 DeleteBtn: Delete
+OnlyFile: Only file
 ## panel
 Manage: Manage
 Login: Login

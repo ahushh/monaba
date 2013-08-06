@@ -18,6 +18,7 @@ getAdminR = do
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgManagement]
     $(widgetFile "admin")
+
 -------------------------------------------------------------------------------------------------------------
 -- Thread options    
 -------------------------------------------------------------------------------------------------------------
@@ -299,13 +300,13 @@ cleanBoard board = case board of
   "all-f89d7fb43ef7" -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
-    void $ deletePosts $ concat postIDs
+    void $ deletePosts (concat postIDs) False
   "new-f89d7fb43ef7" -> msgRedirect MsgNoSuchBoard
   _     -> do
     maybeBoard <- runDB $ selectFirst [BoardName ==. board] []  
     when (isNothing maybeBoard) $ msgRedirect MsgNoSuchBoard
     postIDs <- runDB $ selectList [PostBoard ==. board] []
-    void $ deletePosts postIDs
+    void $ deletePosts postIDs False
   where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
 
 getCleanBoardR :: Text -> Handler ()

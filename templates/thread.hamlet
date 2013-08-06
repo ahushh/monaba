@@ -29,6 +29,7 @@ $if hasAccessToReply
     <hr>
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
     <div #delete-container>
+        <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}
         $if opModeration
             <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>_{MsgOpModeration}
             $if not noDeletedPosts

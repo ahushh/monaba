@@ -47,7 +47,7 @@ Post
     sticked      Bool
     locked       Bool
     autosage     Bool
-    -- deleted      Bool
+    deleted      Bool default=0
     deletedByOp  Bool default=0
     posterId     Text default="nope"
     -- form's values

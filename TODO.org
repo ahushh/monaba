@@ -133,11 +133,15 @@
 ** DONE add news to home page
 ** DONE more info below post form
    CLOSED: [2013-07-31 Ср 20:07]
-** TODO fix template layouts
+** DONE fix template layouts
+   CLOSED: [2013-08-06 Вт 17:43]
+** DONE don't really delete posts, but mark them up "deleted" (?)
+   CLOSED: [2013-08-06 Вт 18:56]
+** DONE delete only image
+   CLOSED: [2013-08-06 Вт 18:58]
 ** TODO autorefresh, new posts count via websockets
 ** TODO reports
 ** TODO refmap table (?)
-** TODO delete only image
 ** TODO management
 *** TODO logging
 *** TODO bans
@@ -160,7 +164,6 @@
 *** TODO Switchable youtube player
 *** TODO post hiding
 *** TODO favorite threads
-** TODO don't really delete posts, but mark them up "deleted" (?)
 * Further
 ** TODO best API error handling
 ** TODO check if all dirs exist before starting

@@ -17,7 +17,7 @@ getPostsHelper selectPosts board thread errorString = do
   postsAndFiles <- reverse <$> (runDB selectPosts) >>= mapM (\p -> do
     files <- selectFiles p
     return (p, files))
-  t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0]
+  t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
   case () of
     _ | t == 0              -> selectRep $ do
           provideRep  $ bareLayout [whamlet|No such thread|]
@@ -60,7 +60,7 @@ getApiPostR board postId = do
   checkViewAccess mgroup boardVal
   let permissions = getPermissions mgroup
 
-  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
+  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
   when (isNothing maybePost) notFound
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost

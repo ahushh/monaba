@@ -2,6 +2,7 @@
 module Handler.Delete where
 
 import           Import
+import qualified Prelude            as P (head, tail)
 import           Yesod.Auth
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
@@ -46,8 +47,9 @@ getDeleteR = do
       nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
       helper x          = toKey ((read $ unpack $ snd x) :: Int )
   case reverse query of
-    ("postpassword",pswd):("opmoderation",threadId):xs | null xs   -> errorRedirect MsgDeleteNoPosts
+    ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
+      let xs = if fst (P.head zs) == "onlyfile" then P.tail zs else zs
       thread   <- runDB $ get ((toKey $ read $ unpack threadId) :: Key Post)
       when (isNothing thread) notFound
 
@@ -68,14 +70,16 @@ getDeleteR = do
         [] -> errorRedirect MsgDeleteNoPosts
         _  -> deletePostsByOp posts >> redirectUltDest HomeR
 
-    ("postpassword",pswd):xs | null xs   -> errorRedirect MsgDeleteNoPosts
+    ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
-      let requestIds   = map helper xs
+      let onlyfile     = fst (P.head zs) == "onlyfile"
+          xs           = if onlyfile then P.tail zs else zs
+          requestIds   = map helper xs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
-        _  -> deletePosts posts >> redirectUltDest HomeR
+        _  -> deletePosts posts onlyfile >> redirectUltDest HomeR
     _                           -> errorRedirect MsgUnknownError
 
 ---------------------------------------------------------------------------------------------
@@ -84,8 +88,8 @@ getDeleteR = do
 deletePostsByOp :: [Entity Post] -> HandlerT App IO ()
 deletePostsByOp = runDB . mapM_ (\(Entity pId _) -> update pId [PostDeletedByOp =. True])
 
-deletePosts :: [Entity Post] -> HandlerT App IO ()
-deletePosts posts = do
+deletePosts :: [Entity Post] -> Bool -> HandlerT App IO ()
+deletePosts posts onlyfile = do
   let boards         = nub $ map (postBoard . entityVal) posts
       boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards
       boardsAndPosts :: [(Text,[Entity Post])]
@@ -94,16 +98,18 @@ deletePosts posts = do
     selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
 
   let idsToRemove = (concat $ map ((map entityKey) . snd) boardsAndPosts) ++ map entityKey (concat childs)
-  runDB $ deleteWhere [PostId <-. idsToRemove]
+  unless onlyfile $
+    runDB (updateWhere [PostId <-. idsToRemove] [PostDeleted =. True])
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileMd5 ==. attachedfileMd5 f, AttachedfileId !=. fId]
     case sameFilesCount `compare` 0 of
-      GT -> do -- this file belongs to several posts so don't delete it
+      GT -> do -- this file belongs to several posts so don't delete it from disk
         filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. attachedfileThumbSize f, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
-          void $ liftIO $ removeFile $ thumbFilePath (attachedfileThumbSize f) (attachedfileType f) (attachedfileName f)
+          when (isImageFile $ attachedfileType f) $
+            void $ liftIO $ removeFile $ thumbFilePath (attachedfileThumbSize f) (attachedfileType f) (attachedfileName f)
       _  -> do
         let t = attachedfileType f
         liftIO $ removeFile $ imageFilePath t $ attachedfileName f

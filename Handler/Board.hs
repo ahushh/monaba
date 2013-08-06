@@ -36,11 +36,11 @@ getBoardR board page = do
         | numberOfThreads > 0 && numberOfThreads `mod` threadsPerPage == 0 = x - 1
         | otherwise                                                      = x
       ---------------------------------------------------------------------------------
-      selectThreads    = selectList [PostBoard ==. board, PostParent ==. 0]
+      selectThreads    = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
       selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
       selectPreviews t
-        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
                                               PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
         | otherwise             = return []
   -------------------------------------------------------------------------------------------------------
@@ -49,7 +49,8 @@ getBoardR board page = do
                            previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
                              previewFiles <- selectFiles $ entityKey pr
                              return (pr, previewFiles))
-                           postsInThread <- count [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. postLocalId t]
+                           postsInThread <- count [PostDeletedByOp ==. False, PostDeleted ==. False,
+                                                  PostBoard ==. board, PostParent ==. postLocalId t]
                            return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
   ------------------------------------------------------------------------------------------------------- 
   now       <- liftIO getCurrentTime
@@ -135,7 +136,7 @@ postBoardR board _ = do
                            , postLocked       = False
                            , postSticked      = False
                            , postAutosage     = False
-                           -- , postDeleted      = False
+                           , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = pack . show . userGroup . entityVal <$> muser
                            , postPosterId     = posterId
@@ -144,7 +145,7 @@ postBoardR board _ = do
         -- delete old threads
         let tl = boardThreadLimit boardVal
           in when (tl >= 0) $
-               deletePosts =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
+               (flip deletePosts) False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
         when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
         deleteSession "message"

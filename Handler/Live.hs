@@ -16,7 +16,7 @@ getLiveR = do
   let f (Entity _ b) | boardHidden b || (isJust (boardViewAccess b) && group /= boardViewAccess b) = Just $ boardName b
                      | otherwise                                                                = Nothing
       boards'  = catMaybes $ map f boards
-  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards'] [Desc PostDate, LimitTo 15]
+  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo 15]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------

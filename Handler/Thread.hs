@@ -42,6 +42,7 @@ getThreadR board thread = do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
     E.where_ ((post E.^. PostBoard       ) E.==. (E.val board ) E.&&.
               (post E.^. PostDeletedByOp ) E.==. (E.val False ) E.&&.
+              (post E.^. PostDeleted     ) E.==. (E.val False ) E.&&.
              ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
@@ -147,7 +148,7 @@ postThreadR board thread = do
                            , postLocked       = False
                            , postSticked      = False
                            , postAutosage     = False
-                           -- , postDeleted      = False
+                           , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = (pack . show . userGroup . entityVal) <$> muser
                            , postPosterId     = posterId

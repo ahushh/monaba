@@ -30,6 +30,7 @@ getBoardR board page = do
       previewsPerThread = boardPreviewsPerThread boardVal
       enableCaptcha     = boardEnableCaptcha     boardVal
       boardDesc         = boardDescription       boardVal
+      geoIpEnabled      = boardEnableGeoIp       boardVal
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
       pagesFix x
@@ -53,6 +54,12 @@ getBoardR board page = do
                                                   PostBoard ==. board, PostParent ==. postLocalId t]
                            return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
   ------------------------------------------------------------------------------------------------------- 
+  geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
+    xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))
+    c  <- getCountry $ postIp t
+    return $ (tId, c):xs
+  let geoIps = map (second fromJust) $ filter (isJust . snd) $ concat geoIps'
+  -------------------------------------------------------------------------------------------------------
   now       <- liftIO getCurrentTime
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength

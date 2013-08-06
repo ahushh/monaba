@@ -33,7 +33,8 @@ infixr 5 <>
 import Data.Time     as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
 import Data.Maybe    as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
 import Data.List     as Import (nub, intercalate)
-import Control.Monad as Import (unless, when, forM, forM_, void)
+import Control.Monad as Import (unless, when, forM, forM_, void, join)
+import Control.Arrow as Import (second, first, (&&&), (***))
 import ModelTypes    as Import 
 -------------------------------------------------------------------------------------------------------------------
 import           System.FilePath         ((</>))
@@ -57,7 +58,9 @@ import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 
-import qualified Data.Text               as T (null, concat)
+import qualified Data.Text               as T (null, concat, toLower)
+
+import           Data.Geolocation.GeoIP
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -87,16 +90,18 @@ opPostWidget :: Maybe (Entity User)   ->
                Bool                  -> -- show or not "[ Open ]" link
                Bool                  -> -- show or not extra buttons such as [>]
                [Permission]          ->
+               [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
                WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW = $(widgetFile "op-post")
+opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)   ->
                   Entity Post           ->
                   [Entity Attachedfile] ->
                   Bool                  -> -- show or not extra buttons such as [>]
                   [Permission]          ->
+                  [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW = $(widgetFile "reply-post")
+replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW geoIpsW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
@@ -108,6 +113,9 @@ bareLayout widget = do
 -------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
+geoIconPath :: Text -> Text
+geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
+
 uploadDirectory :: FilePath
 uploadDirectory = staticDir </> "files"
 
@@ -266,6 +274,20 @@ isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
 isAjaxRequest = do
   maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
   return $ maybe False (=="XMLHttpRequest") maybeHeader
+
+getCountry :: Text -> Handler (Maybe (Text,Text))
+getCountry ip = do
+  dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
+  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ B.fromString $ unpack ip)
+  return $ ((p . geoCountryCode) &&& (p . geoCountryName)) <$> geoIpRes
+    where p = pack . B.toString
+
+getCountries :: forall t. [(Entity Post, t)] -> Handler [(Key Post, (Text, Text))]
+getCountries posts = do
+  geoIps' <- forM posts $ \((Entity pId p),_) -> do
+    c <- getCountry $ postIp p
+    return (pId, c)
+  return $ map (second fromJust) $ filter (isJust . snd) geoIps'
 -------------------------------------------------------------------------------------------------------------------
 getPosterId :: Handler Text
 getPosterId = do

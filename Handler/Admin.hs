@@ -7,7 +7,6 @@ import qualified Data.Text         as T
 import           Yesod.Auth.HashDB (setPassword)
 import           Handler.Delete    (deletePosts)
 import           Control.Monad     (mplus)
-import           Control.Arrow     (first, (&&&))
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
@@ -140,6 +139,7 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Text -- thread access
                                             , Maybe Text -- allow OP moderate his/her thread
                                             , Maybe Text -- extra rules
+                                            , Maybe Text -- enable geo IP
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories groups extra = do
@@ -178,14 +178,15 @@ updateBoardForm board bname' bCategories groups extra = do
   (threadAccessRes     , threadAccessView     ) <- mopt (selectFieldList groups) "" (helper'' boardThreadAccess)
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
   (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
-  let result = (,,,,,,,,,,,,,,,,,,,) <$>
+  (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp)
+  let result = (,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
                previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
                isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
                viewAccessRes        <*> replyAccessRes   <*> threadAccessRes   <*>
-               opModerationRes      <*> extraRulesRes
+               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -204,6 +205,7 @@ postManageBoardsR board = do
                 , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
                 , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
+                , bEnableGeoIp
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
@@ -233,6 +235,7 @@ postManageBoardsR board = do
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
                                , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
+                               , boardEnableGeoIp       = onoff bEnableGeoIp
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -262,6 +265,7 @@ postManageBoardsR board = do
                                    , boardThreadAccess      = mplus bThreadAccess (boardThreadAccess oldBoard)
                                    , boardOpModeration      = onoff bOpModeration
                                    , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                                   , boardEnableGeoIp       = onoff bEnableGeoIp
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -291,6 +295,7 @@ postManageBoardsR board = do
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
                                , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                               , boardEnableGeoIp       = onoff bEnableGeoIp
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated

@@ -3,6 +3,8 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
       <div .op-post id="post-#{thread}-0-#{board}">
           <div .post-header>
               <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
+              $maybe (code, name) <- lookup (entityKey eOpPostW) geoIpsW
+                  <img src=#{geoIconPath code} title=#{name}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
               <span .poster-name>#{postName $ entityVal eOpPostW}
               <time>#{myFormatTime $ postDate $ entityVal $ eOpPostW}

@@ -7,7 +7,6 @@ import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           Control.Arrow      (second)
 import           AwfulMarkup        (doAwfulMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
@@ -37,6 +36,7 @@ getThreadR board thread = do
       enableCaptcha = boardEnableCaptcha boardVal
       opModeration  = boardOpModeration  boardVal
       boardDesc     = boardDescription   boardVal
+      geoIpEnabled  = boardEnableGeoIp   boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -57,6 +57,8 @@ getThreadR board thread = do
       pagetitle | not $ T.null pt                                 = pt
                 | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = T.concat [T.take 60 pm, "…"]
                 | otherwise                                     = ""
+  -------------------------------------------------------------------------------------------------------
+  geoIps <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength

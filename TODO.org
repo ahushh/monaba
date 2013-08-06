@@ -139,6 +139,8 @@
    CLOSED: [2013-08-06 Вт 18:56]
 ** DONE delete only image
    CLOSED: [2013-08-06 Вт 18:58]
+** DONE geoip
+   CLOSED: [2013-08-06 Вт 21:54]
 ** TODO autorefresh, new posts count via websockets
 ** TODO reports
 ** TODO refmap table (?)
@@ -151,7 +153,6 @@
 *** TODO improve user groups
 *** DONE user groups
     CLOSED: [2013-08-05 Пн 09:44]
-** TODO geoip
 ** TODO fix JS and stylesheet loading
 ** TODO truncate message using JS
 ** TODO search

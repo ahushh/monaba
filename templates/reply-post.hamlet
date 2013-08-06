@@ -4,6 +4,8 @@ $with post <- show $ postLocalId $ entityVal eReplyW
         <div .reply-post id="post-#{post}-#{thread}-#{board}">
             <div .post-header>
                 <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
+                $maybe (code, name) <- lookup (entityKey eReplyW) geoIpsW
+                    <img src=#{geoIconPath code} title=#{name}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}
                 <span .poster-name>#{postName $ entityVal eReplyW}
                 <time>#{myFormatTime $ postDate $ entityVal eReplyW}

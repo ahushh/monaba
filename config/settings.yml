@@ -5,6 +5,7 @@ Default: &defaults
   copyright: " "
   #analytics: UA-YOURCODE
   sitename: "Monaba"
+  geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"
 
 Development:
   <<: *defaults

@@ -6,7 +6,7 @@
 <br>
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{replyPostWidget muser eReply files False permissions}
+        ^{replyPostWidget muser eReply files False permissions geoIps}
     <br>
     <div #delete-container>
         <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}

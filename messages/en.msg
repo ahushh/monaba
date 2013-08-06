@@ -108,6 +108,7 @@ BoardOpWithoutFile: Allow OPs without file
 BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
+BoardEnableGeoIp: Show country flags
 BoardCategory: Category
 BoardCategories: Board categories (separate by comma)
 BoardViewAccess: To view this board you must be a

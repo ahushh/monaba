@@ -7,7 +7,6 @@ import           Yesod.Auth
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
-import           Control.Arrow      (second)
 import           System.Directory   (removeFile)
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
@@ -17,8 +16,8 @@ getDeletedByOpR board thread = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
-  let permissions          = getPermissions mgroup
-
+  let permissions   = getPermissions mgroup
+      geoIpEnabled  = boardEnableGeoIp   boardVal
   when (boardOpModeration boardVal == False) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -28,8 +27,9 @@ getDeletedByOpR board thread = do
               (post E.^. PostParent      ) E.==. (E.val thread))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
-
   let allPosts = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
+  ------------------------------------------------------------------------------------------------------- 
+  geoIps <- getCountries (if geoIpEnabled then allPosts else [])      
   ------------------------------------------------------------------------------------------------------- 
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender

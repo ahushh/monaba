@@ -59,6 +59,9 @@
                 <td>_{MsgBoardEnableCaptcha}
                 <td>^{fvInput enableCaptchaView}
             <tr>
+                <td>_{MsgBoardEnableGeoIp}
+                <td>^{fvInput enableGeoIpView}
+            <tr>
                 <td>_{MsgOpModeration}
                 <td>^{fvInput opModerationView}
             $if bname == "new-f89d7fb43ef7"

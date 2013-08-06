@@ -108,6 +108,7 @@ library
                  , containers
                  , http-types
                  , yesod-routes
+                 , hs-GeoIP
 
 executable         Monaba
     if flag(library-only)
@@ -144,6 +145,7 @@ executable         Monaba
                      , containers
                      , http-types
                      , yesod-routes
+                     , hs-GeoIP
 
     ghc-options:       -threaded -O2
 

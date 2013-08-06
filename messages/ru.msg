@@ -108,6 +108,7 @@ BoardOpWithoutFile: Разрешить ОП-посты без файлов
 BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
+BoardEnableGeoIp: Отображать флаги стран
 BoardCategory: Категория
 BoardCategories: Категории досок (через запятую)
 BoardViewAccess: Для просмотра доски нужно быть

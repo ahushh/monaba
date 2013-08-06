@@ -1,36 +1,73 @@
+######################################################################################
+#### Post form
+######################################################################################
+## fields
 Name: Имя
 Subject: Тема
 SubmitBtn: Отправить
 Message: Текст
 Password: Пароль
 File: Файл
-Goback: Перейти к
+Goback: Перейти к 
 Nobump: Не бампать
 ToThread: треду
 ToBoard: борде
-
-DeleteBtn: Удалить
-Open: Открыть
-Pages: Страницы:
-Back: Назад
-Next: Вперед
-Previous: Назад
+### Post form rules
+SupportedFileTypes: Поддерживаемые типы файлов:
+MaxFileSize: Маскимальный размер файла:
+ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
+OpModerationIsEnabled: На этой доске включена ОП-модерация.
+PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
+### misc
 ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
+NewThread: Новый тред
+ClosePostForm: Закрыть форму
+Reply: Ответить
+ReplyToThread: Ответ в тред №
+
+######################################################################################
+#### Page
+######################################################################################
+News: Новости
+LatestPosts: Последние посты
+## thread
+Open: Открыть
 PostsOmitted n@Int: #{show n} #{omittedRus n}.
 ExpandThread: Развернуть тред.
 ThreadIsExpanded: Тред развернут.
 TruncateThread: Свернуть.
 NoThreads: Нет тредов
+## pages
+Pages: Страницы:
+Back: Назад
+Next: Вперед
+Previous: Назад
+DeleteBtn: Удалить
+## panel
 Manage: Управление
 Login: Войти
 Logout: Выйти
 Home: Домой
+### admin buttons
+BanPoster: Забанить!
+StickThread: Прикрепить/открепить
+LockThread: Заблокировать/разблокировать
+Autosage: Автосажа
+### Deleted posts
+DeletedPosts: Удаленные посты
+DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}
+ShowDeletedPosts: Просмотреть удаленные посты
 
+######################################################################################
+#### Posting messages
+######################################################################################
+WrongCaptcha: Неверная капча
 NoFileOrText: Необходимо ввести текст или прикрепить файл
 NoFile: Для создания нового треда нужно приложить файл
 UnknownError: Неизвестная ошибка
-BadFormData: Введены неверные данные
+BadFormData: Что-то введено не так
 NoFormData: Ничего не введено
+
 TooLongMessage n@Int: Сообщение слишком длинное. Максимальная длина #{show n}
 DeleteNoPosts: Не отмечено постов к удалению
 DeleteWrongPassword: Неправильный пароль
@@ -40,8 +77,21 @@ NoSuchThread: Нет такого треда
 NoSuchBoard: Нет такой борды
 LockedThread: Тред закрыт
 PostSent: Пост отправлен
+PostingTooFast: Вы постите слишком часто. Упырьте мел.
 
-NewBoard: Новая борда
+######################################################################################
+#### Management
+######################################################################################
+Management: Управление
+BanManagement: Баны
+BoardManagement: Настройки досок
+Enable: Включено
+Disable: Выключено
+XForUnlim x@Text: #{x} — неограничено
+Boards: Борды
+Bans: Баны
+
+### Boards
 BoardName: Имя
 BoardDescription : Описание
 BoardBumpLimit: Бамп-лимит
@@ -63,52 +113,94 @@ BoardViewAccess: Для просмотра доски нужно быть
 BoardReplyAccess: Для ответа в тред нужно быть
 BoardThreadAccess: Для создание треда нужно быть
 WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
-Optional: Необязательно
 OpModeration: ОП-модерация
+## board list
+NewBoard: Новая борда
+AllBoards: Все борды
+## actions
 UpdateBoardsBtn: Обновить
-UpdateBoardsInvalidInput: Неверный тип данных
 DeleteAll: Удалить все
-
+CleanBoard: Очистить
+## info
 SeparateBy d@Text: Разделять с помощью '#{d}'
-
+Optional: Необязательно
+## Messages
 WrongBoardId: Неправильное ID борды
 BoardsUpdated: Борды обновлены
 BoardAdded: Борда добавлена
 BoardCleaned: Борда очищена от всех постов
 BoardDeleted: Борда удалена
 InvalidData: Неверные данные
+UpdateBoardsInvalidInput: Что-то введено не так
 
-SupportedFileTypes: Поддерживаемые типы файлов:
-MaxFileSize: Маскимальный размер файла:
-ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
-OpModerationIsEnabled: На этой доске включена ОП-модерация.
-
-CleanBoard: Очистить
-
-LatestPosts: Последние посты
-Boards: Борды
-Bans: Баны
-
+### Bans management
 Ban: Бан
-BanAdded: Бан добавлен
-BanDeleted: Бан удален
 BanIp: IP
 BanReason: Причина
 BanExpires: Истекает
 BanExpiresInHours: Истекает через * часов
 BanBoard: На борде
 NeverExpires: Никогда
-AllBoards: Все борды
+## Messages
 YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#{reason}". Бан истекает #{expires}
+BanAdded: Бан добавлен
+BanDeleted: Бан удален
 
+### Groups management
+Group: Группа
+Groups: Группы
+GroupAdd: Добавить группу
+GroupAdded: Группа добавлена
+
+### Account
+Account: Мой аккаунт
+NewPassword: Новый пароль
+## Messages
+PasswordChanged: Пароль изменен
+
+### Users management
 Users: Пользователи
+AddNewUser: Новый аккаунт
+## Messages
+UsersAdded: Аккаунт добавлен
+UsersDeleted: Аккаунт удален
+YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
+
+### Config management
+Config: Настройки
+CaptchaLength: Длина капчи
+ACaptchaGuards: Капч нужно ввести для постинга без капчи
+CaptchaTimeout: Таймаут капчи
+ShowNews: Сколько показывать новостей
+NewsBoard: Доска для новостей
+UpdateConfig: Обновить настройки
+ReplyDelay: Задержка перед ответом в тред
+ThreadDelay: Задержка перед созданием нового треда
+## Messages
+ConfigUpdated: Настройки обновлены
+
+### Permissions
+Permissions: Права
+ManageThread: Управление тредами
+ManageBoard : Управление бордами
+ManageUsers : Управление пользователями
+ManageConfig: Изменение конфига
+DeletePosts : Удаление постов
+ManagePanel : Доступ в админку
+ManageBan   : Бан
+
+######################################################################################
+#### Help
+######################################################################################
 Help: Справка
+## Markup
 Markup: Разметка
 IfYouAreOp: Если вы ОП
 IfYouAreNotOp: Если вы не ОП
 IfPostBelongs: Если данный пост принадлежит вам
 IfPostDoesntBelong: Если данный пост не принадлежит вам
-
+SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
+### API
 Api: API
 ApiPostsAfter: Все посты после {post id} в данном треде
 ApiLastPosts: Вернуть последние {count} постов в треде
@@ -121,32 +213,11 @@ ApiThreadId: Видимый ID треда
 ApiPostId: Видимый ID поста
 ApiCount: Количество постов
 
-SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
-
-Permissions: Права
-GroupAdded: Группа добавлена
-GroupAdd: Добавить группу
-ManageThread: Управление тредами
-ManageBoard : Управление бордами
-ManageUsers : Управление пользователями
-ManageConfig: Изменение конфига
-DeletePosts : Удаление постов
-ManagePanel : Доступ в админку
-ManageBan   : Бан
-
-Group: Группа
-Groups: Группы
-AddNewUser: Новый аккаунт
-UsersAdded: Аккаунт добавлен
-UsersDeleted: Аккаунт удален
-Account: Мой аккаунт
-NewPassword: Новый пароль
-PasswordChanged: Пароль изменен
-YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
-
+######################################################################################
+#### Captcha
+######################################################################################
 Captcha: Капча
-WrongCaptcha: Неверная капча
-ReloadPage: Перезагрузить страницу
+ReloadPage: Ошибка. Перезагрузите страницу.
 TypeOnly: Введите только
 ItalicChars: курсивные символы
 UnderlineChars: подчеркнутые символы
@@ -154,19 +225,9 @@ BoldChars: жирные символы
 RegularChars: обычные (не жирные, не курсив, не подчеркнутые) символы
 YouDontNeedCaptcha: Вам не нужно вводить капчу
 
-Config: Настройки
-CaptchaLength: Длина капчи
-ACaptchaGuards: Капч нужно ввести для постинга без капчи
-CaptchaTimeout: Таймаут капчи
-ShowNews: Сколько показывать новостей
-NewsBoard: Доска для новостей
-UpdateConfig: Обновить настройки
-ConfigUpdated: Настройки обновлены
-
-PostingTooFast: Вы постите слишком часто. Упырьте мел.
-ReplyDelay: Задержка перед ответом в тред
-ThreadDelay: Задержка перед созданием нового треда
-
+######################################################################################
+#### Ajax, popups, refmap
+######################################################################################
 GetNewPosts: Получить новые посты (если есть)
 NoNewPosts: Нет новых постов
 
@@ -174,32 +235,6 @@ Replies: Ответы:
 CloseAllPopup: Закрыть все
 CloseOnePopup: Закрыть
 
-NewThread: Новый тред
-ClosePostForm: Закрыть форму
-Reply: Ответить
-ReplyToThread: Ответ в тред №
-
 ThreadNotExist: Похоже, этот тред больше не существует
 NoPostsAnymore: Внезапно, в этом треде постов нет вообще
 Loading: Загрузка...
-
-Management: Админка
-BanManagement: Баны
-BoardManagement: Настройки досок
-
-Enable: Включено
-Disable: Выключено
-
-XForUnlim x@Text: #{x} — неограничено
-PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
-
-News: Новости
-
-DeletedPosts: Удаленные посты
-DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}
-ShowDeletedPosts: Просмотреть удаленные посты
-
-BanPoster: Забанить!
-StickThread: Прикрепить/открепить
-LockThread: Заблокировать/разблокировать
-Autosage: Автосажа

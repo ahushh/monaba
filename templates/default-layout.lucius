@@ -151,7 +151,6 @@ blockquote {
 }
 
 .admin-table {
-  border: 1px solid black;
   border-collapse: collapse;
   font-size: 0.8em;
   margin: 7px;

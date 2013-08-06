@@ -191,10 +191,9 @@ instance Yesod App where
     isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManageBoardP
     isAuthorized (CleanBoardR   _) _ = isAuthorized' ManageBoardP
     isAuthorized UsersR            _ = isAuthorized' ManageUsersP
-    isAuthorized (ManageGroupsR _) _ = isAuthorized' ManageUsersP
+    isAuthorized ManageGroupsR     _ = isAuthorized' ManageUsersP
     isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
 
-    isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
     isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
     -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
     -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP

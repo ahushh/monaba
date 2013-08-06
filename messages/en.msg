@@ -149,8 +149,9 @@ BanDeleted: Ban successfully deleted
 ### Groups management
 Group: Group
 Groups: Groups
-GroupAdd: Add group
-GroupAdded: Group added
+GroupAddOrUpdate: Add/updated
+GroupAddedOrUpdated: Group added/updated
+GroupDeleted: Group deleted
 
 ### Account
 Account: Account
@@ -160,9 +161,9 @@ PasswordChanged: Password successully changed
 
 ### Users management
 Users: Users
-AddNewUser: New user
+AddNewUserOrUpdate: New user/update
 ## Messages
-UsersAdded: New user successufully added
+UsersAddedOrUpdated: New user successufully added/updated
 UsersDeleted: User successufully deleted
 YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 

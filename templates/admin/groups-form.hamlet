@@ -26,4 +26,4 @@
             <td>_{MsgManageBan   }
             <td>^{fvInput manageBanView   }
 
-    <input type=submit value=_{MsgGroupAdd}>
+    <input type=submit value=_{MsgGroupAddOrUpdate}>

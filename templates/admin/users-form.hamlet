@@ -3,4 +3,4 @@
     _{MsgName}: ^{fvInput userNameView}
     _{MsgPassword}: ^{fvInput userPasswordView}
     _{MsgGroup}: ^{fvInput userGroupView}
-    <input type=submit value=_{MsgAddNewUser}>
+    <input type=submit value=_{MsgAddNewUserOrUpdate}>

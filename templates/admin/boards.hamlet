@@ -5,9 +5,11 @@ $if not (board == "new-f89d7fb43ef7")
 ^{formWidget}
 <select onchange="location = '/admin/boards/'+this.options[this.selectedIndex].value;">
     $if board == "all-f89d7fb43ef7"
-        <option selected=selected value=all-f89d7fb43ef7>_{MsgAllBoards}
+        $if not $ null boards
+            <option selected=selected value=all-f89d7fb43ef7>_{MsgAllBoards}
     $else
-        <option value=all-f89d7fb43ef7>_{MsgAllBoards}
+        $if not $ null boards
+            <option value=all-f89d7fb43ef7>_{MsgAllBoards}
     $if board == "new-f89d7fb43ef7"
         <option selected=selected value=new-f89d7fb43ef7>_{MsgNewBoard}
     $else

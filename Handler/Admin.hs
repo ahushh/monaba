@@ -195,7 +195,6 @@ postManageBoardsR board = do
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board bCategories groups
-
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
   case result of
     FormFailure _  -> msgRedirect MsgBadFormData
@@ -207,7 +206,7 @@ postManageBoardsR board = do
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
-          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bExtraRules] ||
+          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName] ||
                 any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
           let onoff (Just "Enable" ) = True
@@ -232,7 +231,7 @@ postManageBoardsR board = do
                                , boardReplyAccess       = bReplyAccess
                                , boardThreadAccess      = bThreadAccess
                                , boardOpModeration      = onoff bOpModeration
-                               , boardExtraRules        = T.split (==';') $ fromJust bExtraRules
+                               , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -355,8 +354,8 @@ showPermission p = fromJust $ lookup p xs
              ,(ManageBanP    , MsgManageBan   )
              ]
 
-getManageGroupsR :: Text -> Handler Html
-getManageGroupsR _ = do
+getManageGroupsR :: Handler Html
+getManageGroupsR = do
   muser  <- maybeAuth
   mgroup   <- getMaybeGroup muser
   let permissions          = getPermissions mgroup
@@ -370,10 +369,10 @@ getManageGroupsR _ = do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgGroups]
     $(widgetFile "admin/groups")
   
-postManageGroupsR :: Text -> Handler Html
-postManageGroupsR _ = do
+postManageGroupsR :: Handler Html
+postManageGroupsR = do
   ((result, _), _) <- runFormPost groupsForm 
-  let msgRedirect msg = setMessageI msg >> redirect (ManageGroupsR "")
+  let msgRedirect msg = setMessageI msg >> redirect ManageGroupsR
   case result of
     FormFailure _                            -> msgRedirect MsgBadFormData
     FormMissing                              -> msgRedirect MsgNoFormData
@@ -385,9 +384,21 @@ postManageGroupsR _ = do
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions
                            }
-      void $ runDB $ insert newGroup
-      msgRedirect MsgGroupAdded
--------------------------------------------------------------------------------------------------------------
+      g <- runDB $ getBy $ GroupUniqName name
+      if isJust g
+        then void $ runDB $ replace (entityKey $ fromJust g) newGroup
+        else void $ runDB $ insert newGroup
+      msgRedirect MsgGroupAddedOrUpdated
+
+getDeleteGroupsR :: Text -> Handler ()
+getDeleteGroupsR group = do
+  groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  when ((>1) $ length $ filter (ManageUsersP `elem`) groups) $ do
+    void $ runDB $ deleteWhere [GroupName ==. group]
+    setMessageI MsgGroupDeleted >> redirect ManageGroupsR
+  setMessageI MsgYouAreTheOnlyWhoCanManageUsers >>  redirect ManageGroupsR
+---------------------------
+----------------------------------------------------------------------------------
 -- Users
 -------------------------------------------------------------------------------------------------------------
 usersForm :: [(Text,Text)] -> Html -> MForm Handler (FormResult (Text, Text, Text), Widget)
@@ -430,8 +441,11 @@ postUsersR = do
                          , userGroup    = group
                          }
       userWithPassword <- liftIO $ setPassword password newUser
-      void $ runDB $ insert userWithPassword
-      msgRedirect MsgUsersAdded
+      u <- runDB $ getBy $ UserUniqName name
+      if isJust u
+        then void $ runDB $ replace (entityKey $ fromJust u) userWithPassword
+        else void $ runDB $ insert userWithPassword
+      msgRedirect MsgUsersAddedOrUpdated
 
 getUsersDeleteR :: Int -> Handler Html
 getUsersDeleteR userId = do

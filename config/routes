@@ -40,7 +40,8 @@
 /admin/boards/delete/#Text DeleteBoardR  GET
 /admin/boards/clean/#Text  CleanBoardR   GET
 
-/admin/groups/#Text        ManageGroupsR GET POST
+/admin/groups              ManageGroupsR GET POST
+/admin/groups/delete/#Text DeleteGroupsR GET
 /admin/users               UsersR        GET POST
 /admin/users/delete/#Int   UsersDeleteR  GET
 

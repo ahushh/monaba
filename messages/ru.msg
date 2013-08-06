@@ -149,8 +149,9 @@ BanDeleted: Бан удален
 ### Groups management
 Group: Группа
 Groups: Группы
-GroupAdd: Добавить группу
-GroupAdded: Группа добавлена
+GroupAddOrUpdate: Добавить/обновить
+GroupAddedOrUpdated: Группа добавлена/обновлена
+GroupDeleted: Группа удалена
 
 ### Account
 Account: Мой аккаунт
@@ -160,9 +161,9 @@ PasswordChanged: Пароль изменен
 
 ### Users management
 Users: Пользователи
-AddNewUser: Новый аккаунт
+AddNewUserOrUpdate: Новый аккаунт/обновить
 ## Messages
-UsersAdded: Аккаунт добавлен
+UsersAddedOrUpdated: Аккаунт добавлен/обновлен
 UsersDeleted: Аккаунт удален
 YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
 

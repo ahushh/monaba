@@ -38,9 +38,9 @@ postForm numberFiles extra = do
   let urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
   ----------------------------------------------------------------------------------------------------------------
-  (nameRes     , nameView    ) <- mopt textField              "" (maybe Nothing (Just . Just) lastName)
-  (subjectRes  , subjectView ) <- mopt textField              "" (maybe Nothing (Just . Just) lastTitle)
-  (messageRes  , messageView ) <- mopt textareaField          "" (maybe Nothing (Just . Just . Textarea) lastMessage)
+  (nameRes     , nameView    ) <- mopt textField              "" (Just              <$> lastName)
+  (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
+  (messageRes  , messageView ) <- mopt textareaField          "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
   (captchaRes  , captchaView ) <- mopt textField              "" Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)

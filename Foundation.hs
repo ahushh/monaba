@@ -30,7 +30,7 @@ import Network.HTTP.Types (mkStatus)
 import Network.Wai (Request(..))
 import Control.Monad (when)
 import Control.Applicative ((<$>))
-import Data.Maybe (fromMaybe, fromJust, isNothing)
+import Data.Maybe (fromJust, isNothing)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -51,7 +51,7 @@ widgetHelperFilterBoards boards category group = filter p boards
   where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
         notHidden     b = not $ boardHidden b
         checkCategory b | T.null category = isNothing $ boardCategory b
-                        | otherwise       = (Just category) == boardCategory b
+                        | otherwise       = Just category == boardCategory b
         checkAccess   b = isNothing (boardViewAccess b) || boardViewAccess b == group
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
@@ -64,7 +64,7 @@ omittedRus n
   | lastN `elem` [2..5] = "поста пропущено"
   | lastN `elem` [6..9] = "постов пропущено"
   | otherwise           = error "incorrect number at omittedRus"
-    where lastN = read $ (:[]) $ head $ reverse $ show n
+    where lastN = read $ (:[]) $ last $ show n
           lastN :: Int
 
 timesRus :: Int -> String
@@ -72,7 +72,7 @@ timesRus n
   | n     `elem` [11..14] = "раз"
   | lastN `elem` [2,3,4]  = "раза"
   | otherwise             = "раз"
-    where lastN = read $ (:[]) $ head $ reverse $ show n
+    where lastN = read $ (:[]) $ last $ show n
           lastN :: Int
 
 plural :: Int -> String -> String -> String
@@ -130,7 +130,7 @@ instance Yesod App where
         mmsg   <- getMessage
         msgrender  <- getMessageRender   
         boards     <- runDB $ selectList ([]::[Filter Board]) []
-        categories <- configBoardCategories . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+        categories <- configBoardCategories . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
         mgroup  <- case muser of
           Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
           _                 -> return Nothing
@@ -237,13 +237,21 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
+isAuthorized' :: forall master.
+                 (YesodPersist master,
+                  PersistUnique (YesodPersistBackend master (HandlerT master IO)),
+                  YesodAuth master, AuthId master ~ KeyBackend SqlBackend User,
+                  PersistMonadBackend
+                  (YesodPersistBackend master (HandlerT master IO))
+                  ~ SqlBackend) =>
+                 Permission -> HandlerT master IO AuthResult
 isAuthorized' permission = do
   mauth <- maybeAuth
   case mauth of
     Nothing -> return AuthenticationRequired
     Just (Entity _ user) -> do
       group <- runDB $ getBy $ GroupUniqName (userGroup user)
-      if permission `elem` (groupPermissions $ entityVal $ fromJust group)
+      if permission `elem` groupPermissions (entityVal $ fromJust group)
         then return Authorized
         else return $ Unauthorized "Not permitted"
 

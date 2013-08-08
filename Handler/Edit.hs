@@ -24,9 +24,9 @@ postPostEditR = do
       maxTimes <- getConfig configMaxEditings
 
       unless (EditPostsP `elem` permissions) $ do
-        when ((postParent post) == 0 && not (boardOpEditing   boardVal)) $
+        when (postParent post == 0 && not (boardOpEditing   boardVal)) $
           trickyRedirect "error" MsgThreadEditingIsDisabled HomeR
-        when ((postParent post) /= 0 && not (boardPostEditing boardVal)) $
+        when (postParent post /= 0 && not (boardPostEditing boardVal)) $
           trickyRedirect "error" MsgPostEditingIsDisabled   HomeR
   
         when (postPosterId post /= posterId &&

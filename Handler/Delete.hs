@@ -50,7 +50,7 @@ getDeleteR = do
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
       let xs = if fst (P.head zs) == "onlyfile" then P.tail zs else zs
-      thread   <- runDB $ get ((toKey $ read $ unpack threadId) :: Key Post)
+      thread   <- runDB $ get ((toKey $ ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
       let board = postBoard $ fromJust thread
@@ -63,7 +63,7 @@ getDeleteR = do
            ) $ errorRedirect MsgYouAreNotOp
       let requestIds = map helper xs
           myFilterPr (Entity _ p) = postBoard       p == board &&
-                                    postParent      p == (postLocalId $ fromJust thread) &&
+                                    postParent      p == postLocalId (fromJust thread) &&
                                     postDeletedByOp p == False
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
@@ -97,7 +97,7 @@ deletePosts posts onlyfile = do
   childs <- runDB $ forM boardsAndPosts $ \(b,ps) ->
     selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
 
-  let idsToRemove = (concat $ map ((map entityKey) . snd) boardsAndPosts) ++ map entityKey (concat childs)
+  let idsToRemove = concat (map (map entityKey . snd) boardsAndPosts) ++ map entityKey (concat childs)
   unless onlyfile $
     runDB (updateWhere [PostId <-. idsToRemove] [PostDeleted =. True])
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []

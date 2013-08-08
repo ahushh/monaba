@@ -175,7 +175,7 @@ additionalMarkup :: B.ByteString -> Handler B.ByteString
 additionalMarkup s = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
-  if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` (getPermissions mgroup))
+  if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` getPermissions mgroup)
     then return s
     else
       let color = (=~$ ("\\[color=((?:\\w|#)+)\\]((?:.|\n)+?)\\[/color\\]", "<span style='color:\\1'>\\2</span>"))

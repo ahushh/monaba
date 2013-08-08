@@ -13,7 +13,7 @@ getPostsHelper selectPosts board thread errorString = do
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
   let selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
-  postsAndFiles <- reverse <$> (runDB selectPosts) >>= mapM (\p -> do
+  postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
     files <- selectFiles p
     return (p, files))
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
@@ -69,7 +69,7 @@ getApiPostR board postId = do
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps <- getCountries (if geoIpEnabled then [(post, files)] else [])
+  geoIps <- getCountries [(post, files) | geoIpEnabled]
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if (postParent (entityVal $ fromJust maybePost)) == 0
                        then opPostWidget muser post files False True permissions geoIps

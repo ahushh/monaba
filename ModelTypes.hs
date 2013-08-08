@@ -5,8 +5,6 @@ module ModelTypes
 
 import Prelude
 import Yesod
-import Data.Time (UTCTime)
-import Data.Text (Text)
 
 data Permission = ManageThreadP |
                   ManageBoardP  |

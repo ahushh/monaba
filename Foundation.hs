@@ -67,6 +67,14 @@ omittedRus n
     where lastN = read $ (:[]) $ head $ reverse $ show n
           lastN :: Int
 
+timesRus :: Int -> String
+timesRus n
+  | n     `elem` [11..14] = "раз"
+  | lastN `elem` [2,3,4]  = "раза"
+  | otherwise             = "раз"
+    where lastN = read $ (:[]) $ head $ reverse $ show n
+          lastN :: Int
+
 plural :: Int -> String -> String -> String
 plural 1 x _ = x
 plural _ _ y = y

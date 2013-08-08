@@ -1,0 +1,22 @@
+<br>
+<hr>
+<br>
+<div #edit-history-header>
+   _{MsgEditingHistoryOfPost (postLocalId post)}
+   <br>
+   [ _{MsgGoTo} 
+   $if postParent post == 0
+       <a href=@{ThreadR (boardName board) (postLocalId post)}>_{MsgToThread}</a>/<a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}</a>
+   $else
+       <a href=@{ThreadR (boardName board) (postParent post)}>_{MsgToThread}</a>/<a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}</a>
+   ]
+<hr>
+<br>
+$forall (date, msg) <- history
+    <div .hist-date>
+        #{myFormatTime date}
+    <br>
+    <div .hist-msg>
+        <blockquote>
+        ^{markupWidget msg}
+    <br>

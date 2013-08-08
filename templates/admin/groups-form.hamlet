@@ -1,4 +1,4 @@
-<form method=post action=1>
+<form method=post action=@{ManageGroupsR}>
     #{extra}
     <table>
         <tr>
@@ -25,5 +25,8 @@
         <tr>
             <td>_{MsgManageBan   }
             <td>^{fvInput manageBanView   }
+        <tr>
+            <td>_{MsgEditPosts   }
+            <td>^{fvInput editPostsView   }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

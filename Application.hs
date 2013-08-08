@@ -25,6 +25,7 @@ import Handler.Home
 import Handler.Help
 import Handler.Thread
 import Handler.Board
+import Handler.Edit
 import Handler.Live
 import Handler.Delete
 import Handler.Admin

@@ -4,6 +4,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
         <div .reply-post id="post-#{post}-#{thread}-#{board}">
             <div .post-header>
                 <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
+                <img onclick="showEditForm('post-#{post}-#{thread}-#{board}',#{show $ fromKey $ entityKey eReplyW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
                 $maybe (code, name) <- lookup (entityKey eReplyW) geoIpsW
                     <img src=#{geoIconPath code} title=#{name}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}
@@ -40,3 +41,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                         <br>
                         <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
             <blockquote>^{markupWidget $ postMessage $ entityVal eReplyW}
+            $maybe lm <- postLastModified $ entityVal eReplyW
+                <span .last-modified>
+                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>_{MsgLastModified} #{myFormatTime lm}
+                    <br>

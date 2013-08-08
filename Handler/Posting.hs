@@ -51,6 +51,15 @@ postForm numberFiles extra = do
       widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
+editForm :: Html -> MForm Handler (FormResult (Textarea, Text, Int), Widget)
+editForm extra = do
+  (postIdRes  , postIdView  ) <- mreq intField      "" Nothing
+  (messageRes , messageView ) <- mreq textareaField "" Nothing
+  (passwordRes, passwordView) <- mreq passwordField "" Nothing  
+  let result = (,,) <$> messageRes <*> passwordRes <*> postIdRes
+      widget = $(widgetFile "edit-form")
+  return (result, widget)
+-------------------------------------------------------------------------------------------------------------------
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypes
 isFileAllowed _            _                      = True

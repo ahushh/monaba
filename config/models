@@ -36,6 +36,9 @@ Board
     opModeration      Bool     default=0
     extraRules        [Text]   default='["s"]'
     enableGeoIp       Bool     default=0
+    opEditing         Bool     default=0
+    postEditing       Bool     default=0
+    showEditHistory   Bool     default=0
     deriving          Typeable
 Post
     board        Text
@@ -51,6 +54,7 @@ Post
     deleted      Bool default=0
     deletedByOp  Bool default=0
     posterId     Text default="nope"
+    lastModified UTCTime Maybe default=null
     -- form's values
     message      Textarea
     title        Text
@@ -60,6 +64,11 @@ Post
     deriving     Eq
     deriving     Ord
     deriving     Show
+History
+    postId       PostId
+    HistoryUniqPostId postId
+    messages     [Textarea]
+    dates        [UTCTime]
 Attachedfile
     parentId     PostId
     md5          Text
@@ -91,3 +100,4 @@ Config
     boardCategories [Text]
     newsBoard      Text default=news
     showNews       Int  default=2
+    maxEditings    Int  default=10

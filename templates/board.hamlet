@@ -36,6 +36,8 @@ $else
             $else
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
             <input type=submit value=_{MsgDeleteBtn}>
+    <div #edit-form style=display:none>
+        ^{formWidget'}         
 
 _{MsgPages} #
 $if page == 0

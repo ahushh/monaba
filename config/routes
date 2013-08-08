@@ -13,7 +13,8 @@
 /deleted/#Text/#Int  DeletedByOpR  GET
 /captcha             CaptchaR      GET
 /captcha/!info       CaptchaInfoR  GET
-
+/edit                PostEditR     POST
+/history/#Int        EditHistoryR  GET
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET

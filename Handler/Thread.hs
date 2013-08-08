@@ -58,12 +58,13 @@ getThreadR board thread = do
                 | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = T.concat [T.take 60 pm, "…"]
                 | otherwise                                     = ""
   -------------------------------------------------------------------------------------------------------
-  geoIps <- getCountries (if geoIpEnabled then allPosts else [])
+  geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
+  (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
@@ -154,6 +155,7 @@ postThreadR board thread = do
                            , postDeletedByOp  = False
                            , postOwner        = (pack . show . userGroup . entityVal) <$> muser
                            , postPosterId     = posterId
+                           , postLastModified = Nothing                                                
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------

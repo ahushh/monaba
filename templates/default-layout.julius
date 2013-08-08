@@ -291,6 +291,7 @@ function showQuickPostForm(postId) {
                 popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
             },
             success: function(data) {
+                closePopupMessage();
                 if (data.ok) {
                     $('#post-form input[type=text]').clearFields();
                     $('#post-form input[type=file]').clearFields();
@@ -390,6 +391,45 @@ function refreshThread(board, threadId) {
         }
     });
 }
+//-----------------------------------------------------------------
+function showEditForm(postId, realId) {
+    $('#edit-form').appendTo('#'+postId);
+    var msg = $('#'+postId+' blockquote').clone();
+    msg.find("br").replaceWith('\n');
+    $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ); // FIX doubled \n
+    $('#edit-button').unbind();
+    $('#edit-button').click(function() {
+        var obj = {};
+        obj[ $('#edit-form textarea').attr('name')            ] = $('#edit-form textarea').val();
+        obj[ $('#edit-form input[type=password]').attr('name')] = $('#edit-form input[type=password]').val();
+        obj[ $('#edit-form input[type=hidden]').attr('name')  ] = $('#edit-form input[type=hidden]').val();
+        obj[ $('#edit-form input[type=number]').attr('name')  ] = realId;
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        $.post( '@{PostEditR}', obj,
+                function(response) {
+                    if (response.ok) {
+                        closePopupMessage();
+                        var pId = extractPost(postId);
+                        var board = extractBoard(postId);
+                        $.get("/api/post/"+board+"/"+pId, function(post) {
+                            hideEditForm();
+                            $('#'+postId).replaceWith(post);
+                            popupMessage(response.ok,2000);
+                        });
+                    } else {
+                        popupMessage(response.error,2000);
+                    }
+              });
+    });
+    $('#edit-form').css('display','table')
+}
+
+function hideEditForm() {
+    $('#edit-form').css('display','none');
+    $('#edit-form').val('');
+    $('#edit-form').appendTo('#container');
+}
+
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------

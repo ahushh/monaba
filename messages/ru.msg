@@ -25,6 +25,18 @@ ClosePostForm: Закрыть форму
 Reply: Ответить
 ReplyToThread: Ответ в тред №
 
+Edit: Редактировать
+PostEdited: Пост отредактирован
+PostNotYours: Неверный пароль или сессия. Вы не можете редактировать этот пост.
+PostEditingIsDisabled: Редактирование постов отключено на этой борде
+ThreadEditingIsDisabled: Редактирование ОП-постов отключено на этой борде
+LastModified: Последнее изменение
+EditingHistory: История измнений
+EditingHistoryIsDisabled: Просмотр истории изменений отключен
+GoTo: Перейти к
+EditingHistoryOfPost desu@Int: История изменений поста №#{show desu}.
+YouAlreadyEditedPost boku@Int: Вы уже отредактировали пост #{show boku} #{timesRus boku}. Больше нельзя.
+EditPosts: Редактирование постов и просмотр истории
 ######################################################################################
 #### Page
 ######################################################################################
@@ -116,6 +128,9 @@ BoardReplyAccess: Для ответа в тред нужно быть
 BoardThreadAccess: Для создание треда нужно быть
 WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
 OpModeration: ОП-модерация
+PostEditing: Редактирование постов
+OpEditing: Редактирование ОП-постов
+ShowEditHistory: Показывать историю изменений
 ## board list
 NewBoard: Новая борда
 AllBoards: Все борды
@@ -175,6 +190,7 @@ CaptchaLength: Длина капчи
 ACaptchaGuards: Капч нужно ввести для постинга без капчи
 CaptchaTimeout: Таймаут капчи
 ShowNews: Сколько показывать новостей
+MaxEditings: Сколько раз можно редактировать пост
 NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки
 ReplyDelay: Задержка перед ответом в тред

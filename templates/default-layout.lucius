@@ -212,3 +212,31 @@ blockquote {
     float: right;
     text-align: right;
 }
+
+.icon-edit-post {
+    background-position: -77px -77px;
+}
+
+.icon-close {
+    background-position: -269px -101px;
+}
+
+.last-modified {
+    font-size: 0.7em;
+    float:right;
+}
+
+.hist-date {
+    text-align: center;
+    font-weight: bold;
+}
+
+.hist-msg {
+    word-wrap: break-word;
+    width: 50%;
+    margin: 0 auto;
+}
+
+#edit-history-header {
+    text-align: center;
+}

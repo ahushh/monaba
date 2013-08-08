@@ -1,0 +1,8 @@
+#{extra}
+<span style=display:none>
+    ^{fvInput postIdView}
+^{fvInput messageView}
+<br>
+^{fvInput passwordView}
+<input type=button id=edit-button value=_{MsgEdit}>
+<img style=float:right onclick="hideEditForm()" src=@{StaticR img_blank_gif} border=0 .icon-close>

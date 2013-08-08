@@ -37,6 +37,7 @@ getHomeR = do
                                    , configBoardCategories = []
                                    , configNewsBoard       = "news"
                                    , configShowNews        = 2
+                                   , configMaxEditings     = 10
                                    }
       redirect HomeR
     nameOfTheBoard  <- extraSiteName <$> getExtra

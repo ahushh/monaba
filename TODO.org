@@ -141,6 +141,9 @@
    CLOSED: [2013-08-06 Вт 18:58]
 ** DONE geoip
    CLOSED: [2013-08-06 Вт 21:54]
+** DONE post editing
+   CLOSED: [2013-08-08 Чт 12:44]
+** TODO API - geoip
 ** TODO autorefresh, new posts count via websockets
 ** TODO reports
 ** TODO refmap table (?)
@@ -159,7 +162,6 @@
 ** TODO thread catalog
 ** TODO black/spam list
 ** TODO tags for threads
-** TODO post editing
 ** TODO user settings
 *** TODO UTC -> local time, store timezone in cookies/session
 *** TODO Switchable youtube player

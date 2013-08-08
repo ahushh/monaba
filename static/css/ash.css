@@ -175,3 +175,11 @@ pre {
     padding: 5px;
 }
 
+.hist-msg {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 5px 5px 5px 5px;
+    border: 1px solid #EEEEEE;
+    margin: 3px;
+    padding: 5px;
+}
+

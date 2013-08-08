@@ -65,6 +65,7 @@ getBoardR board page = do
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
+  (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
@@ -147,6 +148,7 @@ postBoardR board _ = do
                            , postDeletedByOp  = False
                            , postOwner        = pack . show . userGroup . entityVal <$> muser
                            , postPosterId     = posterId
+                           , postLastModified = Nothing
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -- delete old threads

@@ -64,6 +64,15 @@
             <tr>
                 <td>_{MsgOpModeration}
                 <td>^{fvInput opModerationView}
+            <tr>
+                <td>_{MsgOpEditing}
+                <td>^{fvInput opEditingView}
+            <tr>
+                <td>_{MsgPostEditing}
+                <td>^{fvInput postEditingView}
+            <tr>
+                <td>_{MsgShowEditHistory}
+                <td>^{fvInput showEditHistoryView}
             $if bname == "new-f89d7fb43ef7"
                 <tr>
                     <td colspan=2><strong>_{MsgOptional}:</strong>

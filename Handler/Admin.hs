@@ -140,6 +140,9 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Text -- allow OP moderate his/her thread
                                             , Maybe Text -- extra rules
                                             , Maybe Text -- enable geo IP
+                                            , Maybe Text -- enable OP editing
+                                            , Maybe Text -- enable post editing
+                                            , Maybe Text -- show or not editing history
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories groups extra = do
@@ -179,14 +182,18 @@ updateBoardForm board bname' bCategories groups extra = do
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
   (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
   (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp)
-  let result = (,,,,,,,,,,,,,,,,,,,,) <$>
+  (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
+  (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
+  (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
                previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
                isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
                viewAccessRes        <*> replyAccessRes   <*> threadAccessRes   <*>
-               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes
+               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes    <*>
+               opEditingRes         <*> postEditingRes   <*> showEditHistoryRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -205,7 +212,7 @@ postManageBoardsR board = do
                 , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
                 , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
-                , bEnableGeoIp
+                , bEnableGeoIp , bOpEditing     , bPostEditing  , bShowEditHistory
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
@@ -236,6 +243,9 @@ postManageBoardsR board = do
                                , boardOpModeration      = onoff bOpModeration
                                , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
                                , boardEnableGeoIp       = onoff bEnableGeoIp
+                               , boardOpEditing         = onoff bOpEditing
+                               , boardPostEditing       = onoff bPostEditing
+                               , boardShowEditHistory   = onoff bShowEditHistory
                                }
           void $ runDB $ insert newBoard
           msgRedirect MsgBoardAdded
@@ -266,6 +276,9 @@ postManageBoardsR board = do
                                    , boardOpModeration      = onoff bOpModeration
                                    , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
                                    , boardEnableGeoIp       = onoff bEnableGeoIp
+                                   , boardOpEditing         = onoff bOpEditing
+                                   , boardPostEditing       = onoff bPostEditing
+                                   , boardShowEditHistory   = onoff bShowEditHistory
                                    }
                 in runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -296,6 +309,9 @@ postManageBoardsR board = do
                                , boardOpModeration      = onoff bOpModeration
                                , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
                                , boardEnableGeoIp       = onoff bEnableGeoIp
+                               , boardOpEditing         = onoff bOpEditing
+                               , boardPostEditing       = onoff bPostEditing
+                               , boardShowEditHistory   = onoff bShowEditHistory
                                }
           runDB $ replace oldBoardId newBoard
           msgRedirect MsgBoardsUpdated
@@ -331,7 +347,7 @@ getDeleteBoardR board = do
 -------------------------------------------------------------------------------------------------------------
 -- Groups
 -------------------------------------------------------------------------------------------------------------
-groupsForm :: Html -> MForm Handler (FormResult (Text,Bool,Bool,Bool,Bool,Bool,Bool,Bool), Widget)
+groupsForm :: Html -> MForm Handler (FormResult (Text,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
   (manageThreadRes , manageThreadView) <- mreq checkBoxField "" Nothing
@@ -341,11 +357,12 @@ groupsForm extra = do
   (deletePostsRes  , deletePostsView ) <- mreq checkBoxField "" Nothing    
   (managePanelRes  , managePanelView ) <- mreq checkBoxField "" Nothing
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
+  (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing  
 
-  let result = (,,,,,,,)       <$> nameRes        <*>
+  let result = (,,,,,,,,)      <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes   
+               manageBanRes    <*> editPostsRes 
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -358,6 +375,7 @@ showPermission p = fromJust $ lookup p xs
              ,(DeletePostsP  , MsgDeletePosts )
              ,(ManagePanelP  , MsgManagePanel )
              ,(ManageBanP    , MsgManageBan   )
+             ,(EditPostsP    , MsgEditPosts   )
              ]
 
 getManageGroupsR :: Handler Html
@@ -382,10 +400,13 @@ postManageGroupsR = do
   case result of
     FormFailure _                            -> msgRedirect MsgBadFormData
     FormMissing                              -> msgRedirect MsgNoFormData
-    FormSuccess (name, manageThread, manageBoard, manageUsers, manageConfig, deletePostsP, managePanel, manageBan) -> do
+    FormSuccess (name        , manageThread, manageBoard, manageUsers,
+                 manageConfig, deletePostsP, managePanel, manageBan  ,
+                 editPosts
+                ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
-                        ,(ManageBanP   ,manageBan   )
+                        ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   )
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions
@@ -514,6 +535,7 @@ configForm :: Config -> Html -> MForm Handler (FormResult ( Maybe Int -- captcha
                                                        , Maybe Text -- board categories
                                                        , Maybe Text -- news board
                                                        , Maybe Int  -- show news
+                                                       , Maybe Int  -- max number of a post editings
                                                        )
                                            , Widget)
 configForm config extra = do
@@ -527,10 +549,11 @@ configForm config extra = do
   (boardCategoriesRes , boardCategoriesView) <- mopt textField "" (Just $ Just $ T.intercalate "," $ configBoardCategories config)
   (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
-  let result = (,,,,,,,) <$>
+  (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
+  let result = (,,,,,,,,) <$>
                captchaLengthRes <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
                replyDelayRes    <*> threadDelayRes    <*> boardCategoriesRes <*>
-               newsBoardRes     <*> showNewsRes 
+               newsBoardRes     <*> showNewsRes       <*> maxEditingsRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
 
@@ -561,7 +584,7 @@ postConfigR = do
     FormFailure _                      -> msgRedirect MsgBadFormData
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories,
-                 newsBoard    , showNews
+                 newsBoard    , showNews      , maxEditings
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
@@ -571,6 +594,7 @@ postConfigR = do
                              , configBoardCategories = maybe     (configBoardCategories oldConfigVal) (T.splitOn ",") boardCategories
                              , configNewsBoard       = fromMaybe (configNewsBoard       oldConfigVal) newsBoard
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
+                             , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
                              }
       void $ runDB $ replace oldConfigKey newConfig
       msgRedirect MsgConfigUpdated

@@ -26,6 +26,19 @@ ClosePostForm: Close form
 Reply: Reply
 ReplyToThread: Reply to thread №
 
+### Editing
+Edit: Edit
+PostEdited: Post successfully edited
+PostNotYours: Wrong password or session. You can't modify this post.
+PostEditingIsDisabled: Post editing is disabled on this board
+ThreadEditingIsDisabled: OP editing is disabled on this board
+LastModified: Last modified
+EditingHistory: Editing history
+EditingHistoryIsDisabled: Editing history is disabled
+GoTo: Go to
+EditingHistoryOfPost desu@Int: Editing history of post №#{show desu}
+YouAlreadyEditedPost boku@Int: You've already edited this post #{show boku} times.
+EditPosts: Edit posts and view history
 ######################################################################################
 #### Page
 ######################################################################################
@@ -116,6 +129,9 @@ BoardReplyAccess: To reply you must be a
 BoardThreadAccess: To crate new thread you must be a
 WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
 OpModeration: OP moderation
+PostEditing: Post editing
+OpEditing: OP editing
+ShowEditHistory: Show editing history
 ## board list
 NewBoard: New board
 AllBoards: All boards
@@ -175,6 +191,7 @@ CaptchaLength: Captcha length
 ACaptchaGuards: Guards of adaptive captcha
 CaptchaTimeout: Captcha timeout
 ShowNews: How many news show
+MaxEditings: How many times you can edit your post
 NewsBoard: Board for news
 UpdateConfig: Update config
 ReplyDelay: Reply delay

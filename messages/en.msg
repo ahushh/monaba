@@ -208,6 +208,7 @@ ManageConfig:Manage Config
 DeletePosts :Delete Posts
 ManagePanel :Manage Panel
 ManageBan   :Manage Ban
+AdditionalMarkup: Additional markup
 
 ######################################################################################
 #### Help

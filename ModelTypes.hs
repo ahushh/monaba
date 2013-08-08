@@ -15,7 +15,8 @@ data Permission = ManageThreadP |
                   DeletePostsP  |
                   ManagePanelP  |
                   ManageBanP    |
-                  EditPostsP
+                  EditPostsP    |
+                  AdditionalMarkupP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 derivePersistField "Permission"

@@ -2,6 +2,7 @@
 module Handler.Help where
 
 import Import
+import Yesod.Auth
 import qualified Data.Text as T
 ---------------------------------------------------------------------------------------------
 getHelpR :: Handler Html
@@ -14,6 +15,10 @@ getHelpR = do
 
 getHelpMarkupR :: Handler Html
 getHelpMarkupR = do
+    muser    <- maybeAuth
+    mgroup   <- getMaybeGroup muser
+    let permissions = getPermissions mgroup
+  
     nameOfTheBoard   <- extraSiteName <$> getExtra
     msgrender        <- getMessageRender
     defaultLayout $ do

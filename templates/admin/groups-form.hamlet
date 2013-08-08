@@ -28,5 +28,8 @@
         <tr>
             <td>_{MsgEditPosts   }
             <td>^{fvInput editPostsView   }
+        <tr>
+            <td>_{MsgAdditionalMarkup   }
+            <td>^{fvInput aMarkupView   }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

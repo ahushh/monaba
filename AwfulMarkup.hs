@@ -6,6 +6,7 @@ module AwfulMarkup
 
 import           Import
 import           Prelude
+import           Yesod.Auth
 import           Text.Blaze.Html.Renderer.String
 import           Data.List.Split                   (splitOn)
 import           Text.Regex.PCRE.Light.Extra       ((=~))
@@ -74,7 +75,8 @@ escapeHtml :: String -> String
 escapeHtml = renderHtml . toHtml
 
 doMarkup :: Int -> B.ByteString -> B.ByteString -> Handler B.ByteString
-doMarkup thread board s = doProofLabels thread s board >>= (`doReflinks` board) >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
+doMarkup thread board s = doProofLabels thread s board >>= additionalMarkup >>=
+                          (`doReflinks` board) >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
   where clickableUrls = (=~$ ("((?:https?|ftp|gopher)://[^(\\s<>\\[\\])]+)"  , "<a href='\\1'>\\1</a>"                   ))
         quotes        = (=~$ ("(?:(?:\n\r)|(?:\n))&gt;(.+)"   , "<br><span class='quote' style='color:green'>>\\1</span>"))
         quotes'       = (=~$ ("^&gt;(.+)"                     , "<span class='quote' style='color:green'>>\\1</span>"))
@@ -168,3 +170,18 @@ replaceProofLabel regex source board postId' thread = do
     Nothing -> return (Right source)
     Just (Entity _ post) -> let spanClass = if posterId == postPosterId post then "pLabelTrue" else "pLabelFalse"
                             in liftIO $ substituteCompile regex source (B.concat ["<span class='", spanClass, "'>##\\1</span>"])
+-------------------------------------------------------------------------------------------------------------------
+additionalMarkup :: B.ByteString -> Handler B.ByteString
+additionalMarkup s = do
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` (getPermissions mgroup))
+    then return s
+    else
+      let color = (=~$ ("\\[color=((?:\\w|#)+)\\]((?:.|\n)+?)\\[/color\\]", "<span style='color:\\1'>\\2</span>"))
+          group = (=~$ ("#group", B.concat ["<span style='border-bottom: 1px red dotted'>#", getGroupName mgroup, "</span>"]))
+          user  = (=~$ ("#user" , B.concat ["<span style='border-bottom: 1px red dashed'>#", getUserName  muser , "</span>"]))
+        in liftIO $ foldr (=<<) (user s) [color, group]
+    where getUserName  = B.fromString . unpack . userName  . entityVal . fromJust
+          getGroupName = B.fromString . unpack . groupName . entityVal . fromJust
+  

@@ -3,6 +3,13 @@
 <h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
 <br>
 <div style="margin-left:30px">
+    $if elem AdditionalMarkupP permissions
+        <p><strong>_{MsgAdditionalMarkup}</strong>
+        <p>[color=red]nyak-nyak[/color] → <span style=color:red>nyak-nyak</span>
+        <p>[color=#0000FF]nyak-nyak[/color] → <span style=color:#0000FF>nyak-nyak</span>
+        <p>#group → <span style='border-bottom: 1px red dotted'>#Admin</span>
+        <p>#user → <span style='border-bottom: 1px red dashed'>#ahushh</span>
+        <hr>
     <p>**bold**      →  <strong>bold</strong>
     <p>__bold__      →  <strong>bold</strong>
     <p>[b]bold[/b]   →  <strong>bold</strong>

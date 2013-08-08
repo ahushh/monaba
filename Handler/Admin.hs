@@ -347,7 +347,7 @@ getDeleteBoardR board = do
 -------------------------------------------------------------------------------------------------------------
 -- Groups
 -------------------------------------------------------------------------------------------------------------
-groupsForm :: Html -> MForm Handler (FormResult (Text,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool), Widget)
+groupsForm :: Html -> MForm Handler (FormResult (Text,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
   (manageThreadRes , manageThreadView) <- mreq checkBoxField "" Nothing
@@ -357,12 +357,13 @@ groupsForm extra = do
   (deletePostsRes  , deletePostsView ) <- mreq checkBoxField "" Nothing    
   (managePanelRes  , managePanelView ) <- mreq checkBoxField "" Nothing
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
-  (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing  
+  (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
+  (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing    
 
-  let result = (,,,,,,,,)      <$> nameRes        <*>
+  let result = (,,,,,,,,,)     <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes    <*> editPostsRes 
+               manageBanRes    <*> editPostsRes   <*> aMarkupRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -376,6 +377,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ManagePanelP  , MsgManagePanel )
              ,(ManageBanP    , MsgManageBan   )
              ,(EditPostsP    , MsgEditPosts   )
+             ,(AdditionalMarkupP, MsgAdditionalMarkup)
              ]
 
 getManageGroupsR :: Handler Html
@@ -402,11 +404,11 @@ postManageGroupsR = do
     FormMissing                              -> msgRedirect MsgNoFormData
     FormSuccess (name        , manageThread, manageBoard, manageUsers,
                  manageConfig, deletePostsP, managePanel, manageBan  ,
-                 editPosts
+                 editPosts   , aMarkup
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
-                        ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   )
+                        ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

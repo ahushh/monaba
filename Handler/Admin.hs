@@ -423,7 +423,7 @@ getDeleteGroupsR group = do
   when ((>1) $ length $ filter (ManageUsersP `elem`) groups) $ do
     void $ runDB $ deleteWhere [GroupName ==. group]
     setMessageI MsgGroupDeleted >> redirect ManageGroupsR
-  setMessageI MsgYouAreTheOnlyWhoCanManageUsers >>  redirect ManageGroupsR
+  setMessageI MsgYouAreTheOnlyWhoCanManageUsers >> redirect ManageGroupsR
 ---------------------------
 ----------------------------------------------------------------------------------
 -- Users
@@ -477,9 +477,11 @@ postUsersR = do
 getUsersDeleteR :: Int -> Handler Html
 getUsersDeleteR userId = do
   let msgRedirect msg = setMessageI msg >> redirect UsersR
-  groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
-      
-  when ((>1) $ length $ filter (ManageUsersP `elem`) groups) $ do
+  groups <- runDB $ selectList ([]::[Filter Group]) []
+  users  <- runDB $ selectList ([]::[Filter User ]) []
+
+  let gs = map groupName $ filter ((ManageUsersP `elem`) . groupPermissions) $ map entityVal groups
+  when ((>1) $ length $ filter (`elem` gs) $ map (userGroup . entityVal) users) $ do
      runDB $ delete (toKey userId :: Key User)
      msgRedirect MsgUsersDeleted
   msgRedirect MsgYouAreTheOnlyWhoCanManageUsers

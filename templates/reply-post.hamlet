@@ -3,8 +3,10 @@ $with post <- show $ postLocalId $ entityVal eReplyW
     $with board <- postBoard $ entityVal eReplyW
         <div .reply-post id="post-#{post}-#{thread}-#{board}">
             <div .post-header>
-                <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
-                <img onclick="showEditForm('post-#{post}-#{thread}-#{board}',#{show $ fromKey $ entityKey eReplyW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+                <span .mark-to-delete onclick="markToDelete(this)">
+                    <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
+                    <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
+                <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{post}-#{thread}-#{board}',#{show $ fromKey $ entityKey eReplyW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
                 $maybe (code, name) <- lookup (entityKey eReplyW) geoIpsW
                     <img src=#{geoIconPath code} title=#{name}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}
@@ -13,12 +15,12 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                 <span .reflink>
                     $if canPostW
                         <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.
-                        <a onclick="insert('>>#{post}')" name=#{post}>#{post}
+                        <a onclick="insert('>>#{post}#{pack "\\n"}')" name=#{post}>#{post}
                     $else
                         <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.#{post}
                 $if canPostW
                     <span .extra-buttons>
-                        <img onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+                        <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
                 <span .cpanel>
                     $if elem ManageThreadP permissionsW
                         [ #{postIp $ entityVal eReplyW} ] 

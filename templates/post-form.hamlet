@@ -31,7 +31,10 @@
                      <a id=button-inline-latex >inline LaTeX
                      |
                      <a id=button-latex >LaTeX
+                     |
+                     <a id=button-quote >quote
                      ]                    
+                     <span style=display:inline .symbol-counter>
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}
             <td>
@@ -71,9 +74,11 @@
                             $if i == 0
                                 <div .file-input>
                                     ^{fvInput fv}
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
                             $else
                                 <div style=display:none .file-input>
                                     ^{fvInput fv}
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

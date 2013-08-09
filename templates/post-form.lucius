@@ -1,6 +1,7 @@
 textarea {
-  width: 1000px;
+  width: 900px;
   height: 150px;
+  min-height: 150px;
 }
 
 #board-info {

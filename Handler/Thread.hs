@@ -32,11 +32,12 @@ getThreadR board thread = do
 
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   -------------------------------------------------------------------------------------------------------  
-  let numberFiles   = boardNumberFiles   boardVal
-      enableCaptcha = boardEnableCaptcha boardVal
-      opModeration  = boardOpModeration  boardVal
-      boardDesc     = boardDescription   boardVal
-      geoIpEnabled  = boardEnableGeoIp   boardVal
+  let numberFiles      = boardNumberFiles   boardVal
+      maxMessageLength = boardMaxMsgLength      boardVal
+      enableCaptcha    = boardEnableCaptcha boardVal
+      opModeration     = boardOpModeration  boardVal
+      boardDesc        = boardDescription   boardVal
+      geoIpEnabled     = boardEnableGeoIp   boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)

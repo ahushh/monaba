@@ -146,12 +146,13 @@ instance Yesod App where
             -- addStylesheet $ StaticR css_futaba_css
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
+            addScript (StaticR js_jquery_autosize_js)            
             addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
-            $(combineStylesheets 'StaticR
-                [
-                -- css_normalize_css
-                -- , css_bootstrap_css
-                ])
+            -- $(combineStylesheets 'StaticR
+            --     [
+            --     -- css_normalize_css
+            --     -- , css_bootstrap_css
+            --     ])
             $(widgetFile "default-layout")
         giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 

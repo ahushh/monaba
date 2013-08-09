@@ -23,4 +23,7 @@
     $('#button-latex-edit').click(function() {
         insertTag('[latex]', '[/latex]', textarea);
     });
+    $('#button-quote-edit').mousedown(function() {
+        insertQuote(textarea);
+    });
 })($(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0]);

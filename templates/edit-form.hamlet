@@ -4,25 +4,28 @@
 
 <span style=padding:5px>
     ^{fvInput messageView}
-<br>
-<div style=display:inline .buttons>
-    [
-    <a id=button-bold-edit>bold
-    |
-    <a id=button-italic-edit >italic
-    |
-    <a id=button-underline-edit >underline
-    |
-    <a id=button-strike-edit >strike
-    |
-    <a id=button-spoiler-edit >spoiler
-    |
-    <a id=button-code-edit >code
-    |
-    <a id=button-inline-latex-edit >inline LaTeX
-    |
-    <a id=button-latex-edit >LaTeX
-    ]                    
-^{fvInput passwordView}
-<input type=button id=edit-button value=_{MsgEdit}>
-<img style=float:right onclick="hideEditForm()" src=@{StaticR img_blank_gif} border=0 .icon-close>
+<div style=padding:5px>
+    <div style=display:inline .buttons>
+        [
+        <a id=button-bold-edit>bold
+        |
+        <a id=button-italic-edit >italic
+        |
+        <a id=button-underline-edit >underline
+        |
+        <a id=button-strike-edit >strike
+        |
+        <a id=button-spoiler-edit >spoiler
+        |
+        <a id=button-code-edit >code
+        |
+        <a id=button-inline-latex-edit >inline LaTeX
+        |
+        <a id=button-latex-edit >LaTeX
+        |
+        <a id=button-quote-edit >quote
+        ]
+        <span style=display:inline .symbol-counter>
+    ^{fvInput passwordView}
+    <input type=button id=edit-button value=_{MsgEdit}>
+    <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif} border=0 .icon-close #close-edit-form>

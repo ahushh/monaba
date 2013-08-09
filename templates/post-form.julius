@@ -10,14 +10,21 @@ function generatePassword(n) {
     return password;
 }
 
+function insertQuote(textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+    insert(">"+ window.getSelection().toString().replace(/\n/gm, "\n>")+"\n", textarea);
+}
+
 function insertTag(open, close, textarea) {
     if (!textarea)
         textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
     var start = textarea.selectionStart; 
-    var end = textarea.selectionEnd; 
+    var end = textarea.selectionEnd;
     var len = textarea.value.length; 
     var txt = open + textarea.value.substring(start, end) + close; 
     textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
+    $(textarea).trigger('autosize.resize');
 } 
 
 function insert(text, textarea) {
@@ -35,6 +42,7 @@ function insert(text, textarea) {
         textarea.value += text + " ";
     }
     textarea.focus();
+    $(textarea).trigger('autosize.resize');
 } 
 // ----------------------------------------------------------------------------------------------------------
 $(document).ready(function() {
@@ -43,7 +51,7 @@ $(document).ready(function() {
         password = generatePassword();
         set_cookie('password', password);
     }
-
+    var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)});
     $('input[type=password]').val(password);
 
     $('#button-bold').click(function() {
@@ -69,6 +77,9 @@ $(document).ready(function() {
     });
     $('#button-latex').click(function() {
         insertTag('[latex]', '[/latex]');
+    });
+    $('#button-quote').mousedown(function() {
+        insertQuote();
     });
 
     $('input[type=file]').change(function() {

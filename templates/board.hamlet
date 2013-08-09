@@ -1,3 +1,4 @@
+<span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{boardDesc}
 <br>

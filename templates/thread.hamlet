@@ -1,3 +1,4 @@
+<span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
 <br>
 $if T.length pagetitle > 10
     <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}

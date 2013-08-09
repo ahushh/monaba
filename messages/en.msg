@@ -247,15 +247,21 @@ RegularChars: regular (not bolded, not italic, not underlined) characters
 YouDontNeedCaptcha: You don't have to enter captcha
 
 ######################################################################################
-#### Ajax, popups, refmap
+#### Ajax, popups, refmap, ...
 ######################################################################################
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
 
-Replies: Replies:
-CloseAllPopup: Close all popups
-CloseOnePopup: Close one
-
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!
 Loading: Loading...
+
+Replies: Replies:
+CloseAllPopupIcon: Close all popups
+CloseOnePopupIcon: Close one
+
+MarkToDeleteIcon: Mark to delete
+EditIcon: Edit
+ReplyIcon: Reply
+RemoveFileIcon: Remove file
+CloseIcon: Close

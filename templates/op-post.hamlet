@@ -2,8 +2,10 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
   $with board <- postBoard $ entityVal eOpPostW
       <div .op-post id="post-#{thread}-0-#{board}">
           <div .post-header>
-              <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
-              <img onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+              <span .mark-to-delete onclick="markToDelete(this)">
+                  <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
+                  <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
+              <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
               $maybe (code, name) <- lookup (entityKey eOpPostW) geoIpsW
                   <img src=#{geoIconPath code} title=#{name}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
@@ -19,12 +21,12 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               <span .reflink>
                   $if canPostW
                       <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
-                      <a onclick="insert('>>#{thread}')" name=#{thread}>#{thread}
+                      <a onclick="insert('>>#{thread}#{pack "\\n"}')" name=#{thread}>#{thread}
                   $else
                       <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.#{thread}
               $if canPostW
                   <span .extra-buttons>
-                      <img onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+                      <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
               &nbsp;&nbsp;
               <span .cpanel>
                   $if not $ isInThreadW

@@ -11,9 +11,13 @@ function baseInit() {
     cachePopupPosts();
 }
 //-----------------------------------------------------------------
+// Init
+//-----------------------------------------------------------------
 setStylesheet();
 checkHighlighted();
 baseInit();
+initSymbolCounter();
+$('textarea').autosize()
 
 var style = get_cookie('stylesheet')
 if (style) {
@@ -37,12 +41,50 @@ MathJax.Hub.Config({
         processEscapes: true
     },
 });
-//-----------------------------------------------------------------
+
 $.ajaxSetup({
     error: function(x, e) {
         popupMessage(x.responseText+" ("+x.status+")", 2000);
     }
 });
+//-----------------------------------------------------------------
+// deletion checkboxes
+//-----------------------------------------------------------------
+function markToDelete(t) {
+    if ($(t).find('input').attr('checked')) {
+        $(t).find('input').removeAttr('checked');
+        $(t).find('img').css('opacity',0.3);
+    } else {
+        $(t).find('input').attr('checked',true);
+        $(t).find('img').css('opacity',1.0);
+    }
+}
+
+//-----------------------------------------------------------------
+// Forms
+//-----------------------------------------------------------------
+function clearFile(fileId) {
+    $('#'+fileId).val('');
+}
+
+function countSymbols(formId) {
+    var maxLen = $('#maxMessageLength').html();
+    var len = $('#'+formId+' textarea').val().length;
+    if (len > maxLen) {
+        $('#'+formId+' .symbol-counter').html(len+'/'+maxLen);
+        $('#'+formId+' .symbol-counter').css('color','red');
+    } else {
+        $('#'+formId+' .symbol-counter').html(len);
+        $('#'+formId+' .symbol-counter').css('color','green');
+    }
+}
+
+function initSymbolCounter() {
+    countSymbols('post-form');
+    $.each(['edit-form', 'post-form'], function(i,f) {
+        $('#'+f+' textarea').on('change cut paste keyup', function() { countSymbols(f); });
+    });
+}
 //-----------------------------------------------------------------
 // youtube
 //-----------------------------------------------------------------
@@ -99,6 +141,8 @@ function setStylesheet(title) {
     }
 } 
 //-----------------------------------------------------------------
+// popup messages
+//-----------------------------------------------------------------
 function popupMessage(text, delay, icon) {
     if ($('#popupMessage').get() == '') {
         $('body').children().last().after('<div id=popupMessage></div>');
@@ -128,7 +172,11 @@ function doImageExpanding(post) {
         var thumbUrl    = $(this).find('img').attr('src');
         var thumbWidth  = $(this).find('img').attr('width');
         var thumbHeight = $(this).find('img').attr('height');
-        $(this).find('img').click(function(){
+        $(this).find('img').mousedown(function(e){
+            if (e.which == 2) { // middle click
+                window.open(fullUrl);
+                return true;
+            }
             if ($(this).attr('src') == fullUrl) {
                 $(this).attr('src', thumbUrl);
                 $(this).attr('width' , thumbWidth);
@@ -149,6 +197,8 @@ function doImageExpanding(post) {
     });
 }
 //-----------------------------------------------------------------
+// post higlighting
+//-----------------------------------------------------------------
 function checkHighlighted() {
     var postId = window.location.hash.substr(1);
     if (postId) {
@@ -164,6 +214,8 @@ function highlightPost(postId) {
         $("#"+postId).removeClass().addClass('highlighted-post');
     }
 }
+//-----------------------------------------------------------------
+// refmap
 //-----------------------------------------------------------------
 function doRefMap(post) {
     var selector = post ? post : $(".reply-post, .op-post");
@@ -206,6 +258,8 @@ function doRefMap(post) {
     });
 }
 //-----------------------------------------------------------------
+// popup posts
+//-----------------------------------------------------------------
 function cachePopupPosts() {
     $(".reply-post, .op-post").each(function() {
         var postId = extractPost( $(this).attr('id') );
@@ -215,8 +269,8 @@ function cachePopupPosts() {
         }
         // if (! Monaba.postCache[board][postId]) {
             var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+$(this).attr('id'));
-            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.find('.cpanel').after(delPopup);
             Monaba.postCache[board][postId] = post;
@@ -257,8 +311,8 @@ function showPopupPost(event, elem, board, postId) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopup}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopup}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.find('.cpanel').after(delPopup);
 
@@ -283,6 +337,8 @@ function timeout(elem, f, time) {
     var t = setTimeout(f, time);
     elem.onmouseout = function(){ clearTimeout(t) };
 }
+//-----------------------------------------------------------------
+// post form
 //-----------------------------------------------------------------
 function showQuickPostForm(postId) {
     $("#post-form").removeClass().addClass("quick-post-form");
@@ -399,6 +455,8 @@ function refreshThread(board, threadId) {
     });
 }
 //-----------------------------------------------------------------
+// edit form
+//-----------------------------------------------------------------
 function showEditForm(postId, realId) {
     var pId = extractPost(postId);
     var board = extractBoard(postId);
@@ -428,6 +486,7 @@ function showEditForm(postId, realId) {
               });
     });
 
+    popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
         var raw = json[0].rawMessage;
         if (raw) {
@@ -435,10 +494,11 @@ function showEditForm(postId, realId) {
         } else { // for old posts only
             var msg = $('#'+postId+' blockquote').clone();
             msg.find("br").replaceWith('\n');
-            $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') );
+            $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ).trigger('autosize.resize');
         }
+        countSymbols('edit-form');
         $('#edit-form').css('display','table')
-    }).fail(hideEditForm);
+    }).fail(hideEditForm).always(closePopupMessage);
 }
 
 function hideEditForm() {

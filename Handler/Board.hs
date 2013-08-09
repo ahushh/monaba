@@ -26,6 +26,7 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
   let numberFiles       = boardNumberFiles       boardVal
+      maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
       enableCaptcha     = boardEnableCaptcha     boardVal
@@ -64,7 +65,7 @@ getBoardR board page = do
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
+  (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles 
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo

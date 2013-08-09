@@ -13,7 +13,7 @@ import Yesod.Default.Main
 import Yesod.Default.Handlers
 import Network.Wai.Middleware.RequestLogger
 import qualified Database.Persist
-import Database.Persist.Sql (runMigration)
+import Database.Persist.Sql (runMigration, runMigrationUnsafe)
 import Network.HTTP.Conduit (newManager, def)
 import Control.Monad.Logger (runLoggingT)
 import System.IO (stdout)
@@ -73,7 +73,8 @@ makeFoundation conf = do
 
     -- Perform database migration using our application's logging settings.
     runLoggingT
-        (Database.Persist.runPool dbconf (runMigration migrateAll) p)
+        -- (Database.Persist.runPool dbconf (runMigration migrateAll) p)
+        (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
         (messageLoggerSource foundation logger)
 
     return foundation

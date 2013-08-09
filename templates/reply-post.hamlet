@@ -29,17 +29,34 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                         <span .file-name>
                             <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                         <br>
-                        <span .file-info> (#{attachedfileDescription file})
+                        $if isImageFile (attachedfileType file)
+                            <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+                        $else
+                            <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
                         <br>
-                        <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $if attachedfileThumbWidth file == -1
+                            <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $elseif isImageFile (attachedfileType file)
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $else
+                            <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                 $else
                     <div .multi-file>
                         <span .file-name>
                             <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                         <br>
-                        <span .file-info> (#{attachedfileDescription file})
+                        $if isImageFile (attachedfileType file)
+                            <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+                        $else
+                            <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
                         <br>
-                        <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $if attachedfileThumbWidth file == -1
+                            <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $elseif isImageFile (attachedfileType file)
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                        $else
+                            <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+
             <blockquote>^{markupWidget $ postMessage $ entityVal eReplyW}
             $maybe lm <- postLastModified $ entityVal eReplyW
                 <span .last-modified>

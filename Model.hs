@@ -54,5 +54,9 @@ instance ToJSON Attachedfile where
         , "origName"    .= attachedfileOrigName
         , "type"        .= attachedfileType
         , "thumbSize"   .= attachedfileThumbSize
-        , "description" .= attachedfileDescription
+        , "thumbWidth"  .= attachedfileThumbWidth
+        , "thumbHeight" .= attachedfileThumbHeight
+        , "width"       .= attachedfileWidth
+        , "height"      .= attachedfileHeight
+        , "size"        .= attachedfileSize
         ]

@@ -240,3 +240,7 @@ blockquote {
 #edit-history-header {
     text-align: center;
 }
+
+.file-info {
+   font-style: italic;
+}

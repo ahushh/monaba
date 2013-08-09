@@ -81,22 +81,28 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
       md5                              <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
       (origfilename, uploadedfilename) <- liftIO $ writeToServer  f md5
       filepath                         <- return $ imageFilePath  filetype uploadedfilename
-      filesize                         <- liftIO $ getFileSize    filepath
-      filedesc                         <- return $ formatFileSize filesize
+      filesize                         <- liftIO $ formatFileSize <$> getFileSize filepath
       newFile                          <- return  Attachedfile { attachedfileParentId    = postId
                                                               , attachedfileMd5         = pack md5
                                                               , attachedfileName        = uploadedfilename
                                                               , attachedfileOrigName    = origfilename
                                                               , attachedfileType        = filetype
                                                               , attachedfileThumbSize   = thumbSize
-                                                              , attachedfileDescription = pack filedesc
+                                                              , attachedfileSize        = pack filesize
+                                                              , attachedfileThumbWidth  = 0
+                                                              , attachedfileThumbHeight = 0
+                                                              , attachedfileWidth       = 0
+                                                              , attachedfileHeight      = 0
                                                               }
       if isImageFile filetype
         then do
-          imageresolution <- liftIO $ getImageResolution filepath filetype
-          void $ liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype imageresolution
-          void $ runDB $ insert $ newFile { attachedfileDescription = pack $ filedesc ++ ", " ++
-                                                                      show (fst imageresolution) ++ "x" ++ show (snd imageresolution) }
+          (imgW  , imgH  ) <- liftIO $ getImageResolution filepath filetype
+          (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
+          void $ runDB $ insert $ newFile { attachedfileWidth       = imgW
+                                          , attachedfileHeight      = imgH
+                                          , attachedfileThumbWidth  = thumbW
+                                          , attachedfileThumbHeight = thumbH
+                                          }
         else do
           liftIO $ makeThumbNonImg uploadedfilename filetype
           void $ runDB $ insert newFile

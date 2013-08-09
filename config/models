@@ -73,10 +73,14 @@ Attachedfile
     parentId     PostId
     md5          Text
     name         FilePath
-    origName     FilePath -- original name
-    type         String -- extension
-    thumbSize    Int
-    description  Text -- size, resolution
+    origName     FilePath              -- original file name
+    type         String                -- extension
+    thumbSize    Int                   -- just thumbSize from Board table
+    thumbWidth   Int      default=-1   -- real thumb width
+    thumbHeight  Int      default=-1   -- real thumb height
+    width        Int      default=-1   -- real image width
+    height       Int      default=-1   -- real image height
+    size         Text     default='1KB' -- formatted file size
     deriving     Typeable
 Ban
     ip           Text

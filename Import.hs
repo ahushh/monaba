@@ -40,10 +40,10 @@ import ModelTypes    as Import
 import           System.FilePath         ((</>))
 import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
+import           Data.Ratio
 import           Network.Wai
 import           Text.Printf
-import           System.Process          (runCommand, waitForProcess)
-import           Graphics.GD
+import qualified Graphics.GD             as GD
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
 import           GHC.Int                 (Int64)
@@ -61,6 +61,8 @@ import           System.Random           (randomIO)
 import qualified Data.Text               as T (concat, toLower)
 
 import           Data.Geolocation.GeoIP
+-------------------------------------------------------------------------------------------------------------------
+type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -174,23 +176,51 @@ writeToServer file md5 = do
 -------------------------------------------------------------------------------------------------------------------
 -- Images
 -------------------------------------------------------------------------------------------------------------------
-getImageResolution :: FilePath -> String -> IO (Int, Int)
-getImageResolution filepath filetype = do
-  imageSize =<< loadImage filepath filetype
-  where loadImage p t | t == "jpeg" || t == "jpg" = loadJpegFile p
-                      | t == "png"              = loadPngFile  p
-                      | t == "gif"              = loadGifFile  p
-        loadImage _ _ = error "error: unknown image type at getImageResolution"
-        
-makeThumbImg :: Int -> FilePath -> FilePath -> String -> (Int,Int) -> IO ()
-makeThumbImg thumbSize filepath filename filetype imageresolution = do
+loadImage :: FilePath -> String -> IO GD.Image
+loadImage p t | t == "jpeg" || t == "jpg" = GD.loadJpegFile p
+              | t == "png"              = GD.loadPngFile  p
+              | t == "gif"              = GD.loadGifFile  p
+loadImage _ t = error $ "error: unknown image type '"++t++"' at loadImage"
+
+saveImage :: FilePath -> GD.Image -> [Char] -> IO ()
+saveImage path img t | t == "jpeg" || t == "jpg" = GD.saveJpegFile (-1) path img
+                     | t == "png"              = GD.savePngFile  path img
+                     | t == "gif"              = GD.saveGifFile  path img
+saveImage _    _   t = error $ "error: unknown image type '"++t++"' at saveImage"
+
+getImageResolution :: FilePath -> String -> IO ImageResolution
+getImageResolution filepath filetype = GD.imageSize =<< loadImage filepath filetype
+
+calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
+calcResolution (inW,inH) (outW,outH)
+    | inAspect >  outAspect = (outW, round (fromIntegral outW / inAspect))
+    | inAspect <  outAspect = (round (fromIntegral outH * inAspect), outH)
+    | otherwise             = (outW, outH)
+    where inAspect  = inW  % inH
+          outAspect = outW % outH
+
+-- | Resizes an image file and saves the result to a new file.
+resizeImage :: FilePath           -- ^ Source image file
+            -> FilePath           -- ^ Destination image file
+            -> ImageResolution    -- ^ The maximum dimensions of the output file
+            -> String             -- ^ File extension without dot
+            -> IO ImageResolution -- ^ The size of the output file
+resizeImage from to maxSz ext = 
+    do img  <- loadImage from ext
+       inSz <- GD.imageSize img
+       let outSz@(w,h) = calcResolution inSz maxSz
+       img' <- GD.resizeImage w h img
+       saveImage to img' ext
+       return outSz
+
+makeThumbImg :: Int -> FilePath -> FilePath -> String -> ImageResolution -> IO ImageResolution
+makeThumbImg thumbSize filepath filename filetype (width, height) = do
   unlessM (doesDirectoryExist (thumbDirectory </> filetype)) $
     createDirectory (thumbDirectory </> filetype)
-  if ((snd imageresolution) > thumbSize || (fst imageresolution) > thumbSize)
-    then runCommand cmd >>= waitForProcess >> return ()
-    else copyFile filepath thumbpath >> return ()
-    where cmd       = "convert -resize "++ show thumbSize ++"x"++ show thumbSize ++ "\\> " ++ filepath ++ " " ++ thumbpath
-          thumbpath = thumbFilePath thumbSize filetype filename
+  if (height > thumbSize || width > thumbSize)
+    then resizeImage filepath thumbpath (thumbSize,thumbSize) filetype
+    else copyFile filepath thumbpath >> return (width, height)
+    where thumbpath = thumbFilePath thumbSize filetype filename
 
 makeThumbNonImg :: FilePath -> String -> IO ()
 makeThumbNonImg filename filetype = do

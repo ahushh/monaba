@@ -42,6 +42,7 @@ instance ToJSON Post where
         , "locked"      .= postLocked
         , "autosage"    .= postAutosage
         , "message"     .= postMessage
+        , "rawMessage"  .= postRawMessage
         , "title"       .= postTitle
         , "name"        .= postName
         , "deletedByOp" .= postDeletedByOp

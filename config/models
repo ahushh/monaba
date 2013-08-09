@@ -57,6 +57,7 @@ Post
     lastModified UTCTime Maybe default=null
     -- form's values
     message      Textarea
+    rawMessage   Text default=""
     title        Text
     name         Text
     password     Text

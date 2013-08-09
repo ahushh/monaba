@@ -1,0 +1,26 @@
+(function (textarea) {
+    $('#button-bold-edit').click(function() {
+        insertTag('[b]', '[/b]', textarea);
+    });
+    $('#button-italic-edit').click(function() {
+        insertTag('[i]', '[/i]', textarea);
+    });
+    $('#button-underline-edit').click(function() {
+        insertTag('[u]', '[/u]', textarea);
+    });
+    $('#button-strike-edit').click(function() {
+        insertTag('[s]', '[/s]', textarea);
+    });
+    $('#button-spoiler-edit').click(function() {
+        insertTag('[spoiler]', '[/spoiler]', textarea);
+    });
+    $('#button-code-edit').click(function() {
+        insertTag('[code=text]', '[/code]', textarea);
+    });
+    $('#button-inline-latex-edit').click(function() {
+        insertTag('[l]', '[/l]', textarea);
+    });
+    $('#button-latex-edit').click(function() {
+        insertTag('[latex]', '[/latex]', textarea);
+    });
+})($(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0]);

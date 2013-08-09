@@ -16,21 +16,21 @@
                 ^{fvInput messageView}
                 <div .buttons>
                      [
-                     <a id=button-bold class=buttons>bold
+                     <a id=button-bold >bold
                      |
-                     <a id=button-italic class=buttons>italic
+                     <a id=button-italic >italic
                      |
-                     <a id=button-underline class=buttons>underline
+                     <a id=button-underline >underline
                      |
-                     <a id=button-strike class=buttons>strike
+                     <a id=button-strike >strike
                      |
-                     <a id=button-spoiler class=buttons>spoiler
+                     <a id=button-spoiler >spoiler
                      |
-                     <a id=button-code class=buttons>code
+                     <a id=button-code >code
                      |
-                     <a id=button-inline-latex class=buttons>inline LaTeX
+                     <a id=button-inline-latex >inline LaTeX
                      |
-                     <a id=button-latex class=buttons>LaTeX
+                     <a id=button-latex >LaTeX
                      ]                    
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}

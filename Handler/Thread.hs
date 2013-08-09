@@ -142,6 +142,7 @@ postThreadR board thread = do
                            , postLocalId      = nextId
                            , postParent       = thread
                            , postMessage      = messageFormatted
+                           , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take 30) title
                            , postName         = maybe defaultName (T.take 10) name
                            , postDate         = now

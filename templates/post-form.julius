@@ -10,8 +10,9 @@ function generatePassword(n) {
     return password;
 }
 
-function insertTag(open, close) {
-    var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+function insertTag(open, close, textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
     var start = textarea.selectionStart; 
     var end = textarea.selectionEnd; 
     var len = textarea.value.length; 
@@ -19,22 +20,21 @@ function insertTag(open, close) {
     textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
 } 
 
-function insert(text) {
-    var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
-    if(textarea) {
-        if(textarea.createTextRange && textarea.caretPos) { // IE
-            var caretPos = textarea.caretPos;
-            caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == " " ? text + " " : text;
-        } else if(textarea.setSelectionRange) { // Firefox
-            var start = textarea.selectionStart;
-            var end   = textarea.selectionEnd;
-            textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
-            textarea.setSelectionRange(start + text.length, start + text.length);
-        } else {
-            textarea.value += text + " ";
-        }
-        textarea.focus();
+function insert(text, textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+    if (textarea.createTextRange && textarea.caretPos) { // IE
+        var caretPos = textarea.caretPos;
+        caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == " " ? text + " " : text;
+    } else if(textarea.setSelectionRange) { // Firefox
+        var start = textarea.selectionStart;
+        var end   = textarea.selectionEnd;
+        textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
+        textarea.setSelectionRange(start + text.length, start + text.length);
+    } else {
+        textarea.value += text + " ";
     }
+    textarea.focus();
 } 
 // ----------------------------------------------------------------------------------------------------------
 $(document).ready(function() {

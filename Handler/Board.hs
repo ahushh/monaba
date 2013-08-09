@@ -135,6 +135,7 @@ postBoardR board _ = do
                            , postLocalId      = nextId
                            , postParent       = 0
                            , postMessage      = messageFormatted
+                           , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take 30) title
                            , postName         = maybe defaultName (T.take 10) name
                            , postDate         = now

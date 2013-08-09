@@ -48,7 +48,7 @@ postPostEditR = do
                                , historyMessages = oldMessage : oldMessages
                                , historyDates    = oldDate    : oldDates
                                }
-      runDB $ update postKey [PostMessage =. messageFormatted, PostLastModified =. Just now]
+      runDB $ update postKey [PostMessage =. messageFormatted, PostLastModified =. Just now, PostRawMessage =. unTextarea newMessage]
       if isJust history
         then runDB $ replace (entityKey $ fromJust history) newHistory
         else void $ runDB $ insert newHistory

@@ -400,10 +400,11 @@ function refreshThread(board, threadId) {
 }
 //-----------------------------------------------------------------
 function showEditForm(postId, realId) {
+    var pId = extractPost(postId);
+    var board = extractBoard(postId);
+    if ($('#'+postId).has('#edit-form').length)
+        return false;
     $('#edit-form').appendTo('#'+postId);
-    var msg = $('#'+postId+' blockquote').clone();
-    msg.find("br").replaceWith('\n');
-    $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ); // FIX doubled \n
     $('#edit-button').unbind();
     $('#edit-button').click(function() {
         var obj = {};
@@ -414,10 +415,8 @@ function showEditForm(postId, realId) {
         popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         $.post( '@{PostEditR}', obj,
                 function(response) {
+                    closePopupMessage();
                     if (response.ok) {
-                        closePopupMessage();
-                        var pId = extractPost(postId);
-                        var board = extractBoard(postId);
                         $.get("/api/post/"+board+"/"+pId, function(post) {
                             hideEditForm();
                             $('#'+postId).replaceWith(post);
@@ -428,7 +427,18 @@ function showEditForm(postId, realId) {
                     }
               });
     });
-    $('#edit-form').css('display','table')
+
+    $.getJSON('/api/post/'+board+'/'+pId, function(json) {
+        var raw = json[0].rawMessage;
+        if (raw) {
+            $('#edit-form textarea').val(raw);
+        } else { // for old posts only
+            var msg = $('#'+postId+' blockquote').clone();
+            msg.find("br").replaceWith('\n');
+            $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') );
+        }
+        $('#edit-form').css('display','table')
+    }).fail(hideEditForm);
 }
 
 function hideEditForm() {

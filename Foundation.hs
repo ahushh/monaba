@@ -56,14 +56,14 @@ widgetHelperFilterBoards boards category group = filter p boards
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
 omittedRus n
-  | n <= 0               = error "incorrect number at omittedRus"
   | n == 1               = "пост пропущен"
-  | n `elem` [2..5]     = "поста пропущено"
+  | n `elem` [2..4]     = "поста пропущено"
   | n `elem` [5..19]    = "постов пропущено"
   | lastN == 0           = "постов пропущено"
-  | lastN `elem` [2..5] = "поста пропущено"
-  | lastN `elem` [6..9] = "постов пропущено"
-  | otherwise           = error "incorrect number at omittedRus"
+  | lastN == 1           = "пост пропущен"
+  | lastN `elem` [2..4] = "поста пропущено"
+  | lastN `elem` [5..9] = "постов пропущено"
+  | otherwise           = "постов пропущено"
     where lastN = read $ (:[]) $ last $ show n
           lastN :: Int
 

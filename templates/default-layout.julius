@@ -427,7 +427,7 @@ function showEditForm(postId, realId) {
 function hideEditForm() {
     $('#edit-form').css('display','none');
     $('#edit-form').val('');
-    $('#edit-form').appendTo('#container');
+    $('#edit-form').appendTo('.container');
 }
 
 // ---------------------------------------------------------

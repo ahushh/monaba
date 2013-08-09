@@ -33,6 +33,10 @@ postPostEditR = do
               postPassword post /= pswd
              ) $ trickyRedirect "error" MsgPostNotYours HomeR
 
+      let maxMessageLength = boardMaxMsgLength boardVal
+        in when (tooLongMessage (Just newMessage) maxMessageLength) $
+            trickyRedirect "error" (MsgTooLongMessage maxMessageLength) HomeR
+
       messageFormatted <- doAwfulMarkup (Just newMessage) (postBoard post) (postParent post)
       history <- runDB $ getBy $ HistoryUniqPostId postKey
       unless (EditPostsP `elem` permissions) $ 

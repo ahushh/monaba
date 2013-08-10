@@ -68,8 +68,8 @@ type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
-myFormatTime :: UTCTime -> String
-myFormatTime t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" t
+myFormatTime :: Int -> UTCTime -> String
+myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 -------------------------------------------------------------------------------------------------------------------
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s
@@ -95,8 +95,9 @@ opPostWidget :: Maybe (Entity User)   ->
                Bool                  -> -- show or not extra buttons such as [>]
                [Permission]          ->
                [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
+               Int                   -> -- time offset in minutes
                WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW = $(widgetFile "op-post")
+opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)   ->
                   Entity Post           ->
@@ -104,8 +105,9 @@ replyPostWidget :: Maybe (Entity User)   ->
                   Bool                  -> -- show or not extra buttons such as [>]
                   [Permission]          ->
                   [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
+                  Int                   -> -- time offset in minutes
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW geoIpsW = $(widgetFile "reply-post")
+replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
@@ -264,6 +266,12 @@ getBoardVal404 board = do
   maybeBoard <- runDB $ getBy $ BoardUniqName board
   when (isNothing maybeBoard) notFound
   return $ entityVal $ fromJust maybeBoard
+
+getTimeZone :: Handler Int
+getTimeZone = do
+  defaultZone <- extraTimezone <$> getExtra
+  timezone    <- lookupSession "timezone"
+  return $ maybe defaultZone (read . unpack) timezone
 -------------------------------------------------------------------------------------------------------------------    
 fromKey :: forall backend entity. KeyBackend backend entity -> Int64
 fromKey = (\(PersistInt64 n) -> n) . unKey 

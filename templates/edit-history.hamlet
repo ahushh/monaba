@@ -14,7 +14,7 @@
 <br>
 $forall (date, msg) <- history
     <div .hist-date>
-        #{myFormatTime date}
+        #{myFormatTime timeZone date}
     <br>
     <div .hist-msg>
         <blockquote>

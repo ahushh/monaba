@@ -70,6 +70,7 @@ data Extra = Extra
     , extraAnalytics       :: Maybe Text -- ^ Google Analytics
     , extraSiteName        :: Text
     , extraGeoIPCityPath   :: Text
+    , extraTimezone        :: Int
     } deriving Show
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
@@ -78,3 +79,4 @@ parseExtra _ o = Extra
     <*> o .:? "analytics"
     <*> o .:  "sitename"
     <*> o .:  "geoipcitypath"
+    <*> o .:  "timezone"

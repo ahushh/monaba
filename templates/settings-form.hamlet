@@ -1,0 +1,6 @@
+#{extra}
+<table>
+  <tbody>
+    <tr>
+      <td>_{MsgTimeZone}
+      <td>^{fvInput timezoneView}

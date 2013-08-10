@@ -30,6 +30,7 @@ library
                      Handler.Admin
                      Handler.Api
                      Handler.Captcha
+                     Handler.Settings
                      AwfulMarkup
                      ModelTypes
                      SillyCaptcha

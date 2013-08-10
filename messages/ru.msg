@@ -267,3 +267,8 @@ EditIcon: Редактировать
 ReplyIcon: Ответить
 RemoveFileIcon: Убрать файл
 CloseIcon: Закрыть
+
+Settings: Настройки
+Apply: Применить
+Applied: Настройки применены
+TimeZone: Часовой пояс

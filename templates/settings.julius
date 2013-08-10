@@ -1,0 +1,12 @@
+$('#settings-form').ajaxForm({
+    success: function(data) {
+        if (data.ok) {
+            $('#settings-applied').html(data.ok);
+            $('#settings-applied').fadeIn(1000).fadeOut(1000);
+        } else {
+            $('#settings-applied').html(data.error);
+            $('#settings-applied').fadeIn(1000).fadeOut(1000);
+        }
+    }
+}); 
+

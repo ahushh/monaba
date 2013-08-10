@@ -31,6 +31,7 @@ import Handler.Delete
 import Handler.Admin
 import Handler.Api
 import Handler.Captcha
+import Handler.Settings
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -73,8 +74,8 @@ makeFoundation conf = do
 
     -- Perform database migration using our application's logging settings.
     runLoggingT
-        -- (Database.Persist.runPool dbconf (runMigration migrateAll) p)
-        (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
+        (Database.Persist.runPool dbconf (runMigration migrateAll) p)
+        -- (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
         (messageLoggerSource foundation logger)
 
     return foundation

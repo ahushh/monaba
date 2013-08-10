@@ -268,3 +268,11 @@ EditIcon: Edit
 ReplyIcon: Reply
 RemoveFileIcon: Remove file
 CloseIcon: Close
+
+######################################################################################
+#### Settings
+######################################################################################
+Settings: Settings
+Apply: Apply
+Applied: Settings applied
+TimeZone: Time zone

@@ -15,6 +15,7 @@
 /captcha/!info       CaptchaInfoR  GET
 /edit                PostEditR     POST
 /history/#Int        EditHistoryR  GET
+/settings            SettingsR     GET POST
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET

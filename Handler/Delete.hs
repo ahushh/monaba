@@ -31,8 +31,9 @@ getDeletedByOpR board thread = do
   ------------------------------------------------------------------------------------------------------- 
   geoIps <- getCountries (if geoIpEnabled then allPosts else [])      
   ------------------------------------------------------------------------------------------------------- 
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
+  nameOfTheBoard <- extraSiteName <$> getExtra
+  msgrender      <- getMessageRender
+  timeZone      <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", msgrender MsgDeletedPosts]

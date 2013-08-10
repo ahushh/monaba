@@ -6,6 +6,7 @@ Default: &defaults
   #analytics: UA-YOURCODE
   sitename: "Monaba"
   geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"
+  timezone: 14400 # default time offset in seconds
 
 Development:
   <<: *defaults

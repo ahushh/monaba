@@ -14,7 +14,7 @@
             <td>#{banIp b}
             <td>#{banReason b}
             $if isJust $ banExpires b
-                <td>#{myFormatTime $ fromJust $ banExpires b}
+                <td>#{myFormatTime timeZone $ fromJust $ banExpires b}
             $else
                 <td>_{MsgNeverExpires}
             $if isJust $ banBoard b

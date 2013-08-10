@@ -5,7 +5,7 @@ $maybe msg <- mmsg
     <select id="stylebar">
         <option id=style-Ash>Ash
         <option id=style-Futaba>Futaba
-    [ <a href=@{HomeR}>_{MsgHome}</a> ][ <a href=@{HelpR}>_{MsgHelp}</a> ]
+    [ <a href=@{HomeR}>_{MsgHome}</a> ][ <a href=@{HelpR}>_{MsgHelp}</a> | <a href=@{SettingsR}>_{MsgSettings}</a> ]
     $maybe Entity _ user <- muser
         [ #{userName user} | <a href=@{AdminR}>_{MsgManage}</a> | <a href=@{AuthR LogoutR}>_{MsgLogout}</a> ]
     $nothing         

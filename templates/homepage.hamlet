@@ -22,6 +22,6 @@
                     <div .title>
                         <a href=@{ThreadR newsBoard $ postLocalId t}>
                             <strong>#{postTitle t}</strong>
-                            <time>#{myFormatTime $ postDate t}
+                            <time>#{myFormatTime timeZone $ postDate t}
                     &nbsp;&nbsp;
                     <blockquote>^{markupWidget $ postMessage t}

@@ -70,6 +70,7 @@ getThreadR board thread = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
+  timeZone        <- getTimeZone
 
   posterId         <- getPosterId  
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
@@ -109,13 +110,13 @@ postThreadR board thread = do
       | otherwise                                         -> do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
-        ip  <- pack <$> getIp
+        ip        <- pack <$> getIp
         -- check ban
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $
           unlessM (isBanExpired $ fromJust ban) $ do
             let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                     (maybe "never" (pack . myFormatTime) (banExpires $ entityVal $ fromJust ban))
+                                     (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             trickyRedirect "error" m threadUrl
         -- check captcha
         when (enableCaptcha && isNothing muser) $ do

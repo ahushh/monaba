@@ -71,6 +71,7 @@ getBoardR board page = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
+  timeZone         <- getTimeZone
 
   defaultLayout $ do
     setUltDestCurrent
@@ -111,7 +112,7 @@ postBoardR board _ = do
         when (isJust ban) $ 
           unlessM (isBanExpired $ fromJust ban) $ do
             setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                          (maybe "never" (pack . myFormatTime) (banExpires $ entityVal $ fromJust ban))
+                                          (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             redirect (BoardNoPageR board)
         -- check captcha
         acaptcha <- lookupSession "acaptcha"

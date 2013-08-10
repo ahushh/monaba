@@ -433,8 +433,7 @@ getDeleteGroupsR group = do
     void $ runDB $ deleteWhere [GroupName ==. group]
     setMessageI MsgGroupDeleted >> redirect ManageGroupsR
   setMessageI MsgYouAreTheOnlyWhoCanManageUsers >> redirect ManageGroupsR
----------------------------
-----------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 -- Users
 -------------------------------------------------------------------------------------------------------------
 usersForm :: [(Text,Text)] -> Html -> MForm Handler (FormResult (Text, Text, Text), Widget)
@@ -547,11 +546,14 @@ configForm :: Config -> Html -> MForm Handler (FormResult ( Maybe Int -- captcha
                                                        , Maybe Text -- news board
                                                        , Maybe Int  -- show news
                                                        , Maybe Int  -- max number of a post editings
+                                                       , Maybe Int  -- how many latest posts show
                                                        )
                                            , Widget)
 configForm config extra = do
   let f g = Just $ Just $ g config
       f :: forall a. (Config -> a) -> Maybe (Maybe a)
+  msgrender <- getMessageRender
+  let showLatestPostsField = checkBool (>0) (msgrender $ MsgMustBeGreaterThan (msgrender MsgShowLatestPosts) 0) intField
   (captchaLengthRes   , captchaLengthView  ) <- mopt intField  "" (f configCaptchaLength  )
   (acaptchaGuardsRes  , acaptchaGuardsView ) <- mopt intField  "" (f configACaptchaGuards )
   (captchaTimeoutRes  , captchaTimeoutView ) <- mopt intField  "" (f configCaptchaTimeout )
@@ -561,13 +563,16 @@ configForm config extra = do
   (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
-  let result = (,,,,,,,,) <$>
-               captchaLengthRes <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
-               replyDelayRes    <*> threadDelayRes    <*> boardCategoriesRes <*>
-               newsBoardRes     <*> showNewsRes       <*> maxEditingsRes
+  (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
+
+  let result = (,,,,,,,,,) <$>
+               captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
+               replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
+               newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
+               showLatestPostsRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
-
+  
 getConfigR :: Handler Html
 getConfigR = do
   muser  <- maybeAuth
@@ -592,10 +597,11 @@ postConfigR = do
       oldConfigKey = entityKey oldConfig
       msgRedirect msg = setMessageI msg >> redirect ConfigR
   case result of
-    FormFailure _                      -> msgRedirect MsgBadFormData
+    FormFailure []                     -> msgRedirect MsgBadFormData
+    FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay, threadDelay, boardCategories,
-                 newsBoard    , showNews      , maxEditings
+    FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay     , threadDelay, boardCategories,
+                 newsBoard    , showNews      , maxEditings   , showLatestPosts
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
@@ -606,6 +612,7 @@ postConfigR = do
                              , configNewsBoard       = fromMaybe (configNewsBoard       oldConfigVal) newsBoard
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
+                             , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
                              }
       void $ runDB $ replace oldConfigKey newConfig
       msgRedirect MsgConfigUpdated

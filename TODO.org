@@ -164,7 +164,8 @@
 ** TODO black/spam list
 ** TODO tags for threads
 ** TODO user settings
-*** TODO UTC -> local time, store timezone in cookies/session
+*** DONE UTC -> local time, store timezone in cookies/session
+    CLOSED: [2013-08-10 Сб 19:45]
 *** TODO Switchable youtube player
 *** TODO post hiding
 *** TODO favorite threads

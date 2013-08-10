@@ -103,11 +103,12 @@ replyPostWidget :: Maybe (Entity User)   ->
                   Entity Post           ->
                   [Entity Attachedfile] ->
                   Bool                  -> -- show or not extra buttons such as [>]
+                  Bool                  -> -- show or not parent thread in the corner
                   [Permission]          ->
                   [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
                   Int                   -> -- time offset in minutes
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+replyPostWidget muserW eReplyW replyFilesW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")

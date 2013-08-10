@@ -25,6 +25,8 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     $if elem ManageThreadP permissionsW
                         [ #{postIp $ entityVal eReplyW} ] 
                         \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
+                $if showThreadW
+                    <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>#{thread}
             $forall Entity _ file <- replyFilesW
                 $if length replyFilesW == 1
                     <div .file>

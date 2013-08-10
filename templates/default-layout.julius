@@ -7,7 +7,8 @@ var Monaba = {
 function baseInit() {
     doImageExpanding();
     addEmbeddedPlayer();
-    doRefMap();
+    if (document.location.pathname != '/~')
+        doRefMap();
     cachePopupPosts();
 }
 //-----------------------------------------------------------------

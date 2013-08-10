@@ -98,12 +98,13 @@ Captcha
     value        Text
     expires      UTCTime
 Config
-    captchaLength  Int
-    aCaptchaGuards Int
-    captchaTimeout Int -- in seconds
-    replyDelay     Int
-    threadDelay    Int 
+    captchaLength   Int
+    aCaptchaGuards  Int
+    captchaTimeout  Int -- in seconds
+    replyDelay      Int
+    threadDelay     Int 
     boardCategories [Text]
-    newsBoard      Text default=news
-    showNews       Int  default=2
-    maxEditings    Int  default=10
+    newsBoard       Text default=news
+    showNews        Int  default=2
+    maxEditings     Int  default=10
+    showLatestPosts Int  default=15

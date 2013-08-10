@@ -5,3 +5,17 @@
     padding: 5px;
     display: table    
 }
+
+.icon-edit-post {
+    display: none !important;
+}
+
+.mark-to-delete {
+    /* visibility: hidden !important; */
+    display: none !important;
+}
+
+.thread-link {
+    float: right;
+    font-size: 0.8em
+}

@@ -39,6 +39,9 @@ GoTo: Go to
 EditingHistoryOfPost desu@Int: Editing history of post №#{show desu}
 YouAlreadyEditedPost boku@Int: You've already edited this post #{show boku} times.
 EditPosts: Edit posts and view history
+
+Error lolka@Text: Error: #{lolka}
+MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
 ######################################################################################
 #### Page
 ######################################################################################
@@ -194,6 +197,7 @@ CaptchaLength: Captcha length
 ACaptchaGuards: Guards of adaptive captcha
 CaptchaTimeout: Captcha timeout
 ShowNews: How many news show
+ShowLatestPosts: How many latest posts show
 MaxEditings: How many times you can edit your post
 NewsBoard: Board for news
 UpdateConfig: Update config

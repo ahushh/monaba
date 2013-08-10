@@ -37,6 +37,9 @@ GoTo: Перейти к
 EditingHistoryOfPost desu@Int: История изменений поста №#{show desu}.
 YouAlreadyEditedPost boku@Int: Вы уже отредактировали пост #{show boku} #{timesRus boku}. Больше нельзя.
 EditPosts: Редактирование постов и просмотр истории
+
+Error lolka@Text: Ошибка: #{lolka}
+MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #{show qw}
 ######################################################################################
 #### Page
 ######################################################################################
@@ -193,6 +196,7 @@ CaptchaLength: Длина капчи
 ACaptchaGuards: Капч нужно ввести для постинга без капчи
 CaptchaTimeout: Таймаут капчи
 ShowNews: Сколько показывать новостей
+ShowLatestPosts: Сколько показывать последних постов
 MaxEditings: Сколько раз можно редактировать пост
 NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки

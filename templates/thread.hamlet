@@ -24,7 +24,7 @@ $if hasAccessToReply
         ^{opPostWidget muser eOpPost opPostFiles True True permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{replyPostWidget muser eReply files True permissions geoIps timeZone}
+            ^{replyPostWidget muser eReply files True False permissions geoIps timeZone}
     <br>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>

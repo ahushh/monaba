@@ -38,6 +38,7 @@ getHomeR = do
                                    , configNewsBoard       = "news"
                                    , configShowNews        = 2
                                    , configMaxEditings     = 10
+                                   , configShowLatestPosts = 15
                                    }
       redirect HomeR
     nameOfTheBoard  <- extraSiteName <$> getExtra

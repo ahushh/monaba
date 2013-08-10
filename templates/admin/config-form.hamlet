@@ -27,5 +27,8 @@
             <td>_{MsgShowNews}
             <td>^{fvInput showNewsView}
         <tr>
+            <td>_{MsgShowLatestPosts}
+            <td>^{fvInput showLatestPostsView}
+        <tr>
             <td>_{MsgMaxEditings}
             <td>^{fvInput maxEditingsView}

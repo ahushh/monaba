@@ -69,7 +69,12 @@ function clearFile(fileId) {
 
 function countSymbols(formId) {
     var maxLen = $('#maxMessageLength').html();
-    var len = $('#'+formId+' textarea').val().length;
+
+    var len;
+    if ($('#'+formId+' textarea').get(0))
+        len = $('#'+formId+' textarea').val().length;
+    else
+        return false;
     if (len > maxLen) {
         $('#'+formId+' .symbol-counter').html(len+'/'+maxLen);
         $('#'+formId+' .symbol-counter').css('color','red');

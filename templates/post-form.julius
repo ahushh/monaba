@@ -56,30 +56,39 @@ $(document).ready(function() {
 
     $('#button-bold').click(function() {
         insertTag('[b]', '[/b]');
+        countSymbols('post-form');
     });
     $('#button-italic').click(function() {
         insertTag('[i]', '[/i]');
+        countSymbols('post-form');
     });
     $('#button-underline').click(function() {
         insertTag('[u]', '[/u]');
+        countSymbols('post-form');
     });
     $('#button-strike').click(function() {
         insertTag('[s]', '[/s]');
+        countSymbols('post-form');
     });
     $('#button-spoiler').click(function() {
         insertTag('[spoiler]', '[/spoiler]');
+        countSymbols('post-form');
     });
     $('#button-code').click(function() {
         insertTag('[code=text]', '[/code]');
+        countSymbols('post-form');
     });
     $('#button-inline-latex').click(function() {
         insertTag('[l]', '[/l]');
+        countSymbols('post-form');
     });
     $('#button-latex').click(function() {
         insertTag('[latex]', '[/latex]');
+        countSymbols('post-form');
     });
     $('#button-quote').mousedown(function() {
         insertQuote();
+        countSymbols('post-form');
     });
 
     $('input[type=file]').change(function() {

@@ -143,6 +143,7 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Text -- enable OP editing
                                             , Maybe Text -- enable post editing
                                             , Maybe Text -- show or not editing history
+                                            , Maybe Text -- long description
                                             )
                                 , Widget)
 updateBoardForm board bname' bCategories groups extra = do
@@ -163,6 +164,7 @@ updateBoardForm board bname' bCategories groups extra = do
       
   (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
   (descriptionRes      , descriptionView      ) <- mopt textField     "" (helper boardDescription)
+  (longDescriptionRes  , longDescriptionView  ) <- mopt textField     "" (helper boardLongDescription)
   (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit)
   (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles)
   (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes))
@@ -185,15 +187,16 @@ updateBoardForm board bname' bCategories groups extra = do
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,) <$>
-               nameRes              <*> descriptionRes   <*> bumpLimitRes      <*>
-               numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes    <*>
-               maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes <*>
-               previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes  <*>
-               isHiddenRes          <*> enableCaptchaRes <*> categoryRes       <*>
-               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes   <*>
-               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes    <*>
-               opEditingRes         <*> postEditingRes   <*> showEditHistoryRes
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+               nameRes              <*> descriptionRes   <*> bumpLimitRes       <*>
+               numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes     <*>
+               maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes  <*>
+               previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes   <*>
+               isHiddenRes          <*> enableCaptchaRes <*> categoryRes        <*>
+               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes    <*>
+               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes     <*>
+               opEditingRes         <*> postEditingRes   <*> showEditHistoryRes <*>
+               longDescriptionRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -212,7 +215,7 @@ postManageBoardsR board = do
                 , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
                 , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
-                , bEnableGeoIp , bOpEditing     , bPostEditing  , bShowEditHistory
+                , bEnableGeoIp , bOpEditing     , bPostEditing  , bShowEditHistory, bLongDescription
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
@@ -224,6 +227,7 @@ postManageBoardsR board = do
               onoff _                = False
           let newBoard = Board { boardName              = fromJust bName
                                , boardDescription       = fromJust bDesc
+                               , boardLongDescription   = fromMaybe "" bLongDescription
                                , boardBumpLimit         = fromJust bBumpLimit
                                , boardNumberFiles       = fromJust bNumberFiles
                                , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
@@ -257,6 +261,7 @@ postManageBoardsR board = do
                   onoff _                = boardHidden oldBoard
                   newBoard = Board { boardName              = boardName oldBoard
                                    , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
+                                   , boardLongDescription   = fromMaybe (boardLongDescription   oldBoard) bLongDescription
                                    , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                                    , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
                                    , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
@@ -290,6 +295,7 @@ postManageBoardsR board = do
               onoff _                = boardHidden oldBoard
               newBoard = Board { boardName              = fromMaybe (boardName oldBoard) bName
                                , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
+                               , boardLongDescription   = fromMaybe (boardLongDescription   oldBoard) bLongDescription
                                , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                                , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
                                , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes

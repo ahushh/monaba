@@ -110,6 +110,7 @@ library
                  , http-types
                  , yesod-routes
                  , hs-GeoIP
+                 , tagsoup
 
 executable         Monaba
     if flag(library-only)
@@ -147,6 +148,7 @@ executable         Monaba
                      , http-types
                      , yesod-routes
                      , hs-GeoIP
+                     , tagsoup
 
     ghc-options:       -threaded -O2
 

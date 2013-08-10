@@ -31,6 +31,7 @@ getBoardR board page = do
       previewsPerThread = boardPreviewsPerThread boardVal
       enableCaptcha     = boardEnableCaptcha     boardVal
       boardDesc         = boardDescription       boardVal
+      boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]

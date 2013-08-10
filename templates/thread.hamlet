@@ -1,12 +1,14 @@
 <span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
 <br>
-$if T.length pagetitle > 10
+$if T.null pagetitle
     <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
-    <div id="board-subtitle">#{pagetitle}
-$elseif T.null pagetitle
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    $if not $ T.null boardLongDesc
+        <div id="board-full-desc">#{boardLongDesc}
 $else
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}  #{pagetitle}
+    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    $if not $ T.null boardLongDesc
+        <div id="board-long-desc">#{boardLongDesc}
+    <div id="board-subtitle">#{pagetitle}
 <br>
 <hr>
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]

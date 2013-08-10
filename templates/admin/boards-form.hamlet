@@ -13,10 +13,15 @@
             <tr>
                 <td>_{MsgBoardDescription }
                 <td>^{fvInput descriptionView}
+                <td>_{MsgBoardDescriptionEG}
+            <tr>
+                <td>_{MsgBoardLongDescription }
+                <td>^{fvInput longDescriptionView}
+                <td>_{MsgBoardLongDescriptionEG}
             <tr>
                 <td>_{MsgBoardBumpLimit}
                 <td>^{fvInput bumpLimitView}
-                <td>( _{MsgXForUnlim "0"} )
+                <td>_{MsgXForUnlim "0"}
             <tr>
                 <td>_{MsgBoardNumberFiles}
                 <td>^{fvInput numberFilesView}
@@ -26,7 +31,7 @@
             <tr>
                 <td>_{MsgBoardExtraRules}
                 <td>^{fvInput extraRulesView}
-                <td>( _{MsgSeparateBy ";"} )
+                <td>_{MsgSeparateBy ";"}
             <tr>
                 <td>_{MsgBoardDefaultName }
                 <td>^{fvInput defaultNameView}
@@ -45,7 +50,7 @@
             <tr>
                 <td>_{MsgBoardThreadLimit}
                 <td>^{fvInput threadLimitView}
-                <td>( _{MsgXForUnlim "-1"} )
+                <td>_{MsgXForUnlim "-1"}
             $if bname == "all-f89d7fb43ef7"
                 <tr>
                     <td colspan=2><strong>_{MsgWontBeUpdatedIfNone}:</strong>

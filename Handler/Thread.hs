@@ -32,12 +32,13 @@ getThreadR board thread = do
 
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   -------------------------------------------------------------------------------------------------------  
-  let numberFiles      = boardNumberFiles   boardVal
-      maxMessageLength = boardMaxMsgLength      boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
-      opModeration     = boardOpModeration  boardVal
-      boardDesc        = boardDescription   boardVal
-      geoIpEnabled     = boardEnableGeoIp   boardVal
+  let numberFiles      = boardNumberFiles     boardVal
+      maxMessageLength = boardMaxMsgLength    boardVal
+      enableCaptcha    = boardEnableCaptcha   boardVal
+      opModeration     = boardOpModeration    boardVal
+      boardDesc        = boardDescription     boardVal
+      boardLongDesc    = boardLongDescription boardVal
+      geoIpEnabled     = boardEnableGeoIp     boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -56,7 +57,7 @@ getThreadR board thread = do
       pt              = postTitle  $ entityVal eOpPost
       pm              = unTextarea $ postMessage $ entityVal eOpPost
       pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = T.concat [T.take 60 pm, "…"]
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = flip T.append "…" $ T.take 60 $ stripTags pm
                 | otherwise                                     = ""
   -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
@@ -74,7 +75,7 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, " — ", pagetitle]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, if T.null pagetitle then "" else " — ", pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html

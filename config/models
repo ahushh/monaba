@@ -17,6 +17,7 @@ Board
     name              Text
     BoardUniqName     name
     description       Text
+    longDescription   Text    default=""
     bumpLimit         Int
     numberFiles       Int
     allowedTypes      [String]

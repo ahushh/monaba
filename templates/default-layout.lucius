@@ -119,16 +119,18 @@ blockquote {
 
 #board-header {
     text-align: center;
-    color: #800000;
-    margin: 5px;
     font-size: 2em;
-    padding: 5px;
+}
+
+#board-long-desc {
+   text-align: center;
+   font-size: 1.5em;
 }
 
 #board-subtitle {
     text-align: center;
-    color: #800000;
-    font-size: 1.2em;
+    margin-top: 7px;
+    font-size: 0.9em;
 }
 
 #thread-header {

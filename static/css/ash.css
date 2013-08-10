@@ -183,3 +183,14 @@ pre {
     padding: 5px;
 }
 
+#board-header {
+    color: #800000;
+}
+
+#board-long-desc {
+   color: #800000;
+}
+
+#board-subtitle {
+    color: #800000;
+}

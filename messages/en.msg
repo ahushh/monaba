@@ -107,7 +107,10 @@ Bans: Bans
 
 ### Boards
 BoardName: Name
-BoardDescription : Description
+BoardDescription : Short description
+BoardDescriptionEG: e.g. random, music
+BoardLongDescription: Long description
+BoardLongDescriptionEG: 
 BoardBumpLimit: Bump limit
 BoardNumberFiles : Max number of files
 BoardAllowedTypes: Allowed file types

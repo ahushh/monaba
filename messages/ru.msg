@@ -106,7 +106,10 @@ Bans: Баны
 
 ### Boards
 BoardName: Имя
-BoardDescription : Описание
+BoardDescription : Короткое описание
+BoardDescriptionEG: e.g. бред, музыка
+BoardLongDescription: Длинное описание
+BoardLongDescriptionEG: e.g. "Доска обо всем"
 BoardBumpLimit: Бамп-лимит
 BoardNumberFiles : Макс. число файлов
 BoardAllowedTypes: Типы файлов

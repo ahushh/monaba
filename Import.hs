@@ -58,9 +58,11 @@ import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 
-import qualified Data.Text               as T (concat, toLower)
+import qualified Data.Text               as T (concat, toLower, append, null)
 
 import           Data.Geolocation.GeoIP
+
+import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
@@ -331,3 +333,8 @@ getPosterId = do
 -------------------------------------------------------------------------------------------------------------------
 enumerate :: forall b. [b] -> [(Int, b)]
 enumerate = zip [0..]
+-------------------------------------------------------------------------------------------------------------------
+stripTags :: Text -> Text
+stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
+  where textOnly (TagText t) = t
+        textOnly           _ = ""

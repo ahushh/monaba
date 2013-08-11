@@ -82,6 +82,8 @@ ShowDeletedPosts: Show deleted posts
 WrongCaptcha: Wrong captcha
 NoFileOrText: File or message is required
 NoFile: File required
+OpFileIsDisabled: OP file attachment is disabled on this board
+ReplyFileIsDisabled: Reply file attachment is disabled on this board
 UnknownError: Unknown error
 BadFormData: Bad input
 NoFormData: No input
@@ -104,6 +106,7 @@ BanManagement: Ban management
 BoardManagement: Board management
 Enable: Enabled
 Disable: Disabled
+Required: Required
 XForUnlim x@Text: #{x} for unlimited
 Boards: Boards
 Bans: Bans
@@ -120,10 +123,11 @@ BoardAllowedTypes: Allowed file types
 BoardExtraRules: Extra rules
 BoardDefaultName : Default name
 BoardMaxMsgLength: Max message length
-BoardThumbSize : Thumb max size 
+BoardThumbSize : Thumb max size in pixels
 BoardThreadsPerPage: Threads per page        
 BoardPreviewsPerThread: Previews per thread 
-BoardOpWithoutFile: Allow OPs without file
+BoardOpFile: OP file
+BoardReplyFile: Reply file
 BoardHidden: Hidden
 BoardThreadLimit: Max threads
 BoardEnableCaptcha: Enable captcha
@@ -147,6 +151,7 @@ DeleteAll: Delete all
 CleanBoard: Clean
 ## info
 SeparateBy d@Text: Separate by '#{d}'
+SeparateBySpace: Separate by space
 Optional: Optional
 ## Messages
 WrongBoardId: Wrong board ID

@@ -17,4 +17,7 @@ data Permission = ManageThreadP |
                   AdditionalMarkupP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
+data Ternary = Enabled | Disabled | Required
+             deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
 derivePersistField "Permission"

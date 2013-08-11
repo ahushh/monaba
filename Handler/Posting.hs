@@ -12,7 +12,7 @@ import qualified Data.Conduit.List       as CL
 data GoBackTo = ToThread | ToBoard
     deriving (Show, Read, Eq, Enum, Bounded)
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Int -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
+postForm :: Board -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
                                                   , Maybe Text     -- subject
                                                   , Maybe Textarea -- message
                                                   , Text           -- password
@@ -27,7 +27,7 @@ postForm :: Int -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
                                          Bool         -> -- enableCaptchaW
                                          Maybe (Entity User) -> -- muserW
                                          Widget)
-postForm numberFiles extra = do
+postForm boardVal extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -35,19 +35,33 @@ postForm numberFiles extra = do
   deleteSession "message"
   deleteSession "post-title"
   msgrender   <- getMessageRender
+
+  let maxMessageLength = boardMaxMsgLength  boardVal
+      defaultName      = boardDefaultName   boardVal
+      allowedTypes     = boardAllowedTypes  boardVal
+      thumbSize        = boardThumbSize     boardVal
+      numberFiles      = boardNumberFiles   boardVal
+      bumpLimit        = boardBumpLimit     boardVal
+      enableCaptcha    = boardEnableCaptcha boardVal
+      replyFile        = boardReplyFile     boardVal
+
+      myMessageField = checkBool (not . tooLongMessage maxMessageLength)
+                                 (MsgTooLongMessage maxMessageLength )
+                                 textareaField
+
   let urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
   ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              "" (Just              <$> lastName)
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
-  (messageRes  , messageView ) <- mopt textareaField          "" ((Just . Textarea) <$> lastMessage)
+  (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
   (captchaRes  , captchaView ) <- mopt textField              "" Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
-  let result = (,,,,,,,) <$> nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
-               FormSuccess fileresults <*> gobackRes <*> nobumpRes
+  let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
+               FormSuccess fileresults <*> gobackRes  <*> nobumpRes
       widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
@@ -70,8 +84,8 @@ noMessage message = maybe True (T.null . T.filter (`notElem`" \r\n\t") . unTexta
 noFiles :: forall a. [FormResult (Maybe a)] -> Bool
 noFiles files = all (\(FormSuccess f) -> isNothing f) files
 
-tooLongMessage :: Maybe Textarea -> Int -> Bool
-tooLongMessage message maxLen =  maxLen <= T.length (unTextarea $ fromMaybe (Textarea "") message)
+tooLongMessage :: Int -> Textarea -> Bool
+tooLongMessage maxLen message = maxLen <= T.length (unTextarea message)
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> Int -> Key Post -> HandlerT App IO ()
 insertFiles []    _           _      = return ()

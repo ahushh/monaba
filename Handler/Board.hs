@@ -66,7 +66,7 @@ getBoardR board page = do
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles 
+  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
@@ -86,22 +86,21 @@ postBoardR board _ = do
   checkViewAccess mgroup boardVal
   -------------------------------------------------------------------------------------------------------   
   let msgRedirect msg  = setMessageI msg >> redirect (BoardNoPageR board)
-      maxMessageLength = boardMaxMsgLength  boardVal
       defaultName      = boardDefaultName   boardVal
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
-      numberFiles      = boardNumberFiles   boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
-      opWithoutFile    = boardOpWithoutFile boardVal
+      opFile           = boardOpFile        boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm numberFiles
+  ((result, _),   _) <- runFormPost $ postForm boardVal
   case result of
-    FormFailure _                            -> msgRedirect MsgBadFormData
-    FormMissing                              -> msgRedirect MsgNoFormData
+    FormFailure []                     -> msgRedirect MsgBadFormData
+    FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
+    FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (name, title, message, pswd, captcha, files, goback, Just _)
-      | not opWithoutFile   && noFiles files           -> msgRedirect MsgNoFile
-      | noMessage message && noFiles files           -> msgRedirect MsgNoFileOrText
-      | tooLongMessage message maxMessageLength     -> msgRedirect $ MsgTooLongMessage maxMessageLength
+      | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
+      | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
+      | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
       | not $ all (isFileAllowed allowedTypes) files  -> msgRedirect MsgTypeNotAllowed
       | otherwise                                   -> do
         setSession "message"    (maybe     "" unTextarea message)
@@ -139,8 +138,8 @@ postBoardR board _ = do
                            , postParent       = 0
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 30) title
-                           , postName         = maybe defaultName (T.take 10) name
+                           , postTitle        = maybe ("" :: Text) (T.take 60) title
+                           , postName         = maybe defaultName (T.take 20) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now

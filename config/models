@@ -29,10 +29,11 @@ Board
     hidden            Bool
     enableCaptcha     Bool
     threadLimit       Int      default=-1
-    opWithoutFile     Bool     default=0
-    viewAccess        Text     Maybe default=null -- group name
-    replyAccess       Text     Maybe default=null -- group name
-    threadAccess      Text     Maybe default=null -- group name
+    opFile            Text     default='Enabled'
+    replyFile         Text     default='Enabled'
+    viewAccess        [Text]   Maybe default=null -- group names
+    replyAccess       [Text]   Maybe default=null -- group names
+    threadAccess      [Text]   Maybe default=null -- group names
     category          Text     Maybe
     opModeration      Bool     default=0
     extraRules        [Text]   default='["s"]'

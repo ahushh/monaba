@@ -95,7 +95,7 @@ opPostWidget :: Maybe (Entity User)   ->
                Bool                  -> -- show or not extra buttons such as [>]
                [Permission]          ->
                [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
-               Int                   -> -- time offset in minutes
+               Int                   -> -- time offset in seconds
                WidgetT App IO () 
 opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
@@ -106,7 +106,7 @@ replyPostWidget :: Maybe (Entity User)   ->
                   Bool                  -> -- show or not parent thread in the corner
                   [Permission]          ->
                   [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
-                  Int                   -> -- time offset in minutes
+                  Int                   -> -- time offset in seconds
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
@@ -240,19 +240,21 @@ checkAccessToReply :: Maybe (Entity Group) -> Board -> Bool
 checkAccessToReply mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup
       access = boardReplyAccess boardVal
-  in not (isJust access && access /= group)
+  in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
 checkAccessToNewThread :: Maybe (Entity Group) -> Board -> Bool
 checkAccessToNewThread mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup
       access = boardThreadAccess boardVal
-  in not (isJust access && access /= group)
+  in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
 checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
 checkViewAccess mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup
       access = boardViewAccess boardVal
-  in when (isJust access && access /= group) notFound
+  in when ( (isJust access && isNothing group) ||
+            (isJust access && notElem (fromJust group) (fromJust access))
+          ) notFound
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)

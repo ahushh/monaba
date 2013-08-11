@@ -28,6 +28,7 @@
             <tr>
                 <td>_{MsgBoardAllowedTypes}
                 <td>^{fvInput allowedTypesView}
+                <td>_{MsgSeparateBySpace}
             <tr>
                 <td>_{MsgBoardExtraRules}
                 <td>^{fvInput extraRulesView}
@@ -58,8 +59,11 @@
                 <td>_{MsgBoardHidden}
                 <td>^{fvInput isHiddenView}
             <tr>
-                <td>_{MsgBoardOpWithoutFile}
-                <td>^{fvInput opWithoutFileView}
+                <td>_{MsgBoardOpFile}
+                <td>^{fvInput opFileView}
+            <tr>
+                <td>_{MsgBoardReplyFile}
+                <td>^{fvInput replyFileView}
             <tr>
                 <td>_{MsgBoardEnableCaptcha}
                 <td>^{fvInput enableCaptchaView}

@@ -72,14 +72,15 @@ getBanByIpR board ip = do
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgBanManagement]
     $(widgetFile "admin/ban")
-  
+
 postBanByIpR :: Text -> Text -> Handler Html
 postBanByIpR _ _ = do
   ((result, _), _) <- runFormPost $ banByIpForm "" ""
   let msgRedirect msg = setMessageI msg >> redirect (BanByIpR "" "")
   case result of
-    FormFailure _                            -> msgRedirect MsgBadFormData
-    FormMissing                              -> msgRedirect MsgNoFormData
+    FormFailure []                  -> msgRedirect MsgBadFormData
+    FormFailure xs                  -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing                     -> msgRedirect MsgNoFormData
     FormSuccess (ip, reason, board, expires) -> do
       now <- liftIO getCurrentTime
       let newBan = Ban { banIp      = ip
@@ -131,13 +132,14 @@ updateBoardForm :: Maybe (Entity Board) ->
                                             , Maybe Int  -- threads per page
                                             , Maybe Int  -- previews per thread
                                             , Maybe Int  -- thread limit
-                                            , Maybe Text -- allow OP without file (Enable,Disable,DoNotChange)
+                                            , Maybe Text -- OP file
+                                            , Maybe Text -- reply file
                                             , Maybe Text -- is hidden (Enable,Disable,DoNotChange)
                                             , Maybe Text -- enable captcha (Enable,Disable,DoNotChange)
                                             , Maybe Text -- category
-                                            , Maybe Text -- view access
-                                            , Maybe Text -- reply access
-                                            , Maybe Text -- thread access
+                                            , Maybe [Text] -- view access
+                                            , Maybe [Text] -- reply access
+                                            , Maybe [Text] -- thread access
                                             , Maybe Text -- allow OP moderate his/her thread
                                             , Maybe Text -- extra rules
                                             , Maybe Text -- enable geo IP
@@ -159,6 +161,8 @@ updateBoardForm board bname' bCategories groups extra = do
       helper' g = maybe Nothing (bool2Text . g . entityVal) board
       onoff     = map (first msgrender) [(MsgEnable,"Enable"),(MsgDisable,"Disable")]
       onoff     :: [(Text, Text)]
+      onoffreq  = map (first msgrender) [(MsgEnable,"Enabled"),(MsgDisable,"Disabled"),(MsgRequired,"Required")]
+      onoffreq  :: [(Text, Text)]
       -----------------------------------------------------------------------------
       helper'' :: forall a. (Board -> a) -> Maybe a
       helper'' g = (g . entityVal) <$> board
@@ -176,28 +180,29 @@ updateBoardForm board bname' bCategories groups extra = do
   (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (helper boardPreviewsPerThread)
   (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (helper boardThreadLimit)
   (categoryRes         , categoryView         ) <- mopt (selectFieldList bCategories) "" (helper'' boardCategory)
-  (opWithoutFileRes    , opWithoutFileView    ) <- mopt (selectFieldList onoff) "" (helper'  boardOpWithoutFile)
+  (opFileRes           , opFileView           ) <- mopt (selectFieldList onoffreq) "" (helper boardOpFile)
+  (replyFileRes        , replyFileView        ) <- mopt (selectFieldList onoffreq) "" (helper boardReplyFile)
   (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper'  boardHidden)
   (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableCaptcha)
-  (viewAccessRes       , viewAccessView       ) <- mopt (selectFieldList groups) "" (helper'' boardViewAccess)
-  (replyAccessRes      , replyAccessView      ) <- mopt (selectFieldList groups) "" (helper'' boardReplyAccess)
-  (threadAccessRes     , threadAccessView     ) <- mopt (selectFieldList groups) "" (helper'' boardThreadAccess)
+  (viewAccessRes       , viewAccessView       ) <- mopt (multiSelectFieldList groups) "" (helper'' boardViewAccess)
+  (replyAccessRes      , replyAccessView      ) <- mopt (multiSelectFieldList groups) "" (helper'' boardReplyAccess)
+  (threadAccessRes     , threadAccessView     ) <- mopt (multiSelectFieldList groups) "" (helper'' boardThreadAccess)
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
   (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
   (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp)
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,) <$>
-               nameRes              <*> descriptionRes   <*> bumpLimitRes       <*>
-               numberFilesRes       <*> allowedTypesRes  <*> defaultNameRes     <*>
-               maxMsgLengthRes      <*> thumbSizeRes     <*> threadsPerPageRes  <*>
-               previewsPerThreadRes <*> threadLimitRes   <*> opWithoutFileRes   <*>
-               isHiddenRes          <*> enableCaptchaRes <*> categoryRes        <*>
-               viewAccessRes        <*> replyAccessRes   <*> threadAccessRes    <*>
-               opModerationRes      <*> extraRulesRes    <*> enableGeoIpRes     <*>
-               opEditingRes         <*> postEditingRes   <*> showEditHistoryRes <*>
-               longDescriptionRes
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+               nameRes              <*> descriptionRes     <*> bumpLimitRes      <*>
+               numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
+               maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
+               previewsPerThreadRes <*> threadLimitRes     <*> opFileRes         <*>
+               replyFileRes         <*> isHiddenRes        <*> enableCaptchaRes  <*>
+               categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
+               threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
+               enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
+               showEditHistoryRes   <*> longDescriptionRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -210,17 +215,19 @@ postManageBoardsR board = do
   ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board bCategories groups
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
   case result of
-    FormFailure _  -> msgRedirect MsgBadFormData
+    FormFailure [] -> msgRedirect MsgBadFormData
+    FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName        , bDesc          , bBumpLimit    , bNumberFiles    , bAllowedTypes
-                , bDefaultName , bMaxMsgLen     , bThumbSize    , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit , bOpWithoutFile , bIsHidden     , bEnableCaptcha  , bCategory
-                , bViewAccess  , bReplyAccess   , bThreadAccess , bOpModeration   , bExtraRules
-                , bEnableGeoIp , bOpEditing     , bPostEditing  , bShowEditHistory, bLongDescription
+    FormSuccess ( bName            , bDesc        , bBumpLimit   , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
+                , bLongDescription
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
-          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName] ||
+          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
                 any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
           let onoff (Just "Enable" ) = True
@@ -238,7 +245,8 @@ postManageBoardsR board = do
                                , boardThreadsPerPage    = fromJust bThreadsPerPage
                                , boardPreviewsPerThread = fromJust bPrevPerThread
                                , boardThreadLimit       = fromJust bThreadLimit
-                               , boardOpWithoutFile     = onoff bOpWithoutFile
+                               , boardOpFile            = fromJust bOpFile
+                               , boardReplyFile         = fromJust bReplyFile
                                , boardHidden            = onoff bIsHidden
                                , boardEnableCaptcha     = onoff bEnableCaptcha
                                , boardCategory          = bCategory
@@ -272,7 +280,8 @@ postManageBoardsR board = do
                                    , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                    , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
                                    , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
-                                   , boardOpWithoutFile     = onoff bOpWithoutFile
+                                   , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
+                                   , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
                                    , boardHidden            = onoff bIsHidden
                                    , boardEnableCaptcha     = onoff bEnableCaptcha
                                    , boardCategory          = mplus bCategory     (boardCategory     oldBoard)
@@ -306,13 +315,14 @@ postManageBoardsR board = do
                                , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
                                , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
                                , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
-                               , boardOpWithoutFile     = onoff bOpWithoutFile
+                               , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
+                               , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
                                , boardHidden            = onoff bIsHidden
                                , boardEnableCaptcha     = onoff bEnableCaptcha
-                               , boardCategory          = mplus bCategory    Nothing
-                               , boardViewAccess        = mplus bViewAccess  Nothing 
-                               , boardReplyAccess       = mplus bReplyAccess Nothing
-                               , boardThreadAccess      = bThreadAccess
+                               , boardCategory          = mplus bCategory     Nothing
+                               , boardViewAccess        = mplus bViewAccess   Nothing 
+                               , boardReplyAccess       = mplus bReplyAccess  Nothing
+                               , boardThreadAccess      = mplus bThreadAccess Nothing
                                , boardOpModeration      = onoff bOpModeration
                                , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
                                , boardEnableGeoIp       = onoff bEnableGeoIp
@@ -407,8 +417,9 @@ postManageGroupsR = do
   ((result, _), _) <- runFormPost groupsForm 
   let msgRedirect msg = setMessageI msg >> redirect ManageGroupsR
   case result of
-    FormFailure _                            -> msgRedirect MsgBadFormData
-    FormMissing                              -> msgRedirect MsgNoFormData
+    FormFailure [] -> msgRedirect MsgBadFormData
+    FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (name        , manageThread, manageBoard, manageUsers,
                  manageConfig, deletePostsP, managePanel, manageBan  ,
                  editPosts   , aMarkup
@@ -467,8 +478,9 @@ postUsersR = do
   ((result, _), _) <- runFormPost $ usersForm groups
   let msgRedirect msg = setMessageI msg >> redirect UsersR
   case result of
-    FormFailure _                      -> msgRedirect MsgBadFormData
-    FormMissing                        -> msgRedirect MsgNoFormData
+    FormFailure []                      -> msgRedirect MsgBadFormData
+    FormFailure xs                      -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing                         -> msgRedirect MsgNoFormData
     FormSuccess (name, password, group) -> do
       let newUser = User { userName     = name
                          , userPassword = ""
@@ -526,7 +538,8 @@ postNewPasswordR = do
   ((result, _), _) <- runFormPost newPasswordForm
   let msgRedirect msg = setMessageI msg >> redirect AccountR
   case result of
-    FormFailure _           -> msgRedirect MsgBadFormData
+    FormFailure []          -> msgRedirect MsgBadFormData
+    FormFailure xs          -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing             -> msgRedirect MsgNoFormData
     FormSuccess newPassword -> do
       eUser               <- fromJust <$> maybeAuth

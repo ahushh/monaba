@@ -19,7 +19,8 @@ postSettingsR = do
   defaultZone <- extraTimezone <$> getExtra
   ((result, _), _) <- runFormPost $ settingsForm defaultZone
   case result of
-    FormFailure _                   -> trickyRedirect "error" MsgBadFormData SettingsR
+    FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
+    FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
     FormSuccess timezone            -> do
       setSession "timezone" $ pack $ show timezone

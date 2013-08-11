@@ -65,7 +65,7 @@ getThreadR board thread = do
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm numberFiles
+  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
@@ -89,24 +89,25 @@ postThreadR board thread = do
 
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   -------------------------------------------------------------------------------------------------------     
-  let maxMessageLength = boardMaxMsgLength  boardVal
-      defaultName      = boardDefaultName   boardVal
+  let defaultName      = boardDefaultName   boardVal
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
-      numberFiles      = boardNumberFiles   boardVal
       bumpLimit        = boardBumpLimit     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
+      replyFile        = boardReplyFile     boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm numberFiles
+  ((result, _), _) <- runFormPost $ postForm boardVal
   case result of
-    FormFailure _                            -> trickyRedirect "error" MsgBadFormData threadUrl
-    FormMissing                              -> trickyRedirect "error" MsgNoFormData  threadUrl
+    FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
+    FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
+    FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
     FormSuccess (name, title, message, pswd, captcha, files, goback, Just nobump)
-      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread  threadUrl
-      | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText  threadUrl
-      | tooLongMessage message maxMessageLength           -> trickyRedirect "error" (MsgTooLongMessage maxMessageLength) threadUrl
-      | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed threadUrl
+      | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
+      | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
+      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
+      | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText        threadUrl
+      | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed      threadUrl
       | otherwise                                         -> do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
@@ -146,8 +147,8 @@ postThreadR board thread = do
                            , postParent       = thread
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 30) title
-                           , postName         = maybe defaultName (T.take 10) name
+                           , postTitle        = maybe ("" :: Text) (T.take 60) title
+                           , postName         = maybe defaultName (T.take 20) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

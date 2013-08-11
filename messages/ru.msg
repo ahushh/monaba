@@ -79,7 +79,9 @@ ShowDeletedPosts: Просмотреть удаленные посты
 ######################################################################################
 WrongCaptcha: Неверная капча
 NoFileOrText: Необходимо ввести текст или прикрепить файл
-NoFile: Для создания нового треда нужно приложить файл
+NoFile: Необходимо приложить файл
+OpFileIsDisabled: Тред должен быть без файлов
+ReplyFileIsDisabled: Ответ в тред должен быть без файлов
 UnknownError: Неизвестная ошибка
 BadFormData: Что-то введено не так
 NoFormData: Ничего не введено
@@ -103,6 +105,7 @@ BanManagement: Баны
 BoardManagement: Настройки досок
 Enable: Включено
 Disable: Выключено
+Required: Обязательно
 XForUnlim x@Text: #{x} — неограничено
 Boards: Борды
 Bans: Баны
@@ -118,11 +121,12 @@ BoardNumberFiles : Макс. число файлов
 BoardAllowedTypes: Типы файлов
 BoardExtraRules: Дополнительные правила
 BoardDefaultName : Стандартное имя
-BoardMaxMsgLength: Макс. длина текста
-BoardThumbSize : Размер превью
+BoardMaxMsgLength: Макс. длина сообщения
+BoardThumbSize : Максимальный размер превью в пикселях
 BoardThreadsPerPage: Тредов на странице
 BoardPreviewsPerThread: Превью-постов
-BoardOpWithoutFile: Разрешить ОП-посты без файлов
+BoardOpFile: Файл в ОП-посте
+BoardReplyFile: Файл в ответе
 BoardHidden: Скрытая
 BoardThreadLimit: Максимум тредов
 BoardEnableCaptcha: Капча
@@ -146,6 +150,7 @@ DeleteAll: Удалить все
 CleanBoard: Очистить
 ## info
 SeparateBy d@Text: Разделять с помощью '#{d}'
+SeparateBySpace: Разделять пробелом
 Optional: Необязательно
 ## Messages
 WrongBoardId: Неправильное ID борды

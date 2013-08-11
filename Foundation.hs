@@ -30,7 +30,7 @@ import Network.HTTP.Types (mkStatus)
 import Network.Wai (Request(..))
 import Control.Monad (when)
 import Control.Applicative ((<$>))
-import Data.Maybe (fromJust, isNothing)
+import Data.Maybe (fromJust, isNothing, isJust)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -52,7 +52,7 @@ widgetHelperFilterBoards boards category group = filter p boards
         notHidden     b = not $ boardHidden b
         checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = Just category == boardCategory b
-        checkAccess   b = isNothing (boardViewAccess b) || boardViewAccess b == group
+        checkAccess   b = isNothing (boardViewAccess b) || (isJust group && elem (fromJust group) (fromJust $ boardViewAccess b))
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
 omittedRus n

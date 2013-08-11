@@ -74,8 +74,8 @@ makeFoundation conf = do
 
     -- Perform database migration using our application's logging settings.
     runLoggingT
-        (Database.Persist.runPool dbconf (runMigration migrateAll) p)
-        -- (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
+        -- (Database.Persist.runPool dbconf (runMigration migrateAll) p)
+        (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
         (messageLoggerSource foundation logger)
 
     return foundation

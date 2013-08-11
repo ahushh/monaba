@@ -14,7 +14,8 @@ postPostEditR = do
   let permissions = getPermissions mgroup
   ((result, _), _) <- runFormPost editForm
   case result of
-    FormFailure _                   -> trickyRedirect "error" MsgBadFormData HomeR
+    FormFailure []                  -> trickyRedirect "error" MsgBadFormData HomeR
+    FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) HomeR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  HomeR
     FormSuccess (newMessage, pswd, postId) -> do
       let postKey = toKey postId :: Key Post
@@ -34,7 +35,7 @@ postPostEditR = do
              ) $ trickyRedirect "error" MsgPostNotYours HomeR
 
       let maxMessageLength = boardMaxMsgLength boardVal
-        in when (tooLongMessage (Just newMessage) maxMessageLength) $
+        in when (tooLongMessage maxMessageLength newMessage) $
             trickyRedirect "error" (MsgTooLongMessage maxMessageLength) HomeR
 
       messageFormatted <- doAwfulMarkup (Just newMessage) (postBoard post) (postParent post)

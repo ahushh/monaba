@@ -14,38 +14,45 @@ import           Text.Regex.PCRE.ByteString.Utils  (substituteCompile)
 import qualified Data.ByteString.UTF8              as B
 import qualified Data.ByteString                   as B hiding (take,drop,length)
 import           System.Process
+import           Data.Text.Encoding                (encodeUtf8)
 -------------------------------------------------------------------------------------------------------------------
 geshi :: String
 geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
 -------------------------------------------------------------------------------------------------------------------
+escapeHtml :: String -> String
+escapeHtml = renderHtml . toHtml
+
 doAwfulMarkup :: Maybe Textarea -> Text -> Int -> Handler Textarea
 doAwfulMarkup Nothing  _     _      = return $ Textarea ""
 doAwfulMarkup (Just s) board thread = do
   let (sources, htmlWithoutSources) = cutSourceCodes $ unpack $ unTextarea s
   formattedSources <- liftIO $ mapM codeHighlight sources
-  formattedText    <- mapM ((B.toString <$>) . doMarkup thread (B.fromString $ unpack board) . B.fromString . escapeHtml)
+  formattedText    <- mapM ((B.toString <$>) . doMarkup thread (encodeUtf8 board) . B.fromString . escapeHtml)
                           htmlWithoutSources
   return $ Textarea $ pack $ pasteSourceCodes (formattedSources, formattedText)
 -------------------------------------------------------------------------------------------------------------------
--- regex replace  
+-- non global regex replace  
 -------------------------------------------------------------------------------------------------------------------
-(=~$) :: B.ByteString -> (B.ByteString, B.ByteString) -> IO B.ByteString
-(=~$) source' (from', to') = helper source' from' to' (B.fromString "")
-  where helper source from to acc = do
-          let maybeFound = source =~ from :: Maybe [B.ByteString]
+(=~$) :: B.ByteString -> -- ^ the source string
+        (B.ByteString, -- ^ regular expressiong
+         B.ByteString) -- ^ replacement string
+        -> IO B.ByteString
+(=~$) source' (from', to') = helper source' ""
+  where helper source acc = do
+          let maybeFound = source =~ from' :: Maybe [B.ByteString]
           case maybeFound of
             Just found -> do
-              let x     = head found -- full match
-                  i     = B.length x + fromJust (B.findSubstring x source) -- suppose findSubstring always succeeds...
-                  left  = B.take i source
-                  right = B.drop i source
-              result <- substituteCompile from left to
+              let fm      = head found -- full match
+                  fmStart = B.length fm + fromJust (B.findSubstring fm source)
+                  left    = B.take fmStart source
+                  right   = B.drop fmStart source
+              result <- substituteCompile from' left to'
               case result of
-                Right z   -> helper right from to (B.concat [acc, z])
-                Left  err -> error $ "error at substituteCompile:" ++ err
-            Nothing -> return $ B.concat [acc,source]
+                Right replaced -> helper right $ B.append acc replaced
+                Left  err      -> error $ "error at substituteCompile:" ++ err
+            Nothing -> return $ B.append acc source
 -------------------------------------------------------------------------------------------------------------------
 -- kind of unfold2 function
 cutSourceCodes :: String -> ([(String,String)],[String])
@@ -71,15 +78,12 @@ codeHighlight (lang,source) = do
    s <- readProcess php [geshi, lang] source
    return (lang, s)
 
-escapeHtml :: String -> String
-escapeHtml = renderHtml . toHtml
-
 doMarkup :: Int -> B.ByteString -> B.ByteString -> Handler B.ByteString
 doMarkup thread board s = doProofLabels thread s board >>= additionalMarkup >>=
                           (`doReflinks` board) >>= (\s' -> liftIO $ foldr (=<<) (clickableUrls s') allTags)
-  where clickableUrls = (=~$ ("((?:https?|ftp|gopher)://[^(\\s<>\\[\\])]+)"  , "<a href='\\1'>\\1</a>"                   ))
-        quotes        = (=~$ ("(?:(?:\n\r)|(?:\n))&gt;(.+)"   , "<br><span class='quote' style='color:green'>>\\1</span>"))
-        quotes'       = (=~$ ("^&gt;(.+)"                     , "<span class='quote' style='color:green'>>\\1</span>"))
+  where clickableUrls = (=~$ ("((?:https?|ftp|gopher)://\\S+)", "<a href='\\1'>\\1</a>"                              ))
+        quotes        = (=~$ ("(?:(?:\n\r)|(?:\n))&gt;(.+)"   , "<br><span class='quote'>>\\1</span>"                ))
+        quotes'       = (=~$ ("^&gt;(.+)"                     , "<span class='quote'>>\\1</span>"                    ))
         newlines      = (=~$ ("(?:(?:\n\r)|(?:\n))+"          , "<br>"                                               ))
         bold          = (=~$ ("\\[b\\]((?:.|\n)+?)\\[/b\\]"   , "<strong>\\1</strong>"                               )) 
         bold'         = (=~$ ("\\*\\*((?:.|\n)+?)\\*\\*"      , "<strong>\\1</strong>"                               ))
@@ -94,7 +98,7 @@ doMarkup thread board s = doProofLabels thread s board >>= additionalMarkup >>=
         openSpoiler   = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\" style=\"color:black; background-color:black\">"
         closeSpoiler  = "</span>"
         allTags       = [ newlines, spoiler, spoiler', underline, italic, italic', italic''
-                        , strike, bold, bold', bold'', quotes, quotes']
+                        , strike  , bold   , bold'   , bold''   , quotes, quotes']
 -------------------------------------------------------------------------------------------------------------------
 doReflinks :: B.ByteString -> B.ByteString -> Handler B.ByteString
 doReflinks s' currentBoard = helper s' ""
@@ -106,17 +110,17 @@ doReflinks s' currentBoard = helper s' ""
               let linkType = found !! 1
                   board' = found !! 2
                   postId = found !! 3
-                  x      = head found -- full match
-                  i      = B.length x + fromJust (B.findSubstring x source) -- suppose findSubstring always succeeds...
-                  left   = B.take i source
-                  right  = B.drop i source
+                  fm     = head found -- full match
+                  fmStart= B.length fm + fromJust (B.findSubstring fm source)
+                  left   = B.take fmStart source
+                  right  = B.drop fmStart source
                   isCrossBoard = not (B.null board')
                   board  = if isCrossBoard then board' else currentBoard
               result <- replaceLink regex left board isCrossBoard postId linkType
               case result of
-                Right z   -> helper right (B.concat [acc, z])
+                Right z   -> helper right $ B.append acc z
                 Left  err -> error $ "error at substituteCompile:" ++ err
-            Nothing -> return $ B.concat [acc,source]
+            Nothing -> return $ B.append acc source
 
 replaceLink :: B.ByteString -> -- regex
               B.ByteString -> -- source string
@@ -146,15 +150,15 @@ doProofLabels thread s' board = helper s' ""
           case maybeFound of
             Just found -> do
               let postId = found !! 1
-                  x      = head found -- full match
-                  i      = B.length x + fromJust (B.findSubstring x source) -- suppose findSubstring always succeeds...
-                  left   = B.take i source
-                  right  = B.drop i source
+                  fm     = head found -- full match
+                  fmStart= B.length fm + fromJust (B.findSubstring fm source)
+                  left   = B.take fmStart source
+                  right  = B.drop fmStart source
               result <- replaceProofLabel regex left board (B.toString postId) thread
               case result of
-                Right z   -> helper right (B.concat [acc, z])
+                Right z   -> helper right $ B.append acc z
                 Left  err -> error $ "error at substituteCompile:" ++ err
-            Nothing -> return $ B.concat [acc,source]
+            Nothing -> return $ B.append acc source
 
 replaceProofLabel :: B.ByteString -> -- regex
                     B.ByteString -> -- source string

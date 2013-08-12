@@ -231,6 +231,9 @@ IfYouAreOp: Если вы ОП
 IfYouAreNotOp: Если вы не ОП
 IfPostBelongs: Если данный пост принадлежит вам
 IfPostDoesntBelong: Если данный пост не принадлежит вам
+ProofLabels: Пруфметки
+Latex: LaTeX
+SourceCode: Программный код
 SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
 ### API
 Api: API

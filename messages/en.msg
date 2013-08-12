@@ -232,6 +232,9 @@ IfYouAreOp: If you are OP
 IfYouAreNotOp: If you are not OP
 IfPostBelongs: If this post belongs to you
 IfPostDoesntBelong: If this post doesn't belong to you
+ProofLabels: Proof labels
+Latex: LaTeX
+SourceCode: Source code
 SupportedLanguages: Supported languages for tag [code=<language>]
 ### API
 Api: API

@@ -260,3 +260,7 @@ blockquote {
 .file-info {
    font-style: italic;
 }
+
+.quote {
+    color: green;
+}

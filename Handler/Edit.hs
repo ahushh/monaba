@@ -5,7 +5,7 @@ import           Import
 import qualified Data.Text       as T
 import           Yesod.Auth
 import           Handler.Posting
-import           AwfulMarkup        (doAwfulMarkup)
+import           YobaMarkup        (doYobaMarkup)
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do
@@ -38,7 +38,7 @@ postPostEditR = do
         in when (tooLongMessage maxMessageLength newMessage) $
             trickyRedirect "error" (MsgTooLongMessage maxMessageLength) HomeR
 
-      messageFormatted <- doAwfulMarkup (Just newMessage) (postBoard post) (postParent post)
+      messageFormatted <- doYobaMarkup (Just newMessage) (postBoard post) (postParent post)
       history <- runDB $ getBy $ HistoryUniqPostId postKey
       unless (EditPostsP `elem` permissions) $ 
         let z = maybe 0 (length . historyMessages . entityVal) history

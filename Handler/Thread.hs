@@ -7,7 +7,7 @@ import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           AwfulMarkup        (doAwfulMarkup)
+import           YobaMarkup        (doYobaMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 
@@ -137,7 +137,7 @@ postThreadR board thread = do
             trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
         posterId         <- getPosterId
-        messageFormatted <- doAwfulMarkup message board thread
+        messageFormatted <- doYobaMarkup message board thread
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- reply to non-existent thread
           trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)

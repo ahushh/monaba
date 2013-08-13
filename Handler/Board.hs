@@ -7,7 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
-import           AwfulMarkup     (doAwfulMarkup)
+import           YobaMarkup     (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -132,7 +132,7 @@ postBoardR board _ = do
         ------------------------------------------------------------------------------------------------------
         posterId <- getPosterId
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        messageFormatted <- doAwfulMarkup message board 0
+        messageFormatted <- doYobaMarkup message board 0
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0

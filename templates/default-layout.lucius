@@ -264,3 +264,8 @@ blockquote {
 .quote {
     color: green;
 }
+
+.spoiler {
+    color: black;
+    background-color: black;
+}

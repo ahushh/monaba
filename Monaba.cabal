@@ -31,7 +31,7 @@ library
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings
-                     AwfulMarkup
+                     YobaMarkup
                      ModelTypes
                      SillyCaptcha
 
@@ -56,7 +56,6 @@ library
                 DeriveDataTypeable
 
     build-depends: base                          >= 4          && < 5
-                 -- , yesod-platform                >= 1.1        && < 1.2
                  , yesod                         >= 1.2        && < 1.3
                  , yesod-core                    >= 1.2        && < 1.3
                  , yesod-auth                    >= 1.2        && < 1.3
@@ -97,11 +96,7 @@ library
                  , persistent
                  , yesod-persistent
                  , blaze-html
-                 -- , xss-sanitize
                  , MissingH
-                 -- , pcre-light
-                 , pcre-light-extra
-                 , pcre-utils
                  , utf8-string
                  , array
                  , split
@@ -112,6 +107,7 @@ library
                  , yesod-routes
                  , hs-GeoIP
                  , tagsoup
+                 , parsec
 
 executable         Monaba
     if flag(library-only)
@@ -135,11 +131,7 @@ executable         Monaba
                      , persistent
                      , yesod-persistent
                      , blaze-html
-                     -- , xss-sanitize 
                      , MissingH
-                     -- , pcre-light
-                     , pcre-light-extra
-                     , pcre-utils
                      , utf8-string
                      , array
                      , split
@@ -150,6 +142,7 @@ executable         Monaba
                      , yesod-routes
                      , hs-GeoIP
                      , tagsoup
+                     , parsec
 
     ghc-options:       -threaded -O2
 

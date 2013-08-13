@@ -58,7 +58,7 @@ import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 
-import qualified Data.Text               as T (concat, toLower, append, null)
+import qualified Data.Text               as T (concat, toLower, append)
 
 import           Data.Geolocation.GeoIP
 

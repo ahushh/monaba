@@ -143,7 +143,8 @@
    CLOSED: [2013-08-06 Вт 21:54]
 ** DONE post editing
    CLOSED: [2013-08-08 Чт 12:44]
-** TODO rewrite markup using parsec
+** DONE rewrite markup using parsec
+   CLOSED: [2013-08-13 Вт 14:10]
 ** TODO API - geoip
 ** TODO autorefresh, new posts count via websockets
 ** TODO reports

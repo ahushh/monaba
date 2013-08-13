@@ -25,21 +25,9 @@
         <hr>
     <table>
       <tr>
-        <td>**bold**
-        <td>&nbsp;→&nbsp;
-        <td><strong>bold</strong>
-      <tr>
-        <td>__bold__
-        <td>&nbsp;→&nbsp;
-        <td><strong>bold</strong>
-      <tr>
         <td>[b]bold[/b]
         <td>&nbsp;→&nbsp;
         <td><strong>bold</strong>
-      <tr>
-        <td>*italic*
-        <td>&nbsp;→&nbsp;
-        <td><em>italic</em>
       <tr>
         <td>[i]italic[/i]
         <td>&nbsp;→&nbsp;

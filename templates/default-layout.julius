@@ -536,7 +536,7 @@ function showEditForm(postId, realId) {
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
         var raw = json[0].rawMessage;
         if (raw) {
-            $('#edit-form textarea').val(raw);
+            $('#edit-form textarea').val(raw).trigger('autosize.resize');
         } else { // for old posts only
             var msg = $('#'+postId+' blockquote').clone();
             msg.find("br").replaceWith('\n');

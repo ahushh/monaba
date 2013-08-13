@@ -95,35 +95,71 @@ function initSymbolCounter() {
 // youtube
 //-----------------------------------------------------------------
 function addEmbeddedPlayer(post) {
-    var parent = post ? ("#"+post+" ") : "";
-    $(parent+"blockquote a").each(function() {
-        var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/
-            var result = regex.exec(this.text);
-        if (result) {
-            $(this).attr('href','javascript:void(0)');
-            $(this).attr('class','youtube');
-            $(this).attr('id', result[1]);
-        }
-    });
+    var posts = post ? ("#"+post+"") : ".reply-post, .op-post";
+    $(posts).each(function(i,p) {
+        var postId = $(p).attr('id');
+        var first = true;
+        $('#'+postId+' blockquote a').each(function(j, link) {
+            var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/;
+            var result = regex.exec(link.text);
+            if (!result) return true;
+            var videoId = result[1];
+            var url     = link.text;
 
-    $(parent+'.youtube').click(function() {
-        if ($(this).children('iframe').width() == null) { // kostyl: check if "a" tag has iframe
-            var iframe = document.createElement("iframe");
-            $(iframe).css('width', 480);
-            $(iframe).css('height', 360);
-            // $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ $(this).attr('id') +"?v=2&alt=json", function(data){
-            //     var width = data.entry.media$group.media$thumbnail[2].width;
-            //     var height = data.entry.media$group.media$thumbnail[2].height;
-            //     $(iframe).css('width', width);
-            //     $(iframe).css('height', height);
-            // });
-            $(iframe).attr("src", "https://www.youtube.com/embed/" + $(this).attr('id') + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
-            $(this).append('<br>');
-            $(this).append(iframe);
-        } else {
-            $(this).children('br').slideToggle();
-            $(this).children('iframe').slideToggle();
-        }
+            var first1 = false;
+            if (first) {
+                $('#'+postId+' blockquote').prepend('<div class=video-container></div>');
+                first = false;
+                first1 = true;
+            }
+
+            $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", function(data){
+                var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
+                var height = 270; //data.entry.media$group.media$thumbnail[2].height;
+                var title  = data.entry.title.$t;
+                var thumb  = "http://i.ytimg.com/vi/"+videoId+"/0.jpg"
+                var iframe =  document.createElement("iframe");
+
+                $(iframe).css('width', width);
+                $(iframe).css('height', height);
+
+                $(link).attr('class', 'video-link');
+                $(link).html("<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
+                var loadIframe = function () {
+                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
+                    $(iframe).addClass('loaded');
+                };
+
+                $(iframe).css('display','none');
+                if (first1) {
+                    $('#'+postId+' .video-container').prepend("<img class='video-thumb' width="+width+" height="+height+" src='"+thumb+"'>");
+                    $('#'+postId+' .video-container').prepend(iframe);
+                    $(link).addClass('focused');
+                    $('#'+postId+' .video-thumb').click(function() {
+                        $(this).hide();
+                        $('#'+postId+' .video-container iframe').show();
+                    });
+                    loadIframe();
+                } else {
+                    $(link).prepend(iframe);
+                }
+
+                $(link).click(function() {
+                    if ($(link).hasClass('focused'))
+                        return false;
+                    if (! $(link).find('iframe').hasClass('loaded'))
+                        loadIframe();
+                    $('#'+postId+' .video-container iframe').appendTo( $('#'+postId+' .focused') );
+                    $('#'+postId+' .focused iframe').hide();
+                    $('#'+postId+' .video-container .video-thumb').hide();
+                    $('#'+postId+' .focused').removeClass('focused');
+                    $(iframe).appendTo( $('#'+postId+' .video-container') );
+                    $(link).addClass('focused');
+                    $('#'+postId+' .video-container iframe').show();
+                    return false;
+                });
+            });
+        });
     });
 }
 //-----------------------------------------------------------------
@@ -484,6 +520,10 @@ function showEditForm(postId, realId) {
                         $.get("/api/post/"+board+"/"+pId, function(post) {
                             hideEditForm();
                             $('#'+postId).replaceWith(post);
+
+                            addEmbeddedPlayer(postId);
+                            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
                             popupMessage(response.ok,2000);
                         });
                     } else {

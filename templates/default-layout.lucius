@@ -269,3 +269,17 @@ blockquote {
     color: black;
     background-color: black;
 }
+
+iframe {
+    border: 0px;
+}
+
+.icon-play {
+    background-position: -629px -77px;
+    margin-right: 3px;
+
+}
+
+.focused {
+    text-decoration: underline;
+}

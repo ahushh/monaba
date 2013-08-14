@@ -28,6 +28,11 @@ library
                      Handler.Posting
                      Handler.Delete
                      Handler.Admin
+                     Handler.Admin.Ban
+                     Handler.Admin.Board
+                     Handler.Admin.Config
+                     Handler.Admin.Group
+                     Handler.Admin.User
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings

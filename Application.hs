@@ -29,6 +29,11 @@ import Handler.Edit
 import Handler.Live
 import Handler.Delete
 import Handler.Admin
+import Handler.Admin.Ban
+import Handler.Admin.Board
+import Handler.Admin.Config
+import Handler.Admin.Group
+import Handler.Admin.User
 import Handler.Api
 import Handler.Captcha
 import Handler.Settings

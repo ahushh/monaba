@@ -31,6 +31,7 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | GroupProof           -- #group
           | UserProof            -- #user
           | Link          Text   -- http://russia3.ru
+          | List        [[Expr]] -- * one\n * two\n * three\n
           | Plain         Text   -- any text 
           | Newline              -- \n
           deriving (Show)
@@ -68,6 +69,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
                                          ]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
+    li         g = T.concat ["<li>", g, "</li>"]
     ----------------------------------------------------------------------------------------------------------
     boldHandler      acc x = (\g -> T.concat [acc, "<strong>" , g, "</strong>"]) <$> foldM f "" x
     italicHandler    acc x = (\g -> T.concat [acc, "<em>"     , g, "</em>"    ]) <$> foldM f "" x
@@ -75,6 +77,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     strikeHandler    acc x = (\g -> T.concat [acc, "<s>"      , g, "</s>"     ]) <$> foldM f "" x
     underlineHandler acc x = (\g -> T.concat [acc, "<u>"      , g, "</u>"     ]) <$> foldM f "" x
     quoteHandler     acc x = (\g -> T.concat [acc, "<span class=quote>>", g ,"</span><br>"]) <$> foldM f "" x
+    listHandler      acc x = (\g -> T.concat [acc, "<ul>"     , g, "</ul>"    ]) <$> T.concat <$> (mapM ((li <$>) . foldM f "") x)
     ----------------------------------------------------------------------------------------------------------
     colorHandler acc color' msg = do
       muser  <- maybeAuth
@@ -111,6 +114,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     f acc (Quote          x) = quoteHandler      acc x
     f acc GroupProof         = groupproofHandler acc
     f acc UserProof          = userproofHandler  acc
+    f acc (List           x) = listHandler       acc x
     f acc (Link           x) = return $ T.concat [acc, "<a href='", x, "'>", x, "</a>"]
     f acc Newline            = return $ T.append acc "<br>"
     ----------------------------------------------------------------------------------------------------------
@@ -259,23 +263,7 @@ link = do
   return $ Link (T.concat [pack scheme, "://", escapeHTML (pack rest)])
 
 quote :: Parser Expr
-quote = char '>' >> Quote <$> manyTill allmostAllExpr (newline' <|> (eof >> return ""))
-  where
-    allmostAllExpr = try bold
-                 <|> try italic
-                 <|> try underline
-                 <|> try strike
-                 <|> try spoiler      
-                 <|> try color    
-                 <|> tryWakabaTags
-                 <|> try link
-                 <|> try extref
-                 <|> try innerref
-                 <|> try userproof
-                 <|> try groupproof
-                 <|> try proofop
-                 <|> try proof
-                 <|> try plain
+quote = char '>' >> Quote <$> manyTill onelineExpr (newline' <|> (eof >> return ""))
 
 innerref :: Parser Expr
 innerref = string ">>" >> ((\postId -> InnerRef $ read postId) <$> many1 digit)
@@ -303,7 +291,30 @@ groupproof = string "#group" >> return GroupProof
 
 newline :: Parser Expr
 newline = newline' >> return Newline
+
+list :: Parser Expr
+list = do
+  entries <- many1 entry
+  return $ List entries
+  where entry = char '*' >> manyTill (onelineExpr <|> quote) (newline' <|> (eof >> return ""))
 --------------------------------------------------------------
+onelineExpr :: Parsec Text () Expr
+onelineExpr = try bold
+          <|> try italic
+          <|> try underline
+          <|> try strike
+          <|> try spoiler
+          <|> try color
+          <|> tryWakabaTags
+          <|> try link
+          <|> try extref
+          <|> try innerref
+          <|> try userproof
+          <|> try groupproof
+          <|> try proofop
+          <|> try proof
+          <|> try plain
+
 expr :: Parsec Text () Expr
 expr = try quote
    <|> tryTags
@@ -315,6 +326,7 @@ expr = try quote
    <|> try groupproof
    <|> try proofop
    <|> try proof
+   <|> try list
    <|> try newline
    <|> try plain
 

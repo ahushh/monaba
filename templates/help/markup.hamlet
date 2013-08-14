@@ -64,6 +64,16 @@
         <td>>>/b/1234
         <td>&nbsp;→&nbsp;
         <td><a href=/b/1234#1234>>>/b/1234</a>
+      <tr>
+        <td>
+          * item 1
+          <br>
+          * item 2
+        <td>&nbsp;→&nbsp;
+        <td>
+          <ul>
+            <li> item 1
+            <li> item 2
     <hr>
 
     <p style=text-align:center><strong>_{MsgProofLabels}</strong>

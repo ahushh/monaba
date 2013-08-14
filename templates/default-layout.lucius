@@ -283,3 +283,9 @@ iframe {
 .focused {
     text-decoration: underline;
 }
+
+ul {
+    list-style-position: inside;
+    margin: 0;
+    padding: 0 0 0 15px;
+}

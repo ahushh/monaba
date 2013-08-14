@@ -121,7 +121,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity _ pVal) -> do
           let parent = pack $ show $ postParent pVal
           return $ refHtml acc board parent p (T.append ">>" p)
-        Nothing              -> return $ T.append ">>" p
+        Nothing              -> return $ T.concat [acc, ">>", p]
     ----------------------------------------------------------------------------------------------------------
     f acc (ExternalRef board' postId) = do
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
@@ -130,7 +130,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity _ pVal) -> do
           let parent = pack $ show $ postParent pVal
           return $ refHtml acc board' parent p (T.concat [">>/", board', "/", p])
-        Nothing              -> return $ T.append ">>" p
+        Nothing              -> return $ T.concat [acc, ">>", p]
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel    postId) = do
       posterId  <- getPosterId
@@ -141,9 +141,9 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml acc board parent p (T.append "##" p)
-          return $ T.concat ["<span class='", spanClass, "'>", link', "</span>"]
-        Nothing              -> return $ T.append "##" p
+              link'     = refHtml "" board parent p (T.append "##" p)
+          return $ T.concat [acc, "<span class='", spanClass, "'>", link', "</span>"]
+        Nothing              -> return $ T.concat [acc, "##", p]
     ----------------------------------------------------------------------------------------------------------
     f acc ProofLabelOP = do
       posterId  <- getPosterId
@@ -154,9 +154,9 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml acc board parent t "##OP"
-          return $ T.concat ["<span class='", spanClass, "'>", link', "</span>"]
-        Nothing              -> return $ T.append "##" t
+              link'     = refHtml "" board parent t "##OP"
+          return $ T.concat [acc, "<span class='", spanClass, "'>", link', "</span>"]
+        Nothing              -> return $ T.concat [acc, "##OP"]
     ----------------------------------------------------------------------------------------------------------
     -- f acc z               = return $ T.concat [acc, "==", pack (show z), "=="]
 -------------------------------------------------------------------------------------------------------------------

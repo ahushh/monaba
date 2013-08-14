@@ -135,6 +135,7 @@ instance Yesod App where
           Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
           _                 -> return Nothing
         let group  = (groupName . entityVal) <$> mgroup
+        stylesheet <- lookupSession "stylesheet"
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final

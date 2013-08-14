@@ -6,24 +6,31 @@ import qualified Data.Text  as T
 import           Yesod.Auth
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
-settingsForm :: Int -> Html -> MForm Handler (FormResult Int, Widget)
-settingsForm defaultZone extra = do
+settingsForm :: Int  -> -- ^ Default time offset
+               Text -> -- ^ Default stylesheet 
+               Html -> -- ^ Extra token
+               MForm Handler (FormResult (Int, Text), Widget)
+settingsForm defaultZone defaultStyle extra = do
   oldTimeZone <- lookupSession "timezone"
-  (timezoneRes , timezoneView) <- mreq (selectFieldList timezones) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
-  let result = timezoneRes
+  oldStyle    <- lookupSession "stylesheet"
+  (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
+  (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
+  let result = (,) <$> timezoneRes <*> styleRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
 postSettingsR :: Handler TypedContent
 postSettingsR = do
-  defaultZone <- extraTimezone <$> getExtra
-  ((result, _), _) <- runFormPost $ settingsForm defaultZone
+  defaultZone  <- extraTimezone   <$> getExtra
+  defaultStyle <- extraStylesheet <$> getExtra  
+  ((result, _), _) <- runFormPost $ settingsForm defaultZone defaultStyle
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess timezone            -> do
-      setSession "timezone" $ pack $ show timezone
+    FormSuccess (timezone, stylesheet) -> do
+      setSession "timezone"   $ pack $ show timezone
+      setSession "stylesheet" stylesheet
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html
@@ -31,14 +38,19 @@ getSettingsR = do
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
 
-  defaultZone <- extraTimezone <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone
+  defaultZone  <- extraTimezone   <$> getExtra
+  defaultStyle <- extraStylesheet <$> getExtra
+  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgSettings]
     $(widgetFile "settings")
+
+-------------------------------------------------------------------------------------------------------------------
+stylesheets :: [(Text, Text)]
+stylesheets = map (\x -> (x,x)) ["Ash","Futaba"]
 
 timezones :: [(Text, Int)]
 timezones = [("[UTC -11:00] Pacific/Midway",-39600)

@@ -66,11 +66,12 @@ widgetFile = (if development then widgetFileReload
               widgetFileSettings
 
 data Extra = Extra
-    { extraCopyright       :: Text
-    , extraAnalytics       :: Maybe Text -- ^ Google Analytics
-    , extraSiteName        :: Text
-    , extraGeoIPCityPath   :: Text
-    , extraTimezone        :: Int
+    { extraCopyright     :: Text
+    , extraAnalytics     :: Maybe Text -- ^ Google Analytics
+    , extraSiteName      :: Text
+    , extraGeoIPCityPath :: Text
+    , extraTimezone      :: Int
+    , extraStylesheet    :: Text
     } deriving Show
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
@@ -80,3 +81,4 @@ parseExtra _ o = Extra
     <*> o .:  "sitename"
     <*> o .:  "geoipcitypath"
     <*> o .:  "timezone"
+    <*> o .:  "stylesheet"

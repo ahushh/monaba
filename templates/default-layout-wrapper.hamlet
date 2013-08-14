@@ -9,9 +9,15 @@ $newline never
         <meta charset="UTF-8">
 
         <title>#{pageTitle pc}
-        <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
-        <link rel="alternate stylesheet" type=text/css title=Futaba href=@{StaticR css_futaba_css}>
-        <meta name="description" content="">
+        $maybe s <- stylesheet
+          $if s == "Ash"
+              <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+          $elseif s == "Futaba"
+              <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_futaba_css}>
+        $nothing
+          <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+        <meta name="description" content="Haskell imageboard">
+        <meta name="keywords" content="haskell,haibane renmei,rakka,yesod,monaba,imageboard,хаскелль,имиджборда,альянс серокрылых">
         <meta name="author" content="">
 
         <meta name="viewport" content="width=device-width,initial-scale=1">

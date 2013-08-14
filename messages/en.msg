@@ -291,3 +291,4 @@ Settings: Settings
 Apply: Apply
 Applied: Settings applied
 TimeZone: Time zone
+Style: Style

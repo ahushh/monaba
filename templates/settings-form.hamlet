@@ -4,3 +4,6 @@
     <tr>
       <td>_{MsgTimeZone}
       <td>^{fvInput timezoneView}
+    <tr>
+      <td>_{MsgStyle}
+      <td>^{fvInput styleView}

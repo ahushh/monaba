@@ -290,3 +290,4 @@ Settings: Настройки
 Apply: Применить
 Applied: Настройки применены
 TimeZone: Часовой пояс
+Style: Стиль

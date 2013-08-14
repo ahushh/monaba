@@ -14,20 +14,10 @@ function baseInit() {
 //-----------------------------------------------------------------
 // Init
 //-----------------------------------------------------------------
-setStylesheet();
 checkHighlighted();
 baseInit();
 initSymbolCounter();
 $('textarea').autosize()
-
-var style = get_cookie('stylesheet')
-if (style) {
-    $('#style-'+style).attr("selected","selected");
-}
-
-$('#stylebar').change(function() {
-   setStylesheet($('#stylebar').val());
-});
 
 MathJax.Hub.Config({
     tex2jax: {
@@ -162,26 +152,6 @@ function addEmbeddedPlayer(post) {
         });
     });
 }
-//-----------------------------------------------------------------
-// end of youtube
-//-----------------------------------------------------------------
-function setStylesheet(title) {
-    if (title) {
-        set_cookie("stylesheet", title, 365);
-    }
-    var styletitle = title ? title : get_cookie("stylesheet");
-    if (styletitle) {
-        var links = document.getElementsByTagName("link");
-        for (var i = 0; i < links.length; i++ ) {
-            if (links[i].title) {
-                links[i].disabled = true;
-                if (links[i].title == styletitle) {
-                    links[i].disabled = false;
-                }
-            }
-        }
-    }
-} 
 //-----------------------------------------------------------------
 // popup messages
 //-----------------------------------------------------------------

@@ -110,13 +110,6 @@ blockquote {
   background-position: -29px -101px;
 }
 
-.highlighted-post {
-    display: table;
-    min-width: 40em;
-    overflow: hidden;
-    word-wrap: break-word;
-}
-
 #board-header {
     text-align: center;
     font-size: 2em;

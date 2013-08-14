@@ -251,9 +251,9 @@ function checkHighlighted() {
 }
 
 function highlightPost(postId) {
-    $(".highlighted-post").removeClass().addClass('reply-post');
-    if ($("#"+postId).attr('class') == 'reply-post') {
-        $("#"+postId).removeClass().addClass('highlighted-post');
+    $(".highlighted-post").removeClass('highlighted-post');
+    if (! $("#"+postId).hasClass('op-post')) {
+        $("#"+postId).addClass('highlighted-post');
     }
 }
 //-----------------------------------------------------------------
@@ -472,10 +472,7 @@ function refreshCaptcha() {
 }
 
 function refreshThread(board, threadId) {
-    var lastPost = $("#thread-"+threadId+" .highlighted-post:last");
-    if (lastPost.length == 0) {
-        lastPost = $("#thread-"+threadId+" .reply-post:last");
-    }
+    var lastPost = $("#thread-"+threadId+" .reply-post:last");
     if (lastPost.length == 0) {
         lastPost = $("#thread-"+threadId+" .op-post");
     }

@@ -16,14 +16,17 @@ import Data.Text           (pack, Text)
 data Style = Regular | Bold | Italic | Underline
   deriving (Show, Read, Eq, Bounded, Ord, Enum)
 ------------------------------------------------------------------------------------------------
+-- | Takes a random element from list
 pick :: [a] -> IO a
 pick xs = (xs!!) <$> randomRIO (0, length xs - 1)
 ------------------------------------------------------------------------------------------------
 prefixPath :: String
 prefixPath = "./fonts/"
 ------------------------------------------------------------------------------------------------
+-- | Background color
 bgColor :: Color
 bgColor = rgb 238 238 238
+-- | Text color
 black :: Color
 black = rgb 0 0 0
 ------------------------------------------------------------------------------------------------
@@ -40,7 +43,9 @@ regularFonts   = map ((Regular,  ) . (++"-regular.ttf"  ))  ["times"]
 underlineFonts = map ((Underline,) . (++"-underline.ttf"))  ["monospace"]
 fonts          = map (second (prefixPath++)) $ italicFonts ++ boldFonts ++ regularFonts ++ underlineFonts 
 ------------------------------------------------------------------------------------------------
-makeCaptcha :: Int -> String -> IO (Text, Text)
+makeCaptcha :: Int           -> -- ^ Captcha length
+              String        -> -- ^ Path to captcha
+              IO (Text, Text) -- ^ (captcha style, captcha value)
 makeCaptcha len path = do
   img <- newImage (25*(len+2), 60)
   fillImage bgColor img

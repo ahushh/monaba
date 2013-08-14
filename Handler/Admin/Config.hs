@@ -6,18 +6,20 @@ import           Yesod.Auth
 import qualified Data.Text         as T
 
 -------------------------------------------------------------------------------------------------------------
-configForm :: Config -> Html -> MForm Handler (FormResult ( Maybe Int -- captcha length
-                                                       , Maybe Int -- adaptive captcha guards
-                                                       , Maybe Int -- captcha timeout
-                                                       , Maybe Int -- reply delay
-                                                       , Maybe Int -- new thread delay
-                                                       , Maybe Text -- board categories
-                                                       , Maybe Text -- news board
-                                                       , Maybe Int  -- show news
-                                                       , Maybe Int  -- max number of a post editings
-                                                       , Maybe Int  -- how many latest posts show
-                                                       )
-                                           , Widget)
+configForm :: Config ->
+             Html   ->
+             MForm Handler (FormResult ( Maybe Int  -- ^ Captcha length
+                                       , Maybe Int  -- ^ Number of adaptive captcha guards
+                                       , Maybe Int  -- ^ Captcha timeout
+                                       , Maybe Int  -- ^ Reply delay
+                                       , Maybe Int  -- ^ New thread delay
+                                       , Maybe Text -- ^ Board categories separated by comma
+                                       , Maybe Text -- ^ Board for news
+                                       , Maybe Int  -- ^ How many news show
+                                       , Maybe Int  -- ^ The maximum number of post editings
+                                       , Maybe Int  -- ^ How many latest posts show
+                                       )
+                           , Widget)
 configForm config extra = do
   let f g = Just $ Just $ g config
       f :: forall a. (Config -> a) -> Maybe (Maybe a)
@@ -49,7 +51,6 @@ getConfigR = do
   let permissions = getPermissions mgroup
 
   configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
-
   (formWidget, formEnctype) <- generateFormPost $ configForm configVal
 
   nameOfTheBoard  <- extraSiteName <$> getExtra

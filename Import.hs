@@ -73,12 +73,19 @@ checkAbbr :: Int  -> -- ^ Message length
             Bool
 checkAbbr len t = len > postAbbrLength && not t
 
+-- | The maximum length of an abbreviated message
 postAbbrLength :: Int
 postAbbrLength = 1500
+
+enumerate :: forall b. [b] -> [(Int, b)]
+enumerate = zip [0..]
 -------------------------------------------------------------------------------------------------------------------
-myFormatTime :: Int -> UTCTime -> String
+myFormatTime :: Int     -> -- ^ Time offset in seconds
+               UTCTime -> -- ^ UTCTime
+               String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 -------------------------------------------------------------------------------------------------------------------
+-- | Truncate file name if it's length greater than 47
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s
   where maxLen   = 47
@@ -93,26 +100,26 @@ truncateFileName s = if len > maxLen then result else s
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-opPostWidget :: Maybe (Entity User)   ->
-               Entity Post           ->
-               [Entity Attachedfile] ->
-               Bool                  -> -- show or not "[ Open ]" link
-               Bool                  -> -- show or not extra buttons such as [>]
-               [Permission]          ->
-               [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
-               Int                   -> -- time offset in seconds
+opPostWidget :: Maybe (Entity User)      ->
+               Entity Post              -> 
+               [Entity Attachedfile]    -> 
+               Bool                     -> -- ^ Show or not "[ Open ]" link
+               Bool                     -> -- ^ Show or not the extra buttons such as "[>]"
+               [Permission]             -> -- ^ List of the all permissions
+               [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
+               Int                      -> -- ^ Time offset in seconds
                WidgetT App IO () 
 opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
-replyPostWidget :: Maybe (Entity User)   ->
-                  Entity Post           ->
-                  [Entity Attachedfile] ->
-                  Bool                  -> -- show full or abbreviated replies
-                  Bool                  -> -- show or not extra buttons such as [>]
-                  Bool                  -> -- show or not parent thread in the corner
-                  [Permission]          ->
-                  [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
-                  Int                   -> -- time offset in seconds
+replyPostWidget :: Maybe (Entity User)      ->
+                  Entity Post              ->
+                  [Entity Attachedfile]    ->
+                  Bool                     -> -- ^ Show full (True) or abbreviated (False) messagees
+                  Bool                     -> -- ^ Show or not the extra buttons such as [>]
+                  Bool                     -> -- ^ Show or not parent thread in the upper right corner
+                  [Permission]             -> -- ^ List of the all permissions
+                  [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
+                  Int                      -> -- ^ Time offset in seconds
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
@@ -187,6 +194,9 @@ writeToServer file md5 = do
 -------------------------------------------------------------------------------------------------------------------
 -- Images
 -------------------------------------------------------------------------------------------------------------------
+isImageFile :: String -> Bool
+isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
+
 loadImage :: FilePath -> String -> IO GD.Image
 loadImage p t | t == "jpeg" || t == "jpg" = GD.loadJpegFile p
               | t == "png"              = GD.loadPngFile  p
@@ -199,7 +209,9 @@ saveImage path img t | t == "jpeg" || t == "jpg" = GD.saveJpegFile (-1) path img
                      | t == "gif"              = GD.saveGifFile  path img
 saveImage _    _   t = error $ "error: unknown image type '"++t++"' at saveImage"
 
-getImageResolution :: FilePath -> String -> IO ImageResolution
+getImageResolution :: FilePath -> -- ^ File path
+                     String   -> -- ^ File extension
+                     IO ImageResolution
 getImageResolution filepath filetype = GD.imageSize =<< loadImage filepath filetype
 
 calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
@@ -224,7 +236,13 @@ resizeImage from to maxSz ext =
        saveImage to img' ext
        return outSz
 
-makeThumbImg :: Int -> FilePath -> FilePath -> String -> ImageResolution -> IO ImageResolution
+-- | Make a thumbnail for an image file
+makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
+               FilePath        ->  -- ^ Source image file
+               FilePath        ->  -- ^ Destination image _name_
+               String          ->  -- ^ Destination file extension
+               ImageResolution ->  -- ^ Width and height of the source file
+               IO ImageResolution -- ^ Width and height of the destination file
 makeThumbImg thumbSize filepath filename filetype (width, height) = do
   unlessM (doesDirectoryExist (thumbDirectory </> filetype)) $
     createDirectory (thumbDirectory </> filetype)
@@ -233,14 +251,17 @@ makeThumbImg thumbSize filepath filename filetype (width, height) = do
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = thumbFilePath thumbSize filetype filename
 
-makeThumbNonImg :: FilePath -> String -> IO ()
+-- | Make a thumbnail for a non-image file
+makeThumbNonImg :: FilePath -> -- ^ Destination file name
+                  String   -> -- ^ Destination file extension
+                  IO ()
 makeThumbNonImg filename filetype = do
   unlessM (doesFileExist $ thumbFilePath 0 filetype filename) $ do
     let defaultIconPath = staticDir </> "icons" </> "default" ++ "." ++ thumbIconExt
         newIconPath     = staticDir </> "icons" </> filetype  ++ "." ++ thumbIconExt
     copyFile defaultIconPath newIconPath
 -------------------------------------------------------------------------------------------------------------------
--- Misc stuff
+-- Access checkers
 -------------------------------------------------------------------------------------------------------------------
 checkAccessToReply :: Maybe (Entity Group) -> Board -> Bool
 checkAccessToReply mgroup boardVal =
@@ -264,7 +285,30 @@ checkViewAccess mgroup boardVal =
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)
+-------------------------------------------------------------------------------------------------------------------
+-- Misc stuff
+-------------------------------------------------------------------------------------------------------------------
+-- | Check if request has X-Requested-With header
+isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
+isAjaxRequest = do
+  maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
+  return $ maybe False (=="XMLHttpRequest") maybeHeader
 
+keyValuesToMap :: (Ord k) => [(k, a)] -> Map.Map k [a]  
+keyValuesToMap = Map.fromListWith (++) . map (\(k,v) -> (k,[v]))
+
+-- | Add UTCTime with Integer seconds
+addUTCTime' :: Int -> UTCTime -> UTCTime
+addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
+
+-- | Remove all HTML tags
+stripTags :: Text -> Text
+stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
+  where textOnly (TagText t) = t
+        textOnly           _ = ""
+-------------------------------------------------------------------------------------------------------------------
+-- Some getters
+-------------------------------------------------------------------------------------------------------------------
 getMaybeGroup :: Maybe (Entity User) -> Handler (Maybe (Entity Group))
 getMaybeGroup muser = case muser of
     Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
@@ -281,31 +325,23 @@ getTimeZone = do
   defaultZone <- extraTimezone <$> getExtra
   timezone    <- lookupSession "timezone"
   return $ maybe defaultZone (read . unpack) timezone
--------------------------------------------------------------------------------------------------------------------    
-fromKey :: forall backend entity. KeyBackend backend entity -> Int64
-fromKey = (\(PersistInt64 n) -> n) . unKey 
 
-toKey :: forall backend entity a. Integral a => a -> KeyBackend backend entity
-toKey i = Key $ PersistInt64 $ fromIntegral i
--------------------------------------------------------------------------------------------------------------------
-whenM :: Monad m => m Bool -> m () -> m ()
-whenM = (. flip when) . (>>=)
-
-unlessM :: Monad m => m Bool -> m () -> m ()
-unlessM = (. flip unless) . (>>=)
--------------------------------------------------------------------------------------------------------------------
-keyValuesToMap :: (Ord k) => [(k, a)] -> Map.Map k [a]  
-keyValuesToMap = Map.fromListWith (++) . map (\(k,v) -> (k,[v]))
-
-isImageFile :: String -> Bool
-isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
-
-addUTCTime' :: Int -> UTCTime -> UTCTime
-addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
+getPosterId :: Handler Text
+getPosterId = do
+  maybePosterId <- lookupSession "posterId"
+  case maybePosterId of
+    Just posterId -> return posterId
+    Nothing       -> do
+      posterId <- liftIO $ pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
+      setSession "posterId" posterId
+      return posterId
 
 getConfig :: forall b. (Config -> b) -> Handler b
 getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
 -------------------------------------------------------------------------------------------------------------------
+-- IP getter
+-------------------------------------------------------------------------------------------------------------------
+-- | Gets IP from X-Real-IP or remote-host header
 getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
   maybeIp <- getIpFromHeader 
@@ -318,40 +354,37 @@ getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
 
 getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
 getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+-------------------------------------------------------------------------------------------------------------------
+-- Keys
+-------------------------------------------------------------------------------------------------------------------
+fromKey :: forall backend entity. KeyBackend backend entity -> Int64
+fromKey = (\(PersistInt64 n) -> n) . unKey 
 
-isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
-isAjaxRequest = do
-  maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
-  return $ maybe False (=="XMLHttpRequest") maybeHeader
+toKey :: forall backend entity a. Integral a => a -> KeyBackend backend entity
+toKey i = Key $ PersistInt64 $ fromIntegral i
+-------------------------------------------------------------------------------------------------------------------
+-- Monadic when and unless
+-------------------------------------------------------------------------------------------------------------------
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM = (. flip when) . (>>=)
 
-getCountry :: Text -> Handler (Maybe (Text,Text))
+unlessM :: Monad m => m Bool -> m () -> m ()
+unlessM = (. flip unless) . (>>=)
+-------------------------------------------------------------------------------------------------------------------
+-- Geo IP
+-------------------------------------------------------------------------------------------------------------------  
+getCountry :: Text ->                      -- ^ IP adress
+             Handler (Maybe (Text,Text)) -- ^ (country code, country name)
 getCountry ip = do
   dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
   geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ B.fromString $ unpack ip)
   return $ ((p . geoCountryCode) &&& (p . geoCountryName)) <$> geoIpRes
     where p = pack . B.toString
 
-getCountries :: forall t. [(Entity Post, t)] -> Handler [(Key Post, (Text, Text))]
+getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity post, files) tuples
+               Handler [(Key Post, (Text, Text))] -- ^ [(Post key, (country code, country name))]
 getCountries posts = do
   geoIps' <- forM posts $ \((Entity pId p),_) -> do
     c <- getCountry $ postIp p
     return (pId, c)
   return $ map (second fromJust) $ filter (isJust . snd) geoIps'
--------------------------------------------------------------------------------------------------------------------
-getPosterId :: Handler Text
-getPosterId = do
-  maybePosterId <- lookupSession "posterId"
-  case maybePosterId of
-    Just posterId -> return posterId
-    Nothing       -> do
-      posterId <- liftIO $ pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
-      setSession "posterId" posterId
-      return posterId
--------------------------------------------------------------------------------------------------------------------
-enumerate :: forall b. [b] -> [(Int, b)]
-enumerate = zip [0..]
--------------------------------------------------------------------------------------------------------------------
-stripTags :: Text -> Text
-stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
-  where textOnly (TagText t) = t
-        textOnly           _ = ""

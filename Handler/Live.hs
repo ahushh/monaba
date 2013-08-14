@@ -8,8 +8,8 @@ import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
 getLiveR :: Handler Html
 getLiveR = do
-  muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
+  muser  <- maybeAuth
+  mgroup <- getMaybeGroup muser
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   -------------------------------------------------------------------------------------------------------------------      

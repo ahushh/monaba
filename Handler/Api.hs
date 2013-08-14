@@ -4,7 +4,11 @@ module Handler.Api where
 import           Import
 import           Yesod.Auth
 --------------------------------------------------------------------------------------------------------- 
-getPostsHelper :: YesodDB App [Entity Post] -> Text -> Int -> Text -> HandlerT App IO TypedContent
+getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
+                 Text -> -- ^ Board name
+                 Int  -> -- ^ Thread internal ID
+                 Text -> -- ^ Error string
+                 HandlerT App IO TypedContent
 getPostsHelper selectPosts board thread errorString = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
@@ -79,4 +83,3 @@ getApiPostR board postId = do
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
----------------------------------------------------------------------------------------------------------

@@ -5,8 +5,18 @@ import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
 -------------------------------------------------------------------------------------------------------------
-
-groupsForm :: Html -> MForm Handler (FormResult (Text,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool,Bool), Widget)
+groupsForm :: Html ->
+             MForm Handler (FormResult ( Text -- ^ Group name
+                                       , Bool -- ^ Permission to manage threads
+                                       , Bool -- ^ ... boards
+                                       , Bool -- ^ ... users
+                                       , Bool -- ^ ... config
+                                       , Bool -- ^ Permission to delete posts
+                                       , Bool -- ^ Permission to view admin panel
+                                       , Bool -- ^ Permission to manage bans
+                                       , Bool -- ^ Permission to edit any post
+                                       , Bool -- ^ Permission to use additional markup
+                                       ), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
   (manageThreadRes , manageThreadView) <- mreq checkBoxField "" Nothing

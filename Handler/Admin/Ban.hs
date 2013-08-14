@@ -4,10 +4,16 @@ module Handler.Admin.Ban where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
-
 -------------------------------------------------------------------------------------------------------------
-
-banByIpForm :: Text -> Text -> Html -> MForm Handler (FormResult (Text, Text, Maybe Text, Maybe Int), Widget)
+banByIpForm :: Text -> -- ^ IP adress
+              Text -> -- ^ Board name
+              Html -> -- ^ Extra token
+              MForm Handler (FormResult
+                             ( Text       -- ^ IP
+                             , Text       -- ^ Reason
+                             , Maybe Text -- ^ Board name
+                             , Maybe Int  -- ^ Expires in hours
+                             ), Widget)
 banByIpForm ip board extra = do
   (ipRes     , ipView     ) <- mreq textField  "" (Just ip)
   (reasonRes , reasonView ) <- mreq textField  "" Nothing
@@ -17,7 +23,7 @@ banByIpForm ip board extra = do
       widget = $(widgetFile "admin/ban-form")
   return (result, widget)
                                           
-getBanByIpR :: Text -> Text -> Handler Html    
+getBanByIpR :: Text -> Text -> Handler Html
 getBanByIpR board ip = do
   muser       <- maybeAuth
   permissions <- getPermissions <$> getMaybeGroup muser

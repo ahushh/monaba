@@ -109,6 +109,7 @@ postThreadR board thread = do
       | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText        threadUrl
       | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed      threadUrl
       | otherwise                                         -> do
+        -- save form values in case something goes wrong
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         ip        <- pack <$> getIp
@@ -164,9 +165,12 @@ postThreadR board thread = do
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------
+        -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
         unless (nobump || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
+        -- remember poster name
         when (isJust name) $ setSession "name" (fromMaybe defaultName name)
+        -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"
         case goback of

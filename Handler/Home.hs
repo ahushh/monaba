@@ -12,7 +12,6 @@ getHomeR = do
       Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
       _                 -> return Nothing
     let permissions = maybe [] (groupPermissions . entityVal) mgroup
-
     let group  = (groupName . entityVal) <$> mgroup
     
     boards <- runDB $ selectList ([]::[Filter Board]) []
@@ -47,7 +46,7 @@ getHomeR = do
     newsBoard  <- getConfig configNewsBoard
     showNews   <- getConfig configShowNews
     latestNews <- runDB $ selectList [PostBoard ==. newsBoard, PostParent ==. 0] [Desc PostLocalId, LimitTo showNews]
-    timeZone  <- getTimeZone
+    timeZone   <- getTimeZone
     defaultLayout $ do
         setTitle $ toHtml nameOfTheBoard
         $(widgetFile "homepage")

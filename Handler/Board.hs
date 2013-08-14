@@ -7,7 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
-import           YobaMarkup     (doYobaMarkup)
+import           YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -103,6 +103,7 @@ postBoardR board _ = do
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
       | not $ all (isFileAllowed allowedTypes) files  -> msgRedirect MsgTypeNotAllowed
       | otherwise                                   -> do
+        -- save form values in case something goes wrong
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         -- check ban
@@ -159,7 +160,9 @@ postBoardR board _ = do
           in when (tl >= 0) $
                flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
+        -- remember poster name
         when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
+        -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"
         case goback of

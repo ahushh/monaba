@@ -9,24 +9,31 @@ import qualified Data.Text               as T
 import qualified Data.ByteString         as BS
 import qualified Data.Conduit.List       as CL
 -------------------------------------------------------------------------------------------------------------------
+-- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
+-------------------------------------------------------------------------------------------------------------------
 data GoBackTo = ToThread | ToBoard
     deriving (Show, Read, Eq, Enum, Bounded)
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Board -> Html -> MForm Handler (FormResult ( Maybe Text     -- name
-                                                  , Maybe Text     -- subject
-                                                  , Maybe Textarea -- message
-                                                  , Text           -- password
-                                                  , Maybe Text     -- captcha value
-                                                  , [FormResult (Maybe FileInfo)] -- files
-                                                  , GoBackTo       -- go back to
-                                                  , Maybe Bool)    -- sage (no bump)
-                                       , Board        -> -- boardW
-                                         Bool         -> -- isthreadW
-                                         Maybe Text   -> -- maybeCaptchaInfoW
-                                         Maybe Text   -> -- acaptchaW
-                                         Bool         -> -- enableCaptchaW
-                                         Maybe (Entity User) -> -- muserW
-                                         Widget)
+-- Forms
+-------------------------------------------------------------------------------------------------------------------
+postForm :: Board -> -- ^ Board value
+           Html  -> -- ^ Extra token
+           MForm Handler (FormResult ( Maybe Text     -- ^ Poster name
+                                     , Maybe Text     -- ^ Thread subject
+                                     , Maybe Textarea -- ^ Message
+                                     , Text           -- ^ Password
+                                     , Maybe Text     -- ^ Captcha value
+                                     , [FormResult (Maybe FileInfo)] -- ^ Files
+                                     , GoBackTo       -- ^ Go back to
+                                     , Maybe Bool     -- ^ No bump
+                                     )
+                         , Board        -> -- ^ boardW
+                           Bool         -> -- ^ isthreadW
+                           Maybe Text   -> -- ^ maybeCaptchaInfoW
+                           Maybe Text   -> -- ^ acaptchaW
+                           Bool         -> -- ^ enableCaptchaW
+                           Maybe (Entity User) -> -- ^ muserW
+                           Widget)
 postForm boardVal extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
@@ -74,6 +81,8 @@ editForm extra = do
       widget = $(widgetFile "edit-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
+-- Helpers
+-------------------------------------------------------------------------------------------------------------------
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypes
 isFileAllowed _            _                      = True
@@ -87,7 +96,10 @@ noFiles files = all (\(FormSuccess f) -> isNothing f) files
 tooLongMessage :: Int -> Textarea -> Bool
 tooLongMessage maxLen message = maxLen <= T.length (unTextarea message)
 -------------------------------------------------------------------------------------------------------------------
-insertFiles :: [FormResult (Maybe FileInfo)] -> Int -> Key Post -> HandlerT App IO ()
+insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
+               Int      -> -- ^ Thumbnail height and width
+               Key Post -> -- ^ Post key
+               HandlerT App IO ()
 insertFiles []    _           _      = return ()
 insertFiles files thumbSize postId = forM_ files (\formfile ->
   case formfile of
@@ -123,13 +135,17 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
         where filetype = typeOfFile f
     _                    -> return ())
 -------------------------------------------------------------------------------------------------------------------
-bumpThread :: Text -> Int -> UTCTime -> HandlerT App IO ()
+bumpThread :: Text    -> -- ^ Board name
+             Int     -> -- ^ Thread internal ID
+             UTCTime -> -- ^ Up the thread to this time
+             HandlerT App IO ()
 bumpThread board thread now = do
   maybeThread <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybeThread of
     Just (Entity thrId _) -> runDB $ update thrId [PostBumped =. Just now]
     _                     -> error "pattern matching failed at bumpThread"
 -------------------------------------------------------------------------------------------------------------------
+-- | Check if ban expired
 isBanExpired :: Entity Ban -> Handler Bool
 isBanExpired (Entity banId ban) = do
   case banExpires ban of
@@ -140,6 +156,8 @@ isBanExpired (Entity banId ban) = do
         then runDB (delete banId) >> return True
         else return False
 -------------------------------------------------------------------------------------------------------------------      
+-- | If ajax request, redirects to page that makes JSON from message and status string.
+--   If regular request, redirects to given URL.
 trickyRedirect :: forall (m :: * -> *) b msg url.
                   (RedirectUrl
                    (HandlerSite m)

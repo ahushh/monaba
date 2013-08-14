@@ -9,7 +9,12 @@ import qualified Data.Text         as T
 -------------------------------------------------------------------------------------------------------------
 -- Users
 -------------------------------------------------------------------------------------------------------------
-usersForm :: [(Text,Text)] -> Html -> MForm Handler (FormResult (Text, Text, Text), Widget)
+usersForm :: [(Text,Text)] -> -- ^ [(group name, group name)]
+            Html          -> -- ^ Extra token
+            MForm Handler (FormResult ( Text -- ^ User name
+                                      , Text -- ^ User password
+                                      , Text -- ^ User group
+                                      ), Widget)
 usersForm groups extra = do
   (userNameRes     , userNameView     ) <- mreq textField                "" Nothing
   (userPasswordRes , userPasswordView ) <- mreq textField                "" Nothing

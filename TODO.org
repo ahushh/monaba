@@ -159,7 +159,8 @@
 *** DONE user groups
     CLOSED: [2013-08-05 Пн 09:44]
 ** TODO fix JS and stylesheet loading
-** TODO truncate message using JS
+** DONE message abbreviation
+   CLOSED: [2013-08-14 Ср 20:46]
 ** TODO search
 ** TODO thread catalog
 ** TODO black/spam list

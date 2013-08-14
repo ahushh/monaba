@@ -281,6 +281,9 @@ ReplyIcon: Reply
 RemoveFileIcon: Remove file
 CloseIcon: Close
 
+PostMessageIsTooLong: Message is too long.
+ExpandPost: Show full.
+ShrinkPost: Shrink message.
 ######################################################################################
 #### Settings
 ######################################################################################

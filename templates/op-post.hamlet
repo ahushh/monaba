@@ -73,7 +73,9 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       $else
                           <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
 
-          <blockquote>^{markupWidget $ postMessage $ entityVal $ eOpPostW}
+          $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
+              <div .message>#{m}
+
           $maybe lm <- postLastModified $ entityVal eOpPostW
               <span .last-modified>
                   <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}

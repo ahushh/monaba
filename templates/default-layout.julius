@@ -99,7 +99,7 @@ function addEmbeddedPlayer(post) {
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         var first = true;
-        $('#'+postId+' blockquote a').each(function(j, link) {
+        $('#'+postId+' .message a').each(function(j, link) {
             var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/;
             var result = regex.exec(link.text);
             if (!result) return true;
@@ -108,7 +108,7 @@ function addEmbeddedPlayer(post) {
 
             var first1 = false;
             if (first) {
-                $('#'+postId+' blockquote').prepend('<div class=video-container></div>');
+                $('#'+postId+' .message').prepend('<div class=video-container></div>');
                 first = false;
                 first1 = true;
             }
@@ -204,6 +204,24 @@ function closePopupMessage() {
     $('#popupMessage').fadeOut(300);
 }
 //-----------------------------------------------------------------
+function expandPost(postId) {
+    if ($('#'+postId+' .full-message').length == 0)
+        postId = 'popup-'+postId;
+    $('#'+postId+' .full-message').show();
+    $('#'+postId+' .abbr-message').hide();
+    $('#'+postId+' .expand-post').hide();
+    $('#'+postId+' .shrink-post').show();
+}
+
+function shrinkPost(postId) {
+    if ($('#'+postId+' .full-message').length == 0)
+        postId = 'popup-'+postId;
+    $('#'+postId+' .full-message').hide();
+    $('#'+postId+' .abbr-message').show();
+    $('#'+postId+' .expand-post').show();
+    $('#'+postId+' .shrink-post').hide();
+}
+//-----------------------------------------------------------------
 function doImageExpanding(post) {
     var parent = post ? ("#"+post+" ") : "";
     $(parent+'.file, '+parent+'.multi-file').each(function() {
@@ -266,7 +284,7 @@ function doRefMap(post) {
         var board  = extractBoard( $(this).attr('id') );
         var threadId = extractThread( $(this).attr('id') );
         
-        var links  = $(this).find('blockquote a').get();
+        var links  = $(this).find('.message a').get();
         for (var i = 0; i < links.length; i++) {
             var match = /(?:##|&gt;&gt;)(\d+)/.exec( $(links[i]).html() );
             if (match) {
@@ -535,7 +553,7 @@ function showEditForm(postId, realId) {
         if (raw) {
             $('#edit-form textarea').val(raw).trigger('autosize.resize');
         } else { // for old posts only
-            var msg = $('#'+postId+' blockquote').clone();
+            var msg = $('#'+postId+' .message').clone();
             msg.find("br").replaceWith('\n');
             $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ).trigger('autosize.resize');
         }

@@ -30,12 +30,13 @@ infixr 5 <>
 (<>) = mappend
 #endif
 -------------------------------------------------------------------------------------------------------------------
-import Data.Time     as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
-import Data.Maybe    as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
-import Data.List     as Import (nub, intercalate)
-import Control.Monad as Import (unless, when, forM, forM_, void, join)
-import Control.Arrow as Import (second, first, (&&&), (***))
-import ModelTypes    as Import 
+import Text.Blaze.Html as Import (preEscapedToHtml)
+import Data.Time       as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
+import Data.Maybe      as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
+import Data.List       as Import (nub, intercalate)
+import Control.Monad   as Import (unless, when, forM, forM_, void, join)
+import Control.Arrow   as Import (second, first, (&&&), (***))
+import ModelTypes      as Import 
 -------------------------------------------------------------------------------------------------------------------
 import           System.FilePath         ((</>))
 import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
@@ -47,7 +48,6 @@ import qualified Graphics.GD             as GD
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
 import           GHC.Int                 (Int64)
-import           Text.Blaze.Html         (preEscapedToHtml)
 import           Data.Char               (toLower)
 import           Data.Time               (addUTCTime, secondsToDiffTime)
 import qualified Data.Map.Strict          as Map
@@ -58,7 +58,7 @@ import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 
-import qualified Data.Text               as T (concat, toLower, append)
+import qualified Data.Text               as T (concat, toLower, append, take, length)
 
 import           Data.Geolocation.GeoIP
 
@@ -67,6 +67,14 @@ import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag
 type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
+-------------------------------------------------------------------------------------------------------------------
+checkAbbr :: Int  -> -- ^ Message length
+            Bool -> -- ^ Show full message
+            Bool
+checkAbbr len t = len > postAbbrLength && not t
+
+postAbbrLength :: Int
+postAbbrLength = 1500
 -------------------------------------------------------------------------------------------------------------------
 myFormatTime :: Int -> UTCTime -> String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
@@ -85,9 +93,6 @@ truncateFileName s = if len > maxLen then result else s
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-markupWidget :: Textarea -> Widget
-markupWidget = toWidget . preEscapedToHtml . unTextarea
-
 opPostWidget :: Maybe (Entity User)   ->
                Entity Post           ->
                [Entity Attachedfile] ->
@@ -102,13 +107,14 @@ opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoI
 replyPostWidget :: Maybe (Entity User)   ->
                   Entity Post           ->
                   [Entity Attachedfile] ->
+                  Bool                  -> -- show full or abbreviated replies
                   Bool                  -> -- show or not extra buttons such as [>]
                   Bool                  -> -- show or not parent thread in the corner
                   [Permission]          ->
                   [(Key Post,(Text,Text))]  -> -- (key, (country code, country name))
                   Int                   -> -- time offset in seconds
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+replyPostWidget muserW eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")

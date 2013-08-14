@@ -282,3 +282,12 @@ ul {
     margin: 0;
     padding: 0 0 0 15px;
 }
+
+.message {
+    padding: 8px 10px;
+}
+
+.expand-post, .shrink-post {
+    padding-left: 8px;
+    color: #666666;
+}

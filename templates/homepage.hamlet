@@ -24,4 +24,6 @@
                             <strong>#{postTitle t}</strong>
                             <time>#{myFormatTime timeZone $ postDate t}
                     &nbsp;&nbsp;
-                    <blockquote>^{markupWidget $ postMessage t}
+                    $with m <- preEscapedToHtml $ unTextarea $ postMessage t
+                        <div .message>#{m}
+

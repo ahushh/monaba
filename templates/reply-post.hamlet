@@ -61,8 +61,20 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                         $else
                             <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
 
-            <blockquote>^{markupWidget $ postMessage $ entityVal eReplyW}
-            $maybe lm <- postLastModified $ entityVal eReplyW
+            $with m <- unTextarea $ postMessage $ entityVal eReplyW
+                $if checkAbbr (T.length m) isInThreadW
+                    <div .message .full-message style=display:none>#{preEscapedToHtml m}
+                    <div .message .abbr-message>#{preEscapedToHtml $ (flip T.append) "…" $ T.take postAbbrLength m}
+                    <span .expand-post>
+                        _{MsgPostMessageIsTooLong}
+                        <a onclick="expandPost('post-#{post}-#{thread}-#{board}');">_{MsgExpandPost}
+                        <br>
+                    <span style=display:none .shrink-post>
+                        <a onclick="shrinkPost('post-#{post}-#{thread}-#{board}');">_{MsgShrinkPost}
+                        <br>
+                $else
+                    <div .message>#{preEscapedToHtml m}
+         $maybe lm <- postLastModified $ entityVal eReplyW
                 <span .last-modified>
                     <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}
                     <br>

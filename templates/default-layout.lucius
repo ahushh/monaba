@@ -12,10 +12,6 @@ hr {
    clear: left;
 }
 
-blockquote {
-    margin-left: 25px;
-}
-
 [class^="icon-"], [class*=" icon-"] {
   vertical-align: text-top;
   background-image: url(@{StaticR img_glyphicons_png});
@@ -288,8 +284,15 @@ ul {
     padding: 8px 10px;
 }
 
-.expand-post, .shrink-post {
+.expand-post {
+    padding: 3px 0 0 8px;
+}
+
+.shrink-post {
     padding-left: 8px;
+}
+
+.expand-post, .shrink-post {
     color: #666666;
 }
 
@@ -298,3 +301,9 @@ ul {
     width:90%;
     padding: 5px;
 }
+
+.abbreviated {
+    max-height: 250px;
+    overflow:hidden;
+}
+

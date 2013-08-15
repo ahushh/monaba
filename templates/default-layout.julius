@@ -175,19 +175,17 @@ function closePopupMessage() {
 }
 //-----------------------------------------------------------------
 function expandPost(postId) {
-    if ($('#'+postId+' .full-message').length == 0)
+    if ($('#'+postId+' .message.abbreviated').length == 0)
         postId = 'popup-'+postId;
-    $('#'+postId+' .full-message').show();
-    $('#'+postId+' .abbr-message').hide();
+    $('#'+postId+' .message.abbreviated').removeClass('abbreviated');
     $('#'+postId+' .expand-post').hide();
     $('#'+postId+' .shrink-post').show();
 }
 
 function shrinkPost(postId) {
-    if ($('#'+postId+' .full-message').length == 0)
+    if ($('#'+postId+' .message').length == 0)
         postId = 'popup-'+postId;
-    $('#'+postId+' .full-message').hide();
-    $('#'+postId+' .abbr-message').show();
+    $('#'+postId+' .message').addClass('abbreviated');
     $('#'+postId+' .expand-post').show();
     $('#'+postId+' .shrink-post').hide();
 }

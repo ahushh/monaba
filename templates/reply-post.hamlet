@@ -63,13 +63,12 @@ $with post <- show $ postLocalId $ entityVal eReplyW
 
             $with m <- unTextarea $ postMessage $ entityVal eReplyW
                 $if checkAbbr (T.length m) isInThreadW
-                    <div .message .full-message style=display:none>#{preEscapedToHtml m}
-                    <div .message .abbr-message>#{preEscapedToHtml $ (flip T.append) "…" $ T.take postAbbrLength m}
-                    <span .expand-post>
+                    <div .message .abbreviated>#{preEscapedToHtml m}
+                    <div .expand-post>
                         _{MsgPostMessageIsTooLong}
                         <a onclick="expandPost('post-#{post}-#{thread}-#{board}');">_{MsgExpandPost}
                         <br>
-                    <span style=display:none .shrink-post>
+                    <div style=display:none .shrink-post>
                         <a onclick="shrinkPost('post-#{post}-#{thread}-#{board}');">_{MsgShrinkPost}
                         <br>
                 $else

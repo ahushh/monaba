@@ -35,12 +35,12 @@ $newline never
             <header>
             <div id="main" role="main">
               ^{pageBody pc}
-        <footer>
-            <a href=https://github.com/ahushh/Monaba>Monaba 0.0.1</a>
-            <br>
-            Powered by <a href=http://www.yesodweb.com/>Yesod</a>
-            <br>
-            #{extraCopyright $ appExtra $ settings master}
+            <footer>
+                <a href=https://github.com/ahushh/Monaba>Monaba 0.0.1</a>
+                <br>
+                Powered by <a href=http://www.yesodweb.com/>Yesod</a>
+                <br>
+                #{extraCopyright $ appExtra $ settings master}
 
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>

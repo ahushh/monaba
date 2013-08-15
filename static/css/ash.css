@@ -6,6 +6,11 @@ html, body {
     padding: 10px;
 }
 
+footer {
+    background-color: #E0E0E0;
+    color: #333333;
+}
+
 form {
     font-size: 0.9em;
 }
@@ -26,7 +31,8 @@ input.submit {
 } 
 
 .time {
-    text-size: 0.9em;
+    font-size: 0.8em;
+    color: #666666;
 }
 
 a {
@@ -101,7 +107,7 @@ footer {
 }
 
 .reply-title {
-    color: #002244;
+    color: #002256;
     font-size: 1em;
     font-weight: bold;
 }
@@ -199,4 +205,8 @@ pre {
 
 .expand-post {
     color: #666666;
+}
+
+.quote {
+    color: #206620 !important;
 }

@@ -35,10 +35,6 @@ input.submit {
     padding: 5px;
 }
 
-.time {
-    text-size: 0.9em;
-}
-
 a {
     color: #0000EE;
     padding: 0px;
@@ -194,4 +190,10 @@ pre {
 
 .expand-post {
     color: #666666;
+}
+
+.reply-title {
+    color: #CC1105;
+    font-size: 1.1em;
+    font-weight: bold;
 }

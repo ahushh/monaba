@@ -1,7 +1,6 @@
 <br>
 <div id="board-header"> #{nameOfTheBoard} - #{board}
 <br>
-<hr>
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
 <br>
 <form .delete-form method=get action=@{DeleteR}>

@@ -1,6 +1,4 @@
 <br>
-<hr>
-<br>
 <div #edit-history-header>
    _{MsgEditingHistoryOfPost (postLocalId post)}
    <br>
@@ -10,7 +8,6 @@
    $else
        <a href=@{ThreadR (boardName board) (postParent post)}>_{MsgToThread}</a>/<a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}</a>
    ]
-<hr>
 <br>
 $forall (date, msg) <- history
     <div .hist-date>

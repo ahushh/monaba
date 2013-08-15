@@ -11,7 +11,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <img src=#{geoIconPath code} title=#{name}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}
                 <span .poster-name>#{postName $ entityVal eReplyW}
-                <time>#{myFormatTime tOffsetW $ postDate $ entityVal eReplyW}
+                <span .time>#{myFormatTime tOffsetW $ postDate $ entityVal eReplyW}
                 <span .reflink>
                     $if canPostW
                         <a onclick=highlightPost('post-#{post}-#{thread}-#{board}') href=@{ThreadR board (read thread)}##{post}>No.

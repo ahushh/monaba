@@ -11,4 +11,3 @@
     $if elem ManageConfigP permissionsW
         <a href=@{ConfigR}>_{MsgConfig}</a> |
     <a href=@{AccountR}>_{MsgAccount}
-<hr>

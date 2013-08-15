@@ -35,7 +35,7 @@ input.submit {
     padding: 5px;
 }
 
-time {
+.time {
     text-size: 0.9em;
 }
 
@@ -61,11 +61,8 @@ footer {
     font-size: 12px;
     margin: 2em 0pt 0pt;
     text-align: center;
-}
-
-blockquote {
-    line-height: 1.3em;
-    margin: 0.5em 0.5em 0.5em 1em;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
 }
 
 .reflink {
@@ -85,43 +82,29 @@ blockquote {
 
 .reply-post {
     background: none repeat scroll 0% 0% #F0E0D6;
-    border-radius: 5px 5px 5px 5px;
     border: 1px solid #DDCCC5;
-    margin: 3px;
+    margin: 4px;
     padding: 5px;
 }
 
 .popup-post {
     background: none repeat scroll 0% 0% #F0E0D6;
-    border-radius: 5px 5px 5px 5px;
     border: 1px solid #DDCCC5;
-    margin: 3px;
+    margin: 4px;
     padding: 5px;
 }
 
 .highlighted-post {
     background: none repeat scroll 0% 0% #EEDACB;
-    border-radius: 5px 5px 5px 5px;
     border: 2px dashed #EE6600;
-    margin: 3px;
+    margin: 4px;
     padding: 5px;
 }
 
 .thread {
     margin: 2px;
-    padding: 2px;
-}
-
-.highlighted-post blockquote {
-    margin: 0.5em;
-}
-
-.popup-post blockquote {
-    margin: 0.5em;
-}
-
-.reply-post blockquote {
-    margin: 0.5em;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding: 25px 2px;
 }
 
 .reply-title {
@@ -131,8 +114,7 @@ blockquote {
 }
 
 hr {
-    border-color: #BBBBBB;
-    border-style: solid none none;
+    border-style: solid none #BBBBBB;
     border-width: 1px;
 }
 
@@ -174,21 +156,38 @@ pre {
 
 #popupMessage {
     background: none repeat scroll 0% 0% #F0E0D6;
-    border-radius: 5px 5px 5px 5px;
     border: 1px solid #DDCCC5;
 }
 
 .quick-post-form {
     background: none repeat scroll 0% 0% #F0E0D6;
-    border-radius: 5px 5px 5px 5px;
     border: 1px solid #DDCCC5;
     padding: 5px;
 }
 
 .hist-msg {
     backg1round: none repeat scroll 0% 0% #F0E0D6;
-    border-radius: 5px 5px 5px 5px;
     border: 1px solid #DDCCC5;
-    margin: 3px;
+    margin: 4px;
     padding: 5px;
+}
+
+.admin-navbar {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    margin-bottom: 10px;
+    padding: 3px;
+    background-color: #F0E0D6;
+}
+
+#delete-container {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
+}
+
+.show-plain-form {
+    margin-bottom: 10px;
+}
+
+.markup-wrapper {
+    background-color: #F0E0D6;
 }

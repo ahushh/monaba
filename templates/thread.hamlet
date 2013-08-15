@@ -10,7 +10,6 @@ $else
         <div id="board-long-desc">#{boardLongDesc}
     <div id="board-subtitle">#{pagetitle}
 <br>
-<hr>
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 <br>
 $if hasAccessToReply
@@ -18,18 +17,16 @@ $if hasAccessToReply
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
-<hr>
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
         ^{opPostWidget muser eOpPost opPostFiles True True permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
             ^{replyPostWidget muser eReply files True True False permissions geoIps timeZone}
-    <br>
+    <br clear=both>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
-    <hr>
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
     <div #delete-container>
         <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}

@@ -25,7 +25,6 @@ textarea {
   margin: 10px 10%;
   border: 0px;
   padding: 5px;
-  display: none;
 }
 
 .close-post-form {

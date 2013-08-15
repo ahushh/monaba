@@ -10,7 +10,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   <img src=#{geoIconPath code} title=#{name}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
               <span .poster-name>#{postName $ entityVal eOpPostW}
-              <time>#{myFormatTime tOffsetW $ postDate $ entityVal $ eOpPostW}
+              <span .time>#{myFormatTime tOffsetW $ postDate $ entityVal $ eOpPostW}
               <div .thread-status>
                   $if postSticked $ entityVal $ eOpPostW
                       <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>

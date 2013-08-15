@@ -5,16 +5,14 @@ $if not $ T.null boardLongDesc
     <div id="board-long-desc">#{boardLongDesc}
 <br>
 $if hasAccessToNewThread
-    <hr>
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
     ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
-<hr>
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}
 $else
-    <form #delete-form method=get action=@{DeleteR}>
+    <form .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
                 ^{opPostWidget muser eOpPost opPostFiles False True permissions geoIps timeZone}
@@ -29,7 +27,6 @@ $else
                     ^{replyPostWidget muser ePreview previewFiles False True False permissions geoIps timeZone}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
-            <hr>
         <div #delete-container>
             <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}
             <br>

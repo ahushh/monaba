@@ -1,5 +1,4 @@
 <br>
-<hr>
 <h2 style=text-align:center>_{MsgSettings}
 <div style="margin-left:30px">
   <form #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>

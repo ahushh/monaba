@@ -20,9 +20,3 @@ $maybe msg <- mmsg
           ] 
 
 ^{widget}
-<br>
-<hr>
-<footer>
-    <a href=https://github.com/ahushh/Monaba>Monaba 0.0.1</a>
-    <br>
-    Powered by <a href=http://www.yesodweb.com/>Yesod</a>

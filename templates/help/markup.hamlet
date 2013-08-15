@@ -1,8 +1,7 @@
 <br>
-<hr>
 <h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
 <br>
-<div style="margin:0 auto; width:90%;">
+<div .markup-wrapper>
     $if elem AdditionalMarkupP permissions
         <p style=text-align:center><strong>_{MsgAdditionalMarkup}</strong>
         <table>

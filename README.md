@@ -13,7 +13,7 @@ Dependencies
 
 Installation
 ------
-Change config/settings.yml if you want.
+Edit config/settings.yml
 
 **Download GeoIPCity:**
 
@@ -40,6 +40,9 @@ Set your path to GeSHi in highlight.php
     apt-get install sqlite3
 
 **Build:**
-
+    cabal install hsenv
+    hsenv
+    source .hsenv/bin/activate
+    cabal install yesod-bin
     cabal install --only-dependencies
     cabal clean && yesod configure && yesod build

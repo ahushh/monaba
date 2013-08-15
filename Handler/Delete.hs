@@ -16,8 +16,10 @@ getDeletedByOpR board thread = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
-  let permissions   = getPermissions mgroup
-      geoIpEnabled  = boardEnableGeoIp   boardVal
+  let permissions   = getPermissions       mgroup
+      geoIpEnabled  = boardEnableGeoIp     boardVal
+      boardDesc     = boardDescription     boardVal
+      boardLongDesc = boardLongDescription boardVal
   when (boardOpModeration boardVal == False) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -36,7 +38,7 @@ getDeletedByOpR board thread = do
   timeZone      <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", board, " — ", msgrender MsgDeletedPosts]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgDeletedPosts]
     $(widgetFile "deleted")
 
 getDeleteR :: Handler Html

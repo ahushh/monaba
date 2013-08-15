@@ -1,5 +1,7 @@
 <br>
-<div id="board-header"> #{nameOfTheBoard} - #{board}
+<div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+$if not $ T.null boardLongDesc
+    <div id="board-long-desc">#{boardLongDesc}
 <br>
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
 <br>

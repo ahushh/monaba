@@ -55,9 +55,9 @@ getThreadR board thread = do
       eOpPost         = fst $ head allPosts
       opPostFiles     = snd $ head allPosts
       pt              = postTitle  $ entityVal eOpPost
-      pm              = unTextarea $ postMessage $ entityVal eOpPost
+      pm              = stripTags $ unTextarea $ postMessage $ entityVal eOpPost
       pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = flip T.append "…" $ T.take 60 $ stripTags pm
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > 60 then flip T.append "…" $ T.take 60 pm else pm
                 | otherwise                                     = ""
   -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])

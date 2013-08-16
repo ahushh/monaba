@@ -17,7 +17,7 @@ Board
     name              Text
     BoardUniqName     name
     description       Text
-    longDescription   Text    default=""
+    longDescription   Text
     bumpLimit         Int
     numberFiles       Int
     allowedTypes      [String]
@@ -29,14 +29,14 @@ Board
     hidden            Bool
     enableCaptcha     Bool
     threadLimit       Int      default=-1
-    opFile            Text     default='Enabled'
-    replyFile         Text     default='Enabled'
-    viewAccess        [Text]   Maybe default=null -- group names
-    replyAccess       [Text]   Maybe default=null -- group names
-    threadAccess      [Text]   Maybe default=null -- group names
+    opFile            Text     
+    replyFile         Text     
+    viewAccess        [Text]   Maybe -- group names
+    replyAccess       [Text]   Maybe -- group names
+    threadAccess      [Text]   Maybe -- group names
     category          Text     Maybe
     opModeration      Bool     default=0
-    extraRules        [Text]   default='["s"]'
+    extraRules        [Text]   
     enableGeoIp       Bool     default=0
     opEditing         Bool     default=0
     postEditing       Bool     default=0
@@ -46,7 +46,7 @@ Post
     board        Text
     localId      Int
     parent       Int
-    owner        Text Maybe default=null
+    owner        Text Maybe
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text
@@ -55,11 +55,11 @@ Post
     autosage     Bool
     deleted      Bool default=0
     deletedByOp  Bool default=0
-    posterId     Text default="nope"
+    posterId     Text 
     lastModified UTCTime Maybe default=null
     -- form's values
     message      Textarea
-    rawMessage   Text default=""
+    rawMessage   Text
     title        Text
     name         Text
     password     Text
@@ -83,7 +83,7 @@ Attachedfile
     thumbHeight  Int      default=-1   -- real thumb height
     width        Int      default=-1   -- real image width
     height       Int      default=-1   -- real image height
-    size         Text     default='1KB' -- formatted file size
+    size         Text                  -- formatted file size
     deriving     Typeable
 Ban
     ip           Text
@@ -105,7 +105,7 @@ Config
     replyDelay      Int
     threadDelay     Int 
     boardCategories [Text]
-    newsBoard       Text default=news
+    newsBoard       Text
     showNews        Int  default=2
     maxEditings     Int  default=10
     showLatestPosts Int  default=15

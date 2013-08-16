@@ -9,11 +9,11 @@ Dependencies
 * cabal-install
 * PHP 5
 * GD image library
-* SQLite 3
+* MySQL 5
 
 Installation
 ------
-Edit config/settings.yml
+Edit config/settings.yml and config/mysql.yml
 
 **Download GeoIPCity:**
 
@@ -37,12 +37,25 @@ Set your path to GeSHi in highlight.php
     apt-get install cabal-install
     apt-get install php5
     apt-get install libgd-dev
-    apt-get install sqlite3
+    apt-get install mysql-server
 
 **Build:**
+
     cabal install hsenv
     hsenv
     source .hsenv/bin/activate
     cabal install yesod-bin
     cabal install --only-dependencies
     cabal clean && yesod configure && yesod build
+
+Compilation will take about half an hour and probably run out of memory. You might need to enable swap.
+
+**Run:**
+
+    ./dist/build/Monaba/Monaba production
+
+Now you need to initialize database with default values:
+
+    mysql -u mysqluser -pmysqlpassword -e 'use Monaba_production; source init-db.sql;'
+
+Use "admin" both for username and for password to log in.

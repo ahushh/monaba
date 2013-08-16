@@ -307,3 +307,6 @@ ul {
     overflow:hidden;
 }
 
+#delete-container {
+    clear: both;
+}

@@ -212,6 +212,7 @@ ConfigUpdated: Настройки обновлены
 
 ### Permissions
 Permissions: Права
+ViewIPAndID: Просматривать IP и ID постеров
 ManageThread: Управление тредами
 ManageBoard : Управление бордами
 ManageUsers : Управление пользователями

@@ -213,6 +213,7 @@ ConfigUpdated: Config successufly updated
 
 ### Permissions
 Permissions: Permissions
+ViewIPAndID: View poster's IP and ID
 ManageThread:Manage Thread
 ManageBoard :Manage Board
 ManageUsers :Manage Users

@@ -14,6 +14,7 @@ data Permission = ManageThreadP |
                   ManagePanelP  |
                   ManageBanP    |
                   EditPostsP    |
+                  ViewIPAndIDP  |
                   AdditionalMarkupP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            

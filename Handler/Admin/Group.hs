@@ -16,6 +16,7 @@ groupsForm :: Html ->
                                        , Bool -- ^ Permission to manage bans
                                        , Bool -- ^ Permission to edit any post
                                        , Bool -- ^ Permission to use additional markup
+                                       , Bool -- ^ Permission to view poster's IP and ID
                                        ), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
@@ -23,16 +24,18 @@ groupsForm extra = do
   (manageBoardRes  , manageBoardView ) <- mreq checkBoxField "" Nothing
   (manageUsersRes  , manageUsersView ) <- mreq checkBoxField "" Nothing
   (manageConfigRes , manageConfigView) <- mreq checkBoxField "" Nothing
-  (deletePostsRes  , deletePostsView ) <- mreq checkBoxField "" Nothing    
+  (deletePostsRes  , deletePostsView ) <- mreq checkBoxField "" Nothing
   (managePanelRes  , managePanelView ) <- mreq checkBoxField "" Nothing
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
   (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
-  (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing    
+  (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing
+  (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing  
 
-  let result = (,,,,,,,,,)     <$> nameRes        <*>
+  let result = (,,,,,,,,,,)    <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes    <*> editPostsRes   <*> aMarkupRes
+               manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
+               viewIPAndIDRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -47,6 +50,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ManageBanP    , MsgManageBan   )
              ,(EditPostsP    , MsgEditPosts   )
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
+             ,(ViewIPAndIDP  , MsgViewIPAndID )
              ]
 
 getManageGroupsR :: Handler Html
@@ -74,11 +78,12 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (name        , manageThread, manageBoard, manageUsers,
                  manageConfig, deletePostsP, managePanel, manageBan  ,
-                 editPosts   , aMarkup
+                 editPosts   , aMarkup     , viewIPAndID
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
+                        ,(ViewIPAndIDP ,viewIPAndID )
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

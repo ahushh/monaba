@@ -28,13 +28,17 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   <span .extra-buttons>
                       <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
               &nbsp;&nbsp;
-              <span .cpanel>
-                  $if not $ isInThreadW
-                      [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
-                      &nbsp;&nbsp;
+              $if not $ isInThreadW
+                  [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
+                  &nbsp;&nbsp;
+              $if elem ViewIPAndIDP permissionsW
+                  <span .ip-and-id>
+                      IP: #{postIp $ entityVal $ eOpPostW}
+                      UID: #{postPosterId $ entityVal $ eOpPostW}
+              <div .cpanel>
+                  $if elem ManageBanP permissionsW
+                      \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]
                   $if elem ManageThreadP permissionsW
-                      [ #{postIp $ entityVal $ eOpPostW} ] #
-                      \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]   
                       \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
                       \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
                       \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]

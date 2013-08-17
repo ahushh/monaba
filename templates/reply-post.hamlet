@@ -21,9 +21,12 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                 $if canPostW
                     <span .extra-buttons>
                         <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{post}-#{thread}-#{board}');insert('>>#{post}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
-                <span .cpanel>
-                    $if elem ManageThreadP permissionsW
-                        [ #{postIp $ entityVal eReplyW} ] 
+                $if elem ViewIPAndIDP permissionsW
+                    <span .ip-and-id>
+                        IP: #{postIp $ entityVal eReplyW}
+                        UID: #{postPosterId $ entityVal eReplyW}
+                <div .cpanel>
+                    $if elem ManageBanP permissionsW
                         \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
                 $if showThreadW
                     <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>#{thread}

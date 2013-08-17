@@ -205,6 +205,8 @@ instance Yesod App where
     isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
 
     isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
+    isAuthorized HellBanR          _ = isAuthorized' HellBanP
+    isAuthorized (HellBanDoR _ _ _)_ = isAuthorized' HellBanP
     -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
     -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP
     -- isAuthorized (ManageBoardsR _) True  = isAuthorized' ManageBoardP
@@ -256,6 +258,14 @@ isAuthorized' permission = do
       if permission `elem` groupPermissions (entityVal $ fromJust group)
         then return Authorized
         else return $ Unauthorized "Not permitted"
+
+instance PathPiece Bool where
+  toPathPiece True  = "True"
+  toPathPiece False = "False"
+  fromPathPiece s =
+    case reads $ T.unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
 
 -- How to run database actions.
 instance YesodPersist App where

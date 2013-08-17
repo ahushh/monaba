@@ -70,7 +70,7 @@ getThreadR board thread = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
-  timeZone        <- getTimeZone
+  timeZone         <- getTimeZone
 
   posterId         <- getPosterId  
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
@@ -138,6 +138,7 @@ postThreadR board thread = do
             trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
         posterId         <- getPosterId
+        hellbanned       <- (>0) <$> runDB (count [HellbanUserId ==. posterId])
         messageFormatted <- doYobaMarkup message board thread
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- reply to non-existent thread
@@ -160,6 +161,7 @@ postThreadR board thread = do
                            , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = (pack . show . userGroup . entityVal) <$> muser
+                           , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            }

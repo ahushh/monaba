@@ -68,6 +68,11 @@ type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
+checkHellbanned :: Entity Post -> [Permission] -> Text -> Bool
+checkHellbanned post permissions posterId = not (postHellbanned $ entityVal post) ||
+                                            elem HellBanP permissions           ||
+                                            (postPosterId (entityVal post) == posterId)
+
 checkAbbr :: Int  -> -- ^ Message length
             Bool -> -- ^ Show full message
             Bool
@@ -85,7 +90,7 @@ myFormatTime :: Int     -> -- ^ Time offset in seconds
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 -------------------------------------------------------------------------------------------------------------------
--- | Truncate file name if it's length greater than 47
+-- | Truncate file name if its length is greater than 47
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s
   where maxLen   = 47

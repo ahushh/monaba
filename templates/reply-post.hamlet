@@ -28,6 +28,18 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                 <div .cpanel>
                     $if elem ManageBanP permissionsW
                         \[<a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp $ entityVal eReplyW)}>B</a>]  
+                    $if elem HellBanP permissionsW
+                        &nbsp;[
+                        <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eReplyW) "none" True}>Hellban</a> |
+                        <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eReplyW) "one" False}>Hide</a> |
+                        <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eReplyW) "one" True}>Hide && Hellban</a> |
+                        <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eReplyW) "all" True}>Hide all && Hellban</a> |
+                        <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eReplyW) "show"}>Show</a>
+                        <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eReplyW) "both"}>&&</a>
+                        <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eReplyW) "unban"}>Unhellban</a> 
+                        ]
+                        $if postHellbanned $ entityVal eReplyW
+                            <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
                 $if showThreadW
                     <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>#{thread}
             $forall Entity _ file <- replyFilesW

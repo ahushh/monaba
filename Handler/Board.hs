@@ -72,7 +72,7 @@ getBoardR board page = do
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
-
+  posterId         <- getPosterId
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc]
@@ -131,7 +131,8 @@ postBoardR board _ = do
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
-        posterId <- getPosterId
+        posterId   <- getPosterId
+        hellbanned <- (>0) <$> runDB (count [HellbanUserId ==. posterId])
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted <- doYobaMarkup message board 0
         let newPost = Post { postBoard        = board
@@ -151,6 +152,7 @@ postBoardR board _ = do
                            , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = pack . show . userGroup . entityVal <$> muser
+                           , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }

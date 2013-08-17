@@ -51,3 +51,7 @@
 /admin/account/password    NewPasswordR  POST
 
 /admin/config              ConfigR       GET POST
+
+/admin/hellban                     HellBanR     GET
+/admin/hellban/do/#Int/#Text/#Bool HellBanDoR   GET
+/admin/hellban/undo/#Int/#Text     HellBanUndoR GET

@@ -210,3 +210,13 @@ pre {
 .quote {
     color: #206620 !important;
 }
+
+#next-page {
+    border-right: 1px solid rgba(10, 10, 10, 0.7);
+    padding-right: 5px;
+}
+
+#prev-page {
+    border-left: 1px solid rgba(10, 10, 10, 0.7);
+    padding-left: 5px;
+}

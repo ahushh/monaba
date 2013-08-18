@@ -13,6 +13,7 @@ getLiveR = do
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   -------------------------------------------------------------------------------------------------------------------      
+  posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   let f (Entity _ b) | boardHidden b ||
@@ -21,7 +22,12 @@ getLiveR = do
                        ) = Just $ boardName b
                      | otherwise = Nothing
       boards'  = mapMaybe f boards
-  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts]
+      selectPostsAll = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
+      selectPostsHB  = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False] ||.
+                       [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True
+                       ,PostPosterId ==. posterId]
+      selectPosts    = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+  posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------

@@ -60,6 +60,9 @@ getThreadR board thread = do
                 | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > 60 then flip T.append "…" $ T.take 60 pm else pm
                 | otherwise                                     = ""
   -------------------------------------------------------------------------------------------------------
+  posterId <- getPosterId
+  unless (checkHellbanned eOpPost permissions posterId) notFound
+  -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
   acaptcha  <- lookupSession "acaptcha"
@@ -72,7 +75,6 @@ getThreadR board thread = do
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
 
-  posterId         <- getPosterId  
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent

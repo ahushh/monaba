@@ -42,7 +42,18 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
                       \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
                       \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
-
+                  $if elem HellBanP permissionsW
+                      &nbsp;[
+                      <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "none" True}>Hellban</a> |
+                      <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" False}>Hide</a> |
+                      <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" True}>Hide && Hellban</a> |
+                      <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "all" True}>Hide all && Hellban</a> |
+                      <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "show"}>Show</a>
+                      <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "both"}>&&</a>
+                      <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "unban"}>Unhellban</a>
+                      ]
+                      $if postHellbanned $ entityVal eOpPostW
+                          <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
           $forall Entity _ file <- opPostFilesW
               $if length opPostFilesW == 1
                   <div .file >

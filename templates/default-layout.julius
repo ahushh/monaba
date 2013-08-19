@@ -116,7 +116,7 @@ function addEmbeddedPlayer(post) {
                 $(link).attr('class', 'video-link');
                 $(link).html("<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
                 var loadIframe = function () {
-                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1");
+                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1");
                     $(iframe).addClass('loaded');
                 };
 

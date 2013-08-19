@@ -4,10 +4,44 @@ module Handler.Admin.Hellban where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
-import           Handler.Posting (trickyRedirect)
+import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
-getHellBanR :: Handler Html
-getHellBanR = undefined
+getHellBanNoPageR :: Handler Html
+getHellBanNoPageR = getHellBanR 0
+
+getHellBanR :: Int -> Handler Html
+getHellBanR page = do
+  muser  <- maybeAuth
+  mgroup <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
+      group       = (groupName . entityVal) <$> mgroup
+  -------------------------------------------------------------------------------------------------------------------
+  posterId  <- getPosterId
+  showPosts <- getConfig configShowLatestPosts
+  boards    <- runDB $ selectList ([]::[Filter Board]) []
+  numberOfPosts <- runDB $ count [PostHellbanned ==. True, PostDeleted ==. False]
+  let f (Entity _ b) | ( (isJust (boardViewAccess b) && isNothing group) ||
+                         (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+                       ) = Just $ boardName b
+                     | otherwise = Nothing
+      boards'     = mapMaybe f boards
+      selectPosts = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True]
+      pages       = listPages showPosts numberOfPosts
+  posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]
+  postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
+  let postsAndFiles = zip posts postFiles
+  -------------------------------------------------------------------------------------------------------------------
+  geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
+  let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
+  geoIps <- getCountries $ filter ((`elem`geoIpEnabled) . postBoard . entityVal . fst) postsAndFiles
+  -------------------------------------------------------------------------------------------------------------------
+  nameOfTheBoard  <- extraSiteName <$> getExtra
+  msgrender       <- getMessageRender
+  timeZone        <- getTimeZone
+  defaultLayout $ do
+    setUltDestCurrent
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgHellbanning]
+    $(widgetFile "admin/hellban")
 
 getHellBanDoR :: Int  -> -- ^ Post internal ID
                 Text -> -- ^ 'none' - don't hide this post; 'one' - hide it; 'all' - hide all this user's posts

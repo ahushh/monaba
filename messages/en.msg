@@ -238,6 +238,8 @@ HellbanShowAndUnban: Show this post and unhellban user
 
 PostIsVisibleOnlyForAuthor: This post is visible only for its author
 
+HellbanAllPosts: All hidden posts
+
 ######################################################################################
 #### Help
 ######################################################################################

@@ -24,7 +24,7 @@ getBoardR board page = do
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
   posterId        <- getPosterId
   let numberFiles       = boardNumberFiles       boardVal
       maxMessageLength  = boardMaxMsgLength      boardVal
@@ -35,10 +35,7 @@ getBoardR board page = do
       boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
       ---------------------------------------------------------------------------------
-      pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
-      pagesFix x
-        | numberOfThreads > 0 && numberOfThreads `mod` threadsPerPage == 0 = x - 1
-        | otherwise                                                      = x
+      pages             = listPages threadsPerPage numberOfThreads
       ---------------------------------------------------------------------------------
       selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]

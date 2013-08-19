@@ -205,7 +205,7 @@ instance Yesod App where
     isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
 
     isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
-    isAuthorized HellBanR          _ = isAuthorized' HellBanP
+    isAuthorized (HellBanR   _)    _ = isAuthorized' HellBanP
     isAuthorized (HellBanDoR _ _ _)_ = isAuthorized' HellBanP
     -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
     -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP

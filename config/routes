@@ -52,6 +52,7 @@
 
 /admin/config              ConfigR       GET POST
 
-/admin/hellban                     HellBanR     GET
-/admin/hellban/do/#Int/#Text/#Bool HellBanDoR   GET
-/admin/hellban/undo/#Int/#Text     HellBanUndoR GET
+/admin/hellban                     HellBanNoPageR GET
+/admin/hellban/#Int                HellBanR       GET
+/admin/hellban/do/#Int/#Text/#Bool HellBanDoR     GET
+/admin/hellban/undo/#Int/#Text     HellBanUndoR   GET

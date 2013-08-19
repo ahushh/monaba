@@ -75,7 +75,8 @@ getBoardR board page = do
 
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc]
+    let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, p]
     $(widgetFile "board")
     
 postBoardR :: Text -> Int -> Handler Html

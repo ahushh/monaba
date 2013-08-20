@@ -56,3 +56,8 @@
 /admin/hellban/#Int                HellBanR       GET
 /admin/hellban/do/#Int/#Text/#Bool HellBanDoR     GET
 /admin/hellban/undo/#Int/#Text     HellBanUndoR   GET
+
+/admin/search/uid/#Text/#Int       AdminSearchR       GET
+/admin/search/uid/#Text            AdminSearchNoPageR GET
+/admin/search/hellbanned/uid/#Text/#Int    AdminSearchOnlyHBR       GET
+/admin/search/hellbanned/uid/#Text         AdminSearchOnlyHBNoPageR GET

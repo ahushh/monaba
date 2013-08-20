@@ -35,6 +35,7 @@ import Handler.Admin.Board
 import Handler.Admin.Config
 import Handler.Admin.Group
 import Handler.Admin.User
+import Handler.Admin.Search
 import Handler.Api
 import Handler.Captcha
 import Handler.Settings

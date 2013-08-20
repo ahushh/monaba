@@ -224,6 +224,12 @@ ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 Hellbanning :Hellbanning
 
+### search posts
+AdminSearchUID: Search posts with this user ID
+PostsByUserID: Posts by user ID
+DisplayOnlyHellbanned: Display only hellbanned posts
+DisplayAllPosts: Display all posts
+
 ######################################################################################
 #### Hellbanning
 ######################################################################################

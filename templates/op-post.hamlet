@@ -34,7 +34,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               $if elem ViewIPAndIDP permissionsW
                   <span .ip-and-id>
                       IP: #{postIp $ entityVal $ eOpPostW}
-                      UID: #{postPosterId $ entityVal $ eOpPostW}
+                      UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchNoPageR (postPosterId $ entityVal eOpPostW)}>#{postPosterId $ entityVal eOpPostW}</a>
               <div .cpanel>
                   $if elem ManageBanP permissionsW
                       \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]

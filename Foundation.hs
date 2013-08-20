@@ -189,40 +189,34 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
-    isAuthorized AdminR            _ = isAuthorized' ManagePanelP
-    isAuthorized NewPasswordR      _ = isAuthorized' ManagePanelP
-    isAuthorized AccountR          _ = isAuthorized' ManagePanelP
-    isAuthorized (StickR     _ _ ) _ = isAuthorized' ManageThreadP
-    isAuthorized (LockR      _ _ ) _ = isAuthorized' ManageThreadP
-    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' ManageThreadP
+    isAuthorized AdminR            _ = isAuthorized' [ManagePanelP]
+    isAuthorized NewPasswordR      _ = isAuthorized' [ManagePanelP]
+    isAuthorized AccountR          _ = isAuthorized' [ManagePanelP]
+    isAuthorized (StickR     _ _ ) _ = isAuthorized' [ManageThreadP]
+    isAuthorized (LockR      _ _ ) _ = isAuthorized' [ManageThreadP]
+    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' [ManageThreadP]
 
-    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManageBanP
-    isAuthorized (ManageBoardsR _) _ = isAuthorized' ManageBoardP
-    isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManageBoardP
-    isAuthorized (CleanBoardR   _) _ = isAuthorized' ManageBoardP
-    isAuthorized UsersR            _ = isAuthorized' ManageUsersP
-    isAuthorized ManageGroupsR     _ = isAuthorized' ManageUsersP
-    isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
+    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' [ManageBanP]
+    isAuthorized (ManageBoardsR _) _ = isAuthorized' [ManageBoardP]
+    isAuthorized (DeleteBoardR  _) _ = isAuthorized' [ManageBoardP]
+    isAuthorized (CleanBoardR   _) _ = isAuthorized' [ManageBoardP]
+    isAuthorized UsersR            _ = isAuthorized' [ManageUsersP]
+    isAuthorized ManageGroupsR     _ = isAuthorized' [ManageUsersP]
+    isAuthorized (UsersDeleteR  _) _ = isAuthorized' [ManageUsersP]
 
-    isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
-    isAuthorized (HellBanR   _)    _ = isAuthorized' HellBanP
-    isAuthorized (HellBanDoR _ _ _)_ = isAuthorized' HellBanP
-    -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
-    -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP
-    -- isAuthorized (ManageBoardsR _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (DeleteBoardR  _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (CleanBoardR   _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (ManageBoardsR _) False = isAuthorized' ManagePanelP
-    -- isAuthorized (DeleteBoardR  _) False = isAuthorized' ManagePanelP
-    -- isAuthorized (CleanBoardR   _) False = isAuthorized' ManagePanelP
-    -- isAuthorized UsersR            True  = isAuthorized' ManageUsersP
-    -- isAuthorized UsersR            False = isAuthorized' ManagePanelP
-    -- isAuthorized (ManageGroupsR _) True  = isAuthorized' ManageUsersP
-    -- isAuthorized (UsersDeleteR  _) False = isAuthorized' ManagePanelP
-    -- isAuthorized ConfigR           True  = isAuthorized' ManageConfigP
-    -- isAuthorized ConfigR           False = isAuthorized' ManagePanelP
+    isAuthorized ConfigR           _ = isAuthorized' [ManageConfigP]
+    isAuthorized HellBanNoPageR    _ = isAuthorized' [HellBanP]
+    isAuthorized (HellBanR   _)    _ = isAuthorized' [HellBanP]
+    isAuthorized (HellBanDoR _ _ _)_ = isAuthorized' [HellBanP]
 
-    isAuthorized _                 _ = return Authorized
+    isAuthorized (AdminSearchR       _ _) _ = isAuthorized' [ViewIPAndIDP]
+    isAuthorized (AdminSearchNoPageR   _) _ = isAuthorized' [ViewIPAndIDP]
+
+    isAuthorized (AdminSearchOnlyHBR       _ _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
+    isAuthorized (AdminSearchOnlyHBNoPageR   _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
+
+    isAuthorized _ _ = return Authorized
+
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -248,14 +242,14 @@ isAuthorized' :: forall master.
                   PersistMonadBackend
                   (YesodPersistBackend master (HandlerT master IO))
                   ~ SqlBackend) =>
-                 Permission -> HandlerT master IO AuthResult
-isAuthorized' permission = do
+                 [Permission] -> HandlerT master IO AuthResult
+isAuthorized' permissions = do
   mauth <- maybeAuth
   case mauth of
     Nothing -> return AuthenticationRequired
     Just (Entity _ user) -> do
       group <- runDB $ getBy $ GroupUniqName (userGroup user)
-      if permission `elem` groupPermissions (entityVal $ fromJust group)
+      if all (`elem` groupPermissions (entityVal $ fromJust group)) permissions
         then return Authorized
         else return $ Unauthorized "Not permitted"
 

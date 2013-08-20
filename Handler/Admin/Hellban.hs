@@ -3,7 +3,7 @@ module Handler.Admin.Hellban where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
+import qualified Data.Text  as T
 import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
 getHellBanNoPageR :: Handler Html
@@ -20,12 +20,10 @@ getHellBanR page = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostHellbanned ==. True, PostDeleted ==. False]
-  let f (Entity _ b) | ( (isJust (boardViewAccess b) && isNothing group) ||
-                         (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-                       ) = Just $ boardName b
+  let f (Entity _ b) | isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b) = Just $ boardName b
                      | otherwise = Nothing
       boards'     = mapMaybe f boards
-      selectPosts = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True]
+      selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True]
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
@@ -42,7 +40,7 @@ getHellBanR page = do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgHellbanning]
     $(widgetFile "admin/hellban")
-
+-------------------------------------------------------------------------------------------------------------
 getHellBanDoR :: Int  -> -- ^ Post internal ID
                 Text -> -- ^ 'none' - don't hide this post; 'one' - hide it; 'all' - hide all this user's posts
                 Bool -> -- ^ Hellban or not this user

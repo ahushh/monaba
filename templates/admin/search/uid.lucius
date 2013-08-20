@@ -1,0 +1,16 @@
+.op-post {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    margin: 3px;
+    padding: 5px;
+    display: table    
+}
+
+.icon-edit-post {
+    display: none !important;
+}
+
+.thread-link {
+    float: right;
+    font-size: 0.8em
+}

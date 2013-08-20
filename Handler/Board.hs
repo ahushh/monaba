@@ -24,7 +24,8 @@ getBoardR board page = do
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
+  posterId        <- getPosterId
   let numberFiles       = boardNumberFiles       boardVal
       maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
@@ -34,17 +35,32 @@ getBoardR board page = do
       boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
       ---------------------------------------------------------------------------------
-      pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
-      pagesFix x
-        | numberOfThreads > 0 && numberOfThreads `mod` threadsPerPage == 0 = x - 1
-        | otherwise                                                      = x
+      pages             = listPages threadsPerPage numberOfThreads
       ---------------------------------------------------------------------------------
-      selectThreads    = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+      selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                      [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False
+                                      ,PostHellbanned ==. True, PostPosterId ==. posterId]
+                                    )
+                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreads    = if elem HellBanP permissions then selectThreadsAll else selectThreadsHB
+      --------------------------------------------------------------------------------------------------
       selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
-      selectPreviews t
-        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
-                                              PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
+      --------------------------------------------------------------------------------------------------
+      selectPreviews   = if elem HellBanP permissions then selectPreviewsAll else selectPreviewsHB
+      selectPreviewsHB t
+        | previewsPerThread > 0 = selectList ( [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
+                                                PostParent ==. postLocalId t, PostHellbanned ==. False] ||.
+                                               [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
+                                                PostParent ==. postLocalId t, PostHellbanned ==. True,
+                                                PostPosterId ==. posterId]
+                                             )
+                                  [Desc PostDate, LimitTo previewsPerThread]
+        | otherwise             = return []
+      selectPreviewsAll t
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False
+                                             ,PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
         | otherwise             = return []
   -------------------------------------------------------------------------------------------------------
   threadsAndPreviews <- runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
@@ -52,8 +68,14 @@ getBoardR board page = do
                            previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
                              previewFiles <- selectFiles $ entityKey pr
                              return (pr, previewFiles))
-                           postsInThread <- count [PostDeletedByOp ==. False, PostDeleted ==. False,
-                                                  PostBoard ==. board, PostParent ==. postLocalId t]
+                           let countPostsAll = [PostDeletedByOp ==. False, PostDeleted ==. False
+                                               ,PostBoard ==. board, PostParent ==. postLocalId t]
+                               countPostsHB  = [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
+                                               ,PostParent ==. postLocalId t, PostHellbanned ==. False] ||. 
+                                               [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
+                                               ,PostParent ==. postLocalId t, PostHellbanned ==. True, PostPosterId ==. posterId]
+                               countPosts = if elem HellBanP permissions then countPostsAll else countPostsHB
+                           postsInThread <- count countPosts
                            return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
   ------------------------------------------------------------------------------------------------------- 
   geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
@@ -72,7 +94,6 @@ getBoardR board page = do
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
-
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
@@ -132,7 +153,8 @@ postBoardR board _ = do
             deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
-        posterId <- getPosterId
+        posterId   <- getPosterId
+        hellbanned <- (>0) <$> runDB (count [HellbanUserId ==. posterId])
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted <- doYobaMarkup message board 0
         let newPost = Post { postBoard        = board
@@ -152,6 +174,7 @@ postBoardR board _ = do
                            , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = pack . show . userGroup . entityVal <$> muser
+                           , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }

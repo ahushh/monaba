@@ -57,6 +57,7 @@ Post
     deletedByOp  Bool default=0
     posterId     Text 
     lastModified UTCTime Maybe default=null
+    hellbanned   Bool default=0 -- visible only for post author
     -- form's values
     message      Textarea
     rawMessage   Text
@@ -109,3 +110,6 @@ Config
     showNews        Int  default=2
     maxEditings     Int  default=10
     showLatestPosts Int  default=15
+Hellban
+    userId          Text
+    userIp          Text

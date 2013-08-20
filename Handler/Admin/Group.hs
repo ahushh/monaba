@@ -17,6 +17,7 @@ groupsForm :: Html ->
                                        , Bool -- ^ Permission to edit any post
                                        , Bool -- ^ Permission to use additional markup
                                        , Bool -- ^ Permission to view poster's IP and ID
+                                       , Bool -- ^ Permission to use hellbanning
                                        ), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
@@ -29,13 +30,14 @@ groupsForm extra = do
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
   (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
   (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing
-  (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing  
+  (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
+  (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing
 
-  let result = (,,,,,,,,,,)    <$> nameRes        <*>
+  let result = (,,,,,,,,,,,)   <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
                manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
-               viewIPAndIDRes
+               viewIPAndIDRes  <*> hellbanningRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -51,13 +53,14 @@ showPermission p = fromJust $ lookup p xs
              ,(EditPostsP    , MsgEditPosts   )
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
              ,(ViewIPAndIDP  , MsgViewIPAndID )
+             ,(HellBanP      , MsgHellbanning)
              ]
 
 getManageGroupsR :: Handler Html
 getManageGroupsR = do
   muser  <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  let permissions          = getPermissions mgroup
+  mgroup <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
 
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])
   (formWidget, formEnctype) <- generateFormPost groupsForm
@@ -78,12 +81,13 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (name        , manageThread, manageBoard, manageUsers,
                  manageConfig, deletePostsP, managePanel, manageBan  ,
-                 editPosts   , aMarkup     , viewIPAndID
+                 editPosts   , aMarkup     , viewIPAndID, hellbanning
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
                         ,(ViewIPAndIDP ,viewIPAndID )
+                        ,(HellBanP     ,hellbanning )
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

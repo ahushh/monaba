@@ -39,16 +39,4 @@ $else
     <div #edit-form style=display:none>
         ^{formWidget'}
 
-$if not $ page == 0
-    <a id=next-page href=@{BoardR board $ page - 1}>_{MsgPrevious}</a>&nbsp;
-<span #pages-list>
-  $forall (i,p) <- enumerate pages
-    $if p == page
-      <strong>#{ p }</strong>#
-    $else
-      <a href=@{BoardR board p}>#{ p }</a>#
-    $if not $ i == (length pages - 1)
-      &nbsp;
- 
-$if (page + 1) < length pages
-    &nbsp;<a id=prev-page href=@{BoardR board $ page + 1}>_{MsgNext}</a>
+^{pageSwitcherWidget page pages (BoardR board)}

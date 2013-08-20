@@ -1,0 +1,31 @@
+^{adminNavbarWidget muser permissions}
+<h2 style=text-align:center> UID: #{posterId}
+$if onlyHellbanned
+    <div style=text-align:center>
+      <a href=@{AdminSearchNoPageR posterId}>_{MsgDisplayAllPosts}
+$else
+  $if elem HellBanP permissions
+    <div style=text-align:center>
+      <a href=@{AdminSearchOnlyHBNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
+<form .delete-form method=get action=@{DeleteR}>
+    $forall (e, files) <- postsAndFiles
+        $if (postParent $ entityVal e) > 0
+            ^{replyPostWidget muser e files False False True permissions geoIps timeZone}
+        $else
+            ^{opPostWidget muser e files False False permissions geoIps timeZone}
+    <br>
+    <div #delete-container>
+        <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}
+        <br>
+        $if elem DeletePostsP permissions
+            <span style=display:none>
+                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+        $else
+            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+        <input type=submit value=_{MsgDeleteBtn}>
+
+<br>
+$if onlyHellbanned
+    ^{pageSwitcherWidget page pages (AdminSearchOnlyHBR posterId)}
+$else
+    ^{pageSwitcherWidget page pages (AdminSearchR posterId)}

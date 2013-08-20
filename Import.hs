@@ -63,11 +63,18 @@ import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
+
+import           Yesod.Routes.Class     (Route(..))
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
+checkHellbanned :: Entity Post -> [Permission] -> Text -> Bool
+checkHellbanned post permissions posterId = not (postHellbanned $ entityVal post) ||
+                                            elem HellBanP permissions           ||
+                                            (postPosterId (entityVal post) == posterId)
+
 checkAbbr :: Int  -> -- ^ Message length
             Bool -> -- ^ Show full message
             Bool
@@ -85,7 +92,7 @@ myFormatTime :: Int     -> -- ^ Time offset in seconds
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 -------------------------------------------------------------------------------------------------------------------
--- | Truncate file name if it's length greater than 47
+-- | Truncate file name if its length is greater than 47
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s
   where maxLen   = 47
@@ -125,6 +132,12 @@ replyPostWidget muserW eReplyW replyFilesW isInThreadW canPostW showThreadW perm
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
+
+adminHellbanningNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
+adminHellbanningNavbarWidget muserW permissionsW = $(widgetFile "admin/hellban/navbar")
+
+pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> WidgetT App IO ()
+pageSwitcherWidget pageW pagesW routeW = $(widgetFile "page-switcher")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
 bareLayout widget = do
@@ -306,6 +319,13 @@ stripTags :: Text -> Text
 stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
   where textOnly (TagText t) = t
         textOnly           _ = ""
+
+listPages :: Int -> Int -> [Int]
+listPages elemsPerPage numberOfElems =
+  [0..pagesFix $ floor $ (fromIntegral numberOfElems :: Double) / (fromIntegral elemsPerPage :: Double)]
+  where pagesFix x
+          | numberOfElems > 0 && numberOfElems `mod` elemsPerPage == 0 = x - 1
+          | otherwise                                                = x
 -------------------------------------------------------------------------------------------------------------------
 -- Some getters
 -------------------------------------------------------------------------------------------------------------------

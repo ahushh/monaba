@@ -310,3 +310,8 @@ ul {
 #delete-container {
     clear: both;
 }
+
+.icon-eye-open {
+    background-position: -53px -29px;
+    cursor: auto;
+}

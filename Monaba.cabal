@@ -29,10 +29,12 @@ library
                      Handler.Delete
                      Handler.Admin
                      Handler.Admin.Ban
+                     Handler.Admin.Hellban
                      Handler.Admin.Board
                      Handler.Admin.Config
                      Handler.Admin.Group
                      Handler.Admin.User
+                     Handler.Admin.Search
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings

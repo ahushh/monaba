@@ -7,7 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
-import           YobaMarkup      (doYobaMarkup)
+import           Utils.YobaMarkup (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -15,6 +15,58 @@ getBoardNoPageR board = getBoardR board 0
 postBoardNoPageR :: Text -> Handler Html
 postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
+selectThreadsAndPreviews :: Text ->
+                           Int  ->
+                           Int  ->
+                           Int  ->
+                           Text ->
+                           [Permission] ->
+                           Handler [(  (Entity Post, [Entity Attachedfile])
+                                    , [(Entity Post, [Entity Attachedfile])]
+                                    , Int
+                                    )]
+selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions =
+  let selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                      [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False
+                                      ,PostHellbanned ==. True, PostPosterId ==. posterId]
+                                    )
+                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreads    = if HellBanP `elem` permissions then selectThreadsAll else selectThreadsHB
+      --------------------------------------------------------------------------------------------------
+      selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
+      --------------------------------------------------------------------------------------------------
+      selectPreviews   = if HellBanP `elem` permissions then selectPreviewsAll else selectPreviewsHB
+      selectPreviewsHB t
+        | previewsPerThread > 0 = selectList ( [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
+                                                PostParent ==. postLocalId t, PostHellbanned ==. False] ||.
+                                               [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
+                                                PostParent ==. postLocalId t, PostHellbanned ==. True,
+                                                PostPosterId ==. posterId]
+                                             )
+                                  [Desc PostDate, LimitTo previewsPerThread]
+        | otherwise             = return []
+      selectPreviewsAll t
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False
+                                             ,PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
+        | otherwise             = return []
+      --------------------------------------------------------------------------------------------------
+      countPostsAll t = [PostDeletedByOp ==. False, PostDeleted ==. False
+                        ,PostBoard ==. board, PostParent ==. postLocalId t]
+      countPostsHB  t = [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
+                        ,PostParent ==. postLocalId t, PostHellbanned ==. False] ||. 
+                        [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
+                        ,PostParent ==. postLocalId t, PostHellbanned ==. True, PostPosterId ==. posterId]
+      countPosts t = count (if HellBanP `elem` permissions then countPostsAll t else countPostsHB t)
+  in runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
+       threadFiles      <- selectFiles tId
+       previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
+         previewFiles <- selectFiles $ entityKey pr
+         return (pr, previewFiles))
+       postsInThread <- countPosts t
+       return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
+
 getBoardR :: Text -> Int -> Handler Html
 getBoardR board page = do
   muser    <- maybeAuth
@@ -34,49 +86,8 @@ getBoardR board page = do
       boardDesc         = boardDescription       boardVal
       boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
-      ---------------------------------------------------------------------------------
       pages             = listPages threadsPerPage numberOfThreads
-      ---------------------------------------------------------------------------------
-      selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
-                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
-      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False] ||.
-                                      [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False
-                                      ,PostHellbanned ==. True, PostPosterId ==. posterId]
-                                    )
-                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
-      selectThreads    = if elem HellBanP permissions then selectThreadsAll else selectThreadsHB
-      --------------------------------------------------------------------------------------------------
-      selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
-      --------------------------------------------------------------------------------------------------
-      selectPreviews   = if elem HellBanP permissions then selectPreviewsAll else selectPreviewsHB
-      selectPreviewsHB t
-        | previewsPerThread > 0 = selectList ( [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
-                                                PostParent ==. postLocalId t, PostHellbanned ==. False] ||.
-                                               [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
-                                                PostParent ==. postLocalId t, PostHellbanned ==. True,
-                                                PostPosterId ==. posterId]
-                                             )
-                                  [Desc PostDate, LimitTo previewsPerThread]
-        | otherwise             = return []
-      selectPreviewsAll t
-        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False
-                                             ,PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
-        | otherwise             = return []
-  -------------------------------------------------------------------------------------------------------
-  threadsAndPreviews <- runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
-                           threadFiles      <- selectFiles tId
-                           previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
-                             previewFiles <- selectFiles $ entityKey pr
-                             return (pr, previewFiles))
-                           let countPostsAll = [PostDeletedByOp ==. False, PostDeleted ==. False
-                                               ,PostBoard ==. board, PostParent ==. postLocalId t]
-                               countPostsHB  = [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
-                                               ,PostParent ==. postLocalId t, PostHellbanned ==. False] ||. 
-                                               [PostDeletedByOp ==. False, PostDeleted ==. False ,PostBoard ==. board
-                                               ,PostParent ==. postLocalId t, PostHellbanned ==. True, PostPosterId ==. posterId]
-                               countPosts = if elem HellBanP permissions then countPostsAll else countPostsHB
-                           postsInThread <- count countPosts
-                           return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
+  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
   ------------------------------------------------------------------------------------------------------- 
   geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
     xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))
@@ -99,7 +110,7 @@ getBoardR board page = do
     let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, p]
     $(widgetFile "board")
-    
+--------------------------------------------------------------------------------------------------------- 
 postBoardR :: Text -> Int -> Handler Html
 postBoardR board _ = do
   muser    <- maybeAuth

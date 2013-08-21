@@ -38,33 +38,33 @@ import Control.Monad   as Import (unless, when, forM, forM_, void, join)
 import Control.Arrow   as Import (second, first, (&&&), (***))
 import ModelTypes      as Import 
 -------------------------------------------------------------------------------------------------------------------
+import           Control.Applicative     (liftA2)
+
+import qualified Data.Text               as T
+import qualified Data.ByteString.UTF8    as B
+import qualified Data.Map.Strict         as Map
+import           Data.Char               (toLower)
+
+import           System.Random           (randomIO)
 import           System.FilePath         ((</>))
 import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
-import           Data.Ratio
-import           Network.Wai
-import           Text.Printf
+
 import qualified Graphics.GD             as GD
+import           Data.Ratio
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+
+import           Data.Time               (addUTCTime, secondsToDiffTime)
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
+import           Text.Printf
+
+import           Network.Wai
+import           Yesod.Routes.Class      (Route(..))
+
 import           GHC.Int                 (Int64)
-import           Data.Char               (toLower)
-import           Data.Time               (addUTCTime, secondsToDiffTime)
-import qualified Data.Map.Strict          as Map
-
-import qualified Data.ByteString.UTF8     as B
-
-import           Control.Applicative     (liftA2)
-import           Data.Digest.OpenSSL.MD5 (md5sum)
-import           System.Random           (randomIO)
-
-import qualified Data.Text               as T (concat, toLower, append, length)
-
 import           Data.Geolocation.GeoIP
-
-import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
-
-import           Yesod.Routes.Class     (Route(..))
+import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
@@ -326,6 +326,17 @@ listPages elemsPerPage numberOfElems =
   where pagesFix x
           | numberOfElems > 0 && numberOfElems `mod` elemsPerPage == 0 = x - 1
           | otherwise                                                = x
+
+ignoreBoards :: Maybe Text -> Entity Board -> Maybe Text
+ignoreBoards group (Entity _ b)
+  | boardHidden b ||
+    ( (isJust (boardViewAccess b) && isNothing group) ||
+      (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+    ) = Just $ boardName b
+  | otherwise = Nothing
+
+pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
+pair f g x = (f x, g x)
 -------------------------------------------------------------------------------------------------------------------
 -- Some getters
 -------------------------------------------------------------------------------------------------------------------

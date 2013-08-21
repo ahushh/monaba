@@ -16,6 +16,7 @@ library
                      Foundation
                      Import
                      Model
+                     ModelTypes
                      Settings
                      Settings.StaticFiles
                      Settings.Development
@@ -38,9 +39,8 @@ library
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings
-                     YobaMarkup
-                     ModelTypes
-                     SillyCaptcha
+                     Utils.YobaMarkup
+                     Utils.SillyCaptcha
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

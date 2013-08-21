@@ -35,9 +35,7 @@ postSettingsR = do
 
 getSettingsR :: Handler Html
 getSettingsR = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-
+  muser        <- maybeAuth
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra
   (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle

@@ -147,7 +147,7 @@ bumpThread board thread now = do
 -------------------------------------------------------------------------------------------------------------------
 -- | Check if ban expired
 isBanExpired :: Entity Ban -> Handler Bool
-isBanExpired (Entity banId ban) = do
+isBanExpired (Entity banId ban) =
   case banExpires ban of
     Nothing   -> return False
     Just t    -> do

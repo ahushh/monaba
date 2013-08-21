@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings, RankNTypes #-}
-module YobaMarkup
+module Utils.YobaMarkup
        (
          doYobaMarkup
        ) where

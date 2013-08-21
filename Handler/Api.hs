@@ -17,7 +17,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
-      selectPosts  = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+      selectPosts  = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
     files <- selectFiles p
@@ -37,7 +37,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
                                $forall (post, files) <- postsAndFiles
                                    ^{replyPostWidget muser post files True True False permissions geoIps timeZone}
                                |]
-          provideJson $ map (entityVal *** (map entityVal)) postsAndFiles
+          provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
 getApiDeletedPostsR :: Text -> Int -> Handler TypedContent
 getApiDeletedPostsR board thread = do
@@ -103,7 +103,7 @@ getApiPostR board postId = do
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
-      selectPosts    = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+      selectPosts    = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectPostsAll = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False]
       selectPostsHB  = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. False] ||.
                        [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
@@ -115,7 +115,7 @@ getApiPostR board postId = do
   geoIps <- getCountries [(post, files) | geoIpEnabled]
   timeZone <- getTimeZone
   let postAndFiles = (entityVal post, map entityVal files)
-      widget       = if (postParent (entityVal $ fromJust maybePost)) == 0
+      widget       = if postParent (entityVal $ fromJust maybePost) == 0
                        then opPostWidget muser post files False True permissions geoIps timeZone
                        else replyPostWidget muser post files False True False permissions geoIps timeZone
   selectRep $ do

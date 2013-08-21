@@ -11,9 +11,7 @@ import           Control.Monad     (mplus)
 getManageBoardsR :: Text -> Handler Html
 getManageBoardsR board = do
   muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
-      group       = (groupName . entityVal) <$> mgroup
+  (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
 
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])

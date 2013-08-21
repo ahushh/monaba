@@ -20,22 +20,16 @@ getAdminSearchOnlyHBNoPageR = flip getAdminSearchOnlyHBR 0
 -------------------------------------------------------------------------------------------------------------
 helper :: Bool -> Text -> Int -> Handler Html
 helper onlyHellbanned posterId page = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
-      group       = (groupName . entityVal) <$> mgroup
+  muser                <- maybeAuth
+  (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
   -------------------------------------------------------------------------------------------------------------------
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  numberOfPosts <- runDB $ count (if onlyHellbanned
-                                  then [PostDeleted ==. False, PostPosterId ==. posterId, PostHellbanned ==. True]
-                                  else [PostDeleted ==. False, PostPosterId ==. posterId])
-  let f (Entity _ b) | isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b) = Just $ boardName b
-                     | otherwise = Nothing
-      boards'     = mapMaybe f boards
-      selectPosts = if onlyHellbanned
-                      then [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId, PostHellbanned ==. True]
-                      else [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId]
+  numberOfPosts <- runDB $ count ([PostDeleted ==. False, PostPosterId ==. posterId] ++
+                                 [PostHellbanned ==. True | onlyHellbanned])
+  let boards'     = mapMaybe (ignoreBoards group) boards
+      selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId] ++
+                    if onlyHellbanned then [PostHellbanned ==. True] else []
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []

@@ -16,12 +16,7 @@ getLiveR = do
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  let f (Entity _ b) | boardHidden b ||
-                       ( (isJust (boardViewAccess b) && isNothing group) ||
-                         (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-                       ) = Just $ boardName b
-                     | otherwise = Nothing
-      boards'  = mapMaybe f boards
+  let boards'        = mapMaybe (ignoreBoards group) boards
       selectPostsAll = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
       selectPostsHB  = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False] ||.
                        [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True

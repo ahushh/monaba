@@ -7,7 +7,7 @@ import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           YobaMarkup        (doYobaMarkup)
+import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 
@@ -20,27 +20,9 @@ getJsonFromMsgR status = do
   selectRep $
     provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
 -------------------------------------------------------------------------------------------------------------------
-getThreadR :: Text -> Int -> Handler Html
-getThreadR board thread = do
-  when (thread == 0) notFound
-  muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  boardVal <- getBoardVal404 board
-  checkViewAccess mgroup boardVal
-  let permissions      = getPermissions mgroup
-  let hasAccessToReply = checkAccessToReply mgroup boardVal
-
-  boards      <- runDB $ selectList ([]::[Filter Board]) []
-  -------------------------------------------------------------------------------------------------------  
-  let numberFiles      = boardNumberFiles     boardVal
-      maxMessageLength = boardMaxMsgLength    boardVal
-      enableCaptcha    = boardEnableCaptcha   boardVal
-      opModeration     = boardOpModeration    boardVal
-      boardDesc        = boardDescription     boardVal
-      boardLongDesc    = boardLongDescription boardVal
-      geoIpEnabled     = boardEnableGeoIp     boardVal
-  -------------------------------------------------------------------------------------------------------
-  allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
+selectThread :: Text -> Int -> Handler [(Entity Post, [Entity Attachedfile])]
+selectThread board thread = do
+  allPosts <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
     E.where_ ((post E.^. PostBoard       ) E.==. (E.val board ) E.&&.
               (post E.^. PostDeletedByOp ) E.==. (E.val False ) E.&&.
@@ -49,16 +31,31 @@ getThreadR board thread = do
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
-  when (null allPosts') notFound
-  let allPosts        = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
-      repliesAndFiles = drop 1 allPosts
+  return $ map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+
+getThreadR :: Text -> Int -> Handler Html
+getThreadR board thread = do
+  when (thread == 0) notFound
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let permissions      = getPermissions mgroup
+      hasAccessToReply = checkAccessToReply mgroup boardVal
+      numberFiles      = boardNumberFiles     boardVal
+      maxMessageLength = boardMaxMsgLength    boardVal
+      enableCaptcha    = boardEnableCaptcha   boardVal
+      opModeration     = boardOpModeration    boardVal
+      boardDesc        = boardDescription     boardVal
+      boardLongDesc    = boardLongDescription boardVal
+      geoIpEnabled     = boardEnableGeoIp     boardVal
+  -------------------------------------------------------------------------------------------------------
+  allPosts <- selectThread board thread
+  when (null allPosts) notFound
+  let repliesAndFiles = drop 1 allPosts
       eOpPost         = fst $ head allPosts
       opPostFiles     = snd $ head allPosts
-      pt              = postTitle  $ entityVal eOpPost
-      pm              = stripTags $ unTextarea $ postMessage $ entityVal eOpPost
-      pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > 60 then flip T.append "…" $ T.take 60 pm else pm
-                | otherwise                                     = ""
+      pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
   posterId <- getPosterId
   unless (checkHellbanned eOpPost permissions posterId) notFound
@@ -74,7 +71,7 @@ getThreadR board thread = do
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
-
+  boards           <- runDB $ selectList ([]::[Filter Board]) []
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
@@ -181,3 +178,16 @@ postThreadR board thread = do
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
     _  -> trickyRedirect "error" MsgUnknownError threadUrl
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+makeThreadtitle :: Entity Post -> Text
+makeThreadtitle ePost =
+  let maxLen = 60
+      pt     = postTitle $ entityVal ePost
+      pm     = stripTags $ unTextarea $ postMessage $ entityVal ePost
+      pagetitle | not $ T.null pt                                 = pt
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > maxLen
+                                                                    then flip T.append "…" $ T.take maxLen pm
+                                                                    else pm
+                | otherwise                                     = ""
+  in pagetitle

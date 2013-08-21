@@ -5,13 +5,12 @@ import           Import
 import qualified Data.Text       as T
 import           Yesod.Auth
 import           Handler.Posting
-import           YobaMarkup        (doYobaMarkup)
+import           Utils.YobaMarkup (doYobaMarkup)
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
   ((result, _), _) <- runFormPost editForm
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData HomeR

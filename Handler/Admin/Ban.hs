@@ -27,7 +27,7 @@ getBanByIpR :: Text -> Text -> Handler Html
 getBanByIpR board ip = do
   muser       <- maybeAuth
   permissions <- getPermissions <$> getMaybeGroup muser
-  timeZone   <- getTimeZone
+  timeZone    <- getTimeZone
 
   (formWidget, formEnctype) <- generateFormPost $ banByIpForm ip board
   

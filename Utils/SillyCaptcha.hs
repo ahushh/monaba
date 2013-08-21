@@ -1,5 +1,5 @@
 {-# LANGUAGE TupleSections #-}
-module SillyCaptcha
+module Utils.SillyCaptcha
        (
          makeCaptcha
        ) where

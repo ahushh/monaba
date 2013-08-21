@@ -20,7 +20,7 @@ getDeletedByOpR board thread = do
       geoIpEnabled  = boardEnableGeoIp     boardVal
       boardDesc     = boardDescription     boardVal
       boardLongDesc = boardLongDescription boardVal
-  when (boardOpModeration boardVal == False) notFound  
+  unless (boardOpModeration boardVal) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -53,12 +53,12 @@ getDeleteR = do
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
       let xs = if fst (P.head zs) == "onlyfile" then P.tail zs else zs
-      thread   <- runDB $ get ((toKey $ ((read $ unpack threadId) :: Int)) :: Key Post)
+      thread   <- runDB $ get ((toKey ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
       let board = postBoard $ fromJust thread
       boardVal    <- getBoardVal404 board
-      when (boardOpModeration boardVal == False) notFound
+      unless (boardOpModeration boardVal) notFound
 
       posterId <- getPosterId
       when (postPosterId (fromJust thread) /= posterId &&

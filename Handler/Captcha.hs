@@ -7,7 +7,7 @@ import           Data.Char        (toLower)
 import qualified Data.Text        as T
 import           System.Directory (removeFile)
 import           System.Random    (randomIO)
-import           SillyCaptcha     (makeCaptcha)
+import           Utils.SillyCaptcha (makeCaptcha)
 ---------------------------------------------------------------------------------------------------------------------------
 getCaptchaR :: Handler Html
 getCaptchaR = do

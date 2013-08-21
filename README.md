@@ -3,6 +3,16 @@ Monaba
 
 Imageboard engine written in Haskell and powered by Yesod.
 
+Features
+------
+* Multiple file attachment
+* File censorship ratings
+* [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning)
+* AJAX
+* Prooflabes
+* Flexible account system
+* Internationalization
+
 Dependencies
 ------
 * GHC >= 7.6

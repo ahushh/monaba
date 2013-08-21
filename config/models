@@ -85,6 +85,7 @@ Attachedfile
     width        Int      default=-1   -- real image width
     height       Int      default=-1   -- real image height
     size         Text                  -- formatted file size
+    rating       Text                  -- censorship rating
     deriving     Typeable
 Ban
     ip           Text

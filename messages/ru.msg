@@ -222,6 +222,7 @@ ManagePanel : Доступ в админку
 ManageBan   : Бан
 AdditionalMarkup: Расширенная разметка
 Hellbanning : Премодерация
+ChangeFileRating: Изменять рейтинг цензуры у файлов
 
 ### search posts
 AdminSearchUID: Искать посты с этим ID пользователя
@@ -316,3 +317,4 @@ Apply: Применить
 Applied: Настройки применены
 TimeZone: Часовой пояс
 Style: Стиль
+MaxAllowedRating: Максимально рейтинг

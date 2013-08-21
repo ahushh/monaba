@@ -24,6 +24,7 @@ postForm :: Board -> -- ^ Board value
                                      , Text           -- ^ Password
                                      , Maybe Text     -- ^ Captcha value
                                      , [FormResult (Maybe FileInfo)] -- ^ Files
+                                     , [FormResult Censorship]       -- ^ Censorship ratings
                                      , GoBackTo       -- ^ Go back to
                                      , Maybe Bool     -- ^ No bump
                                      )
@@ -51,13 +52,13 @@ postForm boardVal extra = do
       bumpLimit        = boardBumpLimit     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       replyFile        = boardReplyFile     boardVal
-
-      myMessageField = checkBool (not . tooLongMessage maxMessageLength)
-                                 (MsgTooLongMessage maxMessageLength )
-                                 textareaField
-
+      myMessageField   = checkBool (not . tooLongMessage maxMessageLength)
+                                   (MsgTooLongMessage maxMessageLength )
+                                   textareaField
   let urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
+      ratings :: [(Text, Censorship)]
+      ratings = map (pack . show &&& id) [minBound..maxBound]
   ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              "" (Just              <$> lastName)
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
@@ -67,8 +68,9 @@ postForm boardVal extra = do
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
-  let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
-               FormSuccess fileresults <*> gobackRes  <*> nobumpRes
+  (ratingresults, ratingviews) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mreq (selectFieldList ratings) "" Nothing)
+  let result = (,,,,,,,,) <$>  nameRes <*> subjectRes  <*> messageRes <*> passwordRes <*> captchaRes <*>
+               FormSuccess fileresults <*> FormSuccess ratingresults  <*> gobackRes   <*> nobumpRes
       widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
@@ -97,11 +99,12 @@ tooLongMessage :: Int -> Textarea -> Bool
 tooLongMessage maxLen message = maxLen <= T.length (unTextarea message)
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
+              [FormResult Censorship]       -> -- ^ Censorship ratings 
                Int      -> -- ^ Thumbnail height and width
                Key Post -> -- ^ Post key
                HandlerT App IO ()
-insertFiles []    _           _      = return ()
-insertFiles files thumbSize postId = forM_ files (\formfile ->
+insertFiles []    _       _         _      = return ()
+insertFiles files ratings thumbSize postId = forM_ (zip files ratings) (\(formfile, rating) ->
   case formfile of
     FormSuccess (Just f) -> do
       md5                              <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
@@ -119,6 +122,7 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
                                                               , attachedfileThumbHeight = 0
                                                               , attachedfileWidth       = 0
                                                               , attachedfileHeight      = 0
+                                                              , attachedfileRating      = (\(FormSuccess r) -> pack $ show r) rating
                                                               }
       if isImageFile filetype
         then do

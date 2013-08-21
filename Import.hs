@@ -110,17 +110,20 @@ truncateFileName s = if len > maxLen then result else s
 opPostWidget :: Maybe (Entity User)      ->
                Entity Post              -> 
                [Entity Attachedfile]    -> 
+               Censorship               -> -- ^ Max allowed rating
                Bool                     -> -- ^ Show or not "[ Open ]" link
                Bool                     -> -- ^ Show or not the extra buttons such as "[>]"
                [Permission]             -> -- ^ List of the all permissions
                [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                Int                      -> -- ^ Time offset in seconds
                WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+opPostWidget muserW eOpPostW opPostFilesW ratingW
+  isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)      ->
                   Entity Post              ->
                   [Entity Attachedfile]    ->
+                  Censorship               -> -- ^ Max allowed rating
                   Bool                     -> -- ^ Show full (True) or abbreviated (False) messagees
                   Bool                     -> -- ^ Show or not the extra buttons such as [>]
                   Bool                     -> -- ^ Show or not parent thread in the upper right corner
@@ -128,7 +131,8 @@ replyPostWidget :: Maybe (Entity User)      ->
                   [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                   Int                      -> -- ^ Time offset in seconds
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+replyPostWidget muserW eReplyW replyFilesW ratingW
+  isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
@@ -356,6 +360,13 @@ getTimeZone = do
   defaultZone <- extraTimezone <$> getExtra
   timezone    <- lookupSession "timezone"
   return $ maybe defaultZone (read . unpack) timezone
+
+getCensorshipRating :: Handler Censorship
+getCensorshipRating = do
+  mRating <- lookupSession "censorship-rating"
+  case mRating of
+    Just rating -> return $ read $ unpack rating
+    Nothing     -> setSession "censorship-rating" "SFW" >> return SFW
 
 getPosterId :: Handler Text
 getPosterId = do

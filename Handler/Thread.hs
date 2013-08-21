@@ -73,6 +73,7 @@ getThreadR board thread = do
   timeZone         <- getTimeZone
   boards           <- runDB $ selectList ([]::[Filter Board]) []
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
+  rating           <- getCensorshipRating
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, if T.null pagetitle then "" else " — ", pagetitle]
@@ -101,7 +102,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
-    FormSuccess (name, title, message, pswd, captcha, files, goback, Just nobump)
+    FormSuccess (name, title, message, pswd, captcha, files, ratings, goback, Just nobump)
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
       | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
@@ -164,7 +165,7 @@ postThreadR board thread = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            }
-        void $ insertFiles files thumbSize =<< runDB (insert newPost)
+        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------
         -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])

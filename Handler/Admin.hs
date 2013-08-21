@@ -38,3 +38,12 @@ getAutoSageR board thread = do
   case maybePost of
     Just (Entity pId p) -> runDB (update pId [PostAutosage =. not (postAutosage p)]) >> redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
+
+-------------------------------------------------------------------------------------------------------------
+-- Censorship management
+-------------------------------------------------------------------------------------------------------------
+getManageCensorshipR :: Int -> Censorship -> Handler Html
+getManageCensorshipR fileId rating = do
+  let fileKey = toKey fileId :: Key Attachedfile
+  runDB $ update fileKey [AttachedfileRating =. pack (show rating)]
+  redirectUltDest HomeR

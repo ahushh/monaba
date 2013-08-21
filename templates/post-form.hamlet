@@ -70,14 +70,16 @@
                 <td .post-block-named>_{MsgFile}
                 <td>
                     <div .form-files>
-                        $forall (i, fv) <- enumerate fileviews
+                        $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
                             $if i == 0
                                 <div .file-input>
                                     ^{fvInput fv}
+                                    ^{fvInput rv}
                                     <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
                             $else
                                 <div style=display:none .file-input>
                                     ^{fvInput fv}
+                                    ^{fvInput rv}
                                     <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}

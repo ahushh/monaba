@@ -54,9 +54,10 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       ]
                       $if postHellbanned $ entityVal eOpPostW
                           <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
-          $forall Entity _ file <- opPostFilesW
+          $forall Entity fileKey file <- opPostFilesW
               $if length opPostFilesW == 1
-                  <div .file >
+                  <div .file id="file-#{show $ fromIntegral $ fromKey fileKey}">
+                    $with rating <- attachedfileRating file
                       <span .file-name>
                           <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                       <br>
@@ -64,15 +65,53 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
                       $else
                           <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
-                      <br>
-                      $if attachedfileThumbWidth file == -1
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                      $elseif isImageFile (attachedfileType file)
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                      $if elem ChangeFileRatingP permissionsW
+                        $with rating1 <- read $ unpack rating
+                          <br>
+                          $if rating1 == SFW
+                              SFW&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
+                          $if rating1 == R15
+                              R-15&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
+                          $if rating1 == R18
+                              R-18&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
+                          $if rating1 == R18G
+                              R-18G&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
+                     <br>
+                      $if T.null rating
+                          $if attachedfileThumbWidth file == -1
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $elseif isImageFile (attachedfileType file)
+                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $else
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                      $elseif (read $ unpack rating) > ratingW
+                        $case (read $ unpack rating)
+                          $of R15
+                            <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18
+                            <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18G
+                            <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of SFW
+                            Suppress warnings.
                       $else
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $if attachedfileThumbWidth file == -1
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $elseif isImageFile (attachedfileType file)
+                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $else
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
               $else
-                  <div .multi-file >
+                  <div .multi-file id="file-#{show $ fromIntegral $ fromKey fileKey}">
+                    $with rating <- attachedfileRating file
                       <span .file-name>
                           <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                       <br>
@@ -80,14 +119,50 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
                       $else
                           <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
+                      $if elem ChangeFileRatingP permissionsW
+                        $with rating1 <- read $ unpack rating
+                          <br>
+                          $if rating1 == SFW
+                              SFW&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
+                          $if rating1 == R15
+                              R-15&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
+                          $if rating1 == R18
+                              R-18&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
+                          $if rating1 == R18G
+                              R-18G&nbsp;
+                          $else
+                              <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
                       <br>
-                      $if attachedfileThumbWidth file == -1
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                      $elseif isImageFile (attachedfileType file)
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                      $if T.null rating
+                          $if attachedfileThumbWidth file == -1
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $elseif isImageFile (attachedfileType file)
+                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $else
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                      $elseif (read $ unpack rating) > ratingW
+                        $case (read $ unpack rating)
+                          $of R15
+                            <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18
+                            <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18G
+                            <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of SFW
+                            Suppress warnings.
                       $else
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-
+                          $if attachedfileThumbWidth file == -1
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $elseif isImageFile (attachedfileType file)
+                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                          $else
+                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
           $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
               <div .message>#{m}
 

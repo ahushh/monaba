@@ -223,6 +223,7 @@ ManagePanel :Manage Panel
 ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 Hellbanning :Hellbanning
+ChangeFileRating: Change file's censorship rating
 
 ### search posts
 AdminSearchUID: Search posts with this user ID
@@ -316,3 +317,4 @@ Apply: Apply
 Applied: Settings applied
 TimeZone: Time zone
 Style: Style
+MaxAllowedRating: Max allowed rating

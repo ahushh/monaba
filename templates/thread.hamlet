@@ -19,11 +19,11 @@ $if hasAccessToReply
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-        ^{opPostWidget muser eOpPost opPostFiles True True permissions geoIps timeZone}
+        ^{opPostWidget muser eOpPost opPostFiles rating True True permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
             $if checkHellbanned eReply permissions posterId
-                ^{replyPostWidget muser eReply files True True False permissions geoIps timeZone}
+                ^{replyPostWidget muser eReply files rating True True False permissions geoIps timeZone}
     <br clear=both>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>

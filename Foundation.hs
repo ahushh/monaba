@@ -46,6 +46,9 @@ data App = App
     }
 
 ---------------------------------------------------------------------------------------------------------
+data Censorship = SFW | R15 | R18 | R18G
+    deriving (Show, Read, Eq, Enum, Bounded, Ord)
+---------------------------------------------------------------------------------------------------------
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
 widgetHelperFilterBoards boards category group = filter p boards
   where p (Entity _ b)  = notHidden b && checkCategory b && checkAccess b
@@ -215,8 +218,9 @@ instance Yesod App where
     isAuthorized (AdminSearchOnlyHBR       _ _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
     isAuthorized (AdminSearchOnlyHBNoPageR   _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
 
-    isAuthorized _ _ = return Authorized
+    isAuthorized (ManageCensorshipR  _ _) _ = isAuthorized' [ChangeFileRatingP]
 
+    isAuthorized _ _ = return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -256,6 +260,13 @@ isAuthorized' permissions = do
 instance PathPiece Bool where
   toPathPiece True  = "True"
   toPathPiece False = "False"
+  fromPathPiece s =
+    case reads $ T.unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
+
+instance PathPiece Censorship where
+  toPathPiece     = T.pack . show 
   fromPathPiece s =
     case reads $ T.unpack s of
       (i,""):_ -> Just i

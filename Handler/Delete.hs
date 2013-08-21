@@ -35,7 +35,8 @@ getDeletedByOpR board thread = do
   ------------------------------------------------------------------------------------------------------- 
   nameOfTheBoard <- extraSiteName <$> getExtra
   msgrender      <- getMessageRender
-  timeZone      <- getTimeZone
+  timeZone       <- getTimeZone
+  rating         <- getCensorshipRating
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgDeletedPosts]

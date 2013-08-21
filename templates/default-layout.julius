@@ -197,10 +197,10 @@ function doImageExpanding(post) {
         if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
             return "";
         }
-        var thumbUrl    = $(this).find('img').attr('src');
-        var thumbWidth  = $(this).find('img').attr('width');
-        var thumbHeight = $(this).find('img').attr('height');
-        $(this).find('img').mousedown(function(e){
+        var thumbUrl    = $(this).find('.thumb').attr('src');
+        var thumbWidth  = $(this).find('.thumb').attr('width');
+        var thumbHeight = $(this).find('.thumb').attr('height');
+        $(this).find('.thumb').mousedown(function(e){
             if (e.which == 2) { // middle click
                 window.open(fullUrl);
                 return true;

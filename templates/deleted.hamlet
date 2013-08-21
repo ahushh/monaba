@@ -7,7 +7,7 @@ $if not $ T.null boardLongDesc
 <br>
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{replyPostWidget muser eReply files True False False permissions geoIps timeZone}
+        ^{replyPostWidget muser eReply files rating True False False permissions geoIps timeZone}
     <br>
     <div #delete-container>
         <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}

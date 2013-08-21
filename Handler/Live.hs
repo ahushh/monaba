@@ -30,9 +30,10 @@ getLiveR = do
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
   geoIps <- getCountries $ filter ((`elem`geoIpEnabled) . postBoard . entityVal . fst) postsAndFiles
   -------------------------------------------------------------------------------------------------------------------
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
+  nameOfTheBoard <- extraSiteName <$> getExtra
+  msgrender      <- getMessageRender
   timeZone       <- getTimeZone  
+  rating         <- getCensorshipRating
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgLatestPosts]

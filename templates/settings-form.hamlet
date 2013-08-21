@@ -7,3 +7,7 @@
     <tr>
       <td>_{MsgStyle}
       <td>^{fvInput styleView}
+    <tr>
+      <td>_{MsgMaxAllowedRating}
+      <td>^{fvInput ratingView}
+

@@ -61,3 +61,5 @@
 /admin/search/uid/#Text            AdminSearchNoPageR GET
 /admin/search/hellbanned/uid/#Text/#Int    AdminSearchOnlyHBR       GET
 /admin/search/hellbanned/uid/#Text         AdminSearchOnlyHBNoPageR GET
+
+/admin/rating/#Int/#Censorship      ManageCensorshipR GET

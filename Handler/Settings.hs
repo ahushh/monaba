@@ -6,16 +6,18 @@ import qualified Data.Text  as T
 import           Yesod.Auth
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
-settingsForm :: Int  -> -- ^ Default time offset
-               Text -> -- ^ Default stylesheet 
-               Html -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text), Widget)
-settingsForm defaultZone defaultStyle extra = do
+settingsForm :: Int        -> -- ^ Default time offset
+               Text       -> -- ^ Default stylesheet 
+               Censorship -> -- ^ Default rating
+               Html       -> -- ^ Extra token
+               MForm Handler (FormResult (Int, Text, Censorship), Widget)
+settingsForm defaultZone defaultStyle oldRating extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
-  let result = (,) <$> timezoneRes <*> styleRes
+  (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
+  let result = (,,) <$> timezoneRes <*> styleRes <*> ratingRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -23,14 +25,16 @@ postSettingsR :: Handler TypedContent
 postSettingsR = do
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra  
-  ((result, _), _) <- runFormPost $ settingsForm defaultZone defaultStyle
+  oldRating    <- getCensorshipRating
+  ((result, _), _) <- runFormPost $ settingsForm defaultZone defaultStyle oldRating
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet) -> do
-      setSession "timezone"   $ pack $ show timezone
-      setSession "stylesheet" stylesheet
+    FormSuccess (timezone, stylesheet, rating) -> do
+      setSession "timezone"          $ pack $ show timezone
+      setSession "stylesheet"        stylesheet
+      setSession "censorship-rating" $ pack $ show rating
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html
@@ -38,7 +42,8 @@ getSettingsR = do
   muser        <- maybeAuth
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle
+  oldRating    <- getCensorshipRating
+  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle oldRating
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
@@ -47,6 +52,9 @@ getSettingsR = do
     $(widgetFile "settings")
 
 -------------------------------------------------------------------------------------------------------------------
+ratings :: [(Text, Censorship)]
+ratings = map (pack . show &&& id) [minBound..maxBound]
+
 stylesheets :: [(Text, Text)]
 stylesheets = map (\x -> (x,x)) ["Ash","Futaba"]
 

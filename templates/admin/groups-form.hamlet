@@ -2,40 +2,43 @@
     #{extra}
     <table>
         <tr>
-            <td>_{MsgName}
-            <td>^{fvInput nameView}
+            <td>_{MsgName                 }
+            <td>^{fvInput nameView        }
         <tr>
-            <td>_{MsgManageThread}
+            <td>_{MsgManageThread         }
             <td>^{fvInput manageThreadView}
         <tr>
-            <td>_{MsgManageBoard }
+            <td>_{MsgManageBoard          }
             <td>^{fvInput manageBoardView }
         <tr>
-            <td>_{MsgManageUsers }
+            <td>_{MsgManageUsers          }
             <td>^{fvInput manageUsersView }
         <tr>
-            <td>_{MsgManageConfig}
+            <td>_{MsgManageConfig         }
             <td>^{fvInput manageConfigView}
         <tr>
-            <td>_{MsgDeletePosts }
+            <td>_{MsgDeletePosts          }
             <td>^{fvInput deletePostsView }
         <tr>
-            <td>_{MsgManagePanel }
+            <td>_{MsgManagePanel          }
             <td>^{fvInput managePanelView }
         <tr>
-            <td>_{MsgManageBan   }
+            <td>_{MsgManageBan            }
             <td>^{fvInput manageBanView   }
         <tr>
-            <td>_{MsgEditPosts   }
+            <td>_{MsgEditPosts            }
             <td>^{fvInput editPostsView   }
         <tr>
-            <td>_{MsgAdditionalMarkup   }
-            <td>^{fvInput aMarkupView   }
+            <td>_{MsgAdditionalMarkup     }
+            <td>^{fvInput aMarkupView     }
         <tr>
             <td>_{MsgViewIPAndID          }
             <td>^{fvInput viewIPAndIDView }
         <tr>
             <td>_{MsgHellbanning          }
             <td>^{fvInput hellbanningView }
+        <tr>
+            <td>_{MsgChangeFileRating     }
+            <td>^{fvInput ratingView      }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

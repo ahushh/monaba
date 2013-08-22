@@ -145,6 +145,8 @@
    CLOSED: [2013-08-08 Чт 12:44]
 ** DONE rewrite markup using parsec
    CLOSED: [2013-08-13 Вт 14:10]
+** DONE message abbreviation
+   CLOSED: [2013-08-14 Ср 20:46]
 ** TODO API - geoip
 ** TODO autorefresh, new posts count via websockets
 ** TODO reports
@@ -159,8 +161,6 @@
 *** DONE user groups
     CLOSED: [2013-08-05 Пн 09:44]
 ** TODO fix JS and stylesheet loading
-** DONE message abbreviation
-   CLOSED: [2013-08-14 Ср 20:46]
 ** TODO search
 ** TODO thread catalog
 ** TODO black/spam list

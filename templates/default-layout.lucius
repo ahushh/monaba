@@ -89,14 +89,16 @@ hr {
     position: absolute;
     display: block;
     min-width: 30em;
-    max-width: 60%;
+    max-width: 90%;
     overflow: hidden;
     word-wrap: break-word;
 }
 
 .close-popup-container {
     margin-left: 2px;  
-    float: right;
+    position: absolute;
+    bottom: 0;
+    right: 5px;
 }
 
 .icon-close-popup-all {

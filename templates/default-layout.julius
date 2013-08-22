@@ -2,6 +2,7 @@ var Monaba = {
     expThreads: {},
     refMap: {},
     postCache: {},
+    zindex: 0,
 };
 //-----------------------------------------------------------------
 function baseInit() {
@@ -299,15 +300,16 @@ function cachePopupPosts() {
             var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+$(this).attr('id'));
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
             var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-            var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
-            post.find('.cpanel').after(delPopup);
+            var delPopup = " <div class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></div> ";
+            post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
+            post.append(delPopup);
             Monaba.postCache[board][postId] = post;
         // }
     });
 }
 
 function reallyShowPopupPost(event, elem, post) {
-    post = post.css('left', event.pageX).css('top', event.pageY);
+    post = post.css('left', event.pageX).css('top', event.pageY).css('z-index', Monaba.zindex);
     $('body').append(post);
     var wHeight = + $(window).height();
     var wWidth  = + $(window).width();
@@ -316,11 +318,11 @@ function reallyShowPopupPost(event, elem, post) {
     var cursorY = + event.pageY;
     var cursorX = + event.pageX;
     var diffH   = + $(window).scrollTop();
-    if (cursorY + pHeight > wHeight + diffH) {
-        post = post.css('top', cursorY - pHeight - 30);
+    if (cursorY + pHeight > wHeight + diffH - 20) {
+        post = post.css('top', cursorY - pHeight - 10);
     }
-    if ((cursorX + pWidth + 30) > wWidth) {
-        post = post.css('left', cursorX - pWidth - 40);
+    if ((cursorX + pWidth) > wWidth - 10) {
+        post = post.css('left', cursorX - pWidth - 10);
     }
     if (post.find('.refmap-list') == '') {
         doRefMap(post);
@@ -342,7 +344,8 @@ function showPopupPost(event, elem, board, postId) {
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
             var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
-            post.find('.cpanel').after(delPopup);
+            post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
+            post.append(delPopup);
 
             Monaba.postCache[board][postId] = post;
             reallyShowPopupPost(event, elem, post);

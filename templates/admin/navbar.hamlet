@@ -1,4 +1,3 @@
-<br>
 <div .admin-navbar>
     $if elem ManageBanP permissionsW
         <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |

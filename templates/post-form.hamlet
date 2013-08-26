@@ -50,7 +50,6 @@
                             _{MsgYouDontNeedCaptcha}
                         $nothing
                             <img #captcha src=@{CaptchaR}>
-                            <br>
                             ^{fvInput captchaView} 
                             <span #captcha-info>
                                 $maybe c <- maybeCaptchaInfoW

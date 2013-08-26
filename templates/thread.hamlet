@@ -1,5 +1,4 @@
 <span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
-<br>
 $if T.null pagetitle
     <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
     $if not $ T.null boardLongDesc
@@ -9,9 +8,7 @@ $else
     $if not $ T.null boardLongDesc
         <div id="board-long-desc">#{boardLongDesc}
     <div id="board-subtitle">#{pagetitle}
-<br>
 <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
-<br>
 $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
@@ -35,7 +32,6 @@ $if hasAccessToReply
             <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>_{MsgOpModeration}
             $if not noDeletedPosts
                 [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
-            <br>
         $if elem DeletePostsP permissions
             <span style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>

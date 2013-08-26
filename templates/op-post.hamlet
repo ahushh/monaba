@@ -58,16 +58,14 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               $if length opPostFilesW == 1
                   <div .file id="file-#{show $ fromIntegral $ fromKey fileKey}">
                     $with rating <- attachedfileRating file
-                      <span .file-name>
+                      <div .file-name>
                           <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                      <br>
                       $if isImageFile (attachedfileType file)
-                          <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+                          <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
                       $else
-                          <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
+                          <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
                       $if elem ChangeFileRatingP permissionsW
                         $with rating1 <- read $ unpack rating
-                          <br>
                           $if rating1 == SFW
                               SFW&nbsp;
                           $else
@@ -84,7 +82,6 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                               R-18G&nbsp;
                           $else
                               <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
-                     <br>
                       $if T.null rating
                           $if attachedfileThumbWidth file == -1
                               <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
@@ -112,16 +109,14 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               $else
                   <div .multi-file id="file-#{show $ fromIntegral $ fromKey fileKey}">
                     $with rating <- attachedfileRating file
-                      <span .file-name>
+                      <div .file-name>
                           <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                      <br>
                       $if isImageFile (attachedfileType file)
-                          <span .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+                          <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
                       $else
-                          <span .file-info> #{attachedfileType file}, #{attachedfileSize file}
+                          <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
                       $if elem ChangeFileRatingP permissionsW
                         $with rating1 <- read $ unpack rating
-                          <br>
                           $if rating1 == SFW
                               SFW&nbsp;
                           $else
@@ -138,7 +133,6 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                               R-18G&nbsp;
                           $else
                               <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
-                      <br>
                       $if T.null rating
                           $if attachedfileThumbWidth file == -1
                               <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
@@ -169,4 +163,3 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
           $maybe lm <- postLastModified $ entityVal eOpPostW
               <span .last-modified>
                   <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}
-                  <br>

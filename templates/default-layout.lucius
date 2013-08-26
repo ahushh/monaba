@@ -9,19 +9,19 @@ a {
 }
 
 hr {
-   clear: left;
+    clear: left;
 }
 
 [class^="icon-"], [class*=" icon-"] {
-  vertical-align: text-top;
-  background-image: url(@{StaticR img_glyphicons_png});
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
-  cursor: pointer;
+    vertical-align: text-top;
+    background-image: url(@{StaticR img_glyphicons_png});
+    background-repeat: no-repeat;
+    display: inline;
+    height: 14px;
+    line-height: 14px;
+    margin-top: 1px;
+    width: 14px;
+    cursor: pointer;
 }
 
 .thread {
@@ -44,6 +44,7 @@ hr {
 .thumb {
     margin: 6px;
     cursor: pointer;
+    display: block;
 }
 
 #message {
@@ -54,10 +55,6 @@ hr {
     margin: 5px;
     padding: 5px;
     text-align: center;
-}
-
-.board-list {
-    text-align: left;
 }
 
 .poster-name {
@@ -102,21 +99,22 @@ hr {
 }
 
 .icon-close-popup-all {
-  background-position: -1085px -77px;
+    background-position: -1085px -77px;
 }
 
 .icon-close-popup-one {
-  background-position: -29px -101px;
+    background-position: -29px -101px;
 }
 
 #board-header {
     text-align: center;
     font-size: 2em;
+    margin: 20px 0;
 }
 
 #board-long-desc {
-   text-align: center;
-   font-size: 1.5em;
+    text-align: center;
+    font-size: 1.5em;
 }
 
 #board-subtitle {
@@ -126,36 +124,37 @@ hr {
 }
 
 #thread-header {
-  text-align: center;
+    margin: 10px;
+    text-align: center;
 }
 
 .thread-status {
-  display: inline;
+    display: inline;
 }
 
 .icon-thread-sticked {
-  background-position: -989px -149px;
+    background-position: -989px -149px;
 }
 
 .icon-thread-locked {
-  background-position: -173px -101px;
+    background-position: -173px -101px;
 }
 
 .icon-thread-autosage {
-  background-position: -389px -101px;
+    background-position: -389px -101px;
 }
 
 .admin-table {
-  border-collapse: collapse;
-  font-size: 0.8em;
-  margin: 7px;
+    border-collapse: collapse;
+    font-size: 0.8em;
+    margin: 7px;
 }
 
 .admin-table td, .admin-table th {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 5px;
-  padding-right: 8px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    padding-right: 8px;
 }
 
 .admin-table input {
@@ -186,7 +185,7 @@ hr {
 }
 
 .icon-reply {
-  background-position: -605px -173px;
+    background-position: -605px -173px;
 }
 
 .show-plain-form {
@@ -195,11 +194,12 @@ hr {
 }
 
 .icon-thread-refresh {
-   background-position: -773px -29px;
+    background-position: -773px -29px;
 }
 
 .board-list {
     text-align: left;
+    margin-bottom: 20px;
 }
 
 #control-panel {
@@ -235,6 +235,7 @@ hr {
 }
 
 .hist-date {
+    margin: 10px;
     text-align: center;
     font-weight: bold;
 }
@@ -249,8 +250,13 @@ hr {
     text-align: center;
 }
 
+.file-name {
+    margin: 2px;
+}
+
 .file-info {
-   font-style: italic;
+    font-style: italic;
+    margin: 2px;
 }
 
 .quote {
@@ -316,4 +322,8 @@ ul {
 .icon-eye-open {
     background-position: -53px -29px;
     cursor: auto;
+}
+
+#captcha {
+    display: block;
 }

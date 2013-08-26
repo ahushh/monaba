@@ -1,4 +1,3 @@
-<br>
 <div .admin-navbar>
     <a href=@{AdminR}>_{MsgBack}</a> |
     <a href=@{HellBanNoPageR}>_{MsgHellbanAllPosts}</a>

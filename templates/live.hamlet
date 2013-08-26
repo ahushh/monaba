@@ -1,4 +1,3 @@
-<br>
 <h2 style=text-align:center> _{MsgLatestPosts}
 $forall (e, files) <- postsAndFiles
     $if (postParent $ entityVal e) > 0

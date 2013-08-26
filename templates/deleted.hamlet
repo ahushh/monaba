@@ -1,17 +1,12 @@
-<br>
 <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
 $if not $ T.null boardLongDesc
     <div id="board-long-desc">#{boardLongDesc}
-<br>
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
-<br>
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
         ^{replyPostWidget muser eReply files rating True False False permissions geoIps timeZone}
-    <br>
     <div #delete-container>
         <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}
-        <br>
         $if elem DeletePostsP permissions
             <span style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>

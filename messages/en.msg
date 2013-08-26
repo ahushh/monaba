@@ -39,6 +39,8 @@ GoTo: Go to
 EditingHistoryOfPost desu@Int: Editing history of post №#{show desu}
 YouAlreadyEditedPost boku@Int: You've already edited this post #{show boku} times.
 EditPosts: Edit posts and view history
+ShadowEdit: Edit posts without saving history
+DontSaveHistory: Do not save editing history
 
 Error lolka@Text: Error: #{lolka}
 MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}

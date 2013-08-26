@@ -29,6 +29,9 @@
             <td>_{MsgEditPosts            }
             <td>^{fvInput editPostsView   }
         <tr>
+            <td>_{MsgShadowEdit           }
+            <td>^{fvInput shadowEditView  }
+        <tr>
             <td>_{MsgAdditionalMarkup     }
             <td>^{fvInput aMarkupView     }
         <tr>

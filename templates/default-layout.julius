@@ -497,6 +497,9 @@ function showEditForm(postId, realId) {
         obj[ $('#edit-form textarea').attr('name')            ] = $('#edit-form textarea').val();
         obj[ $('#edit-form input[type=password]').attr('name')] = $('#edit-form input[type=password]').val();
         obj[ $('#edit-form input[type=hidden]').attr('name')  ] = $('#edit-form input[type=hidden]').val();
+        if ($('#edit-form input[type=checkbox]').is(':checked')) {
+            obj[ $('#edit-form input[type=checkbox]').attr('name')] = $('#edit-form input[type=checkbox]').val();
+        }
         obj[ $('#edit-form input[type=number]').attr('name')  ] = realId;
         popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         $.post( '@{PostEditR}', obj,

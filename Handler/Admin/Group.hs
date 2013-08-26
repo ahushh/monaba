@@ -15,6 +15,7 @@ groupsForm :: Html ->
                                        , Bool -- ^ Permission to view admin panel
                                        , Bool -- ^ Permission to manage bans
                                        , Bool -- ^ Permission to edit any post
+                                       , Bool -- ^ Permission to edit any post without saving history  
                                        , Bool -- ^ Permission to use additional markup
                                        , Bool -- ^ Permission to view poster's IP and ID
                                        , Bool -- ^ Permission to use hellbanning
@@ -30,16 +31,18 @@ groupsForm extra = do
   (managePanelRes  , managePanelView ) <- mreq checkBoxField "" Nothing
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
   (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
+  (shadowEditRes   , shadowEditView  ) <- mreq checkBoxField "" Nothing
   (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing
   (ratingRes       , ratingView      ) <- mreq checkBoxField "" Nothing
 
-  let result = (,,,,,,,,,,,,)  <$> nameRes        <*>
+  let result = (,,,,,,,,,,,,,) <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
-               viewIPAndIDRes  <*> hellbanningRes <*> ratingRes
+               manageBanRes    <*> editPostsRes   <*> shadowEditRes  <*>
+               aMarkupRes      <*> viewIPAndIDRes <*> hellbanningRes <*>
+               ratingRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -53,6 +56,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ManagePanelP     , MsgManagePanel     )
              ,(ManageBanP       , MsgManageBan       )
              ,(EditPostsP       , MsgEditPosts       )
+             ,(ShadowEditP      , MsgShadowEdit      )
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
              ,(ViewIPAndIDP     , MsgViewIPAndID     )
              ,(HellBanP         , MsgHellbanning     )
@@ -81,15 +85,16 @@ postManageGroupsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess (name            , manageThread, manageBoard, manageUsers,
-                 manageConfig    , deletePostsP, managePanel, manageBan  ,
-                 editPosts       , aMarkup     , viewIPAndID, hellbanning,
-                 changeFileRating
+    FormSuccess (name            , manageThread     , manageBoard, manageUsers,
+                 manageConfig    , deletePostsP     , managePanel, manageBan  ,
+                 editPosts       , shadowEdit       , aMarkup    , viewIPAndID,
+                 hellbanning     , changeFileRating
                 ) -> do
-      let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP     ,manageUsers     )
-                        ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP     ,managePanel     )
-                        ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup         )
-                        ,(ViewIPAndIDP ,viewIPAndID ), (HellBanP    ,hellbanning ), (ChangeFileRatingP,changeFileRating)
+      let permissions = [(ManageThreadP    ,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP ,manageUsers)
+                        ,(ManageConfigP    ,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP ,managePanel)
+                        ,(ManageBanP       ,manageBan   ), (EditPostsP  ,editPosts   ), (ShadowEditP  ,shadowEdit )
+                        ,(AdditionalMarkupP,aMarkup     ), (ViewIPAndIDP,viewIPAndID ), (HellBanP     ,hellbanning)
+                        ,(ChangeFileRatingP,changeFileRating)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

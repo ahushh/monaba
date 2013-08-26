@@ -100,7 +100,7 @@ getBoardR board page = do
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
-  (formWidget', _)          <- generateFormPost editForm
+  (formWidget', _)          <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender

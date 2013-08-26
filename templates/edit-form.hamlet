@@ -29,3 +29,7 @@
     ^{fvInput passwordView}
     <input type=button id=edit-button value=_{MsgEdit}>
     <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif} border=0 .icon-close #close-edit-form>
+    $if elem ShadowEditP permissions
+      <div>
+        _{MsgDontSaveHistory}
+        ^{fvInput shadowView}

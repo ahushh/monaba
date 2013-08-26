@@ -37,6 +37,8 @@ GoTo: Перейти к
 EditingHistoryOfPost desu@Int: История изменений поста №#{show desu}.
 YouAlreadyEditedPost boku@Int: Вы уже отредактировали пост #{show boku} #{timesRus boku}. Больше нельзя.
 EditPosts: Редактирование постов и просмотр истории
+ShadowEdit: Редактирование постов без сохранения истории
+DontSaveHistory: Не сохранять историю изменений
 
 Error lolka@Text: Ошибка: #{lolka}
 MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #{show qw}

@@ -55,7 +55,7 @@ getConfigR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgConfig]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgConfig]
     $(widgetFile "admin/config")
 
 postConfigR :: Handler Html

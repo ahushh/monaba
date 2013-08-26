@@ -35,7 +35,7 @@ getBanByIpR board ip = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgBanManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgBanManagement]
     $(widgetFile "admin/ban")
 
 postBanByIpR :: Text -> Text -> Handler Html

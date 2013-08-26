@@ -48,7 +48,7 @@ getSettingsR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgSettings]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgSettings]
     $(widgetFile "settings")
 
 -------------------------------------------------------------------------------------------------------------------

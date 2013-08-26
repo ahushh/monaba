@@ -34,7 +34,7 @@ getHellBanR page = do
   timeZone        <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgHellbanning]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHellbanning]
     $(widgetFile "admin/hellban")
 -------------------------------------------------------------------------------------------------------------
 getHellBanDoR :: Int  -> -- ^ Post internal ID

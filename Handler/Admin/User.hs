@@ -35,7 +35,7 @@ getUsersR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgUsers]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgUsers]
     $(widgetFile "admin/users")
 
 postUsersR :: Handler Html
@@ -95,7 +95,7 @@ getAccountR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgAccount]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgAccount]
     $(widgetFile "admin/account")
                  
 postNewPasswordR :: Handler Html

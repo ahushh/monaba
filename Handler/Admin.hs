@@ -12,7 +12,7 @@ getAdminR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgManagement]
     $(widgetFile "admin")
 
 -------------------------------------------------------------------------------------------------------------

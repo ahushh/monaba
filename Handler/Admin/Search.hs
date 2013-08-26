@@ -44,6 +44,6 @@ helper onlyHellbanned posterId page = do
   timeZone        <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgPostsByUserID]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]
     $(widgetFile "admin/search/uid")
 

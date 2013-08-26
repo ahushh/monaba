@@ -10,7 +10,7 @@ getHelpR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgHelp]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHelp]
     $(widgetFile "help")
 
 getHelpMarkupR :: Handler Html
@@ -21,7 +21,7 @@ getHelpMarkupR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgMarkup]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgMarkup]
     $(widgetFile "help/markup")
 
 getHelpApiR :: Handler Html
@@ -29,6 +29,6 @@ getHelpApiR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgApi]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgApi]
     $(widgetFile "help/api")
   

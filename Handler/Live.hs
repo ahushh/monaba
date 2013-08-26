@@ -36,6 +36,6 @@ getLiveR = do
   rating         <- getCensorshipRating
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgLatestPosts]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgLatestPosts]
     $(widgetFile "live")
   

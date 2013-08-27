@@ -1,0 +1,286 @@
+html, body {
+    background-color: #BFBFBF;
+    color: #333333;
+    font-family: serif;
+    font-size: 1em;
+    padding: 10px;
+}
+
+a {
+    color: #890000 !important;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: 70%;
+    margin: auto 15%;
+}
+
+#main {
+    padding: 5px 5px 25px 5px;
+    margin-top: 15px;
+    box-shadow: -1px -1px 8px 0 rgba(0,0,0.2),
+                1px 1px 8px 0 rgba(0,0,0,0.2),
+                0px 0px 0px 0 black,
+                0px 0px 0px 0 black,
+                0px 0px 0px 0 black;
+}
+
+footer {
+    border-top: 0px !important;
+    color: #333333;
+}
+
+form {
+    font-size: 0.9em;
+}
+
+textarea {
+    background-color: #DDDDDD;;
+    border: 0px;
+    width: 500px !important;
+}
+
+input[type=submit] {
+    border: 1px solid black;
+}
+
+select {
+    border: 0px;
+}
+
+input {
+    background-color: #DDDDDD;;
+    border: 0px;
+}
+
+.time {
+    font-size: 0.8em;
+    color: #666666;
+}
+
+header {
+    clear: both;
+    color: #995b46;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    margin: 2em 0pt 0pt;
+    text-align: center;
+    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    padding-top: 10px;
+}
+
+.reflink {
+    font-size: 85%;
+    font-weight: bold;
+}
+
+.file-info {
+    color: #666666;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.op-post {
+    border: 1px dotted rgba(0,0,0,0.5);
+    margin: 3px 3px 20px 3px;
+    padding: 5px;
+    background: none repeat scroll 0% 0% #E0E0E0;
+    border: 1px dotted rgba(0,0,0,0.5);
+    border-bottom: 0px;
+}
+
+.reply-post {
+    display: block !important;
+    background: none repeat scroll 0% 0% #E0E0E0;
+    border: 1px dotted rgba(0,0,0,0.5);
+    margin: 5px;
+    padding: 5px;
+}
+
+.popup-post {
+    background: none repeat scroll 0% 0% #E0E0E0;
+    border: 1px dotted rgba(0,0,0,0.5);
+    margin: 3px;
+    padding: 5px;
+}
+
+.highlighted-post {
+    background: none repeat scroll 0% 0% #EEDACB;
+    border: 2px dashed #EE6600;
+    margin: 3px;
+    padding: 5px;
+}
+
+.thread {
+    margin: 2px;
+    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    padding: 25px 2px;
+}
+
+.reply-title {
+    color: #CC0000;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+hr {
+    border-color: #505050;
+    border-style: dotted none none;
+    border-width: 1px;
+}
+
+table {
+    border-style: none;
+}
+
+table td {
+    border-style: none;
+}
+
+#delete-container {
+    text-align: right;
+}
+
+pre {
+    background-color: rgba(0,0,0,0.5);
+    border: 1px dashed #DFDFDF;
+    padding: 10px;
+}
+
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #E0E0E0;
+}
+
+#board-list-full {
+   border: 1px dotted rgba(0,0,0,0.5);
+   width: auto !important;
+}
+
+#home-container {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#latest-news {
+   border: 1px dotted rgba(0,0,0,0.5);
+}
+
+#news-title {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #E0E0E0;
+}
+
+#popupMessage {
+    background: none repeat scroll 0% 0% #E0E0E0;
+    border: 1px dotted rgba(0,0,0,0.5);
+}
+
+#post-form {
+    width: 100%;
+    margin: 0;
+}
+
+.quick-post-form {
+    border: 1px dotted rgba(0,0,0,0.5);
+    padding: 5px;
+    width: 95% !important;
+}
+
+.hist-msg {
+    background: none repeat scroll 0% 0% #E0E0E0;
+    border: 1px dotted rgba(0,0,0,0.5);
+    margin: 3px;
+    padding: 5px;
+}
+
+#board-header {
+    padding-bottom: 20px;
+    border-bottom: 1px dotted rgba(10, 10, 10, 0.3);
+    color: #890000;
+}
+
+#board-long-desc {
+   color: #CC0000;
+}
+
+#board-subtitle {
+    color: #CC0000;
+}
+
+.admin-navbar {
+    background-color: #E0E0E0;
+    border-bottom: 1px dotted rgba(10, 10, 10, 0.3);
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+#delete-container {
+    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    padding-top: 10px;
+}
+
+.show-plain-form {
+    margin-bottom: 10px;
+}
+
+.expand-post {
+    color: #666666;
+}
+
+.quote {
+    color: #0000A9 !important;
+}
+
+#next-page {
+    border-right: 1px dotted rgba(10, 10, 10, 0.7);
+    padding-right: 5px;
+}
+
+#prev-page {
+    border-left: 1px dotted rgba(10, 10, 10, 0.7);
+    padding-left: 5px;
+}
+
+#thread-header {
+    background-color: #E0E0E0;
+    padding: 2px;
+}
+
+#control-panel {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+}
+
+.board-list {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+}
+
+.op-post .last-modified {
+    float: none !important;
+}
+
+.last-modified a {
+    color: black !important;
+}
+
+.ip-and-id {
+    display:block;
+}

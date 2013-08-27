@@ -18,13 +18,6 @@ input {
     /* background-color: #FFFFFF; */
 }
 
-input.submit {
-    border: 0px;
-    background: none;
-    text-decoration: underline;
-    cursor: pointer;
-} 
-
 .poster-name {
     color: #117743;
 }

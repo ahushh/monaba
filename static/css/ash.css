@@ -23,13 +23,6 @@ input {
     background-color: #DDDDDD;;
 }
 
-input.submit {
-    border: 0px;
-    background: none;
-    text-decoration: underline;
-    cursor: pointer;
-} 
-
 .time {
     font-size: 0.8em;
     color: #666666;

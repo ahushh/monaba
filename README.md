@@ -12,6 +12,8 @@ Features
 * Prooflabes
 * Flexible account system
 * Internationalization
+* Post deletion by OP
+* GeoIP support
 
 Dependencies
 ------

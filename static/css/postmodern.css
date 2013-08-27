@@ -284,3 +284,7 @@ pre {
 .ip-and-id {
     display:block;
 }
+
+.message {
+    clear:both;
+}

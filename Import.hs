@@ -73,6 +73,9 @@ titleDelimiter = " :: "
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
+ifelse :: Bool -> Text -> Text -> Text
+ifelse x y z = if x then y else z
+
 checkHellbanned :: Entity Post -> [Permission] -> Text -> Bool
 checkHellbanned post permissions posterId = not (postHellbanned $ entityVal post) ||
                                             elem HellBanP permissions           ||

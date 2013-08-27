@@ -44,61 +44,10 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                 $if showThreadW
                     <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>#{thread}
             $forall Entity fileKey file <- replyFilesW
-                $if length replyFilesW == 1
+                $with c <- ifelse (length replyFilesW == 1) "file" "multi-file"
                   $with rating <- attachedfileRating file
-                    <div .file id="file-#{show $ fromIntegral $ fromKey fileKey}">
-                        <div .file-name>
-                            <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                        $if isImageFile (attachedfileType file)
-                            <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
-                        $else
-                            <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
-                        $if elem ChangeFileRatingP permissionsW
-                          $with rating1 <- read $ unpack rating
-                            $if rating1 == SFW
-                                SFW&nbsp;
-                            $else
-                                <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
-                            $if rating1 == R15
-                                R-15&nbsp;
-                            $else
-                                <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
-                            $if rating1 == R18
-                                R-18&nbsp;
-                            $else
-                                <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
-                            $if rating1 == R18G
-                                R-18G&nbsp;
-                            $else
-                                <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
-                        $if T.null rating
-                            $if attachedfileThumbWidth file == -1
-                                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                            $elseif isImageFile (attachedfileType file)
-                                <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                            $else
-                                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                        $elseif (read $ unpack rating) > ratingW
-                          $case (read $ unpack rating)
-                            $of R15
-                              <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
-                            $of R18
-                              <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
-                            $of R18G
-                              <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
-                            $of SFW
-                              Suppress warnings.
-                        $else
-                            $if attachedfileThumbWidth file == -1
-                                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                            $elseif isImageFile (attachedfileType file)
-                                <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                            $else
-                                <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
-                $else
-                    <div .multi-file id="file-#{show $ fromIntegral $ fromKey fileKey}">
-                      $with rating <- attachedfileRating file
-                        <div .file-name>
+                    <div class=#{c} id="file-#{show $ fromIntegral $ fromKey fileKey}">
+                        <span .file-name>
                             <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                         $if isImageFile (attachedfileType file)
                             <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}

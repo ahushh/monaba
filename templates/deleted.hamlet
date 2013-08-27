@@ -6,7 +6,8 @@ $if not $ T.null boardLongDesc
     $forall (eReply, files) <- allPosts
         ^{replyPostWidget muser eReply files rating True False False permissions geoIps timeZone}
     <div #delete-container>
-        <input type=checkbox name=onlyfile value=1>_{MsgOnlyFile}
+      <input type=checkbox name=onlyfiles value=1>_{MsgOnlyFiles}
+      <div>
         $if elem DeletePostsP permissions
             <span style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>

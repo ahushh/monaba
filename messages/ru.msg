@@ -60,7 +60,7 @@ Back: Назад
 Next: Вперед
 Previous: Назад
 DeleteBtn: Удалить
-OnlyFile: Только файл
+OnlyFiles: Только файлы
 ## panel
 Manage: Управление
 Login: Войти

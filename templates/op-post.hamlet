@@ -57,7 +57,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
           $forall Entity fileKey file <- opPostFilesW
               $with c <- ifelse (length opPostFilesW == 1) "file" "multi-file"
                 $with fId <- show $ fromIntegral $ fromKey fileKey
-                  <div .file id="file-#{fId}">
+                  <div class=#{c} id="file-#{fId}">
                     $with rating <- attachedfileRating file
                       <span .file-name>
                           <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}

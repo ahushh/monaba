@@ -220,3 +220,8 @@ pre {
     border-left: 1px solid rgba(10, 10, 10, 0.7);
     padding-left: 5px;
 }
+
+#thread-header {
+    background-color: #CFCFCF;
+    padding: 2px;
+}

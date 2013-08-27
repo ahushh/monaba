@@ -202,3 +202,8 @@ pre {
     border: 1px solid grey;
     padding: 0 3px;
 }
+
+#thread-header {
+    background-color: #EEAA88;
+    padding: 2px;
+}

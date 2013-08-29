@@ -188,14 +188,14 @@ GroupDeleted: Group deleted
 Account: Account
 NewPassword: New password
 ## Messages
-PasswordChanged: Password successully changed
+PasswordChanged: Password successfully changed
 
 ### Users management
 Users: Users
 AddNewUserOrUpdate: New user/update
 ## Messages
-UsersAddedOrUpdated: New user successufully added/updated
-UsersDeleted: User successufully deleted
+UsersAddedOrUpdated: New user successfully added/updated
+UsersDeleted: User successfully deleted
 YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 
 ### Config management
@@ -211,18 +211,18 @@ UpdateConfig: Update config
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
 ## Messages
-ConfigUpdated: Config successufly updated
+ConfigUpdated: Config successfully updated
 
 ### Permissions
 Permissions: Permissions
 ViewIPAndID: View poster's IP and ID
-ManageThread:Manage Thread
-ManageBoard :Manage Board
-ManageUsers :Manage Users
-ManageConfig:Manage Config
-DeletePosts :Delete Posts
-ManagePanel :Manage Panel
-ManageBan   :Manage Ban
+ManageThread:Manage threads
+ManageBoard :Manage boards
+ManageUsers :Manage users
+ManageConfig:Manage configuration
+DeletePosts :Delete posts
+ManagePanel :View manage panel
+ManageBan   :Manage bans
 AdditionalMarkup: Additional markup
 Hellbanning :Hellbanning
 ChangeFileRating: Change file's censorship rating

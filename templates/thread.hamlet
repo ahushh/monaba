@@ -26,10 +26,13 @@ $if hasAccessToReply
     [ <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a> ]
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
     <div #delete-container>
-      <input type=checkbox name=onlyfiles value=1>
-      _{MsgOnlyFiles}
+      <label>
+          <input type=checkbox name=onlyfiles value=1>
+          _{MsgOnlyFiles}
       $if opModeration
-          <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>_{MsgOpModeration}
+          <label>
+              <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>
+              _{MsgOpModeration}
           $if not noDeletedPosts
               [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
       <div>

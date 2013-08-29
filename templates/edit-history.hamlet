@@ -2,9 +2,13 @@
    _{MsgEditingHistoryOfPost (postLocalId post)}
    [ _{MsgGoTo} 
    $if postParent post == 0
-       <a href=@{ThreadR (boardName board) (postLocalId post)}>_{MsgToThread}</a>/<a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}</a>
+       <a href=@{ThreadR (boardName board) (postLocalId post)}>_{MsgToThread}#
+       \/#
+       <a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}
    $else
-       <a href=@{ThreadR (boardName board) (postParent post)}>_{MsgToThread}</a>/<a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}</a>
+       <a href=@{ThreadR (boardName board) (postParent post)}>_{MsgToThread}#
+       \/#
+       <a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}
    ]
 $forall (date, msg) <- history
     <div .hist-date>

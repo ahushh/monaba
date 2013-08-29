@@ -115,15 +115,15 @@ function addEmbeddedPlayer(post) {
                 $(iframe).css('height', height);
 
                 $(link).attr('class', 'video-link');
-                $(link).html("<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
+                $(link).html("<img alt=play src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
                 var loadIframe = function () {
-                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1");
+                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&&wmode=opaque&enablejsapi=1");
                     $(iframe).addClass('loaded');
                 };
 
                 $(iframe).css('display','none');
                 if (first1) {
-                    $('#'+postId+' .video-container').prepend("<img class='video-thumb' width="+width+" height="+height+" src='"+thumb+"'>");
+                    $('#'+postId+' .video-container').prepend("<img alt='"+title+"' title='"+title+"' class='video-thumb' width="+width+" height="+height+" src='"+thumb+"'>");
                     $('#'+postId+' .video-container').prepend(iframe);
                     $(link).addClass('focused');
                     $('#'+postId+' .video-thumb').click(function() {
@@ -162,7 +162,7 @@ function popupMessage(text, delay, icon) {
         $('#popupMessage').hide();
     }
     if (icon) {
-        text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
+        text = "<img alt=loading... src=@{StaticR img_ajax_loader_gif}> "+text;
     }
     $('#popupMessage').html(text);
     $('#popupMessage').fadeIn(150);
@@ -298,8 +298,8 @@ function cachePopupPosts() {
         }
         // if (! Monaba.postCache[board][postId]) {
             var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+$(this).attr('id'));
-            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+            var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+            var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <div class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></div> ";
             post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
             post.append(delPopup);
@@ -341,8 +341,8 @@ function showPopupPost(event, elem, board, postId) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+            var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+            var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
             post.append(delPopup);

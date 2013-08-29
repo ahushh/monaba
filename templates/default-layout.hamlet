@@ -16,7 +16,7 @@ $maybe msg <- mmsg
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs
-            <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> 
+            <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
           ] 
 
 ^{widget}

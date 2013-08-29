@@ -1,13 +1,15 @@
 $if not $ pageW == 0
-    <a id=next-page href=@{routeW $ pageW - 1}>_{MsgPrevious}</a>&nbsp;
+    <a id=next-page href=@{routeW $ pageW - 1}>_{MsgPrevious}
+    &nbsp;
 <span #pages-list>
   $forall (i,p) <- enumerate pagesW
     $if p == pageW
-      <strong>#{ p }</strong>#
+      <strong>#{ p }#
     $else
-      <a href=@{routeW p}>#{ p }</a>#
+      <a href=@{routeW p}>#{ p }#
     $if not $ i == (length pagesW - 1)
       &nbsp;
  
 $if (pageW + 1) < length pagesW
-    &nbsp;<a id=prev-page href=@{routeW $ pageW + 1}>_{MsgNext}</a>
+    &nbsp;<a id=prev-page href=@{routeW $ pageW + 1}>_{MsgNext}
+

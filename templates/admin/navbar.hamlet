@@ -1,14 +1,20 @@
 <div .admin-navbar>
     $if elem ManageBanP permissionsW
-        <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
+        <a href=@{BanByIpR "" ""}>_{MsgBans} #
+        | 
     $if elem ManageBoardP permissionsW
-        <a href=@{ManageBoardsR "new-f89d7fb43ef7"}>_{MsgBoards}</a> |
+        <a href=@{ManageBoardsR "new-f89d7fb43ef7"}>_{MsgBoards} #
+        | 
     $if elem ManageUsersP permissionsW
-        <a href=@{UsersR}>_{MsgUsers}</a> |
+        <a href=@{UsersR}>_{MsgUsers} #
+        | 
     $if elem ManageUsersP permissionsW
-        <a href=@{ManageGroupsR}>_{MsgGroups}</a> |
+        <a href=@{ManageGroupsR}>_{MsgGroups} #
+        | 
     $if elem ManageConfigP permissionsW
-        <a href=@{ConfigR}>_{MsgConfig}</a> |
+        <a href=@{ConfigR}>_{MsgConfig} #
+        | 
     $if elem HellBanP permissionsW
-        <a href=@{HellBanNoPageR}>_{MsgHellbanning}</a> |
+        <a href=@{HellBanNoPageR}>_{MsgHellbanning} #
+        | 
     <a href=@{AccountR}>_{MsgAccount}

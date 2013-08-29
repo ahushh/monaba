@@ -62,6 +62,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     -- Just helpers
     ----------------------------------------------------------------------------------------------------------
     openSpoiler = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\">"
+    openStrike  = "<span style='text-decoration:line-through'>"
     refHtml acc brd thr p ref = T.concat [acc , "<a onmouseover='timeout(this, function(){showPopupPost(event, this,\""
                                          ,brd , "\",", p   , ")},700)' onclick='highlightPost(\"post-", p, "-"
                                          ,thr , "-"  , brd , "\")' href='/thread/", brd, "/"
@@ -74,7 +75,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     boldHandler      acc x = (\g -> T.concat [acc, "<strong>" , g, "</strong>"]) <$> foldM f "" x
     italicHandler    acc x = (\g -> T.concat [acc, "<em>"     , g, "</em>"    ]) <$> foldM f "" x
     spoilerHandler   acc x = (\g -> T.concat [acc, openSpoiler, g, "</span>"  ]) <$> foldM f "" x
-    strikeHandler    acc x = (\g -> T.concat [acc, "<s>"      , g, "</s>"     ]) <$> foldM f "" x
+    strikeHandler    acc x = (\g -> T.concat [acc, openStrike , g, "</span>"  ]) <$> foldM f "" x
     underlineHandler acc x = (\g -> T.concat [acc, "<u>"      , g, "</u>"     ]) <$> foldM f "" x
     quoteHandler     acc x = (\g -> T.concat [acc, "<span class=quote>>", g ,"</span><br>"]) <$> foldM f "" x
     listHandler      acc x = (\g -> T.concat [acc, "<ul>"     , g, "</ul>"    ]) <$> T.concat <$> (mapM ((li <$>) . foldM f "") x)

@@ -49,7 +49,7 @@
                         $maybe _ <- acaptchaW
                             _{MsgYouDontNeedCaptcha}
                         $nothing
-                            <img #captcha src=@{CaptchaR}>
+                            <img alt=captcha #captcha src=@{CaptchaR}>
                             ^{fvInput captchaView} 
                             <span #captcha-info>
                                 $maybe c <- maybeCaptchaInfoW
@@ -74,12 +74,12 @@
                                 <div .file-input>
                                     ^{fvInput fv}
                                     ^{fvInput rv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
                             $else
                                 <div style=display:none .file-input>
                                     ^{fvInput fv}
                                     ^{fvInput rv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

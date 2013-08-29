@@ -4,8 +4,8 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
           <div .post-header>
               <span .mark-to-delete onclick="markToDelete(this)">
                   <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
-                  <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
-              <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+                  <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif}  .icon-del-post>
+              <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif}  .icon-edit-post>
               $maybe (code, name) <- lookup (entityKey eOpPostW) geoIpsW
                   <img src=#{geoIconPath code} title=#{name}>
               <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
@@ -13,20 +13,20 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
               <span .time>#{myFormatTime tOffsetW $ postDate $ entityVal $ eOpPostW}
               <div .thread-status>
                   $if postSticked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
+                      <img src=@{StaticR img_blank_gif}  title=sticked alt=sticked .icon-thread-sticked>
                   $if postLocked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
+                      <img src=@{StaticR img_blank_gif}  title=locked alt=locked .icon-thread-locked>
                   $if postAutosage $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
+                      <img src=@{StaticR img_blank_gif}  title=autosage alt=autosage .icon-thread-autosage>
               <span .reflink>
                   $if canPostW
                       <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
-                      <a onclick="insert('>>#{thread}#{pack "\\n"}')" name=#{thread}>#{thread}
+                      <a onclick="insert('>>#{thread}#{pack "\\n"}')">#{thread}
                   $else
                       <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.#{thread}
               $if canPostW
                   <span .extra-buttons>
-                      <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+                      <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif}  .icon-reply>
               &nbsp;&nbsp;
               $if not $ isInThreadW
                   [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
@@ -37,20 +37,30 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchNoPageR (postPosterId $ entityVal eOpPostW)}>#{postPosterId $ entityVal eOpPostW}</a>
               <div .cpanel>
                   $if elem ManageBanP permissionsW
-                      \[<a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B</a>]
+                      [
+                      <a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B #
+                      ] 
                   $if elem ManageThreadP permissionsW
-                      \[<a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S</a> |
-                      \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
-                      \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
+                      [
+                      <a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S #
+                      | 
+                      <a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L #
+                      | 
+                      <a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A #
+                      ]
                   $if elem HellBanP permissionsW
                       &nbsp;[
-                      <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "none" True}>Hellban</a> |
-                      <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" False}>Hide</a> |
-                      <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" True}>Hide && Hellban</a> |
-                      <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "all" True}>Hide all && Hellban</a> |
-                      <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "show"}>Show</a>
-                      <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "both"}>&&</a>
-                      <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "unban"}>Unhellban</a>
+                      <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "none" True}>Hellban #
+                      | 
+                      <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" False}>Hide #
+                      | 
+                      <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" True}>Hide && Hellban #
+                      | 
+                      <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "all" True}>Hide all && Hellban #
+                      |
+                      <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "show"}>Show #
+                      <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "both"}>&& #
+                      <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "unban"}>Unhellban
                       ]
                       $if postHellbanned $ entityVal eOpPostW
                           <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
@@ -85,28 +95,28 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                               <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
                       $if T.null rating
                           $if attachedfileThumbWidth file == -1
-                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $elseif isImageFile (attachedfileType file)
-                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $else
-                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                       $elseif (read $ unpack rating) > ratingW
                         $case (read $ unpack rating)
                           $of R15
-                            <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                            <img alt=R-15 src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
                           $of R18
-                            <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                            <img alt=R-18 src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
                           $of R18G
-                            <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                            <img alt=R-18G src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
                           $of SFW
                             Suppress warnings.
                       $else
                           $if attachedfileThumbWidth file == -1
-                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $elseif isImageFile (attachedfileType file)
-                              <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $else
-                              <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
           $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
               <div .message>#{m}
 

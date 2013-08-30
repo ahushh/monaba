@@ -3,6 +3,7 @@ module Handler.Posting where
 
 import           Import
 import           Yesod.Routes.Class      (Route)
+import           Control.Monad           (mplus)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Conduit            (($$))
 import qualified Data.Text               as T
@@ -60,7 +61,7 @@ postForm boardVal extra = do
       ratings :: [(Text, Censorship)]
       ratings = map (pack . show &&& id) [minBound..maxBound]
   ----------------------------------------------------------------------------------------------------------------
-  (nameRes     , nameView    ) <- mopt textField              "" (Just              <$> lastName)
+  (nameRes     , nameView    ) <- mopt textField              "" (mplus (Just <$> lastName) (Just $ Just defaultName))
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing

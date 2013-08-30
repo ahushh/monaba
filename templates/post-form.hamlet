@@ -7,7 +7,7 @@
                 ^{fvInput nameView}
         <tr .post-block>
             <td .post-block-named>_{MsgSubject}
-            <td>
+            <td #subject-block>
                 ^{fvInput subjectView}
                 <input type=submit value=_{MsgSubmitBtn}>
         <tr .post-block>

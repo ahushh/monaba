@@ -4,7 +4,7 @@ $('#post-form').ajaxForm({
     },
     success: function(data) {
         if (data.ok) {
-            $('#post-form input[type=text]').clearFields();
+            $('#post-form #subject-block input[type=text]').clearFields();
             $('#post-form input[type=file]').clearFields();
             $('#post-form textarea').clearFields();
             popupMessage(data.ok,2000);

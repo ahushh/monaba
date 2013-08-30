@@ -197,7 +197,9 @@ postBoardR board _ = do
                flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
         -- remember poster name
-        when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
+        case name of
+          Just n  -> setSession "name" n
+          Nothing -> deleteSession "name"
         -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"

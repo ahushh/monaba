@@ -327,3 +327,7 @@ ul {
 #captcha {
     display: block;
 }
+
+.censored {
+    display: block;
+}

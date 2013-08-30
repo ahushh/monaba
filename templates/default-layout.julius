@@ -206,6 +206,9 @@ function doImageExpanding(post) {
                 window.open(fullUrl);
                 return true;
             }
+            if (e.which == 3) { // don't handle right click
+                return true;
+            }
             if ($(this).attr('src') == fullUrl) {
                 $(this).attr('src', thumbUrl);
                 $(this).attr('width' , thumbWidth);

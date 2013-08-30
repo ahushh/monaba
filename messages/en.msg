@@ -149,6 +149,7 @@ NewBoard: New board
 AllBoards: All boards
 ## actions
 UpdateBoardsBtn: Update
+AddBoardBtn: Add board
 DeleteAll: Delete all
 CleanBoard: Clean
 ## info

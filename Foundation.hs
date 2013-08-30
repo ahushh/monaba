@@ -44,10 +44,12 @@ data App = App
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
     }
-
 ---------------------------------------------------------------------------------------------------------
 data Censorship = SFW | R15 | R18 | R18G
     deriving (Show, Read, Eq, Enum, Bounded, Ord)
+
+data ManageBoardAction = NewBoard | AllBoards | UpdateBoard
+                       deriving (Show, Read, Eq)
 ---------------------------------------------------------------------------------------------------------
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
 widgetHelperFilterBoards boards category group = filter p boards
@@ -200,9 +202,13 @@ instance Yesod App where
     isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' [ManageThreadP]
 
     isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' [ManageBanP]
-    isAuthorized (ManageBoardsR _) _ = isAuthorized' [ManageBoardP]
-    isAuthorized (DeleteBoardR  _) _ = isAuthorized' [ManageBoardP]
-    isAuthorized (CleanBoardR   _) _ = isAuthorized' [ManageBoardP]
+    isAuthorized ManageBoardsR{}   _ = isAuthorized' [ManageBoardP]
+    isAuthorized  NewBoardsR       _ = isAuthorized' [ManageBoardP]
+    isAuthorized (UpdateBoardsR _) _ = isAuthorized' [ManageBoardP]
+    isAuthorized AllBoardsR        _ = isAuthorized' [ManageBoardP]
+
+    isAuthorized DeleteBoardR{}    _ = isAuthorized' [ManageBoardP]
+    isAuthorized CleanBoardR{}     _ = isAuthorized' [ManageBoardP]
     isAuthorized UsersR            _ = isAuthorized' [ManageUsersP]
     isAuthorized ManageGroupsR     _ = isAuthorized' [ManageUsersP]
     isAuthorized (UsersDeleteR  _) _ = isAuthorized' [ManageUsersP]
@@ -257,6 +263,14 @@ isAuthorized' permissions = do
         then return Authorized
         else return $ Unauthorized "Not permitted"
 
+---------------------------------------------------------------------------------------------------------
+instance PathPiece ManageBoardAction where
+  toPathPiece = T.pack . show
+  fromPathPiece s =
+    case reads $ T.unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
+
 instance PathPiece Bool where
   toPathPiece True  = "True"
   toPathPiece False = "False"
@@ -271,6 +285,7 @@ instance PathPiece Censorship where
     case reads $ T.unpack s of
       (i,""):_ -> Just i
       _        -> Nothing
+---------------------------------------------------------------------------------------------------------
 
 -- How to run database actions.
 instance YesodPersist App where

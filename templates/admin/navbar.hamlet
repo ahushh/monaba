@@ -3,7 +3,7 @@
         <a href=@{BanByIpR "" ""}>_{MsgBans} #
         | 
     $if elem ManageBoardP permissionsW
-        <a href=@{ManageBoardsR "new-f89d7fb43ef7"}>_{MsgBoards} #
+        <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards} #
         | 
     $if elem ManageUsersP permissionsW
         <a href=@{UsersR}>_{MsgUsers} #

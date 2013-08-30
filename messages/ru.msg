@@ -148,6 +148,7 @@ NewBoard: Новая борда
 AllBoards: Все борды
 ## actions
 UpdateBoardsBtn: Обновить
+AddBoardBtn: Добавить
 DeleteAll: Удалить все
 CleanBoard: Очистить
 ## info

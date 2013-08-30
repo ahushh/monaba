@@ -1,8 +1,11 @@
-<form style=display:inline method=post action=@{ManageBoardsR bname}>
+<form style=display:inline method=post action=@{chooseManageBoarUrl action bname}>
     #{extra}
-    <input type=submit value=_{MsgUpdateBoardsBtn}>
+    $if action == NewBoard
+        <input type=submit value=_{MsgAddBoardBtn}>
+    $else
+        <input type=submit value=_{MsgUpdateBoardsBtn}>
     <table>
-        $if bname == "all-f89d7fb43ef7"
+        $if action == AllBoards
             <tr style=display:none>
                 <td>_{MsgBoardName}
                 <td> ^{fvInput nameView}
@@ -60,7 +63,7 @@
             <td>_{MsgBoardThreadLimit}
             <td>^{fvInput threadLimitView}
             <td>_{MsgXForUnlim "-1"}
-        $if bname == "all-f89d7fb43ef7"
+        $if action == AllBoards
             <tr>
                 <td colspan=2><strong>_{MsgWontBeUpdatedIfNone}:</strong>
                 <td>&nbsp;
@@ -100,7 +103,7 @@
             <td>_{MsgShowEditHistory}
             <td>^{fvInput showEditHistoryView}
             <td>&nbsp;
-        $if bname == "new-f89d7fb43ef7"
+        $if action == NewBoard
             <tr>
                 <td colspan=2><strong>_{MsgOptional}:</strong>
                 <td>&nbsp;

@@ -48,6 +48,14 @@ data App = App
 
 instance HasHttpManager App where
     getHttpManager = httpManager
+
+---------------------------------------------------------------------------------------------------------
+-- Data types appear in models
+---------------------------------------------------------------------------------------------------------
+data ManageBoardAction = NewBoard | AllBoards | UpdateBoard
+                       deriving (Show, Read, Eq)
+---------------------------------------------------------------------------------------------------------
+-- Template helpers
 ---------------------------------------------------------------------------------------------------------
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
 widgetHelperFilterBoards boards category group = filter p boards
@@ -56,6 +64,8 @@ widgetHelperFilterBoards boards category group = filter p boards
         checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = Just category == boardCategory b
         checkAccess   b = isNothing (boardViewAccess b) || (isJust group && elem (fromJust group) (fromJust $ boardViewAccess b))
+---------------------------------------------------------------------------------------------------------
+-- i18n helpers
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
 omittedRus n
@@ -136,8 +146,6 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            -- addStylesheet $ StaticR css_ash_css
-            -- addStylesheet $ StaticR css_futaba_css
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
             addScript (StaticR js_jquery_autosize_js)            
@@ -182,38 +190,28 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
-    isAuthorized AdminR            _ = isAuthorized' ManagePanelP
-    isAuthorized NewPasswordR      _ = isAuthorized' ManagePanelP
-    isAuthorized AccountR          _ = isAuthorized' ManagePanelP
-    isAuthorized (StickR     _ _ ) _ = isAuthorized' ManageThreadP
-    isAuthorized (LockR      _ _ ) _ = isAuthorized' ManageThreadP
-    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' ManageThreadP
+    isAuthorized x _ = case x of
+      AdminR{}        -> isAuthorized' [ManagePanelP]
+      NewPasswordR{}  -> isAuthorized' [ManagePanelP]
+      AccountR{}      -> isAuthorized' [ManagePanelP]
+      StickR{}        -> isAuthorized' [ManageThreadP]
+      LockR{}         -> isAuthorized' [ManageThreadP]
+      AutoSageR{}     -> isAuthorized' [ManageThreadP]
 
-    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' ManageBanP
-    isAuthorized (ManageBoardsR _) _ = isAuthorized' ManageBoardP
-    isAuthorized (DeleteBoardR  _) _ = isAuthorized' ManageBoardP
-    isAuthorized (CleanBoardR   _) _ = isAuthorized' ManageBoardP
-    isAuthorized UsersR            _ = isAuthorized' ManageUsersP
-    isAuthorized ManageGroupsR     _ = isAuthorized' ManageUsersP
-    isAuthorized (UsersDeleteR  _) _ = isAuthorized' ManageUsersP
+      BanByIpR{}      -> isAuthorized' [ManageBanP]
+      ManageBoardsR{} -> isAuthorized' [ManageBoardP]
+      NewBoardsR{}    -> isAuthorized' [ManageBoardP]
+      UpdateBoardsR{} -> isAuthorized' [ManageBoardP]
+      AllBoardsR{}    -> isAuthorized' [ManageBoardP]
 
-    isAuthorized ConfigR           _ = isAuthorized' ManageConfigP
-    -- isAuthorized (BanByIpR   _ _ ) True  = isAuthorized' ManageBanP
-    -- isAuthorized (BanByIpR   _ _ ) False = isAuthorized' ManagePanelP
-    -- isAuthorized (ManageBoardsR _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (DeleteBoardR  _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (CleanBoardR   _) True  = isAuthorized' ManageBoardP
-    -- isAuthorized (ManageBoardsR _) False = isAuthorized' ManagePanelP
-    -- isAuthorized (DeleteBoardR  _) False = isAuthorized' ManagePanelP
-    -- isAuthorized (CleanBoardR   _) False = isAuthorized' ManagePanelP
-    -- isAuthorized UsersR            True  = isAuthorized' ManageUsersP
-    -- isAuthorized UsersR            False = isAuthorized' ManagePanelP
-    -- isAuthorized (ManageGroupsR _) True  = isAuthorized' ManageUsersP
-    -- isAuthorized (UsersDeleteR  _) False = isAuthorized' ManagePanelP
-    -- isAuthorized ConfigR           True  = isAuthorized' ManageConfigP
-    -- isAuthorized ConfigR           False = isAuthorized' ManagePanelP
+      DeleteBoardR{}  -> isAuthorized' [ManageBoardP]
+      CleanBoardR{}   -> isAuthorized' [ManageBoardP]
+      UsersR{}        -> isAuthorized' [ManageUsersP]
+      ManageGroupsR{} -> isAuthorized' [ManageUsersP]
+      UsersDeleteR{}  -> isAuthorized' [ManageUsersP]
 
-    isAuthorized _                 _ = return Authorized
+      ConfigR{}       -> isAuthorized' [ManageConfigP]
+      _               -> return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -232,18 +230,27 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
-instance YesodAuthPersist App
-
-isAuthorized' permission = do
+isAuthorized' permissions = do
   mauth <- maybeAuth
   case mauth of
     Nothing -> return AuthenticationRequired
     Just (Entity _ user) -> do
       group <- runDB $ getBy $ GroupUniqName (userGroup user)
-      if permission `elem` groupPermissions (entityVal $ fromJust group)
+      if all (`elem` groupPermissions (entityVal $ fromJust group)) permissions
         then return Authorized
         else return $ Unauthorized "Not permitted"
 
+instance YesodAuthPersist App
+---------------------------------------------------------------------------------------------------------
+-- Path pieces
+---------------------------------------------------------------------------------------------------------
+instance PathPiece ManageBoardAction where
+  toPathPiece = T.pack . show
+  fromPathPiece s =
+    case reads $ T.unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
+---------------------------------------------------------------------------------------------------------
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend

@@ -36,10 +36,13 @@
 
 /admin/ban/#Text/#Text     BanByIpR      GET POST
 
-/admin/bandelete/#Int      BanDeleteR    GET
-/admin/boards/#Text        ManageBoardsR GET POST
-/admin/boards/delete/#Text DeleteBoardR  GET
-/admin/boards/clean/#Text  CleanBoardR   GET
+/admin/bandelete/#Int           BanDeleteR    GET
+/admin/boards/new               NewBoardsR    POST
+/admin/boards/update/#Text      UpdateBoardsR POST
+/admin/boards/all               AllBoardsR    POST
+/admin/boards/list/#ManageBoardAction/#Text   ManageBoardsR GET
+/admin/boards/delete/#ManageBoardAction/#Text DeleteBoardR  GET
+/admin/boards/clean/#ManageBoardAction/#Text  CleanBoardR   GET
 
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET

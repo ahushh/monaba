@@ -6,10 +6,10 @@ import           Yesod.Auth
 import qualified Data.Text         as T
 import           Handler.Delete    (deletePosts)
 import           Control.Monad     (mplus)
--------------------------------------------------------------------------------------------------------------
 
-getManageBoardsR :: Text -> Handler Html
-getManageBoardsR board = do
+-------------------------------------------------------------------------------------------------------------
+getManageBoardsR :: ManageBoardAction -> Text -> Handler Html
+getManageBoardsR action board = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   let permissions = getPermissions mgroup
@@ -18,7 +18,7 @@ getManageBoardsR board = do
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
 
-  (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard board bCategories groups
+  (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups
 
   boards          <- runDB $ selectList ([]::[Filter Board]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
@@ -26,41 +26,41 @@ getManageBoardsR board = do
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgBoardManagement]
     $(widgetFile "admin/boards")
-    
-updateBoardForm :: Maybe (Entity Board) -> 
-                  Text          -> -- board name
-                  [(Text,Text)] -> -- board categoreis
-                  [(Text,Text)] -> -- user groups
-                  Html          -> -- extra
-                  MForm Handler (FormResult ( Maybe Text -- name
-                                            , Maybe Text -- description
-                                            , Maybe Int  -- bump limit
-                                            , Maybe Int  -- number of files
-                                            , Maybe Text -- allowed file typs
-                                            , Maybe Text -- default name
-                                            , Maybe Int  -- max msg length
-                                            , Maybe Int  -- thumb size
-                                            , Maybe Int  -- threads per page
-                                            , Maybe Int  -- previews per thread
-                                            , Maybe Int  -- thread limit
-                                            , Maybe Text -- OP file
-                                            , Maybe Text -- reply file
-                                            , Maybe Text -- is hidden (Enable,Disable,DoNotChange)
-                                            , Maybe Text -- enable captcha (Enable,Disable,DoNotChange)
-                                            , Maybe Text -- category
-                                            , Maybe [Text] -- view access
-                                            , Maybe [Text] -- reply access
-                                            , Maybe [Text] -- thread access
-                                            , Maybe Text -- allow OP moderate his/her thread
-                                            , Maybe Text -- extra rules
-                                            , Maybe Text -- enable geo IP
-                                            , Maybe Text -- enable OP editing
-                                            , Maybe Text -- enable post editing
-                                            , Maybe Text -- show or not editing history
-                                            , Maybe Text -- long description
+-------------------------------------------------------------------------------------------------------------    
+updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
+                  ManageBoardAction    -> -- ^ What you are going to do
+                  [(Text,Text)]        -> -- ^ Board categories
+                  [(Text,Text)]        -> -- ^ User groups
+                  Html                 -> -- ^ Extra
+                  MForm Handler (FormResult ( Maybe Text   -- ^ Name
+                                            , Maybe Text   -- ^ Board title
+                                            , Maybe Int    -- ^ Bump limit
+                                            , Maybe Int    -- ^ Number of files
+                                            , Maybe Text   -- ^ Allowed file types
+                                            , Maybe Text   -- ^ Default name
+                                            , Maybe Int    -- ^ The maximum message length
+                                            , Maybe Int    -- ^ Thumbnail size
+                                            , Maybe Int    -- ^ Threads per page
+                                            , Maybe Int    -- ^ Previews post per thread
+                                            , Maybe Int    -- ^ Thread limit
+                                            , Maybe Text   -- ^ OP file
+                                            , Maybe Text   -- ^ Reply file
+                                            , Maybe Text   -- ^ Is hidden (Enable,Disable,DoNotChange)
+                                            , Maybe Text   -- ^ Enable captcha (Enable,Disable,DoNotChange)
+                                            , Maybe Text   -- ^ Category
+                                            , Maybe [Text] -- ^ View access
+                                            , Maybe [Text] -- ^ Reply access
+                                            , Maybe [Text] -- ^ Thread access
+                                            , Maybe Text   -- ^ Allow OP moderate his/her thread
+                                            , Maybe Text   -- ^ Extra rules
+                                            , Maybe Text   -- ^ Enable geo IP
+                                            , Maybe Text   -- ^ Enable OP editing
+                                            , Maybe Text   -- ^ Enable post editing
+                                            , Maybe Text   -- ^ Show or not editing history
+                                            , Maybe Text   -- ^ Summary
                                             )
                                 , Widget)
-updateBoardForm board bname' bCategories groups extra = do
+updateBoardForm board action bCategories groups extra = do
   msgrender   <- getMessageRender
   let helper g  = (Just . g . entityVal) <$> board
       helper :: forall a. (Board -> a) -> Maybe (Maybe a)
@@ -105,170 +105,207 @@ updateBoardForm board bname' bCategories groups extra = do
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
   let result = (,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
-               nameRes              <*> titleRes        <*> bumpLimitRes      <*>
-               numberFilesRes       <*> allowedTypesRes <*> defaultNameRes    <*>
-               maxMsgLengthRes      <*> thumbSizeRes    <*> threadsPerPageRes <*>
-               previewsPerThreadRes <*> threadLimitRes  <*> opFileRes         <*>
-               replyFileRes         <*> isHiddenRes     <*> enableCaptchaRes  <*>
-               categoryRes          <*> viewAccessRes   <*> replyAccessRes    <*>
-               threadAccessRes      <*> opModerationRes <*> extraRulesRes     <*>
-               enableGeoIpRes       <*> opEditingRes    <*> postEditingRes    <*>
+               nameRes              <*> titleRes           <*> bumpLimitRes      <*>
+               numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
+               maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
+               previewsPerThreadRes <*> threadLimitRes     <*> opFileRes         <*>
+               replyFileRes         <*> isHiddenRes        <*> enableCaptchaRes  <*>
+               categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
+               threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
+               enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> summaryRes
-      bname  = maybe bname' (boardName . entityVal) board
+      bname  = maybe Nothing (Just . boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
-
-postManageBoardsR :: Text -> Handler Html
-postManageBoardsR board = do
-  maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
+-------------------------------------------------------------------------------------------------------------
+postNewBoardsR :: Handler Html
+postNewBoardsR = do
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
-  ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard board bCategories groups
-  let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
+  ((result, _), _) <- runFormPost $ updateBoardForm Nothing NewBoard bCategories groups
+  let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR NewBoard "")
   case result of
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName        , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
-                , bDefaultName , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
-                , bCategory    , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
-                , bExtraRules  , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
+    FormSuccess ( bName            , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
                 , bSummary
-                ) ->
-      case board of
-        "new-f89d7fb43ef7" -> do
-          when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
-                any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
-            setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
-          let onoff (Just "Enable" ) = True
-              onoff (Just "Disable") = False
-              onoff _                = False
-          let newBoard = Board { boardName              = fromJust bName
-                               , boardTitle             = fromJust bTitle
-                               , boardSummary           = fromMaybe "" bSummary
-                               , boardBumpLimit         = fromJust bBumpLimit
-                               , boardNumberFiles       = fromJust bNumberFiles
-                               , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
-                               , boardDefaultName       = fromJust bDefaultName
-                               , boardMaxMsgLength      = fromJust bMaxMsgLen
-                               , boardThumbSize         = fromJust bThumbSize
-                               , boardThreadsPerPage    = fromJust bThreadsPerPage
-                               , boardPreviewsPerThread = fromJust bPrevPerThread
-                               , boardThreadLimit       = fromJust bThreadLimit
-                               , boardOpFile            = fromJust bOpFile
-                               , boardReplyFile         = fromJust bReplyFile
-                               , boardHidden            = onoff bIsHidden
-                               , boardEnableCaptcha     = onoff bEnableCaptcha
-                               , boardCategory          = bCategory
-                               , boardViewAccess        = bViewAccess
-                               , boardReplyAccess       = bReplyAccess
-                               , boardThreadAccess      = bThreadAccess
-                               , boardOpModeration      = onoff bOpModeration
-                               , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
-                               , boardEnableGeoIp       = onoff bEnableGeoIp
-                               , boardOpEditing         = onoff bOpEditing
-                               , boardPostEditing       = onoff bPostEditing
-                               , boardShowEditHistory   = onoff bShowEditHistory
-                               }
-          void $ runDB $ insert newBoard
-          msgRedirect MsgBoardAdded
-        "all-f89d7fb43ef7" -> do -- update all boards
-          boards <- runDB $ selectList ([]::[Filter Board]) []
-          forM_ boards $ \(Entity oldBoardId oldBoard) ->
-              let onoff (Just "Enable" ) = True
-                  onoff (Just "Disable") = False
-                  onoff _                = boardHidden oldBoard
-                  newBoard = Board { boardName              = boardName oldBoard
-                                   , boardTitle             = fromMaybe (boardTitle       oldBoard) bTitle
-                                   , boardSummary           = fromMaybe (boardSummary   oldBoard) bSummary
-                                   , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
-                                   , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
-                                   , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
-                                   , boardDefaultName       = fromMaybe (boardDefaultName       oldBoard) bDefaultName
-                                   , boardMaxMsgLength      = fromMaybe (boardMaxMsgLength      oldBoard) bMaxMsgLen
-                                   , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
-                                   , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
-                                   , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
-                                   , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
-                                   , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
-                                   , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
-                                   , boardHidden            = onoff bIsHidden
-                                   , boardEnableCaptcha     = onoff bEnableCaptcha
-                                   , boardCategory          = mplus bCategory     (boardCategory     oldBoard)
-                                   , boardViewAccess        = mplus bViewAccess   (boardViewAccess   oldBoard)
-                                   , boardReplyAccess       = mplus bReplyAccess  (boardReplyAccess  oldBoard)
-                                   , boardThreadAccess      = mplus bThreadAccess (boardThreadAccess oldBoard)
-                                   , boardOpModeration      = onoff bOpModeration
-                                   , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
-                                   , boardEnableGeoIp       = onoff bEnableGeoIp
-                                   , boardOpEditing         = onoff bOpEditing
-                                   , boardPostEditing       = onoff bPostEditing
-                                   , boardShowEditHistory   = onoff bShowEditHistory
-                                   }
-                in runDB $ replace oldBoardId newBoard
-          msgRedirect MsgBoardsUpdated
-        _     -> do -- update one board
-          let oldBoard   = entityVal $ fromJust maybeBoard
-              oldBoardId = entityKey $ fromJust maybeBoard
-              onoff (Just "Enable" ) = True
-              onoff (Just "Disable") = False
-              onoff _                = boardHidden oldBoard
-              newBoard = Board { boardName              = fromMaybe (boardName oldBoard) bName
-                               , boardTitle             = fromMaybe (boardTitle       oldBoard) bTitle
-                               , boardSummary           = fromMaybe (boardSummary     oldBoard) bSummary
-                               , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
-                               , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
-                               , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
-                               , boardDefaultName       = fromMaybe (boardDefaultName       oldBoard) bDefaultName
-                               , boardMaxMsgLength      = fromMaybe (boardMaxMsgLength      oldBoard) bMaxMsgLen
-                               , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
-                               , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
-                               , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
-                               , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
-                               , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
-                               , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
-                               , boardHidden            = onoff bIsHidden
-                               , boardEnableCaptcha     = onoff bEnableCaptcha
-                               , boardCategory          = mplus bCategory     Nothing
-                               , boardViewAccess        = mplus bViewAccess   Nothing 
-                               , boardReplyAccess       = mplus bReplyAccess  Nothing
-                               , boardThreadAccess      = mplus bThreadAccess Nothing
-                               , boardOpModeration      = onoff bOpModeration
-                               , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
-                               , boardEnableGeoIp       = onoff bEnableGeoIp
-                               , boardOpEditing         = onoff bOpEditing
-                               , boardPostEditing       = onoff bPostEditing
-                               , boardShowEditHistory   = onoff bShowEditHistory
-                               }
-          runDB $ replace oldBoardId newBoard
-          msgRedirect MsgBoardsUpdated
+                ) -> do
+      when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
+            any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
+           setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR NewBoard "")
+      let onoff (Just "Enable" ) = True
+          onoff (Just "Disable") = False
+          onoff _                = False
+      let newBoard = Board { boardName              = fromJust bName
+                           , boardTitle             = fromJust bTitle
+                           , boardSummary           = fromMaybe "" bSummary
+                           , boardBumpLimit         = fromJust bBumpLimit
+                           , boardNumberFiles       = fromJust bNumberFiles
+                           , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
+                           , boardDefaultName       = fromJust bDefaultName
+                           , boardMaxMsgLength      = fromJust bMaxMsgLen
+                           , boardThumbSize         = fromJust bThumbSize
+                           , boardThreadsPerPage    = fromJust bThreadsPerPage
+                           , boardPreviewsPerThread = fromJust bPrevPerThread
+                           , boardThreadLimit       = fromJust bThreadLimit
+                           , boardOpFile            = fromJust bOpFile
+                           , boardReplyFile         = fromJust bReplyFile
+                           , boardHidden            = onoff bIsHidden
+                           , boardEnableCaptcha     = onoff bEnableCaptcha
+                           , boardCategory          = bCategory
+                           , boardViewAccess        = bViewAccess
+                           , boardReplyAccess       = bReplyAccess
+                           , boardThreadAccess      = bThreadAccess
+                           , boardOpModeration      = onoff bOpModeration
+                           , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
+                           , boardEnableGeoIp       = onoff bEnableGeoIp
+                           , boardOpEditing         = onoff bOpEditing
+                           , boardPostEditing       = onoff bPostEditing
+                           , boardShowEditHistory   = onoff bShowEditHistory
+                           }
+      void $ runDB $ insert newBoard
+      msgRedirect MsgBoardAdded
 
-cleanBoard :: Text -> Handler ()
-cleanBoard board = case board of
-  "all-f89d7fb43ef7" -> do
+postAllBoardsR :: Handler Html
+postAllBoardsR = do
+  bCategories <- map (id &&& id) <$> getConfig configBoardCategories
+  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  ((result, _), _) <- runFormPost $ updateBoardForm Nothing AllBoards bCategories groups
+  let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR AllBoards "")
+  case result of
+    FormFailure [] -> msgRedirect MsgBadFormData
+    FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing    -> msgRedirect MsgNoFormData
+    FormSuccess ( _                , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
+                , bSummary
+                ) -> do
+      boards <- runDB $ selectList ([]::[Filter Board]) []
+      forM_ boards $ (\(Entity oldBoardId oldBoard) ->
+        let onoff (Just "Enable" ) _ = True
+            onoff (Just "Disable") _ = False
+            onoff _                f = f oldBoard
+            newBoard = Board { boardName              = boardName oldBoard
+                             , boardTitle             = fromMaybe (boardTitle             oldBoard) bTitle
+                             , boardSummary           = fromMaybe (boardSummary           oldBoard) bSummary
+                             , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
+                             , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
+                             , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
+                             , boardDefaultName       = fromMaybe (boardDefaultName       oldBoard) bDefaultName
+                             , boardMaxMsgLength      = fromMaybe (boardMaxMsgLength      oldBoard) bMaxMsgLen
+                             , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
+                             , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
+                             , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
+                             , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                             , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
+                             , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
+                             , boardHidden            = onoff bIsHidden boardHidden
+                             , boardEnableCaptcha     = onoff bEnableCaptcha boardEnableCaptcha
+                             , boardCategory          = mplus bCategory     (boardCategory     oldBoard)
+                             , boardViewAccess        = mplus bViewAccess   (boardViewAccess   oldBoard)
+                             , boardReplyAccess       = mplus bReplyAccess  (boardReplyAccess  oldBoard)
+                             , boardThreadAccess      = mplus bThreadAccess (boardThreadAccess oldBoard)
+                             , boardOpModeration      = onoff bOpModeration boardOpModeration
+                             , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                             , boardEnableGeoIp       = onoff bEnableGeoIp     boardEnableGeoIp
+                             , boardOpEditing         = onoff bOpEditing       boardOpEditing
+                             , boardPostEditing       = onoff bPostEditing     boardPostEditing
+                             , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                             }
+          in runDB $ replace oldBoardId newBoard)
+      msgRedirect MsgBoardsUpdated
+
+postUpdateBoardsR :: Text -> Handler Html
+postUpdateBoardsR board = do
+  maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
+  bCategories <- map (id &&& id) <$> getConfig configBoardCategories
+  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard UpdateBoard bCategories groups
+  let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR UpdateBoard board)
+  case result of
+    FormFailure [] -> msgRedirect MsgBadFormData
+    FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing    -> msgRedirect MsgNoFormData
+    FormSuccess ( bName            , bTitle        , bBumpLimit   , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
+                , bSummary
+                ) -> do
+      let oldBoard   = entityVal $ fromJust maybeBoard
+          oldBoardId = entityKey $ fromJust maybeBoard
+          onoff (Just "Enable" ) _ = True
+          onoff (Just "Disable") _ = False
+          onoff _                f = f oldBoard
+          newBoard = Board { boardName              = fromMaybe (boardName  oldBoard) bName
+                           , boardTitle             = fromMaybe (boardTitle oldBoard) bTitle
+                           , boardSummary           = fromMaybe (boardSummary           oldBoard) bSummary
+                           , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
+                           , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
+                           , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
+                           , boardDefaultName       = fromMaybe (boardDefaultName       oldBoard) bDefaultName
+                           , boardMaxMsgLength      = fromMaybe (boardMaxMsgLength      oldBoard) bMaxMsgLen
+                           , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
+                           , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage
+                           , boardPreviewsPerThread = fromMaybe (boardPreviewsPerThread oldBoard) bPrevPerThread
+                           , boardThreadLimit       = fromMaybe (boardThreadLimit       oldBoard) bThreadLimit
+                           , boardOpFile            = fromMaybe (boardOpFile            oldBoard) bOpFile
+                           , boardReplyFile         = fromMaybe (boardReplyFile         oldBoard) bReplyFile
+                           , boardHidden            = onoff bIsHidden boardHidden
+                           , boardEnableCaptcha     = onoff bEnableCaptcha boardEnableCaptcha
+                           , boardCategory          = mplus bCategory     Nothing
+                           , boardViewAccess        = mplus bViewAccess   Nothing 
+                           , boardReplyAccess       = mplus bReplyAccess  Nothing
+                           , boardThreadAccess      = mplus bThreadAccess Nothing
+                           , boardOpModeration      = onoff bOpModeration boardOpModeration
+                           , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                           , boardEnableGeoIp       = onoff bEnableGeoIp     boardEnableGeoIp
+                           , boardOpEditing         = onoff bOpEditing       boardOpEditing
+                           , boardPostEditing       = onoff bPostEditing     boardPostEditing
+                           , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                           }
+      runDB $ replace oldBoardId newBoard
+      msgRedirect MsgBoardsUpdated
+-------------------------------------------------------------------------------------------------------------
+cleanBoard :: ManageBoardAction -> Text -> Handler ()
+cleanBoard action board = case action of
+  AllBoards -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
     void $ deletePosts (concat postIDs) False
-  "new-f89d7fb43ef7" -> msgRedirect MsgNoSuchBoard
-  _     -> do
+  NewBoard -> msgRedirect MsgNoSuchBoard
+  _        -> do
     maybeBoard <- runDB $ selectFirst [BoardName ==. board] []  
     when (isNothing maybeBoard) $ msgRedirect MsgNoSuchBoard
     postIDs <- runDB $ selectList [PostBoard ==. board] []
     void $ deletePosts postIDs False
-  where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR board)
+  where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR UpdateBoard board)
 
-getCleanBoardR :: Text -> Handler ()
-getCleanBoardR board = do
-  cleanBoard board
+getCleanBoardR :: ManageBoardAction -> Text -> Handler ()
+getCleanBoardR action board = do
+  cleanBoard action board
   setMessageI MsgBoardCleaned
-  redirect (ManageBoardsR board)
+  redirect (ManageBoardsR UpdateBoard board)
 
-getDeleteBoardR :: Text -> Handler ()
-getDeleteBoardR board = do
-  cleanBoard board
-  case board of
-    "all-f89d7fb43ef7" -> runDB $ deleteWhere ([]::[Filter Board ])
-    _     -> runDB $ deleteWhere [BoardName ==. board]
+getDeleteBoardR :: ManageBoardAction -> Text -> Handler ()
+getDeleteBoardR action board = do
+  cleanBoard action board
+  case action of
+    AllBoards -> runDB $ deleteWhere ([]::[Filter Board ])
+    _         -> runDB $ deleteWhere [BoardName ==. board]
   setMessageI MsgBoardDeleted
-  redirect (ManageBoardsR "all-f89d7fb43ef7")
+  redirect (ManageBoardsR AllBoards "")
+-------------------------------------------------------------------------------------------------------------
+chooseManageBoarUrl :: ManageBoardAction -> Maybe Text -> Route App
+chooseManageBoarUrl NewBoard    _     = NewBoardsR
+chooseManageBoarUrl AllBoards   _     = AllBoardsR
+chooseManageBoarUrl UpdateBoard bname = UpdateBoardsR $ fromJust bname

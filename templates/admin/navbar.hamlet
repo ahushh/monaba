@@ -2,7 +2,8 @@
     $if elem ManageBanP permissionsW
         <a href=@{BanByIpR "" ""}>_{MsgBans}</a> |
     $if elem ManageBoardP permissionsW
-        <a href=@{ManageBoardsR "new-f89d7fb43ef7"}>_{MsgBoards}</a> |
+        <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards} #
+        | 
     $if elem ManageUsersP permissionsW
         <a href=@{UsersR}>_{MsgUsers}</a> |
     $if elem ManageUsersP permissionsW

@@ -70,6 +70,7 @@ footer {
 }
 
 .reply-post {
+    display: table;
     background: none repeat scroll 0% 0% #CFCFCF;
     border-radius: 3px;
     border: 1px solid #EEEEEE;

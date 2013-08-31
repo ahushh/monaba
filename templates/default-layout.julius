@@ -16,6 +16,7 @@ function baseInit() {
 // Init
 //-----------------------------------------------------------------
 checkHighlighted();
+initHiddenThreads();
 baseInit();
 initSymbolCounter();
 $('textarea').autosize()
@@ -154,6 +155,51 @@ function addEmbeddedPlayer(post) {
     });
 }
 //-----------------------------------------------------------------
+// thread hiding
+//-----------------------------------------------------------------
+function initHiddenThreads() {
+    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    if (!ths) return false;
+    $('.op-post').each(function() {
+        var fullId = $(this).attr('id');
+        var threadId = extractPost(fullId);
+        var board    = extractBoard(fullId);
+        if (ths[threadId+'-'+board]) {
+            hideThread(threadId, board);
+        }            
+    });
+}
+
+function hideThread(threadId, board) {
+    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    if (!ths) {
+        ths = {};
+    }
+    if (!ths[threadId+'-'+board]) {
+        ths[threadId+'-'+board] = 1;
+    }
+    localStorage.setItem('hidden-threads', JSON.stringify(ths));
+
+    $('#thread-'+threadId).find('.op-post').hide();
+    $('#thread-'+threadId).find('.reply-post').hide();
+    if ($('#thread-'+threadId).has('.hidden-thread').length) {
+        $('#thread-'+threadId).find('.hidden-thread').show()
+    } else {
+        $('#thread-'+threadId).append('<span class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="showThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></span>');
+    }
+}
+
+function showThread(threadId,board) {
+    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    if (ths) {
+        delete ths[threadId+'-'+board];
+        localStorage.setItem('hidden-threads', JSON.stringify(ths));
+    }    
+    $('#thread-'+threadId).find('.op-post').show();
+    $('#thread-'+threadId).find('.reply-post').show();
+    $('#thread-'+threadId).find('.hidden-thread').hide();
+}
+//-----------------------------------------------------------------
 // popup messages
 //-----------------------------------------------------------------
 function popupMessage(text, delay, icon) {
@@ -234,9 +280,11 @@ function doImageExpanding(post) {
 function checkHighlighted() {
     var postId = window.location.hash.substr(1);
     if (postId) {
-        var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
-        var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
-        highlightPost("post-"+postId+"-"+thread+"-"+board);
+        var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL);
+        var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL);
+        if (thread && board) {
+            highlightPost("post-"+postId+"-"+thread[1]+"-"+board[1]);
+        }
     }
 }
 

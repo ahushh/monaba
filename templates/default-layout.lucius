@@ -76,7 +76,6 @@ hr {
 }
 
 .reply-post {
-    display: table;
     min-width: 40em;
     overflow: hidden;
     word-wrap: break-word;
@@ -147,6 +146,16 @@ hr {
 .icon-sage {
     background-position: -389px -101px;
     cursor: auto;
+}
+
+.icon-hide-thread {
+    background-position: -1061px -77px;
+    float: right;
+}
+
+.icon-show-thread {
+    float: right;
+    background-position: -1037px -77px;
 }
 
 .admin-table {

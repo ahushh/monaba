@@ -315,6 +315,9 @@ ExpandPost: Show full.
 ShrinkPost: Shrink message.
 
 Sage: sage
+HideThread: Hide thread
+ThreadIsHidden: Thread is hidden.
+ShowThread: Show thread
 ######################################################################################
 #### Settings
 ######################################################################################

@@ -116,7 +116,7 @@ footer {
 }
 
 .op-post {
-    display: inline-block !important;
+    display: inline-block;
     width: 98%;
     margin: 3px;
     padding: 5px;
@@ -126,7 +126,7 @@ footer {
 }
 
 .reply-post {
-    display: inline-block !important;
+    display: inline-block;
     width: 98%;
     background: none repeat scroll 0% 0% #CACACA;
     border: 1px dotted rgba(0,0,0,0.5);

@@ -170,6 +170,12 @@ function initHiddenThreads() {
     });
 }
 
+function hideThreadCompletely(threadId, board) {
+    $.getJSON("/api/hide/thread/"+board+"/"+threadId, function(data) {
+        $('#thread-'+threadId).hide();
+    });
+}
+
 function hideThread(threadId, board) {
     var ths = JSON.parse(localStorage.getItem('hidden-threads'));
     if (!ths) {
@@ -180,23 +186,21 @@ function hideThread(threadId, board) {
     }
     localStorage.setItem('hidden-threads', JSON.stringify(ths));
 
-    $('#thread-'+threadId).find('.op-post').hide();
-    $('#thread-'+threadId).find('.reply-post').hide();
+    $('#thread-'+threadId).find('.op-post, .reply-post').hide();
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
         $('#thread-'+threadId).find('.hidden-thread').show()
     } else {
-        $('#thread-'+threadId).append('<span class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="showThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></span>');
+        $('#thread-'+threadId).append('<span class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></span>');
     }
 }
 
-function showThread(threadId,board) {
+function unhideThread(threadId,board) {
     var ths = JSON.parse(localStorage.getItem('hidden-threads'));
     if (ths) {
         delete ths[threadId+'-'+board];
         localStorage.setItem('hidden-threads', JSON.stringify(ths));
     }    
-    $('#thread-'+threadId).find('.op-post').show();
-    $('#thread-'+threadId).find('.reply-post').show();
+    $('#thread-'+threadId).find('.op-post, .reply-post').show();
     $('#thread-'+threadId).find('.hidden-thread').hide();
 }
 //-----------------------------------------------------------------

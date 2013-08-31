@@ -10,3 +10,16 @@ $('#settings-form').ajaxForm({
     }
 }); 
 
+function unhideThreadCompletely(threadId, board) {
+    $.getJSON("/api/unhide/thread/"+board+"/"+threadId, function(data) {
+        $('#hidden-thread-elem-'+board+'-'+threadId).remove();
+        console.log($('#hidden-threads-board-'+board).find('td'));
+        if ($('#hidden-threads-board-'+board).find('td').length == 0) {
+            $('#hidden-threads-board-'+board).remove();
+        }
+        if ($('#hidden-threads-list').find('.hidden-threads-board').length == 0) {
+            $('#hidden-threads-list').remove();
+        }
+
+    });
+}

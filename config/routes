@@ -26,6 +26,8 @@
 /api/thread/#Text/#Int/last/#Int ApiLastPostsR    GET
 /api/thread/#Text/#Int/all       ApiAllPostsR     GET
 /api/thread/#Text/#Int/deleted   ApiDeletedPostsR GET
+/api/hide/thread/#Text/#Int      ApiHideThread    GET
+/api/unhide/thread/#Text/#Int    ApiUnhideThread  GET
 /api/post/#Text/#Int             ApiPostR         GET
 /jsonfrommsg/#Text               JsonFromMsgR     GET
 

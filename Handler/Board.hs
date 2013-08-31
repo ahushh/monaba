@@ -15,20 +15,22 @@ getBoardNoPageR board = getBoardR board 0
 postBoardNoPageR :: Text -> Handler Html
 postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
-selectThreadsAndPreviews :: Text ->
-                           Int  ->
-                           Int  ->
-                           Int  ->
-                           Text ->
-                           [Permission] ->
+selectThreadsAndPreviews :: Text         -> -- ^ Board name
+                           Int          -> -- ^ Page
+                           Int          -> -- ^ Threads per page
+                           Int          -> -- ^ Previews per thread
+                           Text         -> -- ^ Poster ID
+                           [Permission] -> -- ^ Permissions
+                           [Int]        -> -- ^ Hidden threads
                            Handler [(  (Entity Post, [Entity Attachedfile])
                                     , [(Entity Post, [Entity Attachedfile])]
                                     , Int
                                     )]
-selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions =
-  let selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads =
+  let selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads]
                          [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
-      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False] ||.
+      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False
+                                      ,PostLocalId /<-. hiddenThreads] ||.
                                       [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False
                                       ,PostHellbanned ==. True, PostPosterId ==. posterId]
                                     )
@@ -76,7 +78,9 @@ getBoardR board page = do
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
+  hiddenThreads   <- getHiddenThreads board
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False
+                                  ,PostLocalId /<-. hiddenThreads]
   posterId        <- getPosterId
   let numberFiles       = boardNumberFiles       boardVal
       maxMessageLength  = boardMaxMsgLength      boardVal
@@ -87,7 +91,7 @@ getBoardR board page = do
       boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
       pages             = listPages threadsPerPage numberOfThreads
-  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
+  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
   geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
     xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))

@@ -387,6 +387,20 @@ getPosterId = do
 
 getConfig :: forall b. (Config -> b) -> Handler b
 getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+
+getHiddenThreads :: Text -> Handler [Int]
+getHiddenThreads board = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+    Just xs -> return $ fromMaybe [] $ lookup board (read (unpack xs) :: [(Text, [Int])])
+    Nothing -> setSession "hidden-threads" "[]" >> return []
+
+getAllHiddenThreads :: Handler [(Text, [Int])]
+getAllHiddenThreads = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+    Just xs -> return $ read $ unpack xs
+    Nothing -> setSession "hidden-threads" "[]" >> return []
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

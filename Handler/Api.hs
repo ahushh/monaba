@@ -3,6 +3,7 @@ module Handler.Api where
 
 import           Import
 import           Yesod.Auth
+import qualified Data.Text as T (concat)
 --------------------------------------------------------------------------------------------------------- 
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
@@ -125,3 +126,34 @@ getApiPostR board postId = do
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
+---------------------------------------------------------------------------------------------------------
+getApiHideThread :: Text -> Int -> Handler TypedContent
+getApiHideThread board threadId = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+    Just xs' ->
+      let xs  = read (unpack xs') :: [(Text,[Int])]
+          ys  = fromMaybe [] $ lookup board xs
+          zs  = filter ((/=board).fst) xs
+          new = pack $ show ((board, threadId:ys):zs)
+      in setSession "hidden-threads" new
+    Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",pack (show threadId),"])]"]
+  selectRep $ do
+    provideRep  $ bareLayout [whamlet|ok|]
+    provideJson $ object [("ok", "hidden")]
+
+getApiUnhideThread :: Text -> Int -> Handler TypedContent
+getApiUnhideThread board threadId = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+    Just xs' ->
+      let xs  = read (unpack xs') :: [(Text,[Int])]
+          ys  = fromMaybe [] $ lookup board xs
+          zs  = filter ((/=board).fst) xs
+          ms  = filter (/=threadId) ys
+          new = pack $ show (if null ms then zs else (board, ms):zs)
+      in setSession "hidden-threads" new
+    Nothing -> setSession "hidden-threads" "[]"
+  selectRep $ do
+    provideRep  $ bareLayout [whamlet|ok|]
+    provideJson $ object [("ok", "showed")]

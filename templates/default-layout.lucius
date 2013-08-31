@@ -158,6 +158,11 @@ hr {
     background-position: -1037px -77px;
 }
 
+.icon-hide-thread-completely {
+    float: right;
+    background-position: -77px -29px;
+}
+
 .admin-table {
     border-collapse: collapse;
     font-size: 0.8em;

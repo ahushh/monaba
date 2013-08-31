@@ -14,6 +14,7 @@ Features
 * Internationalization
 * Post deletion by OP
 * GeoIP support
+* Thread hiding
 
 Dependencies
 ------

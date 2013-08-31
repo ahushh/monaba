@@ -169,7 +169,8 @@
 *** DONE UTC -> local time, store timezone in cookies/session
     CLOSED: [2013-08-10 Сб 19:45]
 *** TODO Switchable youtube player
-*** TODO post hiding
+*** DONE thread hiding
+    CLOSED: [2013-08-31 Сб 22:09]
 *** TODO favorite threads
 * Further
 ** TODO best API error handling

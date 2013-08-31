@@ -315,9 +315,17 @@ ExpandPost: Show full.
 ShrinkPost: Shrink message.
 
 Sage: sage
+
+######################################################################################
+#### Thread hiding
+######################################################################################
 HideThread: Hide thread
+HideThreadCompletely: Hide thread completely
 ThreadIsHidden: Thread is hidden.
+HiddenThreads: Hidden threads
+Unhide: Раскрыть
 ShowThread: Show thread
+
 ######################################################################################
 #### Settings
 ######################################################################################

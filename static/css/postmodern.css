@@ -1,5 +1,5 @@
 html, body {
-    background-color: #BFBFBF;
+    background-color: #5F5F5F;
     color: #333333;
     font-family: serif;
     font-size: 1em;
@@ -20,6 +20,8 @@ a:hover {
 }
 
 #main {
+    background-color: #BFBFBF;
+    color: #333333 !important;
     padding: 5px 5px 25px 5px;
     margin-top: 15px;
     box-shadow: -1px -1px 8px 0 rgba(0,0,0.2),
@@ -29,9 +31,16 @@ a:hover {
                 0px 0px 0px 0 black;
 }
 
+.board-list, footer, #control-panel {
+    color: #AAAAAA;
+}
+
+.board-list a, footer a, #control-panel a {
+    color: white !important;
+}
+
 footer {
     border-top: 0px !important;
-    color: #333333;
 }
 
 form {
@@ -40,11 +49,19 @@ form {
 
 textarea {
     background-color: #DDDDDD;;
-    border: 0px;
+    border: 1px dotted rgba(0,0,0,0);
     width: 500px !important;
 }
 
+textarea:focus {
+    border: 1px solid rgba(0,0,0,0.5);
+}
+
 input[type=submit] {
+    border: 1px solid black;
+}
+
+input[type=button] {
     border: 1px solid black;
 }
 
@@ -52,9 +69,13 @@ select {
     border: 0px;
 }
 
+input:focus {
+    border: 1px solid rgba(0,0,0,0.5);
+}
+
 input {
     background-color: #DDDDDD;;
-    border: 0px;
+    border: 1px dotted rgba(0,0,0,0);
 }
 
 .time {
@@ -95,24 +116,26 @@ footer {
 }
 
 .op-post {
-    display: block !important;
-    margin: 3px 3px 20px 3px;
+    display: inline-block !important;
+    width: 98%;
+    margin: 3px;
     padding: 5px;
-    background: none repeat scroll 0% 0% #E0E0E0 !important;
+    background: none repeat scroll 0% 0% #CACACA !important;
     border: 1px dotted rgba(0,0,0,0.5) !important;
     border-radius: 0px !important;
 }
 
 .reply-post {
-    display: block !important;
-    background: none repeat scroll 0% 0% #E0E0E0;
+    display: inline-block !important;
+    width: 98%;
+    background: none repeat scroll 0% 0% #CACACA;
     border: 1px dotted rgba(0,0,0,0.5);
     margin: 5px;
     padding: 5px;
 }
 
 .popup-post {
-    background: none repeat scroll 0% 0% #E0E0E0;
+    background: none repeat scroll 0% 0% #CACACA;
     border: 1px dotted rgba(0,0,0,0.5);
     margin: 3px;
     padding: 5px;
@@ -156,8 +179,8 @@ table td {
 }
 
 pre {
-    background-color: rgba(0,0,0,0.5);
-    border: 1px dashed #DFDFDF;
+    background-color: rgba(0,0,0,0.1);
+    border: 1px dashed black11;
     padding: 10px;
 }
 
@@ -193,6 +216,11 @@ pre {
 #post-form {
     width: 100%;
     margin: 0;
+}
+
+#edit-form {
+    background-color: #BFBFBF;
+    padding-top: 2px;
 }
 
 .quick-post-form {
@@ -243,7 +271,7 @@ pre {
 }
 
 .quote {
-    color: #0000A9 !important;
+    color: #557755 !important;
 }
 
 #next-page {
@@ -257,7 +285,7 @@ pre {
 }
 
 #thread-header {
-    background-color: #E0E0E0;
+    background-color: #CACACA;
     padding: 2px;
 }
 

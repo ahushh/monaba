@@ -106,6 +106,7 @@ getBoardR board page = do
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
   rating           <- getCensorshipRating
+  displaySage      <- getConfig configDisplaySage
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
@@ -180,6 +181,7 @@ postBoardR board _ = do
                            , postPassword     = pswd
                            , postBumped       = Just now
                            , postIp           = ip
+                           , postSage         = False
                            , postLocked       = False
                            , postSticked      = False
                            , postAutosage     = False

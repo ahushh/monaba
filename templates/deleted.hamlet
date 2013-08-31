@@ -4,7 +4,7 @@ $if not $ T.null boardLongDesc
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{replyPostWidget muser eReply files rating True False False permissions geoIps timeZone}
+        ^{replyPostWidget muser eReply files rating True False False displaySage permissions geoIps timeZone}
     <div #delete-container>
       <label>
           <input type=checkbox name=onlyfiles value=1>

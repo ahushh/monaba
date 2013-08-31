@@ -32,3 +32,6 @@
         <tr>
             <td>_{MsgMaxEditings}
             <td>^{fvInput maxEditingsView}
+        <tr>
+            <td>_{MsgDisplaySage}
+            <td>^{fvInput displaySageView}

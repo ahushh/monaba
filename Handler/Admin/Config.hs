@@ -18,6 +18,7 @@ configForm :: Config ->
                                        , Maybe Int  -- ^ How many news show
                                        , Maybe Int  -- ^ The maximum number of post editings
                                        , Maybe Int  -- ^ How many latest posts show
+                                       , Maybe Bool -- ^ Display sage icon
                                        )
                            , Widget)
 configForm config extra = do
@@ -35,12 +36,13 @@ configForm config extra = do
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
   (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
+  (displaySageRes     , displaySageView    ) <- mopt checkBoxField "" (f configDisplaySage)
 
-  let result = (,,,,,,,,,) <$>
+  let result = (,,,,,,,,,,) <$>
                captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
-               showLatestPostsRes
+               showLatestPostsRes <*> displaySageRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -70,7 +72,7 @@ postConfigR = do
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay     , threadDelay, boardCategories,
-                 newsBoard    , showNews      , maxEditings   , showLatestPosts
+                 newsBoard    , showNews      , maxEditings   , showLatestPosts, displaySage
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
@@ -82,6 +84,7 @@ postConfigR = do
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
                              , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
+                             , configDisplaySage     = fromMaybe (configDisplaySage     oldConfigVal) displaySage
                              }
       void $ runDB $ replace oldConfigKey newConfig
       msgRedirect MsgConfigUpdated

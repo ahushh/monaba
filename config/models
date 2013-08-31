@@ -50,6 +50,7 @@ Post
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text
+    sage         Bool
     sticked      Bool
     locked       Bool
     autosage     Bool
@@ -111,6 +112,7 @@ Config
     showNews        Int  default=2
     maxEditings     Int  default=10
     showLatestPosts Int  default=15
+    displaySage     Bool default=0
 Hellban
     userId          Text
     userIp          Text

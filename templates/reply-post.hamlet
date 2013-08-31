@@ -7,6 +7,9 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
                     <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif}  .icon-del-post>
                 <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{post}-#{thread}-#{board}',#{show $ fromKey $ entityKey eReplyW})" src=@{StaticR img_blank_gif}  .icon-edit-post>
+                $if displaySageW
+                   $if postSage $ entityVal eReplyW
+                      <img alt=[_{MsgSage}] title=_{MsgSage} src=@{StaticR img_blank_gif} .icon-sage>
                 $maybe (code, name) <- lookup (entityKey eReplyW) geoIpsW
                     <img src=#{geoIconPath code} title=#{name}>
                 <span .reply-title>#{postTitle $ entityVal eReplyW}

@@ -37,6 +37,7 @@ getDeletedByOpR board thread = do
   msgrender      <- getMessageRender
   timeZone       <- getTimeZone
   rating         <- getCensorshipRating
+  displaySage    <- getConfig configDisplaySage
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgDeletedPosts]

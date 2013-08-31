@@ -23,9 +23,10 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
     files <- selectFiles p
     return (p, files))
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
-  geoIps   <- getCountries (if geoIpEnabled then postsAndFiles else [])
-  timeZone <- getTimeZone
-  rating   <- getCensorshipRating
+  geoIps      <- getCountries (if geoIpEnabled then postsAndFiles else [])
+  timeZone    <- getTimeZone
+  rating      <- getCensorshipRating
+  displaySage <- getConfig configDisplaySage
   case () of
     _ | t == 0              -> selectRep $ do
           provideRep  $ bareLayout [whamlet|No such thread|]
@@ -36,7 +37,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{replyPostWidget muser post files rating True True False permissions geoIps timeZone}
+                                   ^{replyPostWidget muser post files rating True True False displaySage permissions geoIps timeZone}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -113,13 +114,14 @@ getApiPostR board postId = do
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps <- getCountries [(post, files) | geoIpEnabled]
-  timeZone <- getTimeZone
-  rating   <- getCensorshipRating
+  geoIps      <- getCountries [(post, files) | geoIpEnabled]
+  timeZone    <- getTimeZone
+  rating      <- getCensorshipRating
+  displaySage <- getConfig configDisplaySage
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
                        then opPostWidget muser post files rating False True permissions geoIps timeZone
-                       else replyPostWidget muser post files rating False True False permissions geoIps timeZone
+                       else replyPostWidget muser post files rating False True False displaySage permissions geoIps timeZone
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

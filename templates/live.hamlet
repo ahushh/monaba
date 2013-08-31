@@ -1,6 +1,6 @@
 <h2 style=text-align:center> _{MsgLatestPosts}
 $forall (e, files) <- postsAndFiles
     $if (postParent $ entityVal e) > 0
-        ^{replyPostWidget muser e files rating False False True permissions geoIps timeZone}
+        ^{replyPostWidget muser e files rating False False True displaySage permissions geoIps timeZone}
     $else
         ^{opPostWidget muser e files rating False False permissions geoIps timeZone}

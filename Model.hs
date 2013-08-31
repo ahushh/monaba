@@ -38,6 +38,7 @@ instance ToJSON Post where
         , "parent"      .= postParent
         , "date"        .= postDate
         , "bumped"      .= postBumped
+        , "sage"        .= postSage
         , "sticked"     .= postSticked
         , "locked"      .= postLocked
         , "autosage"    .= postAutosage

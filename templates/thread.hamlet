@@ -20,7 +20,7 @@ $if hasAccessToReply
     
         $forall (eReply, files) <- repliesAndFiles
             $if checkHellbanned eReply permissions posterId
-                ^{replyPostWidget muser eReply files rating True True False permissions geoIps timeZone}
+                ^{replyPostWidget muser eReply files rating True True False displaySage permissions geoIps timeZone}
     <img src=@{StaticR img_blank_gif}  title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a> ]

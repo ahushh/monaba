@@ -133,12 +133,13 @@ replyPostWidget :: Maybe (Entity User)      ->
                   Bool                     -> -- ^ Show full (True) or abbreviated (False) messagees
                   Bool                     -> -- ^ Show or not the extra buttons such as [>]
                   Bool                     -> -- ^ Show or not parent thread in the upper right corner
+                  Bool                     -> -- ^ Display or not sage icon
                   [Permission]             -> -- ^ List of the all permissions
                   [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                   Int                      -> -- ^ Time offset in seconds
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW ratingW
-  isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+  isInThreadW canPostW showThreadW displaySageW permissionsW geoIpsW tOffsetW = do$(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")

@@ -211,6 +211,7 @@ NewsBoard: Board for news
 UpdateConfig: Update config
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
+DisplaySage: Display sage icon
 ## Messages
 ConfigUpdated: Config successfully updated
 
@@ -312,6 +313,8 @@ CloseIcon: Close
 PostMessageIsTooLong: Message is too long.
 ExpandPost: Show full.
 ShrinkPost: Shrink message.
+
+Sage: sage
 ######################################################################################
 #### Settings
 ######################################################################################

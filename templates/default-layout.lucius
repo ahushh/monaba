@@ -144,6 +144,11 @@ hr {
     background-position: -389px -101px;
 }
 
+.icon-sage {
+    background-position: -389px -101px;
+    cursor: auto;
+}
+
 .admin-table {
     border-collapse: collapse;
     font-size: 0.8em;

@@ -38,7 +38,7 @@ $newline never
             <div id="main" role="main">
               ^{pageBody pc}
             <footer>
-                <a href=https://github.com/ahushh/Monaba>Monaba 1.1.2
+                <a href=https://github.com/ahushh/Monaba>Monaba 1.1.3
                 <br />
                 Powered by #
                 <a href=http://www.yesodweb.com/>Yesod

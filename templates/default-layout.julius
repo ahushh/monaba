@@ -186,7 +186,7 @@ function hideThread(threadId, board) {
     }
     localStorage.setItem('hidden-threads', JSON.stringify(ths));
 
-    $('#thread-'+threadId).find('.op-post, .reply-post').hide();
+    $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').hide();
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
         $('#thread-'+threadId).find('.hidden-thread').show()
     } else {
@@ -200,7 +200,7 @@ function unhideThread(threadId,board) {
         delete ths[threadId+'-'+board];
         localStorage.setItem('hidden-threads', JSON.stringify(ths));
     }    
-    $('#thread-'+threadId).find('.op-post, .reply-post').show();
+    $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').show();
     $('#thread-'+threadId).find('.hidden-thread').hide();
 }
 //-----------------------------------------------------------------

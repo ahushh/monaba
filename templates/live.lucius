@@ -6,12 +6,7 @@
     display: table    
 }
 
-.icon-edit-post {
-    display: none !important;
-}
-
-.mark-to-delete {
-    /* visibility: hidden !important; */
+.icon-edit-post, .icon-hide-thread-completely, .icon-hide-thread, .mark-to-delete {
     display: none !important;
 }
 

@@ -128,32 +128,40 @@ getApiPostR board postId = do
     provideJson postAndFiles
 ---------------------------------------------------------------------------------------------------------
 getApiHideThread :: Text -> Int -> Handler TypedContent
-getApiHideThread board threadId = do
-  ht <- lookupSession "hidden-threads"
-  case ht of
-    Just xs' ->
-      let xs  = read (unpack xs') :: [(Text,[Int])]
-          ys  = fromMaybe [] $ lookup board xs
-          zs  = filter ((/=board).fst) xs
-          new = pack $ show ((board, threadId:ys):zs)
-      in setSession "hidden-threads" new
-    Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",pack (show threadId),"])]"]
-  selectRep $ do
-    provideRep  $ bareLayout [whamlet|ok|]
-    provideJson $ object [("ok", "hidden")]
+getApiHideThread board threadId
+  | threadId <= 0 = selectRep $ do
+      provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
+      provideJson $ object [("error", "bad thread ID")]
+  | otherwise = do  
+      ht <- lookupSession "hidden-threads"
+      case ht of
+        Just xs' ->
+          let xs  = read (unpack xs') :: [(Text,[Int])]
+              ys  = fromMaybe [] $ lookup board xs
+              zs  = filter ((/=board).fst) xs
+              new = pack $ show ((board, threadId:ys):zs)
+          in setSession "hidden-threads" new
+        Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",pack (show threadId),"])]"]
+      selectRep $ do
+        provideRep  $ bareLayout [whamlet|ok: hidden|]
+        provideJson $ object [("ok", "hidden")]
 
 getApiUnhideThread :: Text -> Int -> Handler TypedContent
-getApiUnhideThread board threadId = do
-  ht <- lookupSession "hidden-threads"
-  case ht of
-    Just xs' ->
-      let xs  = read (unpack xs') :: [(Text,[Int])]
-          ys  = fromMaybe [] $ lookup board xs
-          zs  = filter ((/=board).fst) xs
-          ms  = filter (/=threadId) ys
-          new = pack $ show (if null ms then zs else (board, ms):zs)
-      in setSession "hidden-threads" new
-    Nothing -> setSession "hidden-threads" "[]"
-  selectRep $ do
-    provideRep  $ bareLayout [whamlet|ok|]
-    provideJson $ object [("ok", "showed")]
+getApiUnhideThread board threadId
+  | threadId <= 0 = selectRep $ do
+      provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
+      provideJson $ object [("error", "bad thread ID")]
+  | otherwise = do
+      ht <- lookupSession "hidden-threads"
+      case ht of
+        Just xs' ->
+          let xs  = read (unpack xs') :: [(Text,[Int])]
+              ys  = fromMaybe [] $ lookup board xs
+              zs  = filter ((/=board).fst) xs
+              ms  = filter (/=threadId) ys
+              new = pack $ show (if null ms then zs else (board, ms):zs)
+          in setSession "hidden-threads" new
+        Nothing -> setSession "hidden-threads" "[]"
+      selectRep $ do
+        provideRep  $ bareLayout [whamlet|ok: showed|]
+        provideJson $ object [("ok", "showed")]

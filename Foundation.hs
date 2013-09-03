@@ -45,11 +45,15 @@ data App = App
     , appLogger :: Logger
     }
 ---------------------------------------------------------------------------------------------------------
+-- Data types appear in models
+---------------------------------------------------------------------------------------------------------
 data Censorship = SFW | R15 | R18 | R18G
     deriving (Show, Read, Eq, Enum, Bounded, Ord)
 
 data ManageBoardAction = NewBoard | AllBoards | UpdateBoard
                        deriving (Show, Read, Eq)
+---------------------------------------------------------------------------------------------------------
+-- Template helper
 ---------------------------------------------------------------------------------------------------------
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
 widgetHelperFilterBoards boards category group = filter p boards
@@ -58,6 +62,8 @@ widgetHelperFilterBoards boards category group = filter p boards
         checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = Just category == boardCategory b
         checkAccess   b = isNothing (boardViewAccess b) || (isJust group && elem (fromJust group) (fromJust $ boardViewAccess b))
+---------------------------------------------------------------------------------------------------------
+-- I18n helpers
 ---------------------------------------------------------------------------------------------------------
 omittedRus :: Int -> String
 omittedRus n
@@ -148,8 +154,6 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            -- addStylesheet $ StaticR css_ash_css
-            -- addStylesheet $ StaticR css_futaba_css
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
             addScript (StaticR js_jquery_autosize_js)            
@@ -194,39 +198,39 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
-    isAuthorized AdminR            _ = isAuthorized' [ManagePanelP]
-    isAuthorized NewPasswordR      _ = isAuthorized' [ManagePanelP]
-    isAuthorized AccountR          _ = isAuthorized' [ManagePanelP]
-    isAuthorized (StickR     _ _ ) _ = isAuthorized' [ManageThreadP]
-    isAuthorized (LockR      _ _ ) _ = isAuthorized' [ManageThreadP]
-    isAuthorized (AutoSageR  _ _ ) _ = isAuthorized' [ManageThreadP]
+    isAuthorized x _ = case x of
+      AdminR{}        -> isAuthorized' [ManagePanelP]
+      NewPasswordR{}  -> isAuthorized' [ManagePanelP]
+      AccountR{}      -> isAuthorized' [ManagePanelP]
+      StickR{}        -> isAuthorized' [ManageThreadP]
+      LockR{}         -> isAuthorized' [ManageThreadP]
+      AutoSageR{}     -> isAuthorized' [ManageThreadP]
 
-    isAuthorized (BanByIpR   _ _ ) _ = isAuthorized' [ManageBanP]
-    isAuthorized ManageBoardsR{}   _ = isAuthorized' [ManageBoardP]
-    isAuthorized  NewBoardsR       _ = isAuthorized' [ManageBoardP]
-    isAuthorized (UpdateBoardsR _) _ = isAuthorized' [ManageBoardP]
-    isAuthorized AllBoardsR        _ = isAuthorized' [ManageBoardP]
+      BanByIpR{}      -> isAuthorized' [ManageBanP]
+      ManageBoardsR{} -> isAuthorized' [ManageBoardP]
+      NewBoardsR{}    -> isAuthorized' [ManageBoardP]
+      UpdateBoardsR{} -> isAuthorized' [ManageBoardP]
+      AllBoardsR{}    -> isAuthorized' [ManageBoardP]
 
-    isAuthorized DeleteBoardR{}    _ = isAuthorized' [ManageBoardP]
-    isAuthorized CleanBoardR{}     _ = isAuthorized' [ManageBoardP]
-    isAuthorized UsersR            _ = isAuthorized' [ManageUsersP]
-    isAuthorized ManageGroupsR     _ = isAuthorized' [ManageUsersP]
-    isAuthorized (UsersDeleteR  _) _ = isAuthorized' [ManageUsersP]
+      DeleteBoardR{}  -> isAuthorized' [ManageBoardP]
+      CleanBoardR{}   -> isAuthorized' [ManageBoardP]
+      UsersR{}        -> isAuthorized' [ManageUsersP]
+      ManageGroupsR{} -> isAuthorized' [ManageUsersP]
+      UsersDeleteR{}  -> isAuthorized' [ManageUsersP]
 
-    isAuthorized ConfigR           _ = isAuthorized' [ManageConfigP]
-    isAuthorized HellBanNoPageR    _ = isAuthorized' [HellBanP]
-    isAuthorized (HellBanR   _)    _ = isAuthorized' [HellBanP]
-    isAuthorized (HellBanDoR _ _ _)_ = isAuthorized' [HellBanP]
+      ConfigR{}       -> isAuthorized' [ManageConfigP]
+      HellBanNoPageR{}-> isAuthorized' [HellBanP]
+      HellBanR{}      -> isAuthorized' [HellBanP]
+      HellBanDoR{}    -> isAuthorized' [HellBanP]
 
-    isAuthorized (AdminSearchR       _ _) _ = isAuthorized' [ViewIPAndIDP]
-    isAuthorized (AdminSearchNoPageR   _) _ = isAuthorized' [ViewIPAndIDP]
+      AdminSearchR{}       -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchNoPageR{} -> isAuthorized' [ViewIPAndIDP]
 
-    isAuthorized (AdminSearchOnlyHBR       _ _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
-    isAuthorized (AdminSearchOnlyHBNoPageR   _) _ = isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchOnlyHBR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchOnlyHBNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
 
-    isAuthorized (ManageCensorshipR  _ _) _ = isAuthorized' [ChangeFileRatingP]
-
-    isAuthorized _ _ = return Authorized
+      ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
+      _                   -> return Authorized
 
     errorHandler errorResponse = do
         $(logWarn) (T.append "Error Response: " $ T.pack (show errorResponse))
@@ -262,7 +266,8 @@ isAuthorized' permissions = do
       if all (`elem` groupPermissions (entityVal $ fromJust group)) permissions
         then return Authorized
         else return $ Unauthorized "Not permitted"
-
+---------------------------------------------------------------------------------------------------------
+-- Path pieces
 ---------------------------------------------------------------------------------------------------------
 instance PathPiece ManageBoardAction where
   toPathPiece = T.pack . show
@@ -286,7 +291,6 @@ instance PathPiece Censorship where
       (i,""):_ -> Just i
       _        -> Nothing
 ---------------------------------------------------------------------------------------------------------
-
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlPersistT

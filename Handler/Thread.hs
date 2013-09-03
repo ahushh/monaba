@@ -60,13 +60,13 @@ getThreadR board thread = do
   posterId <- getPosterId
   unless (checkHellbanned eOpPost permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
-  geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
+  geoIps <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
-  acaptcha  <- lookupSession "acaptcha"
+  acaptcha <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
-  (formWidget', _)          <- generateFormPost $ editForm permissions
+  (formWidget , formEnctype) <- generateFormPost $ postForm boardVal
+  (formWidget',           _) <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
@@ -115,11 +115,12 @@ postThreadR board thread = do
         setSession "post-title" (fromMaybe "" title)
         ip        <- pack <$> getIp
         -- check ban
+        msgrender <- getMessageRender
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $
           unlessM (isBanExpired $ fromJust ban) $ do
             let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                     (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
+                                     (maybe (msgrender MsgNeverExpires) (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             trickyRedirect "error" m threadUrl
         -- check captcha
         when (enableCaptcha && isNothing muser) $ do
@@ -144,14 +145,16 @@ postThreadR board thread = do
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- reply to non-existent thread
           trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
+        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost')
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = thread
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 60) title
-                           , postName         = maybe defaultName (T.take 20) name
+                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
+                           , postName         = maybe defaultName (T.take maxLenOfPostName ) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

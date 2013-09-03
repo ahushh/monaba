@@ -55,7 +55,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
             $forall Entity fileKey file <- replyFilesW
                 $with c <- ifelse (length replyFilesW == 1) "file" "multi-file"
                   $with rating <- attachedfileRating file
-                    <div class=#{c} id="file-#{show $ fromIntegral $ fromKey fileKey}">
+                    <div class=#{c} id="file-#{show $ int64ToInt $ fromKey fileKey}">
                         <span .file-name>
                             <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
                         $if isImageFile (attachedfileType file)

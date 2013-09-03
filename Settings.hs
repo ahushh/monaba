@@ -72,6 +72,8 @@ data Extra = Extra
     , extraGeoIPCityPath :: Text
     , extraTimezone      :: Int
     , extraStylesheet    :: Text
+    , extraMaxLenOfPostTitle :: Int
+    , extraMaxLenOfPostName  :: Int
     } deriving Show
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
@@ -82,3 +84,5 @@ parseExtra _ o = Extra
     <*> o .:  "geoipcitypath"
     <*> o .:  "timezone"
     <*> o .:  "stylesheet"
+    <*> o .:  "maxLenOfPostTitle"
+    <*> o .:  "maxLenOfPostName"

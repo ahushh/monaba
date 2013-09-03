@@ -69,7 +69,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
           $forall Entity fileKey file <- opPostFilesW
               $with c <- ifelse (length opPostFilesW == 1) "file" "multi-file"
-                $with fId <- show $ fromIntegral $ fromKey fileKey
+                $with fId <- show $ int64ToInt $ fromKey fileKey
                   <div class=#{c} id="file-#{fId}">
                     $with rating <- attachedfileRating file
                       <span .file-name>

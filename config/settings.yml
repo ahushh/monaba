@@ -8,6 +8,8 @@ Default: &defaults
   geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"
   timezone: 14400 # default time offset in seconds
   stylesheet: Ash # default stylesheet
+  maxLenOfPostTitle: 60
+  maxLenOfPostName: 20
 
 Development:
   <<: *defaults

@@ -3,7 +3,7 @@ module Handler.Admin.Config where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
+import qualified Data.Text   as T
 
 -------------------------------------------------------------------------------------------------------------
 configForm :: Config ->

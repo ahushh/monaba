@@ -73,8 +73,14 @@ titleDelimiter = " :: "
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
+int64ToInt :: Int64 -> Int
+int64ToInt = fromIntegral
+
 ifelse :: Bool -> Text -> Text -> Text
 ifelse x y z = if x then y else z
+
+enumerate :: forall b. [b] -> [(Int, b)]
+enumerate = zip [0..]
 
 checkHellbanned :: Entity Post -> [Permission] -> Text -> Bool
 checkHellbanned post permissions posterId = not (postHellbanned $ entityVal post) ||
@@ -90,14 +96,11 @@ checkAbbr len t = len > postAbbrLength && not t
 postAbbrLength :: Int
 postAbbrLength = 1500
 
-enumerate :: forall b. [b] -> [(Int, b)]
-enumerate = zip [0..]
--------------------------------------------------------------------------------------------------------------------
 myFormatTime :: Int     -> -- ^ Time offset in seconds
                UTCTime -> -- ^ UTCTime
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
--------------------------------------------------------------------------------------------------------------------
+
 -- | Truncate file name if its length is greater than 47
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s
@@ -203,6 +206,7 @@ formatFileSize size | b > kb    = (printf "%.2f" $ b/kb) ++ " KB"
         two = 2 :: Int
         b   = fromIntegral size :: Double
 -------------------------------------------------------------------------------------------------------------------
+-- | Save a file to upload directory
 writeToServer :: FileInfo -> String -> IO (FilePath, FilePath)
 writeToServer file md5 = do
     let filetype = typeOfFile file

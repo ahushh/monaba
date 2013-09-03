@@ -146,12 +146,13 @@ postBoardR board _ = do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         -- check ban
+        msgrender <- getMessageRender
         ip  <- pack <$> getIp
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $ 
           unlessM (isBanExpired $ fromJust ban) $ do
             setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                          (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
+                                          (maybe (msgrender MsgNeverExpires) (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             redirect (BoardNoPageR board)
         -- check captcha
         acaptcha <- lookupSession "acaptcha"
@@ -173,14 +174,16 @@ postBoardR board _ = do
         posterId   <- getPosterId
         hellbanned <- (>0) <$> runDB (count [HellbanUserId ==. posterId])
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        messageFormatted <- doYobaMarkup message board 0
+        messageFormatted  <- doYobaMarkup message board 0
+        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 60) title
-                           , postName         = maybe defaultName (T.take 20) name
+                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
+                           , postName         = maybe defaultName (T.take maxLenOfPostName ) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now

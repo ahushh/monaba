@@ -1,5 +1,18 @@
+html {
+    position: relative;
+    min-height: 97%;
+}
 body {
-    margin: 0 0 auto;
+    margin: 0 0 30px; /* bottom = footer height */
+}
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 30px;
+    width: 100%;
+}
+body {
     padding: 8px;
 }
 

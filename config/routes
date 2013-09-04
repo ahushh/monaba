@@ -62,9 +62,11 @@
 /admin/hellban/do/#Int/#Text/#Bool HellBanDoR     GET
 /admin/hellban/undo/#Int/#Text     HellBanUndoR   GET
 
-/admin/search/uid/#Text/#Int       AdminSearchR       GET
-/admin/search/uid/#Text            AdminSearchNoPageR GET
-/admin/search/hellbanned/uid/#Text/#Int    AdminSearchOnlyHBR       GET
-/admin/search/hellbanned/uid/#Text         AdminSearchOnlyHBNoPageR GET
+/admin/search/ip/#Text/#Int             AdminSearchIPR              GET
+/admin/search/ip/#Text                  AdminSearchIPNoPageR        GET
+/admin/search/uid/#Text/#Int            AdminSearchUIDR             GET
+/admin/search/uid/#Text                 AdminSearchUIDNoPageR       GET
+/admin/search/hellbanned/uid/#Text/#Int AdminSearchUIDOnlyHBR       GET
+/admin/search/hellbanned/uid/#Text      AdminSearchUIDOnlyHBNoPageR GET
 
 /admin/rating/#Int/#Censorship      ManageCensorshipR GET

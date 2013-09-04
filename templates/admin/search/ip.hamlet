@@ -1,12 +1,5 @@
 ^{adminNavbarWidget muser permissions}
-<h2 style=text-align:center> UID: #{posterId}
-$if onlyHellbanned
-    <div style=text-align:center>
-      <a href=@{AdminSearchUIDNoPageR posterId}>_{MsgDisplayAllPosts}
-$else
-  $if elem HellBanP permissions
-    <div style=text-align:center>
-      <a href=@{AdminSearchUIDOnlyHBNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
+<h2 style=text-align:center> IP: #{ip}
 <form .delete-form method=get action=@{DeleteR}>
     $forall (e, files) <- postsAndFiles
         $if (postParent $ entityVal e) > 0
@@ -25,7 +18,4 @@ $else
             _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
 
-$if onlyHellbanned
-    ^{pageSwitcherWidget page pages (AdminSearchUIDOnlyHBR posterId)}
-$else
-    ^{pageSwitcherWidget page pages (AdminSearchUIDR posterId)}
+^{pageSwitcherWidget page pages (AdminSearchIPR ip)}

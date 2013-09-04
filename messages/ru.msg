@@ -229,8 +229,11 @@ Hellbanning : Премодерация
 ChangeFileRating: Изменять рейтинг цензуры у файлов
 
 ### search posts
+Search: Поиск
 AdminSearchUID: Искать посты с этим ID пользователя
+AdminSearchIP: Искать посты с этим IP
 PostsByUserID: Все посты по ID пользователя
+PostsByIP: Все посты с этим IP
 DisplayOnlyHellbanned: Показывать только посты на премодерации
 DisplayAllPosts: Показывать все посты
 

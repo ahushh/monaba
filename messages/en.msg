@@ -230,8 +230,11 @@ Hellbanning :Hellbanning
 ChangeFileRating: Change file's censorship rating
 
 ### search posts
+Search: Search
 AdminSearchUID: Search posts with this user ID
+AdminSearchIP: Search posts with this IP
 PostsByUserID: Posts by user ID
+PostsByIP: Posts by IP
 DisplayOnlyHellbanned: Display only hellbanned posts
 DisplayAllPosts: Display all posts
 

@@ -223,11 +223,12 @@ instance Yesod App where
       HellBanR{}      -> isAuthorized' [HellBanP]
       HellBanDoR{}    -> isAuthorized' [HellBanP]
 
-      AdminSearchR{}       -> isAuthorized' [ViewIPAndIDP]
-      AdminSearchNoPageR{} -> isAuthorized' [ViewIPAndIDP]
-
-      AdminSearchOnlyHBR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
-      AdminSearchOnlyHBNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchIPR{}       -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchIPNoPageR{} -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchUIDOnlyHBR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchUIDOnlyHBNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
 
       ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
       _                   -> return Authorized

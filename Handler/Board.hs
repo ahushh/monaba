@@ -111,6 +111,7 @@ getBoardR board page = do
   timeZone         <- getTimeZone
   rating           <- getCensorshipRating
   displaySage      <- getConfig configDisplaySage
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""

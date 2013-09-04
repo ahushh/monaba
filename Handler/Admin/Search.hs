@@ -43,6 +43,7 @@ helper onlyHellbanned posterId page = do
   msgrender       <- getMessageRender
   timeZone        <- getTimeZone
   displaySage     <- getConfig configDisplaySage
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]

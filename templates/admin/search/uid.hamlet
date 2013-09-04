@@ -10,9 +10,9 @@ $else
 <form .delete-form method=get action=@{DeleteR}>
     $forall (e, files) <- postsAndFiles
         $if (postParent $ entityVal e) > 0
-            ^{replyPostWidget muser e files R18G False False True displaySage permissions geoIps timeZone}
+            ^{replyPostWidget muser e files R18G False False True displaySage permissions geoIps timeZone maxLenOfFileName}
         $else
-            ^{opPostWidget muser e files R18G False False permissions geoIps timeZone}
+            ^{opPostWidget muser e files R18G False False permissions geoIps timeZone maxLenOfFileName}
     <div #delete-container>
       <label>
           <input type=checkbox name=onlyfiles value=1>

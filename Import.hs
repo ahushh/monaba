@@ -102,10 +102,9 @@ myFormatTime :: Int     -> -- ^ Time offset in seconds
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 
 -- | Truncate file name if its length is greater than 47
-truncateFileName :: String -> String
-truncateFileName s = if len > maxLen then result else s
-  where maxLen   = 47
-        len      = length s
+truncateFileName :: Int -> String -> String
+truncateFileName maxLen s = if len > maxLen then result else s
+  where len      = length s
         excess   = len - maxLen
         halfLen  = round $ (fromIntegral len)    / (2 :: Double)
         halfExc  = round $ (fromIntegral excess) / (2 :: Double)
@@ -125,9 +124,10 @@ opPostWidget :: Maybe (Entity User)      ->
                [Permission]             -> -- ^ List of the all permissions
                [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                Int                      -> -- ^ Time offset in seconds
+               Int                      -> -- ^ Max file name length
                WidgetT App IO () 
 opPostWidget muserW eOpPostW opPostFilesW ratingW
-  isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+  isInThreadW canPostW permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)      ->
                   Entity Post              ->
@@ -140,9 +140,11 @@ replyPostWidget :: Maybe (Entity User)      ->
                   [Permission]             -> -- ^ List of the all permissions
                   [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                   Int                      -> -- ^ Time offset in seconds
+                  Int                      -> -- ^ Max file name length
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW ratingW
-  isInThreadW canPostW showThreadW displaySageW permissionsW geoIpsW tOffsetW = do$(widgetFile "reply-post")
+  isInThreadW canPostW showThreadW displaySageW
+  permissionsW geoIpsW tOffsetW maxLenOfFileNameW = do$(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")

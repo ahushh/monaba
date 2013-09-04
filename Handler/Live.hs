@@ -38,6 +38,7 @@ getLiveR = do
   timeZone       <- getTimeZone  
   rating         <- getCensorshipRating
   displaySage    <- getConfig configDisplaySage
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgLatestPosts]

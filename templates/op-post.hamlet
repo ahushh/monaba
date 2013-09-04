@@ -72,8 +72,8 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                 $with fId <- show $ int64ToInt $ fromKey fileKey
                   <div class=#{c} id="file-#{fId}">
                     $with rating <- attachedfileRating file
-                      <span .file-name>
-                          <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
+                      <div .file-name>
+                          <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName maxLenOfFileNameW $ attachedfileOrigName file}
                       $if isImageFile (attachedfileType file)
                           <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
                       $else
@@ -100,9 +100,9 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           $if attachedfileThumbWidth file == -1
                               <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $elseif isImageFile (attachedfileType file)
-                              <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $else
-                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                       $elseif (read $ unpack rating) > ratingW
                         $case (read $ unpack rating)
                           $of R15
@@ -117,9 +117,9 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           $if attachedfileThumbWidth file == -1
                               <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $elseif isImageFile (attachedfileType file)
-                              <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                           $else
-                              <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                              <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
           $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
               <div .message>#{m}
 

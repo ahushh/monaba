@@ -56,12 +56,12 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                 $with c <- ifelse (length replyFilesW == 1) "file" "multi-file"
                   $with rating <- attachedfileRating file
                     <div class=#{c} id="file-#{show $ int64ToInt $ fromKey fileKey}">
-                        <span .file-name>
-                            <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName $ attachedfileOrigName file}
-                        $if isImageFile (attachedfileType file)
-                            <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
-                        $else
-                            <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
+                        <div .file-name>
+                            <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName maxLenOfFileNameW $ attachedfileOrigName file}
+                         $if isImageFile (attachedfileType file)
+                             <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+                         $else
+                             <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
                         $if elem ChangeFileRatingP permissionsW
                           $with rating1 <- read $ unpack rating
                             $if rating1 == SFW
@@ -84,9 +84,9 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                             $if attachedfileThumbWidth file == -1
                                 <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                             $elseif isImageFile (attachedfileType file)
-                                <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                                <img title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                             $else
-                                <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                                <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                         $elseif (read $ unpack rating) > ratingW
                           $case (read $ unpack rating)
                             $of R15
@@ -101,9 +101,9 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                             $if attachedfileThumbWidth file == -1
                                 <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                             $elseif isImageFile (attachedfileType file)
-                                <img alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                                <img title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
                             $else
-                                <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
+                                <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}" .thumb>
             $with m <- unTextarea $ postMessage $ entityVal eReplyW
                 $if checkAbbr (T.length m) isInThreadW
                     <div .message .abbreviated>#{preEscapedToHtml m}

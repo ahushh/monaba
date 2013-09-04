@@ -10,6 +10,7 @@ Default: &defaults
   stylesheet: Ash # default stylesheet
   maxLenOfPostTitle: 60
   maxLenOfPostName: 20
+  maxLenOfFileName: 20
 
 Development:
   <<: *defaults

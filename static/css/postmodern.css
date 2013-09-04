@@ -312,3 +312,7 @@ pre {
 .ip-and-id {
     display:block;
 }
+
+.file-info {
+    display:none;
+}

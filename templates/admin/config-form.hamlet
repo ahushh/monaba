@@ -35,3 +35,9 @@
         <tr>
             <td>_{MsgDisplaySage}
             <td>^{fvInput displaySageView}
+        <tr>
+            <td>_{MsgModlogMaxEntriesView}
+            <td>^{fvInput modlogMaxEntriesView}
+        <tr>
+            <td>_{MsgModlogEntriesPerPage}
+            <td>^{fvInput modlogEntriesPerPageView}

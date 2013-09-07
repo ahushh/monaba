@@ -3,6 +3,7 @@
 <table .admin-table>
     <tr>
         <th>         
+        <th> ID
         <th>_{MsgBanIp}
         <th>_{MsgBanReason}
         <th>_{MsgBanExpires}
@@ -11,6 +12,7 @@
         <tr>
             <td>
                 <a href=@{BanDeleteR $ fromIntegral $ fromKey bId}>_{MsgDeleteBtn}
+            <td>##{show $ int64ToInt $ fromKey bId}
             <td>#{banIp b}
             <td>#{banReason b}
             $if isJust $ banExpires b

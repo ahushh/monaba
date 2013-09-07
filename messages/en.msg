@@ -212,12 +212,15 @@ UpdateConfig: Update config
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
 DisplaySage: Display sage icon
+ModlogMaxEntriesView: Max modlog entries
+ModlogEntriesPerPage: Modlog entries per page
 ## Messages
 ConfigUpdated: Config successfully updated
 
 ### Permissions
 Permissions: Permissions
 ViewIPAndID: View poster's IP and ID
+ViewModlog: View moderation log
 ManageThread:Manage threads
 ManageBoard :Manage boards
 ManageUsers :Manage users
@@ -338,3 +341,39 @@ Applied: Settings applied
 TimeZone: Time zone
 Style: Style
 MaxAllowedRating: Max allowed rating
+
+######################################################################################
+#### Modlogs
+######################################################################################
+Modlog: Modlog
+ModlogDate: Date
+ModlogGroup: Group
+ModlogUser: User
+ModlogMessage: Message
+
+ModlogBanAdded ip@Text reason@Text nn@Int: Banned IP #{ip} — ##{show nn} — #{reason}
+ModlogDelBan nnn@Int: Deleted ban ##{show nnn}
+
+ModlogNewBoard bn@Text: Added a new board /#{bn}/
+ModlogUpdateAllBoards: Updated all boards
+ModlogUpdateBoard bnn@Text: Updated board /#{bnn}/
+ModlogCleanAllBoards: Cleaned all boards
+ModlogCleanBoard bnnn@Text: Cleaned board /#{bnnn}/
+ModlogDeleteAllBoards: Deleted all boards
+ModlogDeleteBoard adsf@Text: Deleted board /#{adsf}/
+
+ModlogUpdateGroup ggp@Text: Updated group #{ggp}
+ModlogAddGroup gag@Text: Added group #{gag}
+ModlogDelGroup gsd@Text: Deleted group #{gsd}
+
+ModlogAddUser gag@Text: Added user #{gag}
+ModlogDelUser gag@Text: Deleted user #{gag}
+
+ModlogUpdateConfig: Updated config
+
+ModlogStickThread thr@Int board@Text: Sticked thread ##{show thr} on /#{board}/
+ModlogLockThread thr@Int board@Text: Locked thread ##{show thr} on /#{board}/
+ModlogAutosageThread thr@Int board@Text: Turned off bumping thread ##{show thr} on /#{board}/
+
+ModlogHellban uid@Text: Hellbanned user #{uid}
+ModlogUnhellban uid@Text: Unhellbanned user #{uid}

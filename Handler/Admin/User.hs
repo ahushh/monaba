@@ -3,9 +3,9 @@ module Handler.Admin.User where
 
 import           Import
 import           Yesod.Auth
-import           Yesod.Auth.HashDB (setPassword)
-import qualified Data.Text         as T
-
+import           Yesod.Auth.HashDB    (setPassword)
+import qualified Data.Text            as T
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 -- Users
 -------------------------------------------------------------------------------------------------------------
@@ -57,19 +57,20 @@ postUsersR = do
       u <- runDB $ getBy $ UserUniqName name
       if isJust u
         then void $ runDB $ replace (entityKey $ fromJust u) userWithPassword
-        else void $ runDB $ insert userWithPassword
+        else (addModlogEntry $ MsgModlogAddUser name) >> (void $ runDB $ insert userWithPassword)
       msgRedirect MsgUsersAddedOrUpdated
 
-getUsersDeleteR :: Int -> Handler Html
-getUsersDeleteR userId = do
+getUsersDeleteR :: Text -> Handler Html
+getUsersDeleteR usrName = do
   let msgRedirect msg = setMessageI msg >> redirect UsersR
   groups <- runDB $ selectList ([]::[Filter Group]) []
   users  <- runDB $ selectList ([]::[Filter User ]) []
 
   let gs = map groupName $ filter ((ManageUsersP `elem`) . groupPermissions) $ map entityVal groups
   when ((>1) $ length $ filter (`elem` gs) $ map (userGroup . entityVal) users) $ do
-     runDB $ delete (toKey userId :: Key User)
-     msgRedirect MsgUsersDeleted
+    addModlogEntry $ MsgModlogDelUser usrName
+    runDB $ deleteWhere [UserName ==. usrName]
+    msgRedirect MsgUsersDeleted
   msgRedirect MsgYouAreTheOnlyWhoCanManageUsers
 -------------------------------------------------------------------------------------------------------------
 -- Account  

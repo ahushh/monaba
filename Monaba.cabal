@@ -36,6 +36,7 @@ library
                      Handler.Admin.Group
                      Handler.Admin.User
                      Handler.Admin.Search
+                     Handler.Admin.Modlog
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings

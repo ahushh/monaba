@@ -3,7 +3,8 @@ module Handler.Admin.Group where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
+import qualified Data.Text            as T
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 groupsForm :: Html ->
              MForm Handler (FormResult ( Text -- ^ Group name
@@ -18,6 +19,7 @@ groupsForm :: Html ->
                                        , Bool -- ^ Permission to edit any post without saving history  
                                        , Bool -- ^ Permission to use additional markup
                                        , Bool -- ^ Permission to view poster's IP and ID
+                                       , Bool -- ^ Permission to view moderation log
                                        , Bool -- ^ Permission to use hellbanning
                                        , Bool -- ^ Permission to change censorship rating
                                        ), Widget)
@@ -34,15 +36,16 @@ groupsForm extra = do
   (shadowEditRes   , shadowEditView  ) <- mreq checkBoxField "" Nothing
   (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
+  (viewModlogRes   , viewModlogView  ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing
   (ratingRes       , ratingView      ) <- mreq checkBoxField "" Nothing
 
-  let result = (,,,,,,,,,,,,,) <$> nameRes        <*>
+  let result = (,,,,,,,,,,,,,,)<$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
                manageBanRes    <*> editPostsRes   <*> shadowEditRes  <*>
-               aMarkupRes      <*> viewIPAndIDRes <*> hellbanningRes <*>
-               ratingRes
+               aMarkupRes      <*> viewIPAndIDRes <*> viewModlogRes  <*>
+               hellbanningRes  <*> ratingRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -59,6 +62,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ShadowEditP      , MsgShadowEdit      )
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
              ,(ViewIPAndIDP     , MsgViewIPAndID     )
+             ,(ViewModlogP      , MsgViewModlog      )
              ,(HellBanP         , MsgHellbanning     )
              ,(ChangeFileRatingP, MsgChangeFileRating)
              ]
@@ -85,24 +89,24 @@ postManageGroupsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess (name            , manageThread     , manageBoard, manageUsers,
-                 manageConfig    , deletePostsP     , managePanel, manageBan  ,
-                 editPosts       , shadowEdit       , aMarkup    , viewIPAndID,
-                 hellbanning     , changeFileRating
+    FormSuccess (name         , manageThread , manageBoard      , manageUsers,
+                 manageConfig , deletePostsP , managePanel      , manageBan  ,
+                 editPosts    , shadowEdit   , aMarkup          , viewIPAndID,
+                 viewModLog   , hellbanning  , changeFileRating
                 ) -> do
       let permissions = [(ManageThreadP    ,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP ,manageUsers)
                         ,(ManageConfigP    ,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP ,managePanel)
                         ,(ManageBanP       ,manageBan   ), (EditPostsP  ,editPosts   ), (ShadowEditP  ,shadowEdit )
-                        ,(AdditionalMarkupP,aMarkup     ), (ViewIPAndIDP,viewIPAndID ), (HellBanP     ,hellbanning)
-                        ,(ChangeFileRatingP,changeFileRating)
+                        ,(AdditionalMarkupP,aMarkup     ), (ViewIPAndIDP,viewIPAndID ), (ViewModlogP  ,viewModLog )
+                        ,(HellBanP         ,hellbanning ), (ChangeFileRatingP,changeFileRating)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions
                            }
       g <- runDB $ getBy $ GroupUniqName name
       if isJust g
-        then void $ runDB $ replace (entityKey $ fromJust g) newGroup
-        else void $ runDB $ insert newGroup
+        then (addModlogEntry $ MsgModlogUpdateGroup name) >> (void $ runDB $ replace (entityKey $ fromJust g) newGroup)
+        else (addModlogEntry $ MsgModlogAddGroup    name) >> (void $ runDB $ insert newGroup)
       msgRedirect MsgGroupAddedOrUpdated
 
 getDeleteGroupsR :: Text -> Handler ()
@@ -110,5 +114,6 @@ getDeleteGroupsR group = do
   groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   when ((>1) $ length $ filter (ManageUsersP `elem`) groups) $ do
     void $ runDB $ deleteWhere [GroupName ==. group]
+    addModlogEntry $ MsgModlogDelGroup group
     setMessageI MsgGroupDeleted >> redirect ManageGroupsR
   setMessageI MsgYouAreTheOnlyWhoCanManageUsers >> redirect ManageGroupsR

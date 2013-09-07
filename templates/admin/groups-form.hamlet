@@ -38,6 +38,9 @@
             <td>_{MsgViewIPAndID          }
             <td>^{fvInput viewIPAndIDView }
         <tr>
+            <td>_{MsgViewModlog           }
+            <td>^{fvInput viewModlogView  }
+        <tr>
             <td>_{MsgHellbanning          }
             <td>^{fvInput hellbanningView }
         <tr>

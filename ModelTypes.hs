@@ -16,6 +16,7 @@ data Permission = ManageThreadP
                 | EditPostsP
                 | ShadowEditP
                 | ViewIPAndIDP
+                | ViewModlogP
                 | HellBanP
                 | ChangeFileRatingP
                 | AdditionalMarkupP

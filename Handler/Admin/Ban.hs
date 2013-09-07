@@ -3,7 +3,8 @@ module Handler.Admin.Ban where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
+import qualified Data.Text            as T
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 banByIpForm :: Text -> -- ^ IP adress
               Text -> -- ^ Board name
@@ -53,8 +54,12 @@ postBanByIpR _ _ = do
                        , banBoard   = board
                        , banExpires = (\n -> addUTCTime' (60*60*n) now) <$> expires
                        }
-      void $ runDB $ insert newBan
+      bId <- runDB $ insert newBan
+      addModlogEntry $ MsgModlogBanAdded ip reason (int64ToInt $ fromKey bId)
       msgRedirect MsgBanAdded
 
 getBanDeleteR :: Int -> Handler Html
-getBanDeleteR bId = runDB (delete (toKey bId :: Key Ban)) >> setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")
+getBanDeleteR bId = do
+  runDB $ delete (toKey bId :: Key Ban)
+  addModlogEntry $ MsgModlogDelBan bId
+  setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")

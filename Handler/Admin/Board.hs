@@ -3,10 +3,10 @@ module Handler.Admin.Board where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text         as T
-import           Handler.Delete    (deletePosts)
-import           Control.Monad     (mplus)
-
+import qualified Data.Text            as T
+import           Handler.Delete       (deletePosts)
+import           Control.Monad        (mplus)
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: ManageBoardAction -> Text -> Handler Html
 getManageBoardsR action board = do
@@ -168,6 +168,7 @@ postNewBoardsR = do
                            , boardShowEditHistory   = onoff bShowEditHistory
                            }
       void $ runDB $ insert newBoard
+      addModlogEntry $ MsgModlogNewBoard (fromJust bName)
       msgRedirect MsgBoardAdded
 
 postAllBoardsR :: Handler Html
@@ -220,6 +221,7 @@ postAllBoardsR = do
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                              }
           in runDB $ replace oldBoardId newBoard)
+      addModlogEntry $ MsgModlogUpdateAllBoards
       msgRedirect MsgBoardsUpdated
 
 postUpdateBoardsR :: Text -> Handler Html
@@ -273,6 +275,7 @@ postUpdateBoardsR board = do
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                            }
       runDB $ replace oldBoardId newBoard
+      addModlogEntry $ MsgModlogUpdateBoard (fromJust bName)
       msgRedirect MsgBoardsUpdated
 -------------------------------------------------------------------------------------------------------------
 cleanBoard :: ManageBoardAction -> Text -> Handler ()
@@ -280,12 +283,14 @@ cleanBoard action board = case action of
   AllBoards -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
+    addModlogEntry $ MsgModlogCleanAllBoards
     void $ deletePosts (concat postIDs) False
   NewBoard -> msgRedirect MsgNoSuchBoard
   _        -> do
     maybeBoard <- runDB $ selectFirst [BoardName ==. board] []  
     when (isNothing maybeBoard) $ msgRedirect MsgNoSuchBoard
     postIDs <- runDB $ selectList [PostBoard ==. board] []
+    addModlogEntry $ MsgModlogCleanBoard board
     void $ deletePosts postIDs False
   where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR UpdateBoard board)
 
@@ -299,8 +304,8 @@ getDeleteBoardR :: ManageBoardAction -> Text -> Handler ()
 getDeleteBoardR action board = do
   cleanBoard action board
   case action of
-    AllBoards -> runDB $ deleteWhere ([]::[Filter Board ])
-    _         -> runDB $ deleteWhere [BoardName ==. board]
+    AllBoards -> addModlogEntry MsgModlogDeleteAllBoards     >> runDB (deleteWhere ([]::[Filter Board ]))
+    _         -> addModlogEntry (MsgModlogDeleteBoard board) >> runDB (deleteWhere [BoardName ==. board])
   setMessageI MsgBoardDeleted
   redirect (ManageBoardsR AllBoards "")
 -------------------------------------------------------------------------------------------------------------

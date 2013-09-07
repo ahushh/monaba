@@ -231,6 +231,7 @@ instance Yesod App where
       AdminSearchUIDOnlyHBNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
 
       ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
+      ModlogR{}           -> isAuthorized' [ViewModlogP]
       _                   -> return Authorized
 
     errorHandler errorResponse = do

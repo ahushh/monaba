@@ -5,9 +5,9 @@
         <th>         
         <th>_{MsgName}
         <th>_{MsgGroup }
-    $forall Entity userId user <- users
+    $forall Entity _ user <- users
         <tr>
             <td>
-                <a href=@{UsersDeleteR $ fromIntegral $ fromKey $ userId}>_{MsgDeleteBtn}
+                <a href=@{UsersDeleteR $ userName user}>_{MsgDeleteBtn}
             <td>#{userName user}
             <td>#{show $ userGroup user}

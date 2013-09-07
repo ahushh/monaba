@@ -1,4 +1,7 @@
 <div .admin-navbar>
+    $if elem ViewModlogP permissionsW
+        <a href=@{ModlogR 0}>_{MsgModlog} #
+        | 
     $if elem ManageBanP permissionsW
         <a href=@{BanByIpR "" ""}>_{MsgBans} #
         | 

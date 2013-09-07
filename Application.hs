@@ -37,6 +37,7 @@ import Handler.Admin.Config
 import Handler.Admin.Group
 import Handler.Admin.User
 import Handler.Admin.Search
+import Handler.Admin.Modlog
 import Handler.Api
 import Handler.Captcha
 import Handler.Settings

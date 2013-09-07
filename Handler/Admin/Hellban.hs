@@ -3,8 +3,9 @@ module Handler.Admin.Hellban where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text  as T
-import           Data.Maybe (mapMaybe)
+import qualified Data.Text            as T
+import           Data.Maybe           (mapMaybe)
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 getHellBanNoPageR :: Handler Html
 getHellBanNoPageR = getHellBanR 0
@@ -51,7 +52,8 @@ getHellBanDoR postId action ban = do
     "one" -> void $ runDB $ update postKey [PostHellbanned =. True]
     "all" -> void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
     _     -> return ()
-  void $ when ban $
+  void $ when ban $ do
+    addModlogEntry $ MsgModlogHellban posterId
     void $ runDB $ insert Hellban { hellbanUserId = posterId, hellbanUserIp = postIp post }
   redirectUltDest HomeR
 
@@ -61,8 +63,10 @@ getHellBanUndoR :: Int  -> -- ^ Post internal ID
 getHellBanUndoR postId action = do
   let postKey = toKey postId :: Key Post
   post <- runDB $ get404 postKey
+  let posterId = postPosterId post
   case action of
     "show"  -> runDB $ update postKey [PostHellbanned =. False]
-    "unban" -> runDB $ deleteWhere [HellbanUserId ==. postPosterId post]
-    _       -> runDB (update postKey [PostHellbanned =. False]) >> runDB (deleteWhere [HellbanUserId ==. postPosterId post])
+    "unban" -> addModlogEntry (MsgModlogUnhellban posterId) >> runDB (deleteWhere [HellbanUserId ==. posterId])
+    _       -> addModlogEntry (MsgModlogUnhellban posterId) >> runDB (update postKey [PostHellbanned =. False]) >>
+              runDB (deleteWhere [HellbanUserId ==. posterId])
   redirectUltDest HomeR

@@ -3,8 +3,8 @@ module Handler.Admin.Config where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text   as T
-
+import qualified Data.Text            as T
+import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 configForm :: Config ->
              Html   ->
@@ -19,6 +19,8 @@ configForm :: Config ->
                                        , Maybe Int  -- ^ The maximum number of post editings
                                        , Maybe Int  -- ^ How many latest posts show
                                        , Maybe Bool -- ^ Display sage icon
+                                       , Maybe Int  -- ^ Max modlog entries
+                                       , Maybe Int  -- ^ Modlog entries per page
                                        )
                            , Widget)
 configForm config extra = do
@@ -37,12 +39,15 @@ configForm config extra = do
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
   (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
   (displaySageRes     , displaySageView    ) <- mopt checkBoxField "" (f configDisplaySage)
+  (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
+  (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
 
-  let result = (,,,,,,,,,,) <$>
-               captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes  <*>
-               replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
-               newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
-               showLatestPostsRes <*> displaySageRes
+  let result = (,,,,,,,,,,,,) <$>
+               captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes   <*>
+               replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes  <*>
+               newsBoardRes       <*> showNewsRes       <*> maxEditingsRes      <*>
+               showLatestPostsRes <*> displaySageRes    <*> modlogMaxEntriesRes <*>
+               modlogEntriesPerPageRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -72,7 +77,8 @@ postConfigR = do
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay     , threadDelay, boardCategories,
-                 newsBoard    , showNews      , maxEditings   , showLatestPosts, displaySage
+                 newsBoard    , showNews      , maxEditings   , showLatestPosts, displaySage, modlogMaxEntries,
+                 modlogEntriesPerPage
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
@@ -85,6 +91,9 @@ postConfigR = do
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
                              , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
                              , configDisplaySage     = fromMaybe (configDisplaySage     oldConfigVal) displaySage
+                             , configModlogMaxEntries     = fromMaybe (configModlogMaxEntries     oldConfigVal) modlogMaxEntries
+                             , configModlogEntriesPerPage = fromMaybe (configModlogEntriesPerPage oldConfigVal) modlogEntriesPerPage
                              }
       void $ runDB $ replace oldConfigKey newConfig
+      addModlogEntry MsgModlogUpdateConfig
       msgRedirect MsgConfigUpdated

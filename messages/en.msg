@@ -73,6 +73,9 @@ BanPoster: Ban poster
 StickThread: Stick/unstick
 LockThread: Lock/unlock
 Autosage: Autosage
+ThreadIsSticked: Thread is sticked
+ThreadIsLocked: Thread is locked
+ThreadAutosage: Autosage
 ### Deleted posts
 DeletedPosts: Deleted posts
 DeletedPostsIn z@Int: Deleted posts in thread №#{show z}

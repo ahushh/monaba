@@ -229,9 +229,12 @@ hr {
     background-position: -773px -29px;
 }
 
+header {
+    padding-bottom: 15px;
+}
+
 .board-list {
     text-align: left;
-    margin-bottom: 20px;
 }
 
 #control-panel {
@@ -322,6 +325,7 @@ ul {
 
 .message {
     padding: 8px 10px;
+    max-width: 1280px;
 }
 
 .expand-post {

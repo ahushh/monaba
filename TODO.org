@@ -1,4 +1,4 @@
-* Current
+* DONE
 ** DONE IP
 ** DONE image size, resolution, md5 sum
   CLOSED: [2013-07-04 Чт 12:46]
@@ -147,24 +147,29 @@
    CLOSED: [2013-08-13 Вт 14:10]
 ** DONE message abbreviation
    CLOSED: [2013-08-14 Ср 20:46]
+* TODO
 ** TODO API - geoip
-** TODO autorefresh, new posts count via websockets
+** TODO post autoload, new posts count via websockets (?)
 ** TODO reports
 ** TODO refmap table (?)
 ** TODO management
-*** TODO logging
+*** DONE logging
+    CLOSED: [2013-09-08 Вс 13:59]
+*** DONE user groups
+    CLOSED: [2013-08-05 Пн 09:44]
+*** TODO view deleted posts
+*** TODO post recovery
 *** TODO bans
+**** TODO IP validation
+**** TODO IP range
 **** TODO ban by session
 **** TODO R/O or no access at all
 *** TODO allow thread moving
 *** TODO improve user groups
-*** DONE user groups
-    CLOSED: [2013-08-05 Пн 09:44]
-** TODO fix JS and stylesheet loading
-** TODO search
-** TODO thread catalog
-** TODO black/spam list
-** TODO tags for threads
+** TODO move JS to the html header
+** TODO sphinx search
+** TODO thread catalog (?)
+** TODO wordfilter
 ** TODO user settings
 *** DONE UTC -> local time, store timezone in cookies/session
     CLOSED: [2013-08-10 Сб 19:45]
@@ -172,7 +177,10 @@
 *** DONE thread hiding
     CLOSED: [2013-08-31 Сб 22:09]
 *** TODO favorite threads
+*** TODO language switcher
 * Further
+** TODO tags for threads
+** TODO full API
 ** TODO best API error handling
 ** TODO check if all dirs exist before starting
 ** TODO breadcrumbs/subsite for /admin/ and /api/ (?)

@@ -16,11 +16,11 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   <img onclick="hideThreadCompletely(#{thread}, '#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThreadCompletely} alt=_{MsgHideThreadCompletely} .icon-hide-thread-completely>
               <div .thread-status>
                   $if postSticked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif}  title=sticked alt=sticked .icon-thread-sticked>
+                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
                   $if postLocked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif}  title=locked alt=locked .icon-thread-locked>
+                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
                   $if postAutosage $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif}  title=autosage alt=autosage .icon-thread-autosage>
+                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
               <span .reflink>
                   $if canPostW
                       <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.

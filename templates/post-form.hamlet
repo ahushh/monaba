@@ -15,25 +15,37 @@
             <td>
                 ^{fvInput messageView}
                 <div .buttons>
-                     [
-                     <a id=button-bold >bold
+                     <a id=button-bold>
+                        <strong>
+                          bold
                      |
-                     <a id=button-italic >italic
+                     <a id=button-italic>
+                        <em>
+                          italic
                      |
-                     <a id=button-underline >underline
+                     <a id=button-underline>
+                        <u>
+                          underline
                      |
-                     <a id=button-strike >strike
+                     <a id=button-strike>
+                        <span style="text-decoration:line-through">
+                          strike
                      |
-                     <a id=button-spoiler >spoiler
+                     <a id=button-spoiler>
+                        spoiler
                      |
-                     <a id=button-code >code
+                     <a id=button-code>
+                        code
                      |
-                     <a id=button-inline-latex >inline LaTeX
+                     <a id=button-inline-latex>
+                        inline LaTeX
                      |
-                     <a id=button-latex >LaTeX
+                     <a id=button-latex>
+                        LaTeX
                      |
-                     <a id=button-quote >quote
-                     ]                    
+                     <a id=button-quote>
+                        quote
+                     |
                      <span style=display:inline .symbol-counter>
         <tr .post-block>
             <td .post-block-named>_{MsgPassword}

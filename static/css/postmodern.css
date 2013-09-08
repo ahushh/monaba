@@ -83,14 +83,6 @@ input {
     color: #666666;
 }
 
-header {
-    clear: both;
-    color: #995b46;
-    font-size: 2em;
-    font-weight: bold;
-    text-align: center;
-}
-
 footer {
     font-family: serif;
     font-size: 12px;

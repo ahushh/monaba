@@ -183,6 +183,7 @@ Group: Group
 Groups: Groups
 GroupAddOrUpdate: Add/updated
 GroupAddedOrUpdated: Group added/updated
+GroupDoesNotExist: Group dosn't exist
 GroupDeleted: Group deleted
 
 ### Account
@@ -197,6 +198,7 @@ AddNewUserOrUpdate: New user/update
 ## Messages
 UsersAddedOrUpdated: New user successfully added/updated
 UsersDeleted: User successfully deleted
+UserDoesNotExist: User doesn't exist
 YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 
 ### Config management

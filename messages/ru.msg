@@ -182,6 +182,7 @@ Group: Группа
 Groups: Группы
 GroupAddOrUpdate: Добавить/обновить
 GroupAddedOrUpdated: Группа добавлена/обновлена
+GroupDoesNotExist: Группа не существует
 GroupDeleted: Группа удалена
 
 ### Account
@@ -196,6 +197,7 @@ AddNewUserOrUpdate: Новый аккаунт/обновить
 ## Messages
 UsersAddedOrUpdated: Аккаунт добавлен/обновлен
 UsersDeleted: Аккаунт удален
+UserDoesNotExist: Пользователь не существует
 YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
 
 ### Config management

@@ -62,16 +62,22 @@ postUsersR = do
 
 getUsersDeleteR :: Text -> Handler Html
 getUsersDeleteR usrName = do
-  let msgRedirect msg = setMessageI msg >> redirect UsersR
-  groups <- runDB $ selectList ([]::[Filter Group]) []
-  users  <- runDB $ selectList ([]::[Filter User ]) []
+  delUsr   <- runDB $ selectFirst [UserName ==. usrName] []
+  when (isNothing delUsr) $ msgRedirect MsgUserDoesNotExist
 
+  usrGroup <- runDB $ selectFirst [GroupName ==. userGroup (entityVal $ fromJust delUsr)] []
+  when (isNothing usrGroup) $ msgRedirect MsgGroupDoesNotExist
+
+  users  <- runDB $ selectList ([]::[Filter User ]) []
+  groups <- runDB $ selectList ([]::[Filter Group]) []
   let gs = map groupName $ filter ((ManageUsersP `elem`) . groupPermissions) $ map entityVal groups
-  when ((>1) $ length $ filter (`elem` gs) $ map (userGroup . entityVal) users) $ do
+  when ((ManageUsersP `notElem` groupPermissions (entityVal $ fromJust usrGroup) ) ||
+       ((>1) $ length $ filter (`elem` gs) $ map (userGroup . entityVal) users)) $ do
     addModlogEntry $ MsgModlogDelUser usrName
     runDB $ deleteWhere [UserName ==. usrName]
     msgRedirect MsgUsersDeleted
   msgRedirect MsgYouAreTheOnlyWhoCanManageUsers
+    where msgRedirect msg = setMessageI msg >> redirect UsersR
 -------------------------------------------------------------------------------------------------------------
 -- Account  
 -------------------------------------------------------------------------------------------------------------

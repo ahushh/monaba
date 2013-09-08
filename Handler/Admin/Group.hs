@@ -111,8 +111,14 @@ postManageGroupsR = do
 
 getDeleteGroupsR :: Text -> Handler ()
 getDeleteGroupsR group = do
+  delGroup  <- runDB $ selectFirst [GroupName ==. group] []
+  when (isNothing delGroup) $ setMessageI MsgGroupDoesNotExist >> redirect ManageGroupsR
+  usrGroup <- getMaybeGroup =<< maybeAuth
+  when (isNothing usrGroup) $ notFound
+
   groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
-  when ((>1) $ length $ filter (ManageUsersP `elem`) groups) $ do
+  when ((ManageUsersP `notElem` groupPermissions (entityVal $ fromJust delGroup) ) ||
+        ((>1) $ length $ filter (ManageUsersP `elem`) groups)) $ do
     void $ runDB $ deleteWhere [GroupName ==. group]
     addModlogEntry $ MsgModlogDelGroup group
     setMessageI MsgGroupDeleted >> redirect ManageGroupsR

@@ -42,7 +42,7 @@
         $if enableCaptchaW
             <tr .post-block>
                 <td .post-block-named>_{MsgCaptcha}
-                <td>
+                <td #captcha-block>
                     $if isJust muserW
                         _{MsgYouDontNeedCaptcha}
                     $else

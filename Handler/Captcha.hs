@@ -21,25 +21,25 @@ getCaptchaR = do
       sendFile typePng $ captchaFilePath (unpack (fromJust maybeCaptchaId) ++ captchaExt)
   notFound
 
-getCaptchaInfoR :: Handler Html
+getCaptchaInfoR :: Handler TypedContent
 getCaptchaInfoR = do
   acaptcha  <- lookupSession "acaptcha"
   muser     <- maybeAuth
+  msgrender <- getMessageRender
   when (isNothing acaptcha && isNothing muser) $
     recordCaptcha =<< getConfig configCaptchaLength
-    
   maybeCaptchaInfo <- getCaptchaInfo
-  bareLayout [whamlet|
-            $maybe c <- maybeCaptchaInfo
-                _{MsgTypeOnly} 
-                $if c == "Bold"
-                    _{MsgBoldChars}
-                $elseif c == "Italic"
-                    _{MsgItalicChars}
-                $elseif c == "Regular"
-                    _{MsgRegularChars}
-           |]
-
+  case () of
+    _ | isJust acaptcha         -> selectRep $ provideJson $ object [("acaptcha", toJSON $ msgrender MsgYouDontNeedCaptcha)]
+      | isJust maybeCaptchaInfo -> selectRep $ provideJson $ object
+                                  [("info", toJSON $ T.concat [msgrender MsgTypeOnly
+                                                              , " "
+                                                              , msgrender (chooseMsg $ fromJust maybeCaptchaInfo) ])]
+      | otherwise               -> selectRep $ provideJson $ object [("error",toJSON $ msgrender MsgReloadPage)]
+  where chooseMsg "Bold"    = MsgBoldChars
+        chooseMsg "Italic"  = MsgItalicChars
+        chooseMsg "Regular" = MsgRegularChars
+        chooseMsg _         = MsgReloadPage
 ---------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------
 recordCaptcha :: Int -> HandlerT App IO ()

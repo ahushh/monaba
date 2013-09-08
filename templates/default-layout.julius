@@ -508,9 +508,19 @@ function extractBoard(postId) {
 //-----------------------------------------------------------------
 function refreshCaptcha() {
     if ( $("#captcha") ) {
-        $.get('@{CaptchaInfoR}', function(data) {
-            $("#captcha-info").html(data);
-            $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
+        $.getJSON('@{CaptchaInfoR}', function(data) {
+            console.log(JSON.stringify(data));
+            if (data.info) {
+                $("#captcha-info").html(data.info);
+                $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
+            } else if (data.acaptcha) {
+                $("#captcha-info").hide();
+                $("#captcha-block input[type=text]").hide();
+                $("#captcha").hide();
+                $("#captcha-block").append(data.acaptcha);
+            } else {
+                $("#captcha-block").append(data.error);
+            }
         });
     }
 }

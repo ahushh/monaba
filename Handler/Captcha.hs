@@ -6,7 +6,7 @@ import           Yesod.Auth
 import           Data.Char        (toLower)
 import qualified Data.Text        as T
 import           System.Directory (removeFile)
-import           System.Random    (randomIO)
+import           System.Random    (randomIO, randomRIO)
 import           Utils.SillyCaptcha (makeCaptcha)
 ---------------------------------------------------------------------------------------------------------------------------
 getCaptchaR :: Handler Html
@@ -36,8 +36,6 @@ getCaptchaInfoR = do
                     _{MsgBoldChars}
                 $elseif c == "Italic"
                     _{MsgItalicChars}
-                $elseif c == "Underline"
-                    _{MsgUnderlineChars}
                 $elseif c == "Regular"
                     _{MsgRegularChars}
            |]
@@ -60,8 +58,16 @@ recordCaptcha captchaLength = do
 ---------------------------------------------------------------------------------------------------------------------------
 newCaptcha :: Int -> Text -> HandlerT App IO ()
 newCaptcha captchaLength ip = do
-  cId <- liftIO (abs <$> randomIO :: IO Int)
-  (info, value) <- liftIO $ makeCaptcha captchaLength $ captchaFilePath (show cId ++ captchaExt)
+  cId    <- liftIO (abs <$> randomIO :: IO Int)
+  langs  <- languages
+  let lang = if "ru" `elem` langs then "ru" else "en"
+  wCount <- runDB $ count [CaptchaDictLang ==. lang]
+  cWords <- runDB $ forM [1..captchaLength] $ \_ -> do
+    offset <- liftIO (randomRIO (1,wCount) :: IO Int)
+    selectFirst [CaptchaDictLang ==. lang] [OffsetBy offset]
+
+  (info, value) <- liftIO $ makeCaptcha (captchaFilePath (show cId ++ captchaExt))
+                                       (unwords $ map (unpack . captchaDictWord . entityVal) $ catMaybes cWords)
   setSession "captchaId"   (pack $ show cId)
   setSession "captchaInfo" info
   captchaTimeout <- getConfig configCaptchaTimeout

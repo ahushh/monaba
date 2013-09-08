@@ -123,3 +123,6 @@ Modlog
     group           Text
     date            UTCTime
     message         Text
+CaptchaDict
+    word            Text
+    lang            Text

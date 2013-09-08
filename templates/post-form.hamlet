@@ -58,8 +58,6 @@
                                         _{MsgBoldChars}
                                     $elseif c == "Italic"
                                         _{MsgItalicChars}
-                                    $elseif c == "Underline"
-                                        _{MsgUnderlineChars}
                                     $elseif c == "Regular"
                                         _{MsgRegularChars}
                                 $nothing

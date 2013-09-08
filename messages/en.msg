@@ -291,9 +291,8 @@ Captcha: Captcha
 ReloadPage: Error. Reload page.
 TypeOnly: Type only 
 ItalicChars: italic characters
-UnderlineChars: underlined characters
 BoldChars: bolded characters
-RegularChars: regular (not bolded, not italic, not underlined) characters
+RegularChars: regular (not bolded and not italic) characters
 YouDontNeedCaptcha: You don't have to enter captcha
 
 ######################################################################################

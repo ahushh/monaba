@@ -27,7 +27,6 @@ hr {
 
 [class^="icon-"], [class*=" icon-"] {
     vertical-align: text-top;
-    background-image: url(@{StaticR img_glyphicons_png});
     background-repeat: no-repeat;
     display: inline;
     height: 14px;

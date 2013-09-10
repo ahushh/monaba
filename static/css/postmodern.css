@@ -1,13 +1,18 @@
 html, body {
-    background-color: #5F5F5F;
-    color: #333333;
+    background-color: #212121;
+    color: #496CA0;
     font-family: serif;
     font-size: 1em;
     padding: 10px;
 }
 
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-white.png");
+    opacity: 0.6;
+}
+
 a {
-    color: #890000 !important;
+    color: #AEDCEA;
 }
 
 a:hover {
@@ -15,20 +20,24 @@ a:hover {
 }
 
 .container {
-    width: 70%;
-    margin: auto 15%;
+    width: 80%;
+    margin: auto 10%;
+    margin-bottom:15px;
+}
+
+#message {
+    color: white !important;
 }
 
 #main {
-    background-color: #BFBFBF;
-    color: #333333 !important;
+    background-color: #2C2C2C;
     padding: 5px 5px 25px 5px;
     margin-top: 15px;
     box-shadow: -1px -1px 8px 0 rgba(0,0,0.2),
-                1px 1px 8px 0 rgba(0,0,0,0.2),
-                0px 0px 0px 0 black,
-                0px 0px 0px 0 black,
-                0px 0px 0px 0 black;
+    1px 1px 8px 0 rgba(0,0,0,0.2),
+    0px 0px 0px 0 black,
+    0px 0px 0px 0 black,
+    0px 0px 0px 0 black;
 }
 
 .board-list, footer, #control-panel {
@@ -40,7 +49,7 @@ a:hover {
 }
 
 footer {
-    border-top: 0px !important;
+    color: gray;
 }
 
 form {
@@ -48,34 +57,31 @@ form {
 }
 
 textarea {
-    background-color: #DDDDDD;;
-    border: 1px dotted rgba(0,0,0,0);
+    color: #C0C0C0;
+    background-color: #212121;
+    border: 1px solid gray;
     width: 500px !important;
 }
 
-textarea:focus {
-    border: 1px solid rgba(0,0,0,0.5);
+textarea:focus, input:focus, input[type=submit]:hover, select:focus {
+    box-shadow: -1px -1px 2px 0 #698CC0,
+    1px 1px 2px 0 #698CC0,
+    0px 0px 0px 0 #698CC0,
+    0px 0px 0px 0 #698CC0,
+    0px 0px 0px 0 #698CC0;
+    border: 1px solid #698CC0;
 }
 
-input[type=submit] {
-    border: 1px solid black;
+input[type=submit], input[type=button], select {
+    background-color: #212121;
+    color: #C0C0C0;
+    border: 1px solid gray;
 }
 
-input[type=button] {
-    border: 1px solid black;
-}
-
-select {
-    border: 0px;
-}
-
-input:focus {
-    border: 1px solid rgba(0,0,0,0.5);
-}
-
-input {
-    background-color: #DDDDDD;;
-    border: 1px dotted rgba(0,0,0,0);
+input[type=text], input[type=password], input[type=number] {
+    background-color: #212121;
+    color: #C0C0C0;
+    border: 1px solid gray;
 }
 
 .time {
@@ -88,7 +94,7 @@ footer {
     font-size: 12px;
     margin: 2em 0pt 0pt;
     text-align: center;
-    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    border-top: 1px solid rgba(105, 140, 192, 0.3);
     padding-top: 10px;
 }
 
@@ -112,23 +118,22 @@ footer {
     width: 98%;
     margin: 3px;
     padding: 5px;
-    background: none repeat scroll 0% 0% #CACACA !important;
-    border: 1px dotted rgba(0,0,0,0.5) !important;
-    border-radius: 0px !important;
+    background: none repeat scroll 0% 0% #1A1A1A;
+    border: 1px dotted rgba(105,140,192,0.5);
 }
 
 .reply-post {
     display: inline-block;
-    width: 98%;
-    background: none repeat scroll 0% 0% #CACACA;
-    border: 1px dotted rgba(0,0,0,0.5);
-    margin: 5px;
+    width: 96%;
+    background: none repeat scroll 0% 0% #1A1A1A;
+    border: 1px dotted rgba(105,140,192,0.5);
+    margin: 0 0 0 2%;
     padding: 5px;
 }
 
 .popup-post {
-    background: none repeat scroll 0% 0% #CACACA;
-    border: 1px dotted rgba(0,0,0,0.5);
+    background: none repeat scroll 0% 0% #1A1A1A;
+    border: 1px dotted rgba(105,140,192,0.5);
     margin: 3px;
     padding: 5px;
 }
@@ -136,13 +141,12 @@ footer {
 .highlighted-post {
     background: none repeat scroll 0% 0% #EEDACB;
     border: 2px dashed #EE6600;
-    margin: 3px;
     padding: 5px;
 }
 
 .thread {
-    margin: 2px;
-    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    margin: 2px; 
+    border-top: 1px solid rgba(105, 140, 192, 0.3);
     padding: 25px 2px;
 }
 
@@ -172,18 +176,18 @@ table td {
 
 pre {
     background-color: rgba(0,0,0,0.1);
-    border: 1px dashed black11;
+    border: 1px dashed white;
     padding: 10px;
 }
 
 .board-category {
     font-weight: bold;
-    background: none repeat scroll 0% 0% #E0E0E0;
+    background: none repeat scroll 0% 0% black;
 }
 
 #board-list-full {
-   border: 1px dotted rgba(0,0,0,0.5);
-   width: auto !important;
+    border: 1px dotted rgba(105, 140, 192, 0.5);
+    width: auto !important;
 }
 
 #home-container {
@@ -192,17 +196,23 @@ pre {
 }
 
 #latest-news {
-   border: 1px dotted rgba(0,0,0,0.5);
+    border: 1px dotted rgba(105, 140, 192, 0.5);
 }
 
 #news-title {
     font-weight: bold;
-    background: none repeat scroll 0% 0% #E0E0E0;
+    background: none repeat scroll 0% 0% black;
 }
 
 #popupMessage {
-    background: none repeat scroll 0% 0% #E0E0E0;
-    border: 1px dotted rgba(0,0,0,0.5);
+    background: none repeat scroll 0% 0% #2C2C2C;
+    color: white;
+    border: 1px dotted rgba(105, 140, 192, 0.5);
+}
+
+.post-block-named {
+    background-color: #212121;
+    padding: 3px;
 }
 
 #post-form {
@@ -216,26 +226,34 @@ pre {
 }
 
 .quick-post-form {
-    border: 1px dotted rgba(0,0,0,0.5);
+    border: 1px dotted rgba(105, 140, 192, 0.5);
     padding: 5px;
     width: 95% !important;
 }
 
+.hist-date {
+    color: white;
+}
+
 .hist-msg {
-    background: none repeat scroll 0% 0% #E0E0E0;
-    border: 1px dotted rgba(0,0,0,0.5);
+    background: none repeat scroll 0% 0% #1A1A1A;
+    border: 1px dotted rgba(105,140,192,0.5);
     margin: 3px;
     padding: 5px;
 }
 
+#main-title {
+    color: red;
+}
+
 #board-header {
     padding-bottom: 20px;
-    border-bottom: 1px dotted rgba(10, 10, 10, 0.3);
-    color: #890000;
+    border-bottom: 1px solid rgba(105, 140, 192, 0.3);
+    color: red;
 }
 
 #board-long-desc {
-   color: #CC0000;
+    color: #CC0000;
 }
 
 #board-subtitle {
@@ -243,14 +261,14 @@ pre {
 }
 
 .admin-navbar {
-    background-color: #E0E0E0;
-    border-bottom: 1px dotted rgba(10, 10, 10, 0.3);
+    background-color: black;
+    border-bottom: 1px solid rgba(105, 140, 192, 0.3);
     padding: 3px;
     margin-bottom: 10px;
 }
 
 #delete-container {
-    border-top: 1px dotted rgba(10, 10, 10, 0.3);
+    border-top: 1px solid rgba(105, 140, 192, 0.3);
     padding-top: 10px;
 }
 
@@ -277,7 +295,7 @@ pre {
 }
 
 #thread-header {
-    background-color: #CACACA;
+    background-color: black;
     padding: 2px;
 }
 
@@ -297,14 +315,14 @@ pre {
     float: none !important;
 }
 
-.last-modified a {
-    color: black !important;
-}
-
 .ip-and-id {
     display:block;
 }
 
 .file-info {
     display:none;
+}
+
+#captcha {
+    padding: 1px;
 }

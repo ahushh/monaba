@@ -6,6 +6,10 @@ html, body {
     padding: 10px;
 }
 
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-black.png");
+}
+
 form {
     font-size: 0.9em;
 }

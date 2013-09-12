@@ -10,14 +10,15 @@ settingsForm :: Int        -> -- ^ Default time offset
                Text       -> -- ^ Default stylesheet 
                Censorship -> -- ^ Default rating
                Html       -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Censorship), Widget)
+               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text), Widget)
 settingsForm defaultZone defaultStyle oldRating extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
   (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
-  let result = (,,) <$> timezoneRes <*> styleRes <*> ratingRes
+  (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
+  let result = (,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -31,10 +32,11 @@ postSettingsR = do
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, rating) -> do
+    FormSuccess (timezone, stylesheet, rating, lang) -> do
       setSession "timezone"          $ pack $ show timezone
       setSession "stylesheet"        stylesheet
       setSession "censorship-rating" $ pack $ show rating
+      when (isJust lang) $ setLanguage $ fromJust lang
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html
@@ -53,6 +55,9 @@ getSettingsR = do
     $(widgetFile "settings")
 
 -------------------------------------------------------------------------------------------------------------------
+langs :: [(Text, Text)]
+langs = [("English", "en"), ("Русский","ru")]
+
 ratings :: [(Text, Censorship)]
 ratings = map (pack . show &&& id) [minBound..maxBound]
 

@@ -10,4 +10,7 @@
     <tr>
       <td>_{MsgMaxAllowedRating}
       <td>^{fvInput ratingView}
+    <tr>
+      <td>_{MsgLanguage}
+      <td>^{fvInput langView}
 

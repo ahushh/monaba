@@ -345,6 +345,7 @@ Applied: Settings applied
 TimeZone: Time zone
 Style: Style
 MaxAllowedRating: Max allowed rating
+Language: Language
 
 ######################################################################################
 #### Modlogs

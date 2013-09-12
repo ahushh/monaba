@@ -177,7 +177,8 @@
 *** DONE thread hiding
     CLOSED: [2013-08-31 Сб 22:09]
 *** TODO favorite threads
-*** TODO language switcher
+*** DONE language switcher
+    CLOSED: [2013-09-12 Чт 14:32]
 * Further
 ** TODO tags for threads
 ** TODO full API

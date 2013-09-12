@@ -51,7 +51,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                         $if postHellbanned $ entityVal eReplyW
                             <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
                 $if showThreadW
-                    <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>#{thread}
+                    <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>/#{board}/#{thread}
             $forall Entity fileKey file <- replyFilesW
                 $with c <- ifelse (length replyFilesW == 1) "file" "multi-file"
                   $with rating <- attachedfileRating file

@@ -511,13 +511,18 @@ function refreshCaptcha() {
         $.getJSON('@{CaptchaInfoR}', function(data) {
             console.log(JSON.stringify(data));
             if (data.info) {
+                $("#captcha-info").show();
+                $("#captcha-block input[type=text]").show();
+                $("#captcha").show();
                 $("#captcha-info").html(data.info);
+                $("#no-captcha-need").remove();
                 $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
             } else if (data.acaptcha) {
                 $("#captcha-info").hide();
                 $("#captcha-block input[type=text]").hide();
                 $("#captcha").hide();
-                $("#captcha-block").append(data.acaptcha);
+                if ($("#no-captcha-need").length == 0)
+                    $("#captcha-block").append("<span id='no-captcha-need'>"+data.acaptcha+"</span>");
             } else {
                 $("#captcha-block").append(data.error);
             }

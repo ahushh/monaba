@@ -61,7 +61,7 @@ postForm boardVal extra = do
       ratings :: [(Text, Censorship)]
       ratings = map (pack . show &&& id) [minBound..maxBound]
   ----------------------------------------------------------------------------------------------------------------
-  (nameRes     , nameView    ) <- mopt textField              "" (mplus (Just <$> lastName) (Just $ Just defaultName))
+  (nameRes     , nameView    ) <- mopt textField              "" (Just <$> lastName)
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing

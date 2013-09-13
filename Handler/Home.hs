@@ -16,7 +16,8 @@ getHomeR = do
 
   newsBoard  <- getConfig configNewsBoard
   showNews   <- getConfig configShowNews
-  latestNews <- runDB $ selectList [PostBoard ==. newsBoard, PostParent ==. 0] [Desc PostLocalId, LimitTo showNews]
+  latestNews <- runDB $ selectList [PostBoard ==. newsBoard, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
+                                  [Desc PostLocalId, LimitTo showNews]
   timeZone   <- getTimeZone
   defaultLayout $ do
     setTitle $ toHtml nameOfTheBoard

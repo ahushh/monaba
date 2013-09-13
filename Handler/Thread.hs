@@ -88,6 +88,7 @@ postThreadR board thread = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
+  unless (checkAccessToReply mgroup boardVal) notFound
 
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   -------------------------------------------------------------------------------------------------------     

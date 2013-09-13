@@ -8,7 +8,12 @@ $else
     $if not $ T.null boardLongDesc
         <div id="board-long-desc">#{boardLongDesc}
     <div id="board-subtitle">#{pagetitle}
-<div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+
+$if hasAccessToReply
+    <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+$else
+    <div #thread-header> _{MsgThreadHeaderNumber thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+
 $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
@@ -16,11 +21,11 @@ $if hasAccessToReply
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-        ^{opPostWidget muser eOpPost opPostFiles rating True True permissions geoIps timeZone maxLenOfFileName}
+        ^{opPostWidget muser eOpPost opPostFiles rating True hasAccessToReply permissions geoIps timeZone maxLenOfFileName}
     
         $forall (eReply, files) <- repliesAndFiles
             $if checkHellbanned eReply permissions posterId
-                ^{replyPostWidget muser eReply files rating True True False displaySage permissions geoIps timeZone maxLenOfFileName}
+                ^{replyPostWidget muser eReply files rating True hasAccessToReply False displaySage permissions geoIps timeZone maxLenOfFileName}
     <img src=@{StaticR img_blank_gif}  title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a> ]

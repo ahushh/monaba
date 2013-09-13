@@ -19,6 +19,7 @@ ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{sho
 OpModerationIsEnabled: На этой доске включена ОП-модерация.
 PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
 ### misc
+ThreadHeaderNumber t@Int: Тред №#{show t}
 ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
 NewThread: Новый тред
 ClosePostForm: Закрыть форму

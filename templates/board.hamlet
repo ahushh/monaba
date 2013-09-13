@@ -5,15 +5,19 @@ $if not $ T.null boardLongDesc
 $if hasAccessToNewThread
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
-<form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
-    ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+        ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+$else
+    <form style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+        ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}
 $else
     <form .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-                ^{opPostWidget muser eOpPost opPostFiles rating False True permissions geoIps timeZone maxLenOfFileName}
+                ^{opPostWidget muser eOpPost opPostFiles rating False hasAccessToReply permissions geoIps timeZone maxLenOfFileName}
                 $if omitted > 0
                     <div .omitted>
                         _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
@@ -21,7 +25,7 @@ $else
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
-                    ^{replyPostWidget muser ePreview previewFiles rating False True False displaySage permissions geoIps timeZone maxLenOfFileName}
+                    ^{replyPostWidget muser ePreview previewFiles rating False hasAccessToReply False displaySage permissions geoIps timeZone maxLenOfFileName}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
         <div #delete-container>

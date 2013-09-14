@@ -46,10 +46,10 @@ function insert(text, textarea) {
 } 
 // ----------------------------------------------------------------------------------------------------------
 $(document).ready(function() {
-    var password = get_cookie("password")
+    var password = getItem("password")
     if (!password) {
         password = generatePassword();
-        set_cookie('password', password);
+        setItem('password', password);
     }
     var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)});
     $('input[type=password]').val(password);

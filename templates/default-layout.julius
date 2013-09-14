@@ -158,7 +158,7 @@ function addEmbeddedPlayer(post) {
 // thread hiding
 //-----------------------------------------------------------------
 function initHiddenThreads() {
-    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    var ths = getItem('hidden-threads');
     if (!ths) return false;
     $('.op-post').each(function() {
         var fullId = $(this).attr('id');
@@ -177,14 +177,14 @@ function hideThreadCompletely(threadId, board) {
 }
 
 function hideThread(threadId, board) {
-    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    var ths = getItem('hidden-threads');
     if (!ths) {
         ths = {};
     }
     if (!ths[threadId+'-'+board]) {
         ths[threadId+'-'+board] = 1;
     }
-    localStorage.setItem('hidden-threads', JSON.stringify(ths));
+    setItem('hidden-threads', ths);
 
     $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').hide();
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
@@ -195,10 +195,10 @@ function hideThread(threadId, board) {
 }
 
 function unhideThread(threadId,board) {
-    var ths = JSON.parse(localStorage.getItem('hidden-threads'));
+    var ths = getItem('hidden-threads');
     if (ths) {
         delete ths[threadId+'-'+board];
-        localStorage.setItem('hidden-threads', JSON.stringify(ths));
+        setItem('hidden-threads', ths);
     }    
     $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').show();
     $('#thread-'+threadId).find('.hidden-thread').hide();
@@ -225,6 +225,8 @@ function closePopupMessage() {
     $('#popupMessage').fadeOut(300);
 }
 //-----------------------------------------------------------------
+// thread expanding
+//-----------------------------------------------------------------
 function expandPost(postId) {
     if ($('#'+postId+' .message.abbreviated').length == 0)
         postId = 'popup-'+postId;
@@ -240,6 +242,8 @@ function shrinkPost(postId) {
     $('#'+postId+' .expand-post').show();
     $('#'+postId+' .shrink-post').hide();
 }
+//-----------------------------------------------------------------
+// image expanding
 //-----------------------------------------------------------------
 function doImageExpanding(post) {
     var parent = post ? ("#"+post+" ") : "";
@@ -612,6 +616,22 @@ function hideEditForm() {
     $('#edit-form').appendTo('.container');
 }
 
+// ---------------------------------------------------------
+//  Storage
+// ---------------------------------------------------------
+function getItem(k) {
+    return JSON.parse( typeof(Storage) == 'undefined' ?
+                       get_cookie(k) :
+                       localStorage.getItem(k)
+                     );
+}
+
+function setItem(k,v) {
+    typeof(Storage) == 'undefined' ?
+        set_cookie(k, JSON.stringify(v)) : 
+        localStorage.setItem(k, JSON.stringify(v));
+    return true;
+}
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------

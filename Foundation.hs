@@ -32,6 +32,9 @@ import Control.Monad (when)
 import Control.Applicative ((<$>))
 import Data.Maybe (fromJust, isNothing, isJust)
 
+import Control.Concurrent.Chan (Chan)
+import Network.Wai.EventSource (ServerEvent (..))
+
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -43,6 +46,7 @@ data App = App
     , httpManager :: Manager
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
+    , events :: Chan ServerEvent
     }
 ---------------------------------------------------------------------------------------------------------
 -- Data types appear in models

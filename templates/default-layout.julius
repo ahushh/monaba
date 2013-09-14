@@ -12,6 +12,10 @@ function baseInit() {
         doRefMap();
     cachePopupPosts();
 }
+
+function isEventSourceSupported() {
+    return typeof(EventSource) !== "undefined";
+}
 //-----------------------------------------------------------------
 // Init
 //-----------------------------------------------------------------
@@ -452,7 +456,8 @@ function showQuickPostForm(postId) {
                     popupMessage(data.ok,2000);
                     closePostForm();
                     var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
-                    refreshThread(board, thread)
+                    if (!isEventSourceSupported)
+                        refreshThread(board, thread)
                 } else {
                     popupMessage(data.error,2000);
                 }

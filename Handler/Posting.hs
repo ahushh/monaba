@@ -3,7 +3,6 @@ module Handler.Posting where
 
 import           Import
 import           Yesod.Routes.Class      (Route)
-import           Control.Monad           (mplus)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Conduit            (($$))
 import qualified Data.Text               as T
@@ -14,6 +13,7 @@ import qualified Data.Conduit.List       as CL
 -------------------------------------------------------------------------------------------------------------------
 data GoBackTo = ToThread | ToBoard
     deriving (Show, Read, Eq, Enum, Bounded)
+
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------

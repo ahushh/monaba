@@ -19,6 +19,7 @@ import Network.HTTP.Conduit (newManager, def)
 import Control.Monad.Logger (runLoggingT)
 import System.IO (stdout)
 import System.Log.FastLogger (mkLogger)
+import Control.Concurrent.Chan (newChan)
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -79,7 +80,8 @@ makeFoundation conf = do
               Database.Persist.applyEnv
     p <- Database.Persist.createPoolConfig (dbconf :: Settings.PersistConf)
     logger <- mkLogger True stdout
-    let foundation = App conf s p manager dbconf logger
+    chan <- newChan
+    let foundation = App conf s p manager dbconf logger chan
 
     -- Perform database migration using our application's logging settings.
     runLoggingT

@@ -1,3 +1,22 @@
+if (isEventSourceSupported) {
+    var src = new EventSource("@{ReceiveR}");
+    src.onopen = function() { console.log("Event source opened."); };
+
+    var listener = function(msg) {
+        $('.thread').append( decodeBase64(msg.data) );
+        baseInit();
+    };
+    src.addEventListener(#{toJSON sourceEventName}, listener);
+    src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, listener);
+    console.log("Post autoload initialized"); 
+} else {
+    console.log("Post autoload initializion initialized. Event source isn't supported. Using AJAX instead.");
+    $("#get-new-posts-wrapper").show();
+    setInterval(function() {
+        refreshThread(board, thread);
+    }, 10000);
+}
+
 $('#post-form').ajaxForm({
     beforeSend: function() {
         popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
@@ -11,10 +30,15 @@ $('#post-form').ajaxForm({
             closePostForm();
             var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
             var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
-            refreshThread(board, thread)
+            if (!isEventSourceSupported)
+                refreshThread(board, thread);
         } else {
             popupMessage(data.error,2000);
         }
         refreshCaptcha();
     }
 }); 
+
+function decodeBase64(b) {
+    return decodeURIComponent(escape(atob(b)));
+}

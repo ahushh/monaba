@@ -366,3 +366,7 @@ ul {
 .censored {
     display: block;
 }
+
+#get-new-posts-wrapper {
+    display: none;
+}

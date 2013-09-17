@@ -19,7 +19,9 @@ import Network.HTTP.Conduit (newManager, def)
 import Control.Monad.Logger (runLoggingT)
 import System.IO (stdout)
 import System.Log.FastLogger (mkLogger)
-import Control.Concurrent.Chan (newChan)
+
+import qualified Data.Map as Map
+import           Data.IORef
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -42,6 +44,7 @@ import Handler.Admin.Modlog
 import Handler.Api
 import Handler.Captcha
 import Handler.Settings
+import Handler.EventSource
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -79,9 +82,9 @@ makeFoundation conf = do
               Database.Persist.loadConfig >>=
               Database.Persist.applyEnv
     p <- Database.Persist.createPoolConfig (dbconf :: Settings.PersistConf)
-    logger <- mkLogger True stdout
-    chan <- newChan
-    let foundation = App conf s p manager dbconf logger chan
+    logger  <- mkLogger True stdout
+    clients <- newIORef Map.empty
+    let foundation = App conf s p manager dbconf logger clients
 
     -- Perform database migration using our application's logging settings.
     runLoggingT

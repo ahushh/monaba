@@ -40,6 +40,7 @@ library
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings
+                     Handler.EventSource
                      Utils.YobaMarkup
                      Utils.SillyCaptcha
 
@@ -119,6 +120,7 @@ library
                  , wai-eventsource
                  , blaze-builder
                  , base64-bytestring
+                 , resourcet
 
 executable         Monaba
     if flag(library-only)

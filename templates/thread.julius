@@ -7,14 +7,10 @@ if (isEventSourceSupported) {
         baseInit();
     };
     src.addEventListener(#{toJSON sourceEventName}, listener);
-    src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, listener);
     console.log("Post autoload initialized"); 
 } else {
-    console.log("Post autoload initializion initialized. Event source isn't supported. Using AJAX instead.");
+    console.log("Post autoload initializion failed. Event source isn't supported.");
     $("#get-new-posts-wrapper").show();
-    setInterval(function() {
-        refreshThread(board, thread);
-    }, 10000);
 }
 
 $('#post-form').ajaxForm({

@@ -3,63 +3,15 @@ module Handler.Thread where
  
 import           Import
 import           Yesod.Auth
-import           Prelude            (head)
-import qualified Data.Text          as T
-import qualified Database.Esqueleto as E
-import qualified Data.Map.Strict    as Map
-import           Utils.YobaMarkup   (doYobaMarkup)
-import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
-import           Handler.Posting
-
-import Control.Concurrent.Chan            (dupChan, writeChan)
-import Network.Wai.EventSource            (ServerEvent (..), eventSourceAppChan)
-import Blaze.ByteString.Builder.Char.Utf8 (fromText)
-
+import           Prelude             (head)
+import qualified Data.Text           as T
+import qualified Database.Esqueleto  as E
+import qualified Data.Map.Strict     as MapS
 import qualified Text.Blaze.Html.Renderer.String as RHS
-import qualified Text.Blaze.Html.Renderer.Text   as RHT
-
-import qualified Data.ByteString.Base64 as Base64
-import           Data.Text.Encoding     (encodeUtf8, decodeUtf8)
-import           Data.Text.Lazy         (toStrict)
--------------------------------------------------------------------------------------------------------------------
--- Event source
--------------------------------------------------------------------------------------------------------------------
-getReceiveR :: Handler TypedContent
-getReceiveR = do
-  app <- getYesod
-  let chan0 = events app
-  chan <- liftIO $ dupChan chan0
-  req <- waiRequest
-  res <- liftResourceT $ eventSourceAppChan chan req
-  sendWaiResponse res
-
-renderPost :: Text -> Int -> Handler Html
-renderPost board postId = do
-  muser            <- maybeAuth
-  mgroup           <- getMaybeGroup muser
-  boardVal         <- getBoardVal404 board
-  rating           <- getCensorshipRating
-  timeZone         <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
-  displaySage      <- getConfig configDisplaySage
-  maybePost        <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
-  when (isNothing maybePost) (return ())
-  files        <- runDB $ selectList  [AttachedfileParentId ==. entityKey (fromJust maybePost)] []
-  geoIps       <- getCountries [(fromJust maybePost, files) | boardEnableGeoIp boardVal]
-  bareLayout $ replyPostWidget muser (fromJust maybePost)
-                               files rating False True False
-                               displaySage (getPermissions mgroup) geoIps
-                               timeZone maxLenOfFileName
-
-sendPost :: Text -> Int -> Int -> Bool -> Handler ()
-sendPost board thread postId hellbanned = do
-  app          <- getYesod
-  renderedPost <- renderPost board postId
-  posterId     <- getPosterId
-  let sourceEventName = T.concat [board, "-", pack (show thread), if hellbanned then T.append "-" posterId else ""]
-      encodedPost     = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml $ renderedPost
-  liftIO $ writeChan (events app) $ ServerEvent (Just $ fromText sourceEventName) Nothing $ return $ fromText encodedPost
-
+import           Utils.YobaMarkup    (doYobaMarkup)
+import           Handler.Captcha     (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
+import           Handler.Posting
+import           Handler.EventSource (sendPost)
 -------------------------------------------------------------------------------------------------------------------
 -- Ajax hack
 -------------------------------------------------------------------------------------------------------------------
@@ -82,7 +34,7 @@ selectThread board thread = do
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
-  return $ map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+  return $ map (second catMaybes) $ MapS.toList $ keyValuesToMap allPosts
 
 getThreadR :: Text -> Int -> Handler Html
 getThreadR board thread = do
@@ -227,7 +179,7 @@ postThreadR board thread = do
                            , postLastModified = Nothing                                                
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
-        sendPost board thread nextId hellbanned
+        sendPost board thread nextId hellbanned posterId
         -------------------------------------------------------------------------------------------------------
         -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])

@@ -150,6 +150,7 @@
 * TODO
 ** TODO API - geoip
 ** TODO eventsource
+*** TODO fix i18n
 *** DONE post autoload
 *** DONE new posts count (thread)
     CLOSED: [2013-09-20 Пт 16:07]

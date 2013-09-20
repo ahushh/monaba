@@ -94,3 +94,15 @@ sendDeletedPosts posts = do
       let sourceEventName = Just $ fromText $ T.concat [b, "-", pack (show t), "-deleted"]
           ps'             = map (\x -> T.concat ["post-", pack (show $ postLocalId x), "-", pack (show t), "-", b]) ps
       liftIO $ writeChan (sseClientEvent client) $ ServerEvent sourceEventName Nothing $ return $ fromString $ show ps'))
+
+sendEditedPost :: Text -> Text -> Int -> Int -> Maybe UTCTime -> Handler ()
+sendEditedPost msg board thread post time = do
+  clientsRef <- sseClients <$> getYesod
+  clients    <- liftIO $ readIORef clientsRef
+  forM_ (Map.elems clients) (\client -> do
+      let sourceEventName = Just $ fromText $ T.concat [board, "-", pack (show thread), "-edited"]
+          encodedMsg      = decodeUtf8 $ Base64.encode $ encodeUtf8 msg
+          timeZone        = sseClientTimeZone client
+          lastModified    = maybe "" (pack . myFormatTime timeZone) time
+      liftIO $ writeChan (sseClientEvent client) $
+        ServerEvent sourceEventName Nothing $ return $ fromString $ show [board, pack (show thread), pack (show post), encodedMsg, lastModified])

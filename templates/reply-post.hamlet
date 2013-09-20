@@ -116,4 +116,11 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <div .message>#{preEscapedToHtml m}
          $maybe lm <- postLastModified $ entityVal eReplyW
                 <span .last-modified>
-                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}
+                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
+                      _{MsgLastModified}
+                      <span .last-modified-date>#{myFormatTime tOffsetW lm}
+         $nothing
+                <span .last-modified style="display:none">
+                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
+                      _{MsgLastModified}
+                      <span .last-modified-date> 

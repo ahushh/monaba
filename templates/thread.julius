@@ -67,12 +67,25 @@ if (isEventSourceSupported) {
         updateTitle();
         blinkFavicon();
     });
-
     // remove deleted posts
     src.addEventListener(#{toJSON sourceEventName}+"-deleted", function(msg) {
         var ids = eval(msg.data);
         for (var i = 0; i < ids.length; i++)
             $("#"+ids[i]).remove();
+    });
+    // dynamic updating of edited posts
+    src.addEventListener(#{toJSON sourceEventName}+"-edited", function(msg) {
+        var x = eval(msg.data);        
+        var board  = x[0];
+        var thread = x[1];
+        var post   = x[2];
+        var newMsg = decodeBase64(x[3]);
+        var lm     = x[4];
+        $("#post-"+post+"-"+thread+"-"+board+" .message").html(newMsg);
+        if (lm) {
+            $("#post-"+post+"-"+thread+"-"+board+" .last-modified-date").html(lm);
+            $("#post-"+post+"-"+thread+"-"+board+" .last-modified").show();
+        }p
     });
 } else {
     console.log("Eventsource isn't supported.");

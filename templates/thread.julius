@@ -60,17 +60,22 @@ if (isEventSourceSupported) {
     var src = new EventSource("@{ReceiveR}");
     src.onopen = function() { console.log("Eventsource opened."); };
 
-    var listener = function(msg) {
+    // post autoload
+    src.addEventListener(#{toJSON sourceEventName}, function(msg) {
         $('.thread').append( decodeBase64(msg.data) );
         baseInit();
         updateTitle();
         blinkFavicon();
-    };
+    });
 
-    src.addEventListener(#{toJSON sourceEventName}, listener);
-    console.log("Post autoload initialized."); 
+    // remove deleted posts
+    src.addEventListener(#{toJSON sourceEventName}+"-deleted", function(msg) {
+        var ids = eval(msg.data);
+        for (var i = 0; i < ids.length; i++)
+            $("#"+ids[i]).remove();
+    });
 } else {
-    console.log("Post autoload initializion failed. Event source isn't supported.");
+    console.log("Eventsource isn't supported.");
     $("#get-new-posts-wrapper").show();
 }
 

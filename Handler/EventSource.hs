@@ -6,7 +6,7 @@ import           Yesod.Auth
 
 import           Control.Concurrent.Chan            (newChan, writeChan)
 import           Network.Wai.EventSource            (ServerEvent (..), eventSourceAppChan)
-import           Blaze.ByteString.Builder.Char.Utf8 (fromText)
+import           Blaze.ByteString.Builder.Char.Utf8 (fromText, fromString)
 import           Control.Monad.Trans.Resource       (register)
 
 import qualified Text.Blaze.Html.Renderer.Text   as RHT
@@ -83,5 +83,14 @@ sendPost board thread postId hellbanned posterId = do
                        displaySage (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName
 
-
-
+sendDeletedPosts :: [Post] -> Handler ()
+sendDeletedPosts posts = do
+  clientsRef <- sseClients <$> getYesod
+  clients    <- liftIO $ readIORef clientsRef
+  let boards  = map postBoard  posts
+      threads = map postParent posts
+      posts'  = map (\(b,t) -> (b,t,filter (\p -> postBoard p == b && postParent p == t) posts)) $ zip boards threads
+  forM_ (Map.elems clients) (\client -> forM_ posts' (\(b,t,ps) -> do
+      let sourceEventName = Just $ fromText $ T.concat [b, "-", pack (show t), "-deleted"]
+          ps'             = map (\x -> T.concat ["post-", pack (show $ postLocalId x), "-", pack (show t), "-", b]) ps
+      liftIO $ writeChan (sseClientEvent client) $ ServerEvent sourceEventName Nothing $ return $ fromString $ show ps'))

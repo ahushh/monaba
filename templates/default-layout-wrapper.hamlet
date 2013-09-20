@@ -18,6 +18,7 @@ $newline never
               <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_postmodern_css}>
         $nothing
           <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+        <link #favicon href="/favicon.ico" rel="shortcut icon">
         <meta name="description" content="Haskell imageboard">
         <meta name="keywords" content="haskell,haibane renmei,rakka,yesod,monaba,imageboard,хаскелль,имиджборда,альянс серокрылых">
         <meta name="author" content="">

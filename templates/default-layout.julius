@@ -37,7 +37,10 @@ MathJax.Hub.Config({
 
 $.ajaxSetup({
     error: function(x, e) {
-        popupMessage(x.responseText+" ("+x.status+")", 2000);
+        if (x.status == 0)
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+        else
+            popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
     }
 });
 //-----------------------------------------------------------------
@@ -206,23 +209,27 @@ function unhideThread(threadId,board) {
 //-----------------------------------------------------------------
 // popup messages
 //-----------------------------------------------------------------
-function popupMessage(text, delay, icon) {
-    if ($('#popupMessage').get() == '') {
-        $('body').children().last().after('<div id=popupMessage></div>');
-        $('#popupMessage').hide();
+function popupMessage(text, delay, ajax, close) {
+    if ($('#popupMessageContainer').get() == '') {
+        $('body').children().last().after('<div id=popupMessageContainer></div>');
     }
-    if (icon) {
-        text = "<img alt=loading... src=@{StaticR img_ajax_loader_gif}> "+text;
-    }
-    $('#popupMessage').html(text);
-    $('#popupMessage').fadeIn(150);
+    var msg = $('<div class="popupMessage"></div>');
+    $(msg).hide();
+    $(msg).html("<div class='popupMessageText'>"+text+"</div>");
+    if (ajax)
+        $(msg).prepend("<img style='display:inline' alt=loading... src=@{StaticR img_ajax_loader_gif}> ");
+    if (close)
+        $(msg).prepend("<div class='closePopupMessage'><a onclick='$(this).parent().parent().fadeOut(400,function(){$(this).remove()});'>✖ </a></div>");
+    $('#popupMessageContainer').prepend(msg);
+    $(msg).fadeIn(400);
     if (delay) {
-        $('#popupMessage').delay(delay).fadeOut(300);
+        $(msg).delay(delay).fadeOut(400,function(){$(this).remove()});
     }
+    return msg;
 }
 
-function closePopupMessage() {
-    $('#popupMessage').fadeOut(300);
+function closePopupMessage(msg) {
+    $(msg).fadeOut(400,function(){$(this).remove()});
 }
 //-----------------------------------------------------------------
 // thread expanding
@@ -438,13 +445,13 @@ function showQuickPostForm(postId) {
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
         var action = $("#post-form").attr('action');
         var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
-
+        var pMsg;
         $('#post-form').ajaxForm({
             beforeSend: function() {
-                popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
             },
             success: function(data) {
-                closePopupMessage();
+                closePopupMessage(pMsg);
                 if (data.ok) {
                     $('#post-form #subject-block input[type=text]').clearFields();
                     $('#post-form input[type=file]').clearFields();
@@ -454,9 +461,16 @@ function showQuickPostForm(postId) {
                     var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
                     refreshThread(board, thread)
                 } else {
-                    popupMessage(data.error,2000);
+                    popupMessage(data.error,0,false,true);
                 }
                 refreshCaptcha();
+            },
+            error: function(x, e) {
+                closePopupMessage(pMsg);                
+                if (x.status == 0)
+                    popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+                else
+                    popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
             }
         }); 
 
@@ -575,10 +589,10 @@ function showEditForm(postId, realId) {
             obj[ $('#edit-form input[type=checkbox]').attr('name')] = $('#edit-form input[type=checkbox]').val();
         }
         obj[ $('#edit-form input[type=number]').attr('name')  ] = realId;
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        var pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         $.post( '@{PostEditR}', obj,
                 function(response) {
-                    closePopupMessage();
+                    closePopupMessage(pMsg);
                     if (response.ok) {
                         $.get("/api/post/"+board+"/"+pId, function(post) {
                             hideEditForm();
@@ -590,12 +604,12 @@ function showEditForm(postId, realId) {
                             popupMessage(response.ok,2000);
                         });
                     } else {
-                        popupMessage(response.error,2000);
+                        popupMessage(response.error,0,false,true);
                     }
               });
     });
 
-    popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+    var pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
         var raw = json[0].rawMessage;
         if (raw) {
@@ -607,7 +621,7 @@ function showEditForm(postId, realId) {
         }
         countSymbols('edit-form');
         $('#edit-form').css('display','table')
-    }).fail(hideEditForm).always(closePopupMessage);
+    }).fail(hideEditForm).always(function () { closePopupMessage(pMsg)});
 }
 
 function hideEditForm() {

@@ -1,8 +1,11 @@
+(function() {
+var pMsg;
 $('#post-form').ajaxForm({
     beforeSend: function() {
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
     },
     success: function(data) {
+        closePopupMessage(pMsg);
         if (data.ok) {
             $('#post-form #subject-block input[type=text]').clearFields();
             $('#post-form input[type=file]').clearFields();
@@ -16,5 +19,13 @@ $('#post-form').ajaxForm({
             popupMessage(data.error,2000);
         }
         refreshCaptcha();
+    },
+    error: function(x, e) {
+        closePopupMessage(pMsg);                
+        if (x.status == 0)
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+        else
+            popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
     }
 }); 
+})();

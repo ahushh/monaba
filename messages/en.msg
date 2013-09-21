@@ -310,6 +310,7 @@ NoNewPosts: No new posts
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!
 Loading: Loading...
+ConnectionError: Connection error
 
 Replies: Replies:
 CloseAllPopupIcon: Close all popups

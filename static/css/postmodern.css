@@ -12,7 +12,7 @@ html, body {
 }
 
 a {
-    color: #AEDCEA;
+    color: #927908;
 }
 
 a:hover {
@@ -139,9 +139,17 @@ footer {
 }
 
 .highlighted-post {
-    background: none repeat scroll 0% 0% #EEDACB;
-    border: 2px dashed #EE6600;
+    box-shadow: -1px -1px 2px 0 #698CC0,
+    1px 1px 2px 0 #698CC0,
+    0px 0px 0px 0 #698CC0,
+    0px 0px 0px 0 #698CC0,
+    0px 0px 0px 0 #698CC0;
+    display: inline-block;
+    width: 96%;
+    background: none repeat scroll 0% 0% #1A1A1A;
+    margin: 0 0 0 2%;
     padding: 5px;
+
 }
 
 .thread {

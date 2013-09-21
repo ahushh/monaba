@@ -93,8 +93,9 @@ footer {
 }
 
 .highlighted-post {
-    background: none repeat scroll 0% 0% #EEDACB;
-    border: 2px dashed #EE6600;
+    display: table;
+    background: none repeat scroll 0% 0% #050505;
+    border: 1px solid white;
     margin: 3px;
     padding: 5px;
 }

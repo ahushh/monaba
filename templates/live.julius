@@ -1,0 +1,82 @@
+if (isEventSourceSupported) {
+    // new post count
+    var hidden = getHidden();
+    var visibilityChange = getVisibilityChange();
+
+    var blinkingFavicon = false;
+    var normalIcon = $("#favicon").clone();
+    var noIcon     = $("#favicon").clone();
+    noIcon.attr("href",'data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=');
+    var blinkFavicon = function() {
+        if (document[hidden] && !blinkingFavicon) {
+            var t = true;
+            blinkingFavicon = setInterval(function() {
+                $("#favicon").replaceWith(t ? noIcon : normalIcon);
+                t = !t;
+            }, 500);
+        } else if (!document[hidden] && blinkingFavicon) {
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            $("#favicon").replaceWith(normalIcon);
+        }            
+    };
+
+    var updateTitle = function() {
+        var t = /\[(\d+)\] (.+)/.exec(document.title);
+        var normalIcon = $("#favicon").clone();
+        if (document[hidden]) {
+            if (t)
+                document.title = "["+((+t[1])+1)+ "] " + t[2];
+            else
+                document.title = "[1] " + document.title;
+        } else {
+            if (t) document.title = t[2];
+        }
+    };
+
+    document.addEventListener(visibilityChange, function() {
+        if (!document[hidden]) {
+            var t = /\[(\d+)\] (.+)/.exec(document.title);
+            if (t) document.title = t[2];
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            $("#favicon").replaceWith(normalIcon);
+        }
+    });
+    // end of new posts count
+
+    var src = new EventSource("@{ReceiveR}");
+    src.onopen = function() { console.log("Eventsource opened."); };
+
+    // post autoload
+    src.addEventListener("live", function(msg) {
+        $('h2').after( decodeBase64(msg.data) );
+        baseInit();
+        updateTitle();
+        blinkFavicon();
+    });
+    // remove deleted posts
+    src.addEventListener("live-deleted", function(msg) {
+        var ids = eval(msg.data);
+        for (var i = 0; i < ids.length; i++)
+            $("#"+ids[i]).remove();
+    });
+    // dynamic updating of edited posts
+    src.addEventListener("live-edited", function(msg) {
+        var x = eval(msg.data);        
+        var board  = x[0];
+        var thread = x[1];
+        var post   = x[2];
+        var newMsg = decodeBase64(x[3]);
+        var lm     = x[4];
+        $("#post-"+post+"-"+thread+"-"+board+" .message").html(newMsg);
+        if (lm) {
+            $("#post-"+post+"-"+thread+"-"+board+" .last-modified-date").html(lm);
+            $("#post-"+post+"-"+thread+"-"+board+" .last-modified").show();
+        }
+    });
+} else {
+    console.log("Eventsource isn't supported.");
+    $("#get-new-posts-wrapper").show();
+}
+

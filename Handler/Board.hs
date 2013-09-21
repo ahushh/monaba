@@ -7,6 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
+import           Handler.EventSource (sendPost)
 import           Utils.YobaMarkup (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
@@ -203,6 +204,7 @@ postBoardR board _ = do
                            , postLastModified = Nothing
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
+        sendPost board 0 nextId hellbanned posterId
         -- delete old threads
         let tl = boardThreadLimit boardVal
           in when (tl >= 0) $

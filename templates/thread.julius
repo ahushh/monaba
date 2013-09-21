@@ -1,19 +1,7 @@
 if (isEventSourceSupported) {
-    // new posts count
-    var hidden, visibilityChange; 
-    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-        hidden = "hidden";
-        visibilityChange = "visibilitychange";
-    } else if (typeof document.mozHidden !== "undefined") {
-        hidden = "mozHidden";
-        visibilityChange = "mozvisibilitychange";
-    } else if (typeof document.msHidden !== "undefined") {
-        hidden = "msHidden";
-        visibilityChange = "msvisibilitychange";
-    } else if (typeof document.webkitHidden !== "undefined") {
-        hidden = "webkitHidden";
-        visibilityChange = "webkitvisibilitychange";
-    }
+    // new post count
+    var hidden = getHidden();
+    var visibilityChange = getVisibilityChange();
 
     var blinkingFavicon = false;
     var normalIcon = $("#favicon").clone();
@@ -85,7 +73,7 @@ if (isEventSourceSupported) {
         if (lm) {
             $("#post-"+post+"-"+thread+"-"+board+" .last-modified-date").html(lm);
             $("#post-"+post+"-"+thread+"-"+board+" .last-modified").show();
-        }p
+        }
     });
 } else {
     console.log("Eventsource isn't supported.");
@@ -113,7 +101,3 @@ $('#post-form').ajaxForm({
         refreshCaptcha();
     }
 }); 
-
-function decodeBase64(b) {
-    return decodeURIComponent(escape(atob(b)));
-}

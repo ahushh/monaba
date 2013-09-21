@@ -100,7 +100,8 @@ sendEditedPost msg board thread post time = do
   clientsRef <- sseClients <$> getYesod
   clients    <- liftIO $ readIORef clientsRef
   forM_ (Map.elems clients) (\client -> do
-      let sourceEventName = Just $ fromText $ T.concat [board, "-", pack (show thread), "-edited"]
+      let thread'         = if thread == 0 then post else thread
+          sourceEventName = Just $ fromText $ T.concat [board, "-", pack (show thread'), "-edited"]
           encodedMsg      = decodeUtf8 $ Base64.encode $ encodeUtf8 msg
           timeZone        = sseClientTimeZone client
           lastModified    = maybe "" (pack . myFormatTime timeZone) time

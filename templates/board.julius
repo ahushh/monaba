@@ -1,4 +1,4 @@
-if (isEventSourceSupported) {
+if (isEventSourceSupported()) {
     var src = new EventSource("@{ReceiveR}");
     src.onopen = function() { console.log("Eventsource opened."); };
 

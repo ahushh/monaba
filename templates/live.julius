@@ -1,4 +1,4 @@
-if (isEventSourceSupported) {
+if (isEventSourceSupported()) {
     // new post count
     var hidden = getHidden();
     var visibilityChange = getVisibilityChange();

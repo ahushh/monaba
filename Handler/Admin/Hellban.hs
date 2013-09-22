@@ -6,6 +6,7 @@ import           Yesod.Auth
 import qualified Data.Text            as T
 import           Data.Maybe           (mapMaybe)
 import           Handler.Admin.Modlog (addModlogEntry)
+import           Handler.EventSource  (sendDeletedPosts)
 -------------------------------------------------------------------------------------------------------------
 getHellBanNoPageR :: Handler Html
 getHellBanNoPageR = getHellBanR 0
@@ -49,8 +50,11 @@ getHellBanDoR postId action ban = do
   post <- runDB $ get404 postKey
   let posterId = postPosterId post
   case action of
-    "one" -> void $ runDB $ update postKey [PostHellbanned =. True]
-    "all" -> void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
+    "one" -> void (runDB $ update postKey [PostHellbanned =. True]) >> sendDeletedPosts [post]
+    "all" -> do
+      void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
+      posts <- runDB $ selectList [PostPosterId ==. posterId] []
+      sendDeletedPosts (map entityVal posts)
     _     -> return ()
   void $ when ban $ do
     addModlogEntry $ MsgModlogHellban posterId

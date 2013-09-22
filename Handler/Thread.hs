@@ -1,24 +1,27 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, MultiWayIf #-}
+{-# LANGUAGE TupleSections, OverloadedStrings, MultiWayIf, BangPatterns #-}
 module Handler.Thread where
  
 import           Import
 import           Yesod.Auth
-import           Prelude            (head)
-import qualified Data.Text          as T
-import qualified Database.Esqueleto as E
-import qualified Data.Map.Strict    as Map
-import           Utils.YobaMarkup   (doYobaMarkup)
-import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
+import           Prelude             (head)
+import qualified Data.Text           as T
+import qualified Database.Esqueleto  as E
+import qualified Data.Map.Strict     as MapS
+import qualified Text.Blaze.Html.Renderer.String as RHS
+import           Utils.YobaMarkup    (doYobaMarkup)
+import           Handler.Captcha     (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
-
-import           Text.Blaze.Html.Renderer.String
+import           Handler.EventSource (sendPost)
 -------------------------------------------------------------------------------------------------------------------
--- Костыли-костылики...
+-- Ajax hack
+-------------------------------------------------------------------------------------------------------------------
 getJsonFromMsgR :: Text -> Handler TypedContent
 getJsonFromMsgR status = do
   msg <- getMessage
   selectRep $
-    provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
+    provideJson $ object [(status, toJSON $ RHS.renderHtml $ fromJust msg)]
+-------------------------------------------------------------------------------------------------------------------
+-- Helpers
 -------------------------------------------------------------------------------------------------------------------
 selectThread :: Text -> Int -> Handler [(Entity Post, [Entity Attachedfile])]
 selectThread board thread = do
@@ -31,7 +34,7 @@ selectThread board thread = do
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
-  return $ map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+  return $ map (second catMaybes) $ MapS.toList $ keyValuesToMap allPosts
 
 getThreadR :: Text -> Int -> Handler Html
 getThreadR board thread = do
@@ -49,6 +52,7 @@ getThreadR board thread = do
       boardDesc        = boardDescription     boardVal
       boardLongDesc    = boardLongDescription boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
+      sourceEventName  = T.concat [board, "-", pack (show thread)]
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread
   when (null allPosts) notFound
@@ -80,6 +84,8 @@ getThreadR board thread = do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, if T.null pagetitle then "" else titleDelimiter, pagetitle]
     $(widgetFile "thread")
+-------------------------------------------------------------------------------------------------------------------
+-- Handlers
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
@@ -173,6 +179,7 @@ postThreadR board thread = do
                            , postLastModified = Nothing                                                
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
+        sendPost board thread nextId hellbanned posterId
         -------------------------------------------------------------------------------------------------------
         -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
@@ -189,6 +196,7 @@ postThreadR board thread = do
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
     _  -> trickyRedirect "error" MsgUnknownError threadUrl
 -------------------------------------------------------------------------------------------------------------------
+-- Helpers
 -------------------------------------------------------------------------------------------------------------------
 makeThreadtitle :: Entity Post -> Text
 makeThreadtitle ePost =

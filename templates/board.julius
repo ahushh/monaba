@@ -1,3 +1,37 @@
+if (isEventSourceSupported()) {
+    var src = new EventSource("@{ReceiveR}");
+    src.onopen = function() { console.log("Eventsource opened."); };
+
+    // remove deleted posts
+    var board   = /\/board\/([\w_]+)/.exec(document.URL);
+//     var threads = $(".thread").each(function() {
+//         src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1]) +"-deleted", function(msg) {
+//             var ids = eval(msg.data);
+//             for (var i = 0; i < ids.length; i++)
+//                 $("#"+ids[i]).remove();
+//         });
+//     });
+
+    // dynamic updating of edited posts
+    $(".thread").each(function() {
+        src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited", function(msg) {
+            var x = eval(msg.data);        
+            var board  = x[0];
+            var thread = x[1];
+            var post   = x[2];
+            var newMsg = decodeBase64(x[3]);
+            var lm     = x[4];
+            $("#post-"+post+"-"+thread+"-"+board+" .message").html(newMsg);
+            if (lm) {
+                $("#post-"+post+"-"+thread+"-"+board+" .last-modified-date").html(lm);
+                $("#post-"+post+"-"+thread+"-"+board+" .last-modified").show();
+            }
+        });
+    });
+} else {
+    console.log("Eventsource isn't supported.");
+}
+
 function expandThread(board, thread) {
     var replies = Monaba['expThreads'][thread];
     delete Monaba['expThreads'][thread];

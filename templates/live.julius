@@ -49,20 +49,20 @@ if (isEventSourceSupported()) {
     src.onopen = function() { console.log("Eventsource opened."); };
 
     // post autoload
-    src.addEventListener(#{toJSON sourceEventName}, function(msg) {
-        $('.thread').append( decodeBase64(msg.data) );
+    src.addEventListener("live", function(msg) {
+        $('h2').after( decodeBase64(msg.data) );
         baseInit();
         updateTitle();
         blinkFavicon();
     });
     // remove deleted posts
-    src.addEventListener(#{toJSON sourceEventName}+"-deleted", function(msg) {
+    src.addEventListener("live-deleted", function(msg) {
         var ids = eval(msg.data);
         for (var i = 0; i < ids.length; i++)
             $("#"+ids[i]).remove();
     });
     // dynamic updating of edited posts
-    src.addEventListener(#{toJSON sourceEventName}+"-edited", function(msg) {
+    src.addEventListener("live-edited", function(msg) {
         var x = eval(msg.data);        
         var board  = x[0];
         var thread = x[1];
@@ -80,35 +80,3 @@ if (isEventSourceSupported()) {
     $("#get-new-posts-wrapper").show();
 }
 
-(function() {
-var pMsg;
-$('#post-form').ajaxForm({
-    beforeSend: function() {
-        pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-    },
-    success: function(data) {
-        closePopupMessage(pMsg);
-        if (data.ok) {
-            $('#post-form #subject-block input[type=text]').clearFields();
-            $('#post-form input[type=file]').clearFields();
-            $('#post-form textarea').clearFields();
-            popupMessage(data.ok,2000);
-            closePostForm();
-            var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
-            var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
-            if (!isEventSourceSupported())
-                refreshThread(board, thread);
-        } else {
-            popupMessage(data.error,2000);
-        }
-        refreshCaptcha();
-    },
-    error: function(x, e) {
-        closePopupMessage(pMsg);                
-        if (x.status == 0)
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
-        else
-            popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
-    }
-}); 
-})();

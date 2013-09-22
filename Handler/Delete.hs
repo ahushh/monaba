@@ -8,6 +8,7 @@ import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
 import           System.Directory   (removeFile)
+import           Handler.EventSource (sendDeletedPosts)
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -74,7 +75,7 @@ getDeleteR = do
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
         [] -> errorRedirect MsgDeleteNoPosts
-        _  -> deletePostsByOp posts >> redirectUltDest HomeR
+        _  -> sendDeletedPosts (map entityVal posts) >> deletePostsByOp posts >> redirectUltDest HomeR
 
     ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
@@ -85,7 +86,7 @@ getDeleteR = do
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
-        _  -> deletePosts posts onlyfiles >> redirectUltDest HomeR
+        _  -> unless onlyfiles (sendDeletedPosts $ map entityVal posts) >> deletePosts posts onlyfiles >> redirectUltDest HomeR
     _                           -> errorRedirect MsgUnknownError
 
 ---------------------------------------------------------------------------------------------

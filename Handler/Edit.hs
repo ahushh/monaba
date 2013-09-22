@@ -5,7 +5,8 @@ import           Import
 import qualified Data.Text       as T
 import           Yesod.Auth
 import           Handler.Posting
-import           Utils.YobaMarkup (doYobaMarkup)
+import           Handler.EventSource (sendEditedPost)
+import           Utils.YobaMarkup    (doYobaMarkup)
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do
@@ -56,6 +57,8 @@ postPostEditR = do
       runDB $ update postKey ([PostMessage =. messageFormatted
                              , PostRawMessage =. unTextarea newMessage]
                              ++[PostLastModified =. Just now | not (ShadowEditP `elem` permissions && shadowEdit)])
+      let time = if ShadowEditP `elem` permissions && shadowEdit then Nothing else Just now
+        in sendEditedPost (unTextarea messageFormatted) (postBoard post) (postParent post) (postLocalId post) time
       unless (ShadowEditP `elem` permissions && shadowEdit) $
         if isJust history
           then runDB $ replace (entityKey $ fromJust history) newHistory

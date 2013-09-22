@@ -12,6 +12,10 @@ function baseInit() {
         doRefMap();
     cachePopupPosts();
 }
+
+function isEventSourceSupported() {
+    return typeof(EventSource) !== "undefined";
+}
 //-----------------------------------------------------------------
 // Init
 //-----------------------------------------------------------------
@@ -442,7 +446,7 @@ function showQuickPostForm(postId) {
     $("#"+postId).after($("#post-form"));
     $("#post-form").css("display","table");
     $("#go-back-block").css("display","none");
-    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
+    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a board page
         var action = $("#post-form").attr('action');
         var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
         var pMsg;
@@ -459,6 +463,7 @@ function showQuickPostForm(postId) {
                     popupMessage(data.ok,2000);
                     closePostForm();
                     var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
+                    // if (!isEventSourceSupported)
                     refreshThread(board, thread)
                 } else {
                     popupMessage(data.error,0,false,true);
@@ -494,7 +499,7 @@ function showPlainPostForm() {
     $('.show-plain-form').after($("#post-form"));
     $(".show-plain-form").css("display","none");
     $("#post-form").css("display","block");
-    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a page
+    if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a board page
         $("#post-form").unbind();
         $("#no-bump-block").css("display","none");
         $("#go-back-block").css("display","");
@@ -594,15 +599,22 @@ function showEditForm(postId, realId) {
                 function(response) {
                     closePopupMessage(pMsg);
                     if (response.ok) {
-                        $.get("/api/post/"+board+"/"+pId, function(post) {
+                        if (isEventSourceSupported()) {
                             hideEditForm();
-                            $('#'+postId).replaceWith(post);
-
                             addEmbeddedPlayer(postId);
                             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
                             popupMessage(response.ok,2000);
-                        });
+                        } else {
+                            $.get("/api/post/"+board+"/"+pId, function(post) {
+                                hideEditForm();
+                                $('#'+postId).replaceWith(post);
+
+                                addEmbeddedPlayer(postId);
+                                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+                                popupMessage(response.ok,2000);
+                            });
+                        }
                     } else {
                         popupMessage(response.error,0,false,true);
                     }
@@ -629,7 +641,36 @@ function hideEditForm() {
     $('#edit-form').val('');
     $('#edit-form').appendTo('.container');
 }
+// ---------------------------------------------------------
+//  Visibility API
+// ---------------------------------------------------------
+function getHidden() {
+    var hidden;
+    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        hidden = "hidden";
+    } else if (typeof document.mozHidden !== "undefined") {
+        hidden = "mozHidden";
+    } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+    }
+    return hidden;
+}
 
+function getVisibilityChange() {
+    var visibilityChange; 
+    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        visibilityChange = "visibilitychange";
+    } else if (typeof document.mozHidden !== "undefined") {
+        visibilityChange = "mozvisibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+        visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        visibilityChange = "webkitvisibilitychange";
+    }
+    return visibilityChange;
+}
 // ---------------------------------------------------------
 //  Storage
 // ---------------------------------------------------------
@@ -677,3 +718,10 @@ function set_cookie(name,value,days)
 // ---------------------------------------------------------
 //  end of wakaba3.js
 // ---------------------------------------------------------
+
+// ---------------------------------------------------------
+//  misc
+// ---------------------------------------------------------
+function decodeBase64(b) {
+    return decodeURIComponent(escape(atob(b)));
+}

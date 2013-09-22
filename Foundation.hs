@@ -6,6 +6,7 @@ import Yesod
 import Yesod.Static
 import Yesod.Auth
 import Yesod.Auth.HashDB (authHashDB, getAuthIdHashDB)
+import Yesod.Auth.Message
 import Yesod.Default.Config
 import Yesod.Default.Util (addStaticContentExternal)
 import Network.HTTP.Conduit (Manager)
@@ -32,6 +33,26 @@ import Control.Monad       (when, mplus)
 import Control.Applicative ((<$>))
 import Data.Maybe          (fromJust, isNothing, isJust)
 
+import Control.Concurrent.Chan (Chan)
+import Network.Wai.EventSource (ServerEvent (..))
+
+import           Data.IORef
+import           Data.Map   (Map)
+import qualified Data.Map as Map
+
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+import           System.Random           (randomIO)
+import qualified Data.ByteString.UTF8    as B
+import           Control.Applicative     (liftA2)
+import           Data.Time               (getCurrentTime)
+---------------------------------------------------------------------------------------------------------
+data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
+                           , sseClientPermissions :: [Permission]
+                           , sseClientRating :: Censorship
+                           , sseClientTimeZone :: Int
+                           , sseClientEvent :: Chan ServerEvent
+                           }
+
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -43,6 +64,7 @@ data App = App
     , httpManager :: Manager
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
+    , sseClients :: IORef (Map Text SSEClient)
     }
 ---------------------------------------------------------------------------------------------------------
 -- Data types appear in models
@@ -301,6 +323,17 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool
 
+deleteClient' :: Handler ()
+deleteClient' = do
+  maybePosterId <- lookupSession "posterId"
+  posterId      <- case maybePosterId of
+    Just posterId -> return posterId
+    Nothing       -> do
+      posterId <- liftIO $ T.pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
+      setSession "posterId" posterId
+      return posterId
+  (\clientsRef -> liftIO $ modifyIORef clientsRef $ Map.delete posterId) =<< sseClients <$> getYesod
+  
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -309,6 +342,9 @@ instance YesodAuth App where
     -- Where to send a user after logout
     logoutDest _ = HomeR
     
+    onLogin  = setMessageI NowLoggedIn >> deleteClient'
+    onLogout = deleteClient'
+      
     authPlugins _   = [authHashDB (Just . UserUniqName)]
     getAuthId creds = getAuthIdHashDB AuthR (Just . UserUniqName) creds
     authHttpManager = httpManager

@@ -4,7 +4,8 @@ module Handler.Settings where
 import           Import
 import qualified Data.Text  as T
 import           Yesod.Auth
-import           Handler.Posting (trickyRedirect)
+import           Handler.Posting     (trickyRedirect)
+import           Handler.EventSource (deleteClient)
 -------------------------------------------------------------------------------------------------------------------
 settingsForm :: Int        -> -- ^ Default time offset
                Text       -> -- ^ Default stylesheet 
@@ -37,6 +38,7 @@ postSettingsR = do
       setSession "stylesheet"        stylesheet
       setSession "censorship-rating" $ pack $ show rating
       when (isJust lang) $ setLanguage $ fromJust lang
+      deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html

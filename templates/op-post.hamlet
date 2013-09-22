@@ -125,4 +125,11 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
 
           $maybe lm <- postLastModified $ entityVal eOpPostW
               <span .last-modified>
-                  <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}
+                  <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
+                    _{MsgLastModified}
+                    <span .last-modified-date>#{myFormatTime tOffsetW lm}
+          $nothing
+              <span .last-modified style="display:none">
+                  <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
+                    _{MsgLastModified}
+                    <span .last-modified-date> 

@@ -21,7 +21,7 @@ $if hasAccessToReply
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-        ^{opPostWidget muser eOpPost opPostFiles rating True hasAccessToReply permissions geoIps timeZone maxLenOfFileName}
+        ^{opPostWidget muser eOpPost opPostFiles rating True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     
         $forall (eReply, files) <- repliesAndFiles
             $if checkHellbanned eReply permissions posterId

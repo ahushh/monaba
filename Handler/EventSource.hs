@@ -89,7 +89,7 @@ sendPost board thread postId hellbanned posterId = do
         renderPostLive client post files displaySage geoIps maxLenOfFileName
           | postParent (entityVal post) == 0 = 
             bareLayout $ opPostWidget (sseClientUser client) post
-            files (sseClientRating client) False False
+            files (sseClientRating client) False False True
             (sseClientPermissions client) geoIps
             (sseClientTimeZone client) maxLenOfFileName
           | otherwise                       =

@@ -121,13 +121,14 @@ opPostWidget :: Maybe (Entity User)      ->
                Censorship               -> -- ^ Max allowed rating
                Bool                     -> -- ^ Show or not "[ Open ]" link
                Bool                     -> -- ^ Show or not the extra buttons such as "[>]"
+               Bool                     -> -- ^ Show or not parent board in the upper right corner
                [Permission]             -> -- ^ List of the all permissions
                [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                Int                      -> -- ^ Time offset in seconds
                Int                      -> -- ^ Max file name length
                WidgetT App IO () 
 opPostWidget muserW eOpPostW opPostFilesW ratingW
-  isInThreadW canPostW permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "op-post")
+  isInThreadW canPostW showBoardW permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)      ->
                   Entity Post              ->
@@ -144,7 +145,7 @@ replyPostWidget :: Maybe (Entity User)      ->
                   WidgetT App IO ()
 replyPostWidget muserW eReplyW replyFilesW ratingW
   isInThreadW canPostW showThreadW displaySageW
-  permissionsW geoIpsW tOffsetW maxLenOfFileNameW = do$(widgetFile "reply-post")
+  permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")

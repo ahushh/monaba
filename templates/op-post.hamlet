@@ -67,6 +67,8 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       ]
                       $if postHellbanned $ entityVal eOpPostW
                           <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
+                  $if showBoardW
+                      <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
           $forall Entity fileKey file <- opPostFilesW
               $with c <- ifelse (length opPostFilesW == 1) "file" "multi-file"
                 $with fId <- show $ int64ToInt $ fromKey fileKey

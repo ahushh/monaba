@@ -87,6 +87,11 @@ hr {
     word-wrap: break-word;
 }
 
+#post-list .op-post {
+   min-width: 40em;
+   overflow: hidden;
+}
+
 .reply-post {
     min-width: 40em;
     overflow: hidden;

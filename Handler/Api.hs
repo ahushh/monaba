@@ -123,7 +123,7 @@ getApiPostR board postId = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then opPostWidget muser post files rating False True permissions geoIps timeZone maxLenOfFileName
+                       then opPostWidget muser post files rating False True False permissions geoIps timeZone maxLenOfFileName
                        else replyPostWidget muser post files rating False True False displaySage permissions geoIps timeZone maxLenOfFileName
   selectRep $ do
     provideRep $ bareLayout widget

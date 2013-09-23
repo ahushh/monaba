@@ -60,7 +60,6 @@ textarea {
     color: #C0C0C0;
     background-color: #212121;
     border: 1px solid gray;
-    width: 500px !important;
 }
 
 textarea:focus, input:focus, input[type=submit]:hover, select:focus {
@@ -122,7 +121,7 @@ footer {
     border: 1px dotted rgba(105,140,192,0.5);
 }
 
-.reply-post {
+.reply-post, #post-list .op-post {
     display: inline-block;
     width: 96%;
     background: none repeat scroll 0% 0% #1A1A1A;

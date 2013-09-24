@@ -20,7 +20,7 @@ import           Data.IORef
 import qualified Data.Map as Map
 -------------------------------------------------------------------------------------------------------------------
 deleteClient :: Text -> Handler ()
-deleteClient posterId = (\clientsRef -> liftIO $ modifyIORef clientsRef $ Map.delete posterId) =<< sseClients <$> getYesod
+deleteClient posterId = (\clientsRef -> liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.delete posterId x, ()))) =<< sseClients <$> getYesod
 
 getReceiveR :: Handler TypedContent
 getReceiveR = do
@@ -29,7 +29,7 @@ getReceiveR = do
   clients    <- liftIO $ readIORef clientsRef
   let client = Map.lookup posterId clients
       -- delete client from the list if user disconnects
-      autoDeleteClient = register . liftIO $ modifyIORef clientsRef $ Map.delete posterId
+      autoDeleteClient = register . liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.delete posterId x,()))
   if isNothing client 
     then do -- add this user to the list of connected clients
       muser            <- maybeAuth
@@ -43,7 +43,7 @@ getReceiveR = do
                                 , sseClientTimeZone    = timeZone
                                 , sseClientEvent       = chan
                                 }
-      liftIO $ modifyIORef' clientsRef (Map.insert posterId newClient)
+      liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.insert posterId newClient x, ()))
       req <- waiRequest
       res <- liftResourceT $ eventSourceAppChan chan req
       void $ autoDeleteClient

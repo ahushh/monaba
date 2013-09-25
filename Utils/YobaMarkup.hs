@@ -63,6 +63,11 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     openSpoiler = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\">"
     openStrike  = "<span style='text-decoration:line-through'>"
+    refHtml acc brd "0" p ref = T.concat [acc , "<a onmouseover='timeout(this, function(){showPopupPost(event, this,\""
+                                         ,brd , "\",", p   , ")},700)' onclick='highlightPost(\"post-", p, "-0-"
+                                         ,brd , "\")' href='/thread/", brd, "/"
+                                         ,p   , "'>" , ref , "</a>"
+                                         ]
     refHtml acc brd thr p ref = T.concat [acc , "<a onmouseover='timeout(this, function(){showPopupPost(event, this,\""
                                          ,brd , "\",", p   , ")},700)' onclick='highlightPost(\"post-", p, "-"
                                          ,thr , "-"  , brd , "\")' href='/thread/", brd, "/"

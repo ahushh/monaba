@@ -129,8 +129,8 @@ getApiPostR board postId = do
     provideRep $ bareLayout widget
     provideJson postAndFiles
 ---------------------------------------------------------------------------------------------------------
-getApiHideThread :: Text -> Int -> Handler TypedContent
-getApiHideThread board threadId
+getApiHideThreadR :: Text -> Int -> Handler TypedContent
+getApiHideThreadR board threadId
   | threadId <= 0 = selectRep $ do
       provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
       provideJson $ object [("error", "bad thread ID")]
@@ -148,8 +148,8 @@ getApiHideThread board threadId
         provideRep  $ bareLayout [whamlet|ok: hidden|]
         provideJson $ object [("ok", "hidden")]
 
-getApiUnhideThread :: Text -> Int -> Handler TypedContent
-getApiUnhideThread board threadId
+getApiUnhideThreadR :: Text -> Int -> Handler TypedContent
+getApiUnhideThreadR board threadId
   | threadId <= 0 = selectRep $ do
       provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
       provideJson $ object [("error", "bad thread ID")]

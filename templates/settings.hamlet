@@ -3,7 +3,7 @@
   <div #settings-form-container>
     <form #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
       ^{formWidget}
-      <input type=submit value=_{MsgApply}>
+      <input type=submit onclick="setJSSettings()" value=_{MsgApply}>
       <span style=display:none #settings-applied>
   <div #hidden-threads-list>
       $if not $ null hiddenThreads

@@ -13,4 +13,17 @@
     <tr>
       <td>_{MsgLanguage}
       <td>^{fvInput langView}
-
+    <tr style="display:none">
+      <td>
+        <label for=useEventsource>
+          _{MsgUseEventSource}
+      <td>
+        <input #useEventsource .js-settings type=checkbox>
+        <label for=useEventsource>
+          (experimental)
+    <tr style="display:none">
+      <td>
+        <label for=useHTML5Youtube>
+          HTML5 youtube
+      <td>
+        <input #useHTML5Youtube .js-settings type=checkbox>

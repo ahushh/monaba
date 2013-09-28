@@ -348,6 +348,7 @@ TimeZone: Time zone
 Style: Style
 MaxAllowedRating: Max allowed rating
 Language: Language
+UseEventSource: Use Eventsource
 
 ######################################################################################
 #### Modlogs

@@ -4,6 +4,10 @@ var Monaba = {
     postCache: {},
     zindex: 0,
 };
+if (getItem('useEventsource') == null)
+    setItem('useEventsource', false);
+if (getItem('useHTML5Youtube') == null)
+    setItem('useHTML5Youtube', true);
 //-----------------------------------------------------------------
 function baseInit() {
     doImageExpanding();
@@ -14,7 +18,8 @@ function baseInit() {
 }
 
 function isEventSourceSupported() {
-    return typeof(EventSource) !== "undefined";
+    return getItem('useEventsource') && typeof(EventSource) !== "undefined";
+    // return typeof(EventSource) !== "undefined";
 }
 //-----------------------------------------------------------------
 // Init
@@ -125,7 +130,8 @@ function addEmbeddedPlayer(post) {
                 $(link).attr('class', 'video-link');
                 $(link).html("<img alt=play src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
                 var loadIframe = function () {
-                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&&wmode=opaque&enablejsapi=1");
+                    $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&&wmode=opaque&enablejsapi=1"+ 
+                                           (getItem('useHTML5Youtube') ? "&html5=1" : ""));
                     $(iframe).addClass('loaded');
                 };
 

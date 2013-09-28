@@ -23,3 +23,14 @@ function unhideThreadCompletely(threadId, board) {
 
     });
 }
+
+function setJSSettings() {
+    $('.js-settings').each(function(k,v) {
+        setItem($(this).attr('id'), $(this).is(':checked'));
+    });
+}
+
+$('.js-settings').each(function(k,v) {
+    $(this).attr('checked', getItem($(this).attr('id')));
+    $(this).parent().parent().show();
+});

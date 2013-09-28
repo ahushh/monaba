@@ -332,7 +332,7 @@ deleteClient' = do
       posterId <- liftIO $ T.pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
       setSession "posterId" posterId
       return posterId
-  (\clientsRef -> liftIO $ modifyIORef clientsRef $ Map.delete posterId) =<< sseClients <$> getYesod
+  (\clientsRef -> liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.delete posterId x, ()))) =<< sseClients <$> getYesod
   
 instance YesodAuth App where
     type AuthId App = UserId

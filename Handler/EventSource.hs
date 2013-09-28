@@ -26,7 +26,7 @@ getReceiveR :: Handler TypedContent
 getReceiveR = do
   posterId   <- getPosterId
   clientsRef <- sseClients <$> getYesod
-  clients    <- liftIO $ readIORef clientsRef
+  clients    <- liftIO $ atomicModifyIORef' clientsRef (\x -> (x,x))
   let client = Map.lookup posterId clients
       -- delete client from the list if user disconnects
       autoDeleteClient = register . liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.delete posterId x,()))

@@ -321,6 +321,10 @@ header {
     background-color: black;
 }
 
+.spoiler:hover {
+    color:white;
+}
+
 iframe {
     border: 0px;
 }
@@ -328,7 +332,6 @@ iframe {
 .icon-play {
     background-position: -629px -77px;
     margin-right: 3px;
-
 }
 
 .focused {

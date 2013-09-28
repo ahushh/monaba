@@ -13,7 +13,7 @@ INSERT INTO `captcha_dict` VALUES (7,'Бара','ru');
 INSERT INTO `captcha_dict` VALUES (8,'Кана','ru');
 INSERT INTO `captcha_dict` VALUES (9,'Джун','ru');
 INSERT INTO `captcha_dict` VALUES (10,'Нори','ru');
-INSERT INTO `captcha_dict` VALUES (11,'Суйсейсеки','ru');
+INSERT INTO `captcha_dict` VALUES (11,'Суисейсеки','ru');
 INSERT INTO `captcha_dict` VALUES (12,'Соусейсеки','ru');
 INSERT INTO `captcha_dict` VALUES (13,'Канария','ru');
 INSERT INTO `captcha_dict` VALUES (14,'Киракишоу','ru');

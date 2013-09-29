@@ -36,28 +36,26 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                   &nbsp;&nbsp;
               $if elem ViewIPAndIDP permissionsW
                   <span .ip-and-id>
-                      IP: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchIPNoPageR (postIp $ entityVal $ eOpPostW)}>#{postIp $ entityVal $ eOpPostW}</a>
+                      IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp $ entityVal $ eOpPostW)}>#{postIp $ entityVal $ eOpPostW}</a>
                       UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId $ entityVal eOpPostW)}>#{postPosterId $ entityVal eOpPostW}</a>
               <div .cpanel>
                   $if elem ManageBanP permissionsW
                       [
-                      <a title='_{MsgBanPoster}' href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B #
+                      <a title="_{MsgBanPoster}" href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B #
                       ] 
                   $if elem ManageThreadP permissionsW
                       [
-                      <a title='_{MsgStickThread}' href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S #
+                      <a title="_{MsgStickThread}" href=@{StickR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>S #
                       | 
-                      <a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L #
+                      <a title="_{MsgLockThread}" href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L #
                       | 
-                      <a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A #
+                      <a title="_{MsgAutosage}" href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A #
                       ]
                   $if elem HellBanP permissionsW
                       &nbsp;[
                       <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "none" True}>Hellban #
-                      | 
+                      <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" True}>&& #
                       <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" False}>Hide #
-                      | 
-                      <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "one" True}>Hide && Hellban #
                       | 
                       <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral $ fromKey $ entityKey eOpPostW) "all" True}>Hide all && Hellban #
                       |
@@ -66,7 +64,7 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral $ fromKey $ entityKey eOpPostW) "unban"}>Unhellban
                       ]
                       $if postHellbanned $ entityVal eOpPostW
-                          <img alt='_{MsgPostIsVisibleOnlyForAuthor}' title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
+                          <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
                   $if showBoardW
                       <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
           $forall Entity fileKey file <- opPostFilesW

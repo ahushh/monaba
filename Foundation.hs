@@ -179,7 +179,9 @@ instance Yesod App where
         pc <- widgetToPageContent $ do
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
-            addScript (StaticR js_jquery_autosize_js)            
+            addScript (StaticR js_jquery_autosize_js)
+            addScript (StaticR js_jquery_ui_1_10_3_custom_min_js)
+            addScript (StaticR js_jquery_mousewheel_js)
             addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
             -- $(combineStylesheets 'StaticR
             --     [

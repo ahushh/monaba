@@ -4,10 +4,13 @@ var Monaba = {
     postCache: {},
     zindex: 0,
 };
+
 if (getItem('useEventsource') == null)
     setItem('useEventsource', false);
 if (getItem('useHTML5Youtube') == null)
     setItem('useHTML5Youtube', true);
+if (getItem('expandImage') == null)
+    setItem('expandImage', 'center');
 //-----------------------------------------------------------------
 function baseInit() {
     doImageExpanding();
@@ -280,21 +283,58 @@ function doImageExpanding(post) {
             if (e.which == 3) { // don't handle right click
                 return true;
             }
-            if ($(this).attr('src') == fullUrl) {
-                $(this).attr('src', thumbUrl);
-                $(this).attr('width' , thumbWidth);
-                $(this).attr('height', thumbHeight);
-                $(this).css('width', "");
-            } else {
-                $(this).css('opacity', 0.7);
-                $(this).attr('src', fullUrl);
-                $(this).removeAttr('width');
-                $(this).removeAttr('height');
-                $(this).css('width', '93%');
 
-                $(this).load(function() {
-                    $(this).css('opacity', 1);
-                });
+            if (getItem('expandImage') == 'center') {
+                var i = new Image();
+                var wHeight = + $(window).height();
+                var wWidth  = + $(window).width();
+                var imgHeight = + $(this).attr('img-height');
+                var imgWidth  = + $(this).attr('img-width');
+                var ratio  = imgHeight > wHeight || imgWidth > wWidth ? Math.min(wWidth/imgWidth, wHeight/imgHeight) : 1;
+                var height = imgHeight*ratio;
+                var width  = imgWidth*ratio;
+                $(i).attr('src',fullUrl)
+                    .appendTo('body')
+                    .css({'position': 'fixed'
+                          ,'height'  : height+'px'
+                          ,'width'   : width+'px' 
+                          ,'top'     : (wHeight-height)/2 +'px'
+                          ,'bottom'  : (wHeight-height)/2 +'px'
+                          ,'left'    : (wWidth-width)/2 +'px'
+                          ,'right'   : (wWidth-width)/2 +'px'
+                         })
+                    .draggable()
+                    .click(function() { $(this).remove() })
+                    .mousewheel(function(e,delta) {
+                        var cx = e.originalEvent.clientX;
+                        var cy = e.originalEvent.clientY;
+                        var newW = $(i).width()  * (delta > 0 ? 1.2 : 0.8);
+                        var newH = $(i).height() * (delta > 0 ? 1.2 : 0.8);
+                        var oldW = $(i).width();
+                        var oldH = $(i).height();
+                        $(i).width(newW).height(newH).css({
+                            left: parseInt(cx - (newW / oldW)*(cx - parseInt($(i).position().left, 10)), 10),
+                            top:  parseInt(cy - (newH / oldH)*(cy - parseInt($(i).position().top , 10)), 10)
+                        });
+                        return false;
+                    });
+            } else {
+                if ($(this).attr('src') == fullUrl) {
+                    $(this).attr('src', thumbUrl);
+                    $(this).attr('width' , thumbWidth);
+                    $(this).attr('height', thumbHeight);
+                    $(this).css('width', "");
+                } else {
+                    $(this).css('opacity', 0.7);
+                    $(this).attr('src', fullUrl);
+                    $(this).removeAttr('width');
+                    $(this).removeAttr('height');
+                    $(this).css('width', '93%');
+
+                    $(this).load(function() {
+                        $(this).css('opacity', 1);
+                    });
+                }
             }
         });
     });

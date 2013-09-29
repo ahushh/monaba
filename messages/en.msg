@@ -349,6 +349,9 @@ Style: Style
 MaxAllowedRating: Max allowed rating
 Language: Language
 UseEventSource: Use Eventsource
+ExpandImage: Expand image
+ExpandImageCenter: in the center
+ExpandImageInside: inside post
 
 ######################################################################################
 #### Modlogs

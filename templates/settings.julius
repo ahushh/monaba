@@ -26,11 +26,18 @@ function unhideThreadCompletely(threadId, board) {
 
 function setJSSettings() {
     $('.js-settings').each(function(k,v) {
-        setItem($(this).attr('id'), $(this).is(':checked'));
+        if ($(this).is('select'))
+            setItem($(this).attr('id'), $(this).val());
+        else
+            setItem($(this).attr('id'), $(this).is(':checked'));
     });
 }
 
 $('.js-settings').each(function(k,v) {
-    $(this).attr('checked', getItem($(this).attr('id')));
-    $(this).parent().parent().show();
+    if ($(this).is('select'))     
+        $(this).val( getItem( $(this).attr('id') ) );
+    else
+        $(this).attr('checked', getItem($(this).attr('id')));
 });
+
+$('.js-settings-row').show();

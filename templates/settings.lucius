@@ -18,3 +18,12 @@
     font-weight: bold;
     text-align: center;
 }
+
+.js-settings-row {
+    display: none;
+}
+
+.settings-title {
+    text-align: center;
+    font-weight: bold;
+}

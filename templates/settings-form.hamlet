@@ -13,7 +13,7 @@
     <tr>
       <td>_{MsgLanguage}
       <td>^{fvInput langView}
-    <tr style="display:none">
+    <tr .js-settings-row>
       <td>
         <label for=useEventsource>
           _{MsgUseEventSource}
@@ -21,9 +21,16 @@
         <input #useEventsource .js-settings type=checkbox>
         <label for=useEventsource>
           (experimental)
-    <tr style="display:none">
+    <tr .js-settings-row>
       <td>
         <label for=useHTML5Youtube>
           HTML5 youtube
       <td>
         <input #useHTML5Youtube .js-settings type=checkbox>
+    <tr .js-settings-row>
+      <td>
+        _{MsgExpandImage}
+      <td>
+        <select #expandImage .js-settings>
+          <option value=center>_{MsgExpandImageCenter}
+          <option value=inside>_{MsgExpandImageInside}

@@ -348,6 +348,9 @@ Style: Стиль
 MaxAllowedRating: Максимальный рейтинг
 Language: Язык
 UseEventSource: Использовать Eventsource
+ExpandImage: Разворачивать изображения
+ExpandImageCenter: по центру
+ExpandImageInside: в посте
 
 ######################################################################################
 #### Modlogs

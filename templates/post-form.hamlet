@@ -14,7 +14,7 @@
             <td .post-block-named>_{MsgMessage}
             <td>
                 ^{fvInput messageView}
-                <div .buttons>
+                <div .markup-buttons>
                      <a id=button-bold>
                         <strong>
                           bold

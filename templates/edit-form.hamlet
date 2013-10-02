@@ -5,7 +5,7 @@
 <span style=padding:5px>
     ^{fvInput messageView}
 <div style=padding:5px>
-    <div style=display:inline .buttons>
+    <div style=display:inline .markup-buttons>
         <a id=button-bold-edit>
            <strong>
              bold

@@ -30,3 +30,7 @@ textarea {
 .close-post-form {
     text-align: center;
 }
+
+.no-js .close-post-form {
+    display: none;
+}

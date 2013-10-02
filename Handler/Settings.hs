@@ -34,9 +34,9 @@ postSettingsR = do
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
     FormSuccess (timezone, stylesheet, rating, lang) -> do
-      setSession "timezone"          $ pack $ show timezone
+      setSession "timezone"          $ showText timezone
       setSession "stylesheet"        stylesheet
-      setSession "censorship-rating" $ pack $ show rating
+      setSession "censorship-rating" $ showText rating
       when (isJust lang) $ setLanguage $ fromJust lang
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR
@@ -61,7 +61,7 @@ langs :: [(Text, Text)]
 langs = [("English", "en"), ("Русский","ru")]
 
 ratings :: [(Text, Censorship)]
-ratings = map (pack . show &&& id) [minBound..maxBound]
+ratings = map (showText &&& id) [minBound..maxBound]
 
 stylesheets :: [(Text, Text)]
 stylesheets = map (\x -> (x,x)) ["Ash","Futaba","Postmodern","Nox"]

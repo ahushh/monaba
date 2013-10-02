@@ -141,9 +141,9 @@ getApiHideThreadR board threadId
           let xs  = read (unpack xs') :: [(Text,[Int])]
               ys  = fromMaybe [] $ lookup board xs
               zs  = filter ((/=board).fst) xs
-              new = pack $ show ((board, threadId:ys):zs)
+              new = showText ((board, threadId:ys):zs)
           in setSession "hidden-threads" new
-        Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",pack (show threadId),"])]"]
+        Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",showText threadId,"])]"]
       selectRep $ do
         provideRep  $ bareLayout [whamlet|ok: hidden|]
         provideJson $ object [("ok", "hidden")]
@@ -161,7 +161,7 @@ getApiUnhideThreadR board threadId
               ys  = fromMaybe [] $ lookup board xs
               zs  = filter ((/=board).fst) xs
               ms  = filter (/=threadId) ys
-              new = pack $ show (if null ms then zs else (board, ms):zs)
+              new = showText (if null ms then zs else (board, ms):zs)
           in setSession "hidden-threads" new
         Nothing -> setSession "hidden-threads" "[]"
       selectRep $ do

@@ -49,5 +49,5 @@ getAutoSageR board thread = do
 getManageCensorshipR :: Int -> Censorship -> Handler Html
 getManageCensorshipR fileId rating = do
   let fileKey = toKey fileId :: Key Attachedfile
-  runDB $ update fileKey [AttachedfileRating =. pack (show rating)]
+  runDB $ update fileKey [AttachedfileRating =. showText rating]
   redirectUltDest HomeR

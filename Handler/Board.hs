@@ -116,7 +116,7 @@ getBoardR board page = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
+    let p = if page > 0 then T.concat [" (", showText page, ")"] else ""
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, p]
     $(widgetFile "board")
 --------------------------------------------------------------------------------------------------------- 

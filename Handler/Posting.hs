@@ -59,7 +59,7 @@ postForm boardVal extra = do
   let urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
       ratings :: [(Text, Censorship)]
-      ratings = map (pack . show &&& id) [minBound..maxBound]
+      ratings = map (showText &&& id) [minBound..maxBound]
   ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              "" (Just <$> lastName)
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
@@ -124,7 +124,7 @@ insertFiles files ratings thumbSize postId = forM_ (zip files ratings) (\(formfi
                                                               , attachedfileThumbHeight = 0
                                                               , attachedfileWidth       = 0
                                                               , attachedfileHeight      = 0
-                                                              , attachedfileRating      = (\(FormSuccess r) -> pack $ show r) rating
+                                                              , attachedfileRating      = (\(FormSuccess r) -> showText r) rating
                                                               }
       if isImageFile filetype
         then do

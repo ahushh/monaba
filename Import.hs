@@ -1,4 +1,4 @@
-{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE ExistentialQuantification, TupleSections #-}
 
 module Import
     ( module Import
@@ -42,8 +42,9 @@ import           Control.Applicative     (liftA2)
 
 import qualified Data.Text               as T
 import qualified Data.ByteString.UTF8    as B
-import qualified Data.Map.Strict         as Map
+import qualified Data.Map.Strict         as MapS
 import           Data.Char               (toLower)
+import           Data.Text.Encoding      (decodeUtf8, encodeUtf8)
 
 import           System.Random           (randomIO)
 import           System.FilePath         ((</>))
@@ -325,8 +326,8 @@ isAjaxRequest = do
   maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
   return $ maybe False (=="XMLHttpRequest") maybeHeader
 
-keyValuesToMap :: (Ord k) => [(k, a)] -> Map.Map k [a]  
-keyValuesToMap = Map.fromListWith (++) . map (\(k,v) -> (k,[v]))
+keyValuesToMap :: (Ord k) => [(k, a)] -> MapS.Map k [a]  
+keyValuesToMap = MapS.fromListWith (++) . map (\(k,v) -> (k,[v]))
 
 -- | Add UTCTime with Integer seconds
 addUTCTime' :: Int -> UTCTime -> UTCTime
@@ -355,6 +356,12 @@ ignoreBoards group (Entity _ b)
 
 pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
 pair f g x = (f x, g x)
+
+showText :: Show a => a -> Text
+showText = pack . show
+
+readText :: Read a => Text -> a
+readText = read . unpack
 -------------------------------------------------------------------------------------------------------------------
 -- Some getters
 -------------------------------------------------------------------------------------------------------------------
@@ -364,16 +371,13 @@ getMaybeGroup muser = case muser of
     _                 -> return Nothing
     
 getBoardVal404 :: Text -> Handler Board
-getBoardVal404 board = do
-  maybeBoard <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard) notFound
-  return $ entityVal $ fromJust maybeBoard
+getBoardVal404 board = runDB (getBy $ BoardUniqName board) >>= maybe notFound (return . entityVal)
 
 getTimeZone :: Handler Int
 getTimeZone = do
   defaultZone <- extraTimezone <$> getExtra
   timezone    <- lookupSession "timezone"
-  return $ maybe defaultZone (read . unpack) timezone
+  return $ maybe defaultZone readText timezone
 
 getCensorshipRating :: Handler Censorship
 getCensorshipRating = do
@@ -418,17 +422,13 @@ getIp = do
   case maybeIp of
     Just ip -> return $ B.toString ip
     Nothing -> getIpFromHost
-       
-getIpFromHeader :: forall (f :: * -> *). MonadHandler f => f (Maybe B.ByteString)
-getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
-
-getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
-getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+  where getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
+        getIpFromHost   = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
 -------------------------------------------------------------------------------------------------------------------
 -- Keys
 -------------------------------------------------------------------------------------------------------------------
 fromKey :: forall backend entity. KeyBackend backend entity -> Int64
-fromKey = (\(PersistInt64 n) -> n) . unKey 
+fromKey = (\(PersistInt64 n) -> n) . unKey
 
 toKey :: forall backend entity a. Integral a => a -> KeyBackend backend entity
 toKey i = Key $ PersistInt64 $ fromIntegral i
@@ -447,14 +447,11 @@ getCountry :: Text ->                      -- ^ IP adress
              Handler (Maybe (Text,Text)) -- ^ (country code, country name)
 getCountry ip = do
   dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
-  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ B.fromString $ unpack ip)
-  return $ ((p . geoCountryCode) &&& (p . geoCountryName)) <$> geoIpRes
-    where p = pack . B.toString
+  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ encodeUtf8 ip)
+  return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
 
 getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity post, files) tuples
                Handler [(Key Post, (Text, Text))] -- ^ [(Post key, (country code, country name))]
-getCountries posts = do
-  geoIps' <- forM posts $ \((Entity pId p),_) -> do
-    c <- getCountry $ postIp p
-    return (pId, c)
-  return $ map (second fromJust) $ filter (isJust . snd) geoIps'
+getCountries posts = fmap catMaybes $ forM posts $ \((Entity pId p),_) -> f . (pId,) <$> getCountry (postIp p)
+  where f (a, Just b ) = Just (a,b)
+        f (_, Nothing) = Nothing

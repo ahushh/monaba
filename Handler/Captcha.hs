@@ -51,7 +51,7 @@ recordCaptcha captchaLength = do
   maybeCaptchaEntity <- runDB $ selectFirst [CaptchaIp ==. ip] []
   case maybeCaptchaEntity of
     Just (Entity _ cap) -> do
-      setSession "captchaId"   (pack $ show $ captchaLocalId cap)
+      setSession "captchaId"   (showText $ captchaLocalId cap)
       setSession "captchaInfo" (captchaInfo cap)
       return ()
     _                   -> newCaptcha captchaLength ip
@@ -68,7 +68,7 @@ newCaptcha captchaLength ip = do
 
   (info, value) <- liftIO $ makeCaptcha (captchaFilePath (show cId ++ captchaExt))
                                        (unwords $ map (unpack . captchaDictWord . entityVal) $ catMaybes cWords)
-  setSession "captchaId"   (pack $ show cId)
+  setSession "captchaId"   (showText cId)
   setSession "captchaInfo" info
   captchaTimeout <- getConfig configCaptchaTimeout
   now <- liftIO getCurrentTime
@@ -110,8 +110,8 @@ updateAdaptiveCaptcha acaptcha =
   when (isNothing acaptcha) $ do
     posted <- lookupSession "posted"
     let p  = fromMaybe "0" posted
-        p' = read (unpack p) + 1 :: Int
-    setSession "posted" (pack $ show p')
+        p' = readText p + 1 :: Int
+    setSession "posted" (showText p')
     aCaptchaGuards <- getConfig configACaptchaGuards
     when (p' >= aCaptchaGuards) $ do
       deleteSession "posted"

@@ -75,7 +75,7 @@ sendPost board thread postId hellbanned posterId = do
   forM_ filteredClients (\client -> do
     renderedPost  <- renderPost client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
     renderedPost' <- renderPostLive client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
-    let sourceEventName = Just $ fromText $ T.concat [board, "-", pack (show thread)]
+    let sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread]
         sourceEventName'= Just $ fromText "live"
         encodedPost     = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
         encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
@@ -106,9 +106,9 @@ sendDeletedPosts posts = do
       threads = map postParent posts
       posts'  = map (\(b,t) -> (b,t,filter (\p -> postBoard p == b && postParent p == t) posts)) $ zip boards threads
   forM_ (Map.elems clients) (\client -> forM_ posts' (\(b,t,ps) -> do
-      let sourceEventName = Just $ fromText $ T.concat [b, "-", pack (show t), "-deleted"]
+      let sourceEventName = Just $ fromText $ T.concat [b, "-", showText t, "-deleted"]
           sourceEventName'= Just $ fromText "live-deleted"
-          ps'             = map (\x -> T.concat ["post-", pack (show $ postLocalId x), "-", pack (show t), "-", b]) ps
+          ps'             = map (\x -> T.concat ["post-", showText (postLocalId x), "-", showText t, "-", b]) ps
       liftIO $ writeChan (sseClientEvent client) $ ServerEvent sourceEventName Nothing $ return $ fromString $ show ps'
       liftIO $ writeChan (sseClientEvent client) $ ServerEvent sourceEventName' Nothing $ return $ fromString $ show ps'))
 
@@ -118,12 +118,12 @@ sendEditedPost msg board thread post time = do
   clients    <- liftIO $ readIORef clientsRef
   forM_ (Map.elems clients) (\client -> do
       let thread'         = if thread == 0 then post else thread
-          sourceEventName = Just $ fromText $ T.concat [board, "-", pack (show thread'), "-edited"]
+          sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread', "-edited"]
           sourceEventName'= Just $ fromText "live-edited"
           encodedMsg      = decodeUtf8 $ Base64.encode $ encodeUtf8 msg
           timeZone        = sseClientTimeZone client
           lastModified    = maybe "" (pack . myFormatTime timeZone) time
       liftIO $ writeChan (sseClientEvent client) $
-        ServerEvent sourceEventName Nothing $ return $ fromString $ show [board, pack (show thread), pack (show post), encodedMsg, lastModified]
+        ServerEvent sourceEventName Nothing $ return $ fromString $ show [board, showText thread, showText post, encodedMsg, lastModified]
       liftIO $ writeChan (sseClientEvent client) $
-        ServerEvent sourceEventName' Nothing $ return $ fromString $ show [board, pack (show thread), pack (show post), encodedMsg, lastModified])
+        ServerEvent sourceEventName' Nothing $ return $ fromString $ show [board, showText thread, showText post, encodedMsg, lastModified])

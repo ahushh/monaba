@@ -52,7 +52,7 @@ getThreadR board thread = do
       boardDesc        = boardDescription     boardVal
       boardLongDesc    = boardLongDescription boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
-      sourceEventName  = T.concat [board, "-", pack (show thread)]
+      sourceEventName  = T.concat [board, "-", showText thread]
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread
   when (null allPosts) notFound
@@ -173,7 +173,7 @@ postThreadR board thread = do
                            , postAutosage     = False
                            , postDeleted      = False
                            , postDeletedByOp  = False
-                           , postOwner        = (pack . show . userGroup . entityVal) <$> muser
+                           , postOwner        = (showText . userGroup . entityVal) <$> muser
                            , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                

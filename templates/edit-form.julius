@@ -1,3 +1,62 @@
+var codeLangs = {
+    text: #{toJSON $ msgrender MsgPlainText},
+    actionscript: "ActionScript",
+    actionscript3: "ActionScript 3",
+    ada: "Ada",
+    applescript: "AppleScript",
+    asm: "ASM",
+    asp: "ASP",
+    avisynth: "AviSynth",
+    bash: "Bash",
+    bf: "Brainfuck",
+    blitzbasic: "BlitzBasic",
+    c: "C",
+    cobol: "COBOL",
+    cpp: "C++",
+    csharp: "C#",
+    css: "CSS",
+    d: "D",
+    delphi: "Delphi",
+    diff: "Diff",
+    dos: "DOS",
+    fortran: "Fortran",
+    haskell: "Haskell",
+    html4strict: "HTML",
+    ini: "INI",
+    java: "Java",
+    javascript: "Javascript",
+    latex: "LaTeX",
+    lisp: "Lisp",
+    lua: "Lua",
+    make: "GNU make",
+    matlab: "Matlab M",
+    mirc: "mIRC Scripting",
+    mpasm: "Microchip Assembler",
+    mxml: "MXML",
+    mysql: "MySQL",
+    objc: "Objective-C",
+    ocaml: "OCaml",
+    pascal: "Pascal",
+    perl: "Perl",
+    php: "PHP",
+    pic16: "PIC16",
+    powershell: "posh",
+    prolog: "Prolog",
+    python: "Python",
+    qbasic: "QBasic/QuickBASIC",
+    rails: "Rails",
+    ruby: "Ruby",
+    scala: "Scala",
+    smalltalk: "Smalltalk",
+    smarty: "Smarty",
+    sql: "SQL",
+    tcl: "TCL",
+    tsql: "T-SQL",
+    vb: "Visual Basic",
+    vbnet: "vb.net",
+    xml: "XML",
+};
+
 (function (textarea) {
     $('#button-bold-edit').click(function() {
         insertTag('[b]', '[/b]', textarea);
@@ -19,10 +78,10 @@
         insertTag('[spoiler]', '[/spoiler]', textarea);
         countSymbols('edit-form');
     });
-    $('#button-code-edit').click(function() {
-        insertTag('[code=text]', '[/code]', textarea);
-        countSymbols('edit-form');
-    });
+    // $('#button-code-edit').click(function() {
+    //     insertTag('[code=text]', '[/code]', textarea);
+    //     countSymbols('edit-form');
+    // });
     $('#button-inline-latex-edit').click(function() {
         insertTag('[l]', '[/l]', textarea);
         countSymbols('edit-form');
@@ -35,4 +94,28 @@
         insertQuote(textarea);
         countSymbols('edit-form');
     });
+
+    $('body').children().first().before('<div style="position: absolute; display: none; z-index:999999" id="code_markup_edit"></div>');
+    var code_markup_html = "<select size=\"8\" id=\"code_markup_select_edit\" multiple=\"multiple\">";
+    for(var lang_id in codeLangs) {
+       code_markup_html += '<option value="'+lang_id+'">'+codeLangs[lang_id]+'</option>';
+    }
+    $('#code_markup_edit').html(code_markup_html);
+
+    $('#button-code-edit').click(function(e) {
+        var off = $(this).offset();
+        $('#code_markup_select_edit option').each(function() { $(this).removeAttr('selected') });
+        $('#code_markup_edit').slideDown(150).css({top: off.top + $(this).height()+1, left: off.left});
+    });
+    $('#code_markup_edit').bind("mouseleave", function() { $(this).slideUp(150); $(this) });
+    $('#code_markup_select_edit').bind("change", function() { 
+        var lang = $(this).val().toString();
+        if (lang && lang != '') {
+            insertTag('[code='+lang.split(',')[0]+']','[/code]',textarea);
+            $('#code_markup_edit').slideUp(150);
+            countSymbols(textarea);
+        }
+        $('#code_markup_edit').slideUp(150);
+    });
+
 })($(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0]);

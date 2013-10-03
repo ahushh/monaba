@@ -14,25 +14,38 @@
             <td .post-block-named>_{MsgMessage}
             <td>
                 ^{fvInput messageView}
-                <div .buttons>
-                     [
-                     <a id=button-bold >bold
+                <div .markup-buttons>
+                     <a id=button-bold>
+                        <strong>
+                          _{MsgMarkupBold}
                      |
-                     <a id=button-italic >italic
+                     <a id=button-italic>
+                        <em>
+                          _{MsgMarkupItalic}
                      |
-                     <a id=button-underline >underline
+                     <a id=button-underline>
+                        <u>
+                          _{MsgMarkupUnderline}
                      |
-                     <a id=button-strike >strike
+                     <a id=button-strike>
+                        <span style="text-decoration:line-through">
+                          _{MsgMarkupStrike}
                      |
-                     <a id=button-spoiler >spoiler
+                     <a id=button-spoiler>
+                        <span .spoiler>
+                          _{MsgMarkupSpoiler}
                      |
-                     <a id=button-code >code
+                     <a id=button-code>
+                        _{MsgMarkupCode}
                      |
-                     <a id=button-inline-latex >inline LaTeX
+                     <a id=button-inline-latex>
+                        _{MsgMarkupInlineLatex}
                      |
-                     <a id=button-latex >LaTeX
+                     <a id=button-latex>
+                        _{MsgMarkupLatex}
                      |
-                     <a id=button-quote >quote
+                     <a id=button-quote .quote>
+                        _{MsgMarkupQuote}
                      ]                    
                      <span style=display:inline .symbol-counter>
         <tr .post-block>

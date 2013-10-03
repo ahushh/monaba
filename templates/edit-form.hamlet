@@ -8,34 +8,35 @@
     <div style=display:inline .markup-buttons>
         <a id=button-bold-edit>
            <strong>
-             bold
+             _{MsgMarkupBold}
         |
         <a id=button-italic-edit>
            <em>
-             italic
+             _{MsgMarkupItalic}
         |
         <a id=button-underline-edit>
            <u>
-             underline
+             _{MsgMarkupUnderline}
         |
         <a id=button-strike-edit>
            <span style="text-decoration:line-through">
-             strike
+             _{MsgMarkupStrike}
         |
         <a id=button-spoiler-edit>
-           spoiler
+           <span .spoiler>
+             _{MsgMarkupSpoiler}
         |
         <a id=button-code-edit>
-           code
+           _{MsgMarkupCode}
         |
         <a id=button-inline-latex-edit>
-           inline LaTeX
+           _{MsgMarkupInlineLatex}
         |
         <a id=button-latex-edit>
-           LaTeX
+           _{MsgMarkupLatex}
         |
-        <a id=button-quote-edit>
-           quote
+        <a id=button-quote-edit .quote>
+           _{MsgMarkupQuote}
         |
         <span style=display:inline .symbol-counter>
     ^{fvInput passwordView}

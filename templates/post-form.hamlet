@@ -17,34 +17,35 @@
                 <div .markup-buttons>
                      <a id=button-bold>
                         <strong>
-                          bold
+                          _{MsgMarkupBold}
                      |
                      <a id=button-italic>
                         <em>
-                          italic
+                          _{MsgMarkupItalic}
                      |
                      <a id=button-underline>
                         <u>
-                          underline
+                          _{MsgMarkupUnderline}
                      |
                      <a id=button-strike>
                         <span style="text-decoration:line-through">
-                          strike
+                          _{MsgMarkupStrike}
                      |
                      <a id=button-spoiler>
-                        spoiler
+                        <span .spoiler>
+                          _{MsgMarkupSpoiler}
                      |
                      <a id=button-code>
-                        code
+                        _{MsgMarkupCode}
                      |
                      <a id=button-inline-latex>
-                        inline LaTeX
+                        _{MsgMarkupInlineLatex}
                      |
                      <a id=button-latex>
-                        LaTeX
+                        _{MsgMarkupLatex}
                      |
-                     <a id=button-quote>
-                        quote
+                     <a id=button-quote .quote>
+                        _{MsgMarkupQuote}
                      |
                      <span style=display:inline .symbol-counter>
         <tr .post-block>

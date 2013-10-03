@@ -43,6 +43,18 @@ EditPosts: Edit posts and view history
 ShadowEdit: Edit posts without saving history
 DontSaveHistory: Do not save editing history
 
+### Markup
+PlainText: Plain text
+MarkupBold: bold
+MarkupItalic: italic
+MarkupUnderline: underline
+MarkupStrike: strike
+MarkupSpoiler: spoiler
+MarkupCode: code ▼
+MarkupInlineLatex: inline LaTeX
+MarkupLatex: LaTeX
+MarkupQuote: >quote
+
 Error lolka@Text: Error: #{lolka}
 MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
 ######################################################################################

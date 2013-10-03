@@ -408,3 +408,8 @@ ul {
 #get-new-posts-wrapper {
     display: none;
 }
+
+.no-js .markup-buttons {
+    visibility: hidden;
+    height: 0px;
+}

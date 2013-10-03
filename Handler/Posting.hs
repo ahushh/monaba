@@ -81,6 +81,7 @@ editForm permissions extra = do
   (messageRes , messageView ) <- mreq textareaField "" Nothing
   (passwordRes, passwordView) <- mreq passwordField "" Nothing
   (shadowRes  , shadowView  ) <- mopt checkBoxField "" Nothing
+  msgrender <- getMessageRender
   let result = (,,,) <$> messageRes <*> passwordRes <*> postIdRes <*> shadowRes
       widget = $(widgetFile "edit-form")
   return (result, widget)

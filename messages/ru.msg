@@ -26,6 +26,7 @@ ClosePostForm: Закрыть форму
 Reply: Ответить
 ReplyToThread: Ответ в тред №
 
+### Editing
 Edit: Редактировать
 PostEdited: Пост отредактирован
 PostNotYours: Неверный пароль или сессия. Вы не можете редактировать этот пост.
@@ -40,6 +41,18 @@ YouAlreadyEditedPost boku@Int: Вы уже отредактировали пос
 EditPosts: Редактирование постов и просмотр истории
 ShadowEdit: Редактирование постов без сохранения истории
 DontSaveHistory: Не сохранять историю изменений
+
+### Markup
+PlainText: Простой текст
+MarkupBold: жирный
+MarkupItalic: курсив
+MarkupUnderline: подчеркнутый
+MarkupStrike: зачеркнутый
+MarkupSpoiler: спойлер
+MarkupCode: код ▼
+MarkupInlineLatex: inline LaTeX
+MarkupLatex: LaTeX
+MarkupQuote: >цитата
 
 Error lolka@Text: Ошибка: #{lolka}
 MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #{show qw}

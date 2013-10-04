@@ -202,12 +202,11 @@ getFileSize :: FilePath -> IO FileOffset
 getFileSize path = fileSize <$> getFileStatus path
 
 formatFileSize :: FileOffset -> String
-formatFileSize size | b > kb    = (printf "%.2f" $ b/kb) ++ " KB"
-                    | b > mb    = (printf "%.2f" $ b/mb) ++ " MB"
-                    | otherwise = (printf "%.2f" $ b   ) ++ " B"
-  where kb  = 1024     :: Double
-        mb  = 1024^two :: Double
-        two = 2 :: Int
+formatFileSize size | b > mb    = (printf "%.2f" $ b/mb) ++ " MB"
+                    | b > kb    = (printf "%.2f" $ b/kb) ++ " KB"
+                    | otherwise = (printf "%.0f" $ b   ) ++ " B"
+  where kb  = 1024    :: Double
+        mb  = 1048576 :: Double
         b   = fromIntegral size :: Double
 -------------------------------------------------------------------------------------------------------------------
 -- | Save a file to upload directory

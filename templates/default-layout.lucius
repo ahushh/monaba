@@ -276,6 +276,10 @@ header {
     background-position: -77px -77px;
 }
 
+.no-js .icon-edit-post {
+    display: none;
+}
+
 .icon-close {
     background-position: -269px -101px;
 }
@@ -403,10 +407,6 @@ ul {
 
 .censored {
     display: block;
-}
-
-#get-new-posts-wrapper {
-    display: none;
 }
 
 .no-js .markup-buttons {

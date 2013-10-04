@@ -1,0 +1,3 @@
+.no-js .omitted a {
+    display: none;
+}

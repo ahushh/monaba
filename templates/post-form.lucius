@@ -31,6 +31,11 @@ textarea {
     text-align: center;
 }
 
-.no-js .close-post-form {
+.no-js .close-post-form, .no-js .file-input img {
     display: none;
 }
+
+.no-js .file-input {
+    display: block !important;
+}
+

@@ -149,14 +149,17 @@
    CLOSED: [2013-08-14 Ср 20:46]
 * TODO
 ** TODO API - geoip
+** TODO post deletion and thread hiding without JS
+** TODO new posts count (all boards)
+
 ** TODO eventsource
 *** TODO fix i18n
+*** TODO proper work
 *** DONE post autoload
 *** DONE new posts count (thread)
     CLOSED: [2013-09-20 Пт 16:07]
-*** TODO new posts count (all boards)
-*** TODO dynamic post editing
-*** TODO dynamic post deletion
+*** DONE dynamic post editing
+*** DONE dynamic post deletion
 ** TODO reports
 ** TODO refmap table (?)
 ** TODO management

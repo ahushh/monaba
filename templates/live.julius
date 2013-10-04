@@ -77,6 +77,5 @@ if (isEventSourceSupported()) {
     });
 } else {
     console.log("Eventsource isn't supported.");
-    $("#get-new-posts-wrapper").show();
 }
 

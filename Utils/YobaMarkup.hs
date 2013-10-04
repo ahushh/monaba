@@ -30,7 +30,8 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | Color  Text   [Expr] -- [color=red]blah-blah[/color]
           | GroupProof           -- #group
           | UserProof            -- #user
-          | Link          Text   -- http://russia3.ru
+          | Link          Text   -- http://rossia3.ru
+          | NamedLink Text Text  -- [Портал сетевой войны](http://rossia3.ru)
           | List        [[Expr]] -- * one\n * two\n * three\n
           | Plain         Text   -- any text 
           | Newline              -- \n
@@ -122,6 +123,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     f acc UserProof          = userproofHandler  acc
     f acc (List           x) = listHandler       acc x
     f acc (Link           x) = return $ T.concat [acc, "<a href='", x, "'>", x, "</a>"]
+    f acc (NamedLink    n x) = return $ T.concat [acc, "<a href='", x, "'>", n, "</a>"]
     f acc Newline            = return $ T.append acc "<br>"
     ----------------------------------------------------------------------------------------------------------
     f acc (InnerRef postId) = do
@@ -181,7 +183,7 @@ plain = Plain . pack <$> many1 (myCheck >> myCheck' >> anyChar)
         myCheck'  = foldr (\f acc -> acc >> notFollowedBy (try f))
                           (notFollowedBy $ try quote)
                           wholeTags
-        wholeTags = [ spoilerwakaba, newline, link, bold, italic, underline, strike, spoiler,
+        wholeTags = [ spoilerwakaba, newline, namedLink, link, bold, italic, underline, strike, spoiler,
                       color, code, extref, innerref, proof, proofop, userproof, groupproof]
 --------------------------------------------------------------
 -- Kusaba-like tags
@@ -261,6 +263,17 @@ urlScheme = try (string "https" )
         <|> try (string "ftp"   )
         <|> try (string "gopher")
 
+namedLink :: Parser Expr
+namedLink = do
+  void $ char '['
+  name <- many1 $ noneOf "]"
+  void $ string "]("
+  scheme <- urlScheme
+  void $ string "://"
+  rest   <- many1 $ noneOf " \n\t\r[)"
+  void $ char ')'
+  return $ NamedLink (pack name) (T.concat [pack scheme, "://", escapeHTML (pack rest)])
+
 link :: Parser Expr
 link = do
   scheme <- urlScheme
@@ -312,6 +325,7 @@ onelineExpr = try bold
           <|> try spoiler
           <|> try color
           <|> tryWakabaTags
+          <|> try namedLink
           <|> try link
           <|> try extref
           <|> try innerref
@@ -325,6 +339,7 @@ expr :: Parsec Text () Expr
 expr = try quote
    <|> tryTags
    <|> tryWakabaTags
+   <|> try namedLink
    <|> try link
    <|> try extref
    <|> try innerref

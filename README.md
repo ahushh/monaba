@@ -46,7 +46,7 @@ Set your path to GeSHi in highlight.php
 **Install all required packages:**
 
     apt-get install ghc php5 libgd-dev mysql-server
-    apt-get install cabal-install zlibc libpcre++-dev libgeoip-dev libcrypto++-dev libssl-dev libmysqlclient-dev
+    apt-get install cabal-install zlibc libpcre++-dev libpcre3 libpcre3-dev libgeoip-dev libcrypto++-dev libssl-dev libmysqlclient-dev
 
 **Using already compiled binary:**
 

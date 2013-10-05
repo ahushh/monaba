@@ -49,20 +49,20 @@ if (isEventSourceSupported()) {
     src.onopen = function() { console.log("Eventsource opened."); };
 
     // post autoload
-    src.addEventListener("live", function(msg) {
+    src.addEventListener("live-"+#{toJSON posterId}, function(msg) {
         $('h2').after( decodeBase64(msg.data) );
         baseInit();
         updateTitle();
         blinkFavicon();
     });
     // remove deleted posts
-    src.addEventListener("live-deleted", function(msg) {
+    src.addEventListener("live-deleted-"+#{toJSON posterId}, function(msg) {
         var ids = eval(msg.data);
         for (var i = 0; i < ids.length; i++)
             $("#"+ids[i]).remove();
     });
     // dynamic updating of edited posts
-    src.addEventListener("live-edited", function(msg) {
+    src.addEventListener("live-edited-"+#{toJSON posterId}, function(msg) {
         var x = eval(msg.data);        
         var board  = x[0];
         var thread = x[1];

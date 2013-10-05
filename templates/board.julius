@@ -14,7 +14,7 @@ if (isEventSourceSupported()) {
 
     // dynamic updating of edited posts
     $(".thread").each(function() {
-        src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited", function(msg) {
+        src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited-"+#{toJSON posterId}, function(msg) {
             var x = eval(msg.data);        
             var board  = x[0];
             var thread = x[1];

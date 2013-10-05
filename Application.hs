@@ -21,7 +21,8 @@ import System.IO (stdout)
 import System.Log.FastLogger (mkLogger)
 
 import qualified Data.Map as Map
-import           Data.IORef
+import           Control.Concurrent.STM.TVar
+import           Control.Concurrent.Chan (newChan)
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -83,8 +84,9 @@ makeFoundation conf = do
               Database.Persist.applyEnv
     p <- Database.Persist.createPoolConfig (dbconf :: Settings.PersistConf)
     logger  <- mkLogger True stdout
-    clients <- newIORef Map.empty
-    let foundation = App conf s p manager dbconf logger clients
+    clients <- newTVarIO Map.empty
+    chan    <- newChan
+    let foundation = App conf s p manager dbconf logger clients chan
 
     -- Perform database migration using our application's logging settings.
     runLoggingT

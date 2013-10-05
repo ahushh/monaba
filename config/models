@@ -13,6 +13,7 @@ User
     password         Text
     salt             Text
     deriving         Typeable
+    deriving         Show
 Board
     name              Text
     BoardUniqName     name

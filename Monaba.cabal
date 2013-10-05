@@ -121,6 +121,7 @@ library
                  , blaze-builder
                  , base64-bytestring
                  , resourcet
+                 , stm
 
 executable         Monaba
     if flag(library-only)

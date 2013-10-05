@@ -36,7 +36,8 @@ import Data.Maybe          (fromJust, isNothing, isJust)
 import Control.Concurrent.Chan (Chan)
 import Network.Wai.EventSource (ServerEvent (..))
 
-import           Data.IORef
+import           Control.Concurrent.STM.TVar
+import           Control.Concurrent.STM (atomically)
 import           Data.Map   (Map)
 import qualified Data.Map as Map
 
@@ -44,14 +45,15 @@ import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
 import qualified Data.ByteString.UTF8    as B
 import           Control.Applicative     (liftA2)
-import           Data.Time               (getCurrentTime)
+import           Data.Time               (getCurrentTime, UTCTime)
 ---------------------------------------------------------------------------------------------------------
 data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
                            , sseClientPermissions :: [Permission]
                            , sseClientRating :: Censorship
                            , sseClientTimeZone :: Int
-                           , sseClientEvent :: Chan ServerEvent
+                           , sseClientConnected :: UTCTime
                            }
+                 deriving Show
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -64,7 +66,8 @@ data App = App
     , httpManager :: Manager
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
-    , sseClients :: IORef (Map Text SSEClient)
+    , sseClients :: TVar (Map Text SSEClient)
+    , sseChan :: Chan ServerEvent
     }
 ---------------------------------------------------------------------------------------------------------
 -- Data types appear in models
@@ -334,7 +337,7 @@ deleteClient' = do
       posterId <- liftIO $ T.pack . md5sum . B.fromString <$> liftA2 (++) (show <$> (randomIO :: IO Int)) (show <$> getCurrentTime)
       setSession "posterId" posterId
       return posterId
-  (\clientsRef -> liftIO $ atomicModifyIORef' clientsRef (\x -> (Map.delete posterId x, ()))) =<< sseClients <$> getYesod
+  (\clientsRef -> liftIO $ atomically $ modifyTVar' clientsRef (Map.delete posterId)) =<< sseClients <$> getYesod
   
 instance YesodAuth App where
     type AuthId App = UserId

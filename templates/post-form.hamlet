@@ -96,7 +96,9 @@
             <td>
                 ^{fvInput gobackView}
         <tr #no-bump-block .post-block>
-            <td .post-block-named>_{MsgNobump}
+            <td .post-block-named>
+              <label for=#{fvId nobumpView}>
+                _{MsgNobump}
             <td>
                 ^{fvInput nobumpView}
 <table #info-table>

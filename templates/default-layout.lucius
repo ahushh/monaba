@@ -297,6 +297,10 @@ header {
     display:none;
 }
 
+#edit-form textarea {
+    width: 98%;
+}
+
 #close-edit-form {
     float:right;
     margin: 3px 5px;

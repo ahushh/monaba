@@ -5,46 +5,74 @@
             <td>_{MsgName                 }
             <td>^{fvInput nameView        }
         <tr>
-            <td>_{MsgManageThread         }
+            <td>
+              <label for=#{fvId manageThreadView}>
+                _{MsgManageThread         }
             <td>^{fvInput manageThreadView}
         <tr>
-            <td>_{MsgManageBoard          }
+            <td>
+              <label for=#{fvId manageBoardView }>
+                _{MsgManageBoard          }
             <td>^{fvInput manageBoardView }
         <tr>
-            <td>_{MsgManageUsers          }
+            <td>
+              <label for=#{fvId manageUsersView }>
+                _{MsgManageUsers          }
             <td>^{fvInput manageUsersView }
         <tr>
-            <td>_{MsgManageConfig         }
+            <td>
+              <label for=#{fvId manageConfigView}>
+                _{MsgManageConfig         }
             <td>^{fvInput manageConfigView}
         <tr>
-            <td>_{MsgDeletePosts          }
+            <td>
+              <label for=#{fvId deletePostsView }>
+                _{MsgDeletePosts          }
             <td>^{fvInput deletePostsView }
         <tr>
-            <td>_{MsgManagePanel          }
+            <td>
+              <label for=#{fvId managePanelView }>
+                _{MsgManagePanel          }
             <td>^{fvInput managePanelView }
         <tr>
-            <td>_{MsgManageBan            }
+            <td>
+              <label for=#{fvId manageBanView   }>
+                _{MsgManageBan            }
             <td>^{fvInput manageBanView   }
         <tr>
-            <td>_{MsgEditPosts            }
+            <td>
+              <label for=#{fvId editPostsView   }>
+                _{MsgEditPosts            }
             <td>^{fvInput editPostsView   }
         <tr>
-            <td>_{MsgShadowEdit           }
+            <td>
+              <label for=#{fvId shadowEditView  }>
+                _{MsgShadowEdit           }
             <td>^{fvInput shadowEditView  }
         <tr>
-            <td>_{MsgAdditionalMarkup     }
+            <td>
+              <label for=#{fvId aMarkupView     }>
+                _{MsgAdditionalMarkup     }
             <td>^{fvInput aMarkupView     }
         <tr>
-            <td>_{MsgViewIPAndID          }
+            <td>
+              <label for=#{fvId viewIPAndIDView }>
+                _{MsgViewIPAndID          }
             <td>^{fvInput viewIPAndIDView }
         <tr>
-            <td>_{MsgViewModlog           }
+            <td>
+              <label for=#{fvId viewModlogView  }>
+                _{MsgViewModlog           }
             <td>^{fvInput viewModlogView  }
         <tr>
-            <td>_{MsgHellbanning          }
+            <td>
+              <label for=#{fvId hellbanningView }>
+                _{MsgHellbanning          }
             <td>^{fvInput hellbanningView }
         <tr>
-            <td>_{MsgChangeFileRating     }
+            <td>
+              <label for=#{fvId ratingView      }>
+                _{MsgChangeFileRating     }
             <td>^{fvInput ratingView      }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

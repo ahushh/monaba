@@ -44,5 +44,6 @@
     <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif}  .icon-close #close-edit-form>
     $if elem ShadowEditP permissions
       <div>
-        _{MsgDontSaveHistory}
+        <label for=#{fvId shadowView}>
+          _{MsgDontSaveHistory}
         ^{fvInput shadowView}

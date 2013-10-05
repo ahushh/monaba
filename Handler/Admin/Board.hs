@@ -76,13 +76,15 @@ updateBoardForm board action bCategories groups extra = do
       -----------------------------------------------------------------------------
       helper'' :: forall a. (Board -> a) -> Maybe a
       helper'' g = (g . entityVal) <$> board
+      -----------------------------------------------------------------------------
+      bigInput lbl = lbl { fsAttrs = [("size","40")] }
       
   (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
   (descriptionRes      , descriptionView      ) <- mopt textField     "" (helper boardDescription)
-  (longDescriptionRes  , longDescriptionView  ) <- mopt textField     "" (helper boardLongDescription)
+  (longDescriptionRes  , longDescriptionView  ) <- mopt textField     (bigInput "") (helper boardLongDescription)
   (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit)
   (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles)
-  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes))
+  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     (bigInput "") (helper (pack . unwords . boardAllowedTypes))
   (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (helper boardDefaultName)
   (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (helper boardMaxMsgLength)
   (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (helper boardThumbSize)
@@ -98,7 +100,7 @@ updateBoardForm board action bCategories groups extra = do
   (replyAccessRes      , replyAccessView      ) <- mopt (multiSelectFieldList groups) "" (helper'' boardReplyAccess)
   (threadAccessRes     , threadAccessView     ) <- mopt (multiSelectFieldList groups) "" (helper'' boardThreadAccess)
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
-  (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
+  (extraRulesRes       , extraRulesView       ) <- mopt textField     (bigInput "") (helper (T.intercalate ";" . boardExtraRules))
   (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp)
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)

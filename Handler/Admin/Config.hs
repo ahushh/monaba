@@ -28,12 +28,13 @@ configForm config extra = do
       f :: forall a. (Config -> a) -> Maybe (Maybe a)
   msgrender <- getMessageRender
   let showLatestPostsField = checkBool (>0) (msgrender $ MsgMustBeGreaterThan (msgrender MsgShowLatestPosts) 0) intField
+      bigInput lbl         = lbl { fsAttrs = [("size","55")] }
   (captchaLengthRes   , captchaLengthView  ) <- mopt intField  "" (f configCaptchaLength  )
   (acaptchaGuardsRes  , acaptchaGuardsView ) <- mopt intField  "" (f configACaptchaGuards )
   (captchaTimeoutRes  , captchaTimeoutView ) <- mopt intField  "" (f configCaptchaTimeout )
   (replyDelayRes      , replyDelayView     ) <- mopt intField  "" (f configReplyDelay     )
   (threadDelayRes     , threadDelayView    ) <- mopt intField  "" (f configThreadDelay    )
-  (boardCategoriesRes , boardCategoriesView) <- mopt textField "" (Just $ Just $ T.intercalate "," $ configBoardCategories config)
+  (boardCategoriesRes , boardCategoriesView) <- mopt textField (bigInput "") (Just $ Just $ T.intercalate "," $ configBoardCategories config)
   (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
@@ -41,7 +42,6 @@ configForm config extra = do
   (displaySageRes     , displaySageView    ) <- mopt checkBoxField "" (f configDisplaySage)
   (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
   (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
-
   let result = (,,,,,,,,,,,,) <$>
                captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes   <*>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes  <*>

@@ -62,7 +62,7 @@ helperUID onlyHellbanned posterId page = do
                                  [PostHellbanned ==. True | onlyHellbanned])
   let boards'     = mapMaybe (ignoreBoards group) boards
       selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId] ++
-                    if onlyHellbanned then [PostHellbanned ==. True] else []
+                    [PostHellbanned ==. True | onlyHellbanned]
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []

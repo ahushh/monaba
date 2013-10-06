@@ -176,5 +176,5 @@ getApiBoardStatsR = do
     newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId]
     return (board, lastId, newPosts)
   saveBoardStats newDiff
-  selectRep $ do
+  selectRep $ 
     provideJson $ object $ map (\(b,_,n) -> (b, toJSON n)) newDiff

@@ -105,8 +105,8 @@ postManageGroupsR = do
                            }
       g <- runDB $ getBy $ GroupUniqName name
       if isJust g
-        then (addModlogEntry $ MsgModlogUpdateGroup name) >> (void $ runDB $ replace (entityKey $ fromJust g) newGroup)
-        else (addModlogEntry $ MsgModlogAddGroup    name) >> (void $ runDB $ insert newGroup)
+        then addModlogEntry (MsgModlogUpdateGroup name) >> void (runDB $ replace (entityKey $ fromJust g) newGroup)
+        else addModlogEntry (MsgModlogAddGroup    name) >> void (runDB $ insert newGroup)
       msgRedirect MsgGroupAddedOrUpdated
 
 getDeleteGroupsR :: Text -> Handler ()
@@ -114,7 +114,7 @@ getDeleteGroupsR group = do
   delGroup  <- runDB $ selectFirst [GroupName ==. group] []
   when (isNothing delGroup) $ setMessageI MsgGroupDoesNotExist >> redirect ManageGroupsR
   usrGroup <- getMaybeGroup =<< maybeAuth
-  when (isNothing usrGroup) $ notFound
+  when (isNothing usrGroup) notFound
 
   groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   when ((ManageUsersP `notElem` groupPermissions (entityVal $ fromJust delGroup) ) ||

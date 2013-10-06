@@ -73,7 +73,7 @@ sendPost board thread postId hellbanned posterId = do
   clients    <- liftIO $ readTVarIO clientsRef
   let access             = boardViewAccess boardVal
       checkViewAccess' u = (isJust access && isNothing ((userGroup . entityVal) <$> u)) ||
-                           (isJust access && notElem (fromJust ((userGroup . entityVal) <$> u)) (fromJust $ access))
+                           (isJust access && notElem (fromJust ((userGroup . entityVal) <$> u)) (fromJust access))
       filteredClients = [(k,x) | (k,x) <- Map.toList clients, not hellbanned || k==posterId || elem HellBanP (sseClientPermissions x)
                                                        , not (checkViewAccess' $ sseClientUser x)]
   -- liftIO $ print clients

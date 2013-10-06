@@ -32,7 +32,7 @@ infixr 5 <>
 -------------------------------------------------------------------------------------------------------------------
 import Text.Blaze.Html as Import (preEscapedToHtml)
 import Data.Time       as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
-import Data.Maybe      as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
+import Data.Maybe      as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes, mapMaybe)
 import Data.List       as Import (nub, intercalate)
 import Control.Monad   as Import (unless, when, forM, forM_, void, join)
 import Control.Arrow   as Import (second, first, (&&&), (***))
@@ -109,8 +109,8 @@ truncateFileName :: Int -> String -> String
 truncateFileName maxLen s = if len > maxLen then result else s
   where len      = length s
         excess   = len - maxLen
-        halfLen  = round $ (fromIntegral len)    / (2 :: Double)
-        halfExc  = round $ (fromIntegral excess) / (2 :: Double)
+        halfLen  = round $ fromIntegral len    / (2 :: Double)
+        halfExc  = round $ fromIntegral excess / (2 :: Double)
         splitted = splitAt halfLen s
         left     = reverse $ drop (halfExc + 2) $ reverse $ fst splitted
         right    = drop (halfExc + 2) $ snd splitted
@@ -204,9 +204,9 @@ getFileSize :: FilePath -> IO FileOffset
 getFileSize path = fileSize <$> getFileStatus path
 
 formatFileSize :: FileOffset -> String
-formatFileSize size | b > mb    = (printf "%.2f" $ b/mb) ++ " MB"
-                    | b > kb    = (printf "%.2f" $ b/kb) ++ " KB"
-                    | otherwise = (printf "%.0f" $ b   ) ++ " B"
+formatFileSize size | b > mb    = printf "%.2f" (b/mb) ++ " MB"
+                    | b > kb    = printf "%.2f" (b/kb) ++ " KB"
+                    | otherwise = printf "%.0f" b      ++ " B"
   where kb  = 1024    :: Double
         mb  = 1048576 :: Double
         b   = fromIntegral size :: Double
@@ -236,7 +236,7 @@ loadImage p t | t == "jpeg" || t == "jpg" = GD.loadJpegFile p
               | t == "gif"              = GD.loadGifFile  p
 loadImage _ t = error $ "error: unknown image type '"++t++"' at loadImage"
 
-saveImage :: FilePath -> GD.Image -> [Char] -> IO ()
+saveImage :: FilePath -> GD.Image -> String -> IO ()
 saveImage path img t | t == "jpeg" || t == "jpg" = GD.saveJpegFile (-1) path img
                      | t == "png"              = GD.savePngFile  path img
                      | t == "gif"              = GD.saveGifFile  path img
@@ -279,7 +279,7 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
 makeThumbImg thumbSize filepath filename filetype (width, height) = do
   unlessM (doesDirectoryExist (thumbDirectory </> filetype)) $
     createDirectory (thumbDirectory </> filetype)
-  if (height > thumbSize || width > thumbSize)
+  if height > thumbSize || width > thumbSize
     then resizeImage filepath thumbpath (thumbSize,thumbSize) filetype
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = thumbFilePath thumbSize filetype filename
@@ -288,7 +288,7 @@ makeThumbImg thumbSize filepath filename filetype (width, height) = do
 makeThumbNonImg :: FilePath -> -- ^ Destination file name
                   String   -> -- ^ Destination file extension
                   IO ()
-makeThumbNonImg filename filetype = do
+makeThumbNonImg filename filetype =
   unlessM (doesFileExist $ thumbFilePath 0 filetype filename) $ do
     let defaultIconPath = staticDir </> "icons" </> "default" ++ "." ++ thumbIconExt
         newIconPath     = staticDir </> "icons" </> filetype  ++ "." ++ thumbIconExt
@@ -398,7 +398,7 @@ getPosterId = do
       return posterId
 
 getConfig :: forall b. (Config -> b) -> Handler b
-getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+getConfig f = f . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
 
 getHiddenThreads :: Text -> Handler [Int]
 getHiddenThreads board = do
@@ -448,12 +448,12 @@ getCountry :: Text ->                      -- ^ IP adress
              Handler (Maybe (Text,Text)) -- ^ (country code, country name)
 getCountry ip = do
   dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
-  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ encodeUtf8 ip)
+  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= flip geoLocateByIPAddress (encodeUtf8 ip)
   return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
 
 getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity post, files) tuples
                Handler [(Key Post, (Text, Text))] -- ^ [(Post key, (country code, country name))]
-getCountries posts = fmap catMaybes $ forM posts $ \((Entity pId p),_) -> f . (pId,) <$> getCountry (postIp p)
+getCountries posts = fmap catMaybes $ forM posts $ \(Entity pId p,_) -> f . (pId,) <$> getCountry (postIp p)
   where f (a, Just b ) = Just (a,b)
         f (_, Nothing) = Nothing
 -------------------------------------------------------------------------------------------------------------------
@@ -466,7 +466,7 @@ getBoardStats = do
   case maybeStats of
     Just s  -> return $ readText s
     Nothing -> do
-      boards <- catMaybes . map (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
       stats  <- runDB $ forM boards $ \b -> do
                   lastPost <- selectFirst [PostBoard ==. b] [Desc PostLocalId]
                   return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)

@@ -115,7 +115,7 @@ updateBoardForm board action bCategories groups extra = do
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> longDescriptionRes
-      bname  = maybe Nothing (Just . boardName . entityVal) board
+      bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ postAllBoardsR = do
                 , bLongDescription
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
-      forM_ boards $ (\(Entity oldBoardId oldBoard) ->
+      forM_ boards (\(Entity oldBoardId oldBoard) ->
         let onoff (Just "Enable" ) _ = True
             onoff (Just "Disable") _ = False
             onoff _                f = f oldBoard
@@ -223,7 +223,7 @@ postAllBoardsR = do
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                              }
           in runDB $ replace oldBoardId newBoard)
-      addModlogEntry $ MsgModlogUpdateAllBoards
+      addModlogEntry MsgModlogUpdateAllBoards
       msgRedirect MsgBoardsUpdated
 
 postUpdateBoardsR :: Text -> Handler Html
@@ -285,7 +285,7 @@ cleanBoard action board = case action of
   AllBoards -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
-    addModlogEntry $ MsgModlogCleanAllBoards
+    addModlogEntry MsgModlogCleanAllBoards
     void $ deletePosts (concat postIDs) False
   NewBoard -> msgRedirect MsgNoSuchBoard
   _        -> do

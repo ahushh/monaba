@@ -57,7 +57,7 @@ postUsersR = do
       u <- runDB $ getBy $ UserUniqName name
       if isJust u
         then void $ runDB $ replace (entityKey $ fromJust u) userWithPassword
-        else (addModlogEntry $ MsgModlogAddUser name) >> (void $ runDB $ insert userWithPassword)
+        else addModlogEntry (MsgModlogAddUser name) >> void (runDB $ insert userWithPassword)
       msgRedirect MsgUsersAddedOrUpdated
 
 getUsersDeleteR :: Text -> Handler Html

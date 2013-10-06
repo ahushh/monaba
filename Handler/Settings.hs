@@ -3,6 +3,7 @@ module Handler.Settings where
  
 import           Import
 import qualified Data.Text  as T
+import           Data.Foldable as Foldable (forM_)
 import           Yesod.Auth
 import           Handler.Posting     (trickyRedirect)
 import           Handler.EventSource (deleteClient)
@@ -37,7 +38,7 @@ postSettingsR = do
       setSession "timezone"          $ showText timezone
       setSession "stylesheet"        stylesheet
       setSession "censorship-rating" $ showText rating
-      when (isJust lang) $ setLanguage $ fromJust lang
+      Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR
 

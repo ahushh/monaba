@@ -16,7 +16,7 @@ getLiveR = do
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  hiddenThreads <- (concat . map snd) <$> getAllHiddenThreads
+  hiddenThreads <- (concatMap snd) <$> getAllHiddenThreads
   let boards'        = mapMaybe (ignoreBoards group) boards
       selectPostsAll = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostLocalId /<-. hiddenThreads
                        ,PostParent /<-. hiddenThreads]
@@ -24,7 +24,7 @@ getLiveR = do
                        ,PostLocalId /<-. hiddenThreads, PostParent /<-. hiddenThreads] ||.
                        [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True
                        ,PostPosterId ==. posterId, PostLocalId /<-. hiddenThreads, PostParent /<-. hiddenThreads]
-      selectPosts    = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+      selectPosts    = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles

@@ -66,6 +66,8 @@ import           Yesod.Routes.Class      (Route(..))
 import           GHC.Int                 (Int64)
 import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
+
+import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
@@ -454,3 +456,41 @@ getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity po
 getCountries posts = fmap catMaybes $ forM posts $ \((Entity pId p),_) -> f . (pId,) <$> getCountry (postIp p)
   where f (a, Just b ) = Just (a,b)
         f (_, Nothing) = Nothing
+-------------------------------------------------------------------------------------------------------------------
+-- Board stats
+-------------------------------------------------------------------------------------------------------------------
+getBoardStats :: Handler [(Text,Int,Int)]
+getBoardStats = do
+  mgroup     <- getMaybeGroup =<< maybeAuth
+  maybeStats <- lookupSession "board-stats"
+  case maybeStats of
+    Just s  -> return $ readText s
+    Nothing -> do
+      boards <- catMaybes . map (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      stats  <- runDB $ forM boards $ \b -> do
+                  lastPost <- selectFirst [PostBoard ==. b] [Desc PostLocalId]
+                  return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
+      saveBoardStats stats
+      return stats
+  where ignoreBoards' group (Entity _ b)
+          | boardHidden b ||
+            ( (isJust (boardViewAccess b) && isNothing group) ||
+              (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+            ) = Nothing
+          | otherwise = Just $ boardName b
+
+saveBoardStats :: [(Text,Int,Int)] -> Handler ()
+saveBoardStats stats = do
+  deleteSession "board-stats"
+  setSession "board-stats" $ showText stats
+
+cleanBoardStats :: Text -> Handler ()
+cleanBoardStats board = do
+  oldStats <- getBoardStats
+  newStats <- forM oldStats $ \s@(b,_,_) ->
+    if b == board
+    then do
+      lastPost <- runDB $ selectFirst [PostBoard ==. b] [Desc PostLocalId]
+      return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
+    else return s
+  saveBoardStats newStats

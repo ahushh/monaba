@@ -167,3 +167,14 @@ getApiUnhideThreadR board threadId
       selectRep $ do
         provideRep  $ bareLayout [whamlet|ok: showed|]
         provideJson $ object [("ok", "showed")]
+---------------------------------------------------------------------------------------------------------
+getApiBoardStatsR :: Handler TypedContent
+getApiBoardStatsR = do
+  diff       <- getBoardStats
+  posterId   <- getPosterId
+  newDiff <- runDB $ forM diff $ \(board, lastId, _) -> do
+    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId]
+    return (board, lastId, newPosts)
+  saveBoardStats newDiff
+  selectRep $ do
+    provideJson $ object $ map (\(b,_,n) -> (b, toJSON n)) newDiff

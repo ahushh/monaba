@@ -150,8 +150,8 @@
 * TODO
 ** TODO API - geoip
 ** TODO post deletion and thread hiding without JS
-** TODO new posts count (all boards)
-
+** DONE new posts count (all boards)
+   CLOSED: [2013-10-06 Вс 17:16]
 ** TODO eventsource
 *** TODO fix i18n
 *** TODO proper work

@@ -29,6 +29,7 @@
 /api/hide/thread/#Text/#Int      ApiHideThreadR   GET
 /api/unhide/thread/#Text/#Int    ApiUnhideThreadR GET
 /api/post/#Text/#Int             ApiPostR         GET
+/api/board/stats                 ApiBoardStatsR   GET
 /jsonfrommsg/#Text               JsonFromMsgR     GET
 
 

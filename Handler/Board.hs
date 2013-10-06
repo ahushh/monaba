@@ -80,6 +80,7 @@ getBoardR board page = do
       hasAccessToReply     = checkAccessToReply     mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
+  cleanBoardStats board
   hiddenThreads   <- getHiddenThreads board
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False
                                   ,PostLocalId /<-. hiddenThreads]

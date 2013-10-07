@@ -7,7 +7,6 @@ import           Yesod.Auth
 import           Control.Concurrent.Chan            (writeChan, dupChan)
 import           Network.Wai.EventSource            (ServerEvent (..), eventSourceAppChan)
 import           Blaze.ByteString.Builder.Char.Utf8 (fromText, fromString)
--- import           Control.Monad.Trans.Resource       (register)
 
 import qualified Text.Blaze.Html.Renderer.Text   as RHT
 
@@ -18,7 +17,6 @@ import           Data.Text.Lazy         (toStrict)
 
 import           Control.Concurrent.STM.TVar
 import           Control.Concurrent.STM (atomically)
--- import           Control.Concurrent     (threadDelay)
 import qualified Data.Map as Map
 import           Data.List (sortBy)
 -------------------------------------------------------------------------------------------------------------------
@@ -34,9 +32,7 @@ getReceiveR = do
   clientsRef <- sseClients <$> getYesod
   chan       <- sseChan    <$> getYesod
   clients    <- liftIO $ readTVarIO clientsRef
-  -- liftIO $ print clients
   let client = Map.lookup posterId clients
-  -- liftIO $ putStrLn ("################\n"<>show (Map.size clients)<>"\n#############")
   when (Map.size clients > maxConnections) $
     liftIO $ atomically $ modifyTVar' clientsRef (Map.fromList . take (maxConnections-1) . sortBy
                                                   (\(_,c1) (_,c2) -> sseClientConnected c1 `compare` sseClientConnected c2) . Map.toList)
@@ -76,22 +72,18 @@ sendPost board thread postId hellbanned posterId = do
                            (isJust access && notElem (fromJust ((userGroup . entityVal) <$> u)) (fromJust access))
       filteredClients = [(k,x) | (k,x) <- Map.toList clients, not hellbanned || k==posterId || elem HellBanP (sseClientPermissions x)
                                                        , not (checkViewAccess' $ sseClientUser x)]
-  -- liftIO $ print clients
-  forM_ filteredClients (\(posterId', client) -> do
-    renderedPost  <- renderPost client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
+  forM_ filteredClients $ \(posterId', client) -> do
+    when (thread /= 0) $ do
+      renderedPost  <- renderPost client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
+      let sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread, "-", posterId']
+          encodedPost     = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
+      liftIO $ writeChan chan $ ServerEvent sourceEventName Nothing $ return encodedPost
+
     renderedPost' <- renderPostLive client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
-    let sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread, "-", posterId']
-        sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
-        encodedPost     = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
+    let sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
         encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
-    -- liftIO $ putStrLn ("sendpost#################\n"++show posterId'++"################\n")
-    liftIO $ writeChan chan $ ServerEvent sourceEventName Nothing $ return encodedPost
-    -- liftIO $ threadDelay micros
     liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return encodedPost'
-    -- liftIO $ threadDelay micros)
-    )
-  where --micros = 1*(10^6)
-        renderPost client post files displaySage geoIps maxLenOfFileName =
+  where renderPost client post files displaySage geoIps maxLenOfFileName =
           bareLayout $ replyPostWidget (sseClientUser client) post
                        files (sseClientRating client) False True False
                        displaySage (sseClientPermissions client) geoIps
@@ -113,7 +105,6 @@ sendDeletedPosts posts = do
   clientsRef <- sseClients <$> getYesod
   chan       <- sseChan    <$> getYesod
   clients    <- liftIO $ readTVarIO clientsRef
-  -- liftIO $ print clients
   let boards  = map postBoard  posts
       threads = map postParent posts
       posts'  = map (\(b,t) -> (b,t,filter (\p -> postBoard p == b && postParent p == t) posts)) $ zip boards threads
@@ -121,33 +112,23 @@ sendDeletedPosts posts = do
       let sourceEventName = Just $ fromText $ T.concat [b, "-", showText t, "-deleted-", posterId]
           sourceEventName'= Just $ fromText $ T.concat ["live-deleted-", posterId]
           ps'             = map (\x -> T.concat ["post-", showText (postLocalId x), "-", showText t, "-", b]) ps
-      -- liftIO $ putStrLn ("deleted################\n"++show posterId++"################\n")
       liftIO $ writeChan chan $ ServerEvent sourceEventName Nothing $ return $ fromString $ show ps'
-      -- liftIO $ threadDelay micros
       liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return $ fromString $ show ps'
-      -- liftIO $ threadDelay micros))
       ))
-  -- where micros = 1*(10^6)
 
 sendEditedPost :: Text -> Text -> Int -> Int -> Maybe UTCTime -> Handler ()
 sendEditedPost msg board thread post time = do
   clientsRef <- sseClients <$> getYesod
   chan       <- sseChan    <$> getYesod
   clients    <- liftIO $ readTVarIO clientsRef
-  -- liftIO $ print clients
-  forM_ (Map.toList clients) (\(posterId,client) -> do
+  forM_ (Map.toList clients) $ \(posterId,client) -> do
       let thread'         = if thread == 0 then post else thread
           sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread', "-edited-", posterId]
           sourceEventName'= Just $ fromText $ T.concat ["live-edited-", posterId]
           encodedMsg      = decodeUtf8 $ Base64.encode $ encodeUtf8 msg
           timeZone        = sseClientTimeZone client
           lastModified    = maybe "" (pack . myFormatTime timeZone) time
-      -- liftIO $ putStrLn ("edited#################\n"++show posterId++"################\n")
       liftIO $ writeChan chan $
         ServerEvent sourceEventName Nothing $ return $ fromString $ show [board, showText thread, showText post, encodedMsg, lastModified]
-      -- liftIO $ threadDelay micros
       liftIO $ writeChan chan $
         ServerEvent sourceEventName' Nothing $ return $ fromString $ show [board, showText thread, showText post, encodedMsg, lastModified]
-      -- liftIO $ threadDelay micros)
-      )
-  -- where micros = 1*(10^6)

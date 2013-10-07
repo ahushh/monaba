@@ -5,12 +5,23 @@ var Monaba = {
     zindex: 0,
 };
 
+//-----------------------------------------------------------------
+// Load default settings
+//-----------------------------------------------------------------
 if (getItem('useEventsource') == null)
     setItem('useEventsource', false);
-if (getItem('useHTML5Youtube') == null)
-    setItem('useHTML5Youtube', true);
 if (getItem('expandImage') == null)
     setItem('expandImage', 'center');
+if (getItem('youtubeHTML5') == null)
+    setItem('youtubeHTML5', true);
+if (getItem('youtubeLoadTitles') == null)
+    setItem('youtubeLoadTitles', true);
+if (getItem('youtubeLoadThumbs') == null)
+    setItem('youtubeLoadThumbs', true);
+if (getItem('youtubeWidth') == null)
+    setItem('youtubeWidth', 360);
+if (getItem('youtubeHeight') == null)
+    setItem('youtubeHeight', 270);
 //-----------------------------------------------------------------
 function baseInit() {
     doImageExpanding();
@@ -212,10 +223,10 @@ function addEmbeddedPlayer(post) {
                 first1 = true;
             }
 
-            $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", function(data){
-                var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
-                var height = 270; //data.entry.media$group.media$thumbnail[2].height;
-                var title  = data.entry.title.$t;
+            var perform = function(data) {
+                var width  = getItem('youtubeWidth');
+                var height = getItem('youtubeHeight');
+                var title  = data ? data.entry.title.$t : url;
                 var thumb  = "http://i.ytimg.com/vi/"+videoId+"/0.jpg"
                 var iframe =  document.createElement("iframe");
 
@@ -226,20 +237,20 @@ function addEmbeddedPlayer(post) {
                 $(link).html("<img alt=play src='@{StaticR img_blank_gif}' class='icon-play'>"+title+"</div>");
                 var loadIframe = function () {
                     $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&&wmode=opaque&enablejsapi=1"+ 
-                                           (getItem('useHTML5Youtube') ? "&html5=1" : ""));
+                                           (getItem('youtubeHTML5') ? "&html5=1" : ""));
                     $(iframe).addClass('loaded');
                 };
 
                 $(iframe).css('display','none');
-                if (first1) {
+                if (first1 && getItem('youtubeLoadThumbs')) {
                     $('#'+postId+' .video-container').prepend("<img alt='"+title+"' title='"+title+"' class='video-thumb' width="+width+" height="+height+" src='"+thumb+"'>");
                     $('#'+postId+' .video-container').prepend(iframe);
                     $(link).addClass('focused');
                     $('#'+postId+' .video-thumb').click(function() {
                         $(this).hide();
+                        loadIframe();
                         $('#'+postId+' .video-container iframe').show();
                     });
-                    loadIframe();
                 } else {
                     $(link).prepend(iframe);
                 }
@@ -258,7 +269,13 @@ function addEmbeddedPlayer(post) {
                     $('#'+postId+' .video-container iframe').show();
                     return false;
                 });
-            });
+            }
+
+            if (getItem('youtubeLoadTitles')) {
+                $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", perform);
+            } else {
+                perform();
+            }
         });
     });
 }

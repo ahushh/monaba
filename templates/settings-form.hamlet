@@ -23,14 +23,42 @@
           (experimental)
     <tr .js-settings-row>
       <td>
-        <label for=useHTML5Youtube>
-          HTML5 youtube
-      <td>
-        <input #useHTML5Youtube .js-settings type=checkbox>
-    <tr .js-settings-row>
-      <td>
         _{MsgExpandImage}
       <td>
         <select #expandImage .js-settings>
           <option value=center>_{MsgExpandImageCenter}
           <option value=inside>_{MsgExpandImageInside}
+    <tr .js-settings-row>
+      <td colspan=2 style="text-align:center">
+         <strong>
+           YouTube
+    <tr .js-settings-row>
+      <td>
+        <label for=youtubeHTML5>
+          HTML5
+      <td>
+        <input #youtubeHTML5 .js-settings type=checkbox>
+    <tr .js-settings-row>
+      <td>
+        <label for=youtubeLoadTitles>
+          _{MsgYoutubeLoadTitles}
+      <td>
+        <input #youtubeLoadTitles .js-settings type=checkbox>
+    <tr .js-settings-row>
+      <td>
+        <label for=youtubeLoadThumbs>
+          _{MsgYoutubeLoadThumbs}
+      <td>
+        <input #youtubeLoadThumbs .js-settings type=checkbox>
+    <tr .js-settings-row>
+      <td>
+        <label for=youtubeWidth>
+          _{MsgYoutubeWidth}
+      <td>
+        <input #youtubeWidth .js-settings type=number>
+    <tr .js-settings-row>
+      <td>
+        <label for=youtubeHeight>
+          _{MsgYoutubeHeight}
+      <td>
+        <input #youtubeHeight .js-settings type=number>

@@ -364,6 +364,10 @@ UseEventSource: Use Eventsource
 ExpandImage: Expand image
 ExpandImageCenter: in the center
 ExpandImageInside: inside post
+YoutubeLoadTitles: Load titles
+YoutubeLoadThumbs: Load thumbnails
+YoutubeWidth: Width
+YoutubeHeight: Height
 
 ######################################################################################
 #### Modlogs

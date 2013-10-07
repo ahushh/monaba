@@ -364,6 +364,10 @@ UseEventSource: Использовать Eventsource
 ExpandImage: Разворачивать изображения
 ExpandImageCenter: по центру
 ExpandImageInside: в посте
+YoutubeLoadTitles: Загружать названия
+YoutubeLoadThumbs: Загружать превью
+YoutubeWidth: Ширина
+YoutubeHeight: Высота
 
 ######################################################################################
 #### Modlogs

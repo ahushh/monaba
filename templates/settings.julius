@@ -28,13 +28,15 @@ function setJSSettings() {
     $('.js-settings').each(function(k,v) {
         if ($(this).is('select'))
             setItem($(this).attr('id'), $(this).val());
+        else if ($(this).is('input[type=number]'))
+            setItem($(this).attr('id'), $(this).val());
         else
             setItem($(this).attr('id'), $(this).is(':checked'));
     });
 }
 
 $('.js-settings').each(function(k,v) {
-    if ($(this).is('select'))     
+    if ($(this).is('select') || $(this).is('input[type=number]'))
         $(this).val( getItem( $(this).attr('id') ) );
     else
         $(this).attr('checked', getItem($(this).attr('id')));

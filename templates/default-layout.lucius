@@ -417,3 +417,7 @@ ul {
     visibility: hidden;
     height: 0px;
 }
+
+.video-thumb {
+    cursor: pointer;
+}

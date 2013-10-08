@@ -201,3 +201,13 @@ pre {
     background-color: #EEAA88;
     padding: 2px;
 }
+
+.spoiler {
+    background:#f0d0b6;
+    color:#f0d0b6;
+}
+
+.spoiler:hover {
+    background:#f0d0b6;
+    color:#7d0008;
+}

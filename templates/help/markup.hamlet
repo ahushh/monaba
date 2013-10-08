@@ -33,12 +33,12 @@
         <td>[spoiler]spoiler[/spoiler]
         <td>&nbsp;→&nbsp;
         <td>
-          <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler
+          <span .spoiler>spoiler
       <tr>
         <td>%%spoiler%%
         <td>&nbsp;→&nbsp;
         <td>
-          <span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler
+          <span .spoiler>spoiler
       <tr>
         <td>[s]strike[/s]
         <td>&nbsp;→&nbsp;

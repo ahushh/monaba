@@ -332,3 +332,13 @@ pre {
 #captcha {
     padding: 1px;
 }
+
+.spoiler {
+    background:#454545;
+    color:#454545;
+}
+
+.spoiler:hover {
+    background:#454545;
+    color:#496ca0;
+}

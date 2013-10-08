@@ -340,15 +340,6 @@ header {
     color: green;
 }
 
-.spoiler {
-    color: black;
-    background-color: black;
-}
-
-.spoiler:hover {
-    color:white;
-}
-
 iframe {
     border: 0px;
 }

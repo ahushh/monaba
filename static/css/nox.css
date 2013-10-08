@@ -238,3 +238,15 @@ pre {
     border-bottom: 2px dashed rgba(100, 100, 100, 0.7) !important;
     border-top: 2px dashed rgba(100, 100, 100, 0.7) !important;
 }
+
+.spoiler {
+    background: none;
+    color: transparent;
+    text-shadow:0 0 10px #fff;
+}
+
+.spoiler:hover {
+    color: #e1e1e1;
+    background:none;
+    text-shadow:none;
+}

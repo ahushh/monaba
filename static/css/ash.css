@@ -225,3 +225,13 @@ pre {
 .file-info {
     display:none;
 }
+
+.spoiler {
+    background:#adadad;
+    color:#adadad;
+}
+
+.spoiler:hover {
+    background:#adadad;
+    color:#333333;
+}

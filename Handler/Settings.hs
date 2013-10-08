@@ -65,7 +65,7 @@ ratings :: [(Text, Censorship)]
 ratings = map (showText &&& id) [minBound..maxBound]
 
 stylesheets :: [(Text, Text)]
-stylesheets = map (\x -> (x,x)) ["Ash","Futaba","Postmodern","Nox"]
+stylesheets = map (\x -> (x,x)) ["Ash","Futaba","Postmodern","Nox","Mayuri"]
 
 timezones :: [(Text, Int)]
 timezones = [("[UTC -11:00] Pacific/Midway",-39600)

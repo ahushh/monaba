@@ -18,6 +18,8 @@ $newline never
               <link rel=stylesheet type=text/css title=Postmodern href=@{StaticR css_postmodern_css}>
           $elseif s == "Nox"
               <link rel=stylesheet type=text/css title=Nox href=@{StaticR css_nox_css}>
+          $elseif s == "Mayuri"
+              <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR css_mayuri_css}>
         $nothing
           <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
         <link #favicon href="/favicon.ico" rel="shortcut icon">

@@ -150,17 +150,6 @@ $(document).ready(function() {
         countSymbols('post-form');
     });
 
-    $('input[type=file]').change(function() {
-        var t = $(this);
-        $('.file-input').each(function() {
-            if ($(this).css('display') == 'none') {
-                $(this).css('display', 'block');
-                t.unbind();
-                return false;
-            }
-        });
-    });
-
     $('body').children().first().before('<div style="position: absolute; display: none; z-index:999999" id="code_markup"></div>');
     var code_markup_html = "<select size=\"8\" id=\"code_markup_select\" multiple=\"multiple\">";
     for(var lang_id in codeLangs) {
@@ -185,3 +174,48 @@ $(document).ready(function() {
     });
 });
 // ----------------------------------------------------------------------------------------------------------
+function fileSelect(inputId) {
+    $("#"+inputId).click();
+}
+
+function handleFiles(elem) {
+    var files = elem.files;
+    for (var i = 0; i < files.length; i++) {
+        var file  = files[i];
+        $(elem).parent().find('.icon-close').show();
+        // file name
+        $(elem).parent().find('.file-select').text(file.name);
+        // file size
+        var bytes = file.size;
+        var fSize;
+        for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"], nMultiple = 0, nApprox = bytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
+            fSize = " " + nApprox.toFixed(2) + " " + aMultiples[nMultiple];
+        }
+        $(elem).parent().find('.file-input-size').remove();
+        $(elem).parent().find('.icon-close').after("<div class=file-input-size>"+fSize+"</div>");
+        // file thumbnail
+        if (window.FileReader) {
+            $(elem).parent().find('.file-input-thumb').remove();
+            var img = new Image();
+            $(img).attr('class','file-input-thumb').on('click',function(){ fileSelect($(elem).attr('id')); });
+            img.file = file;
+            $(elem).parent().append(img);
+            var reader = new FileReader();
+            reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+            reader.readAsDataURL(file);
+        }
+    }
+}
+
+function clearFile(fileId) {
+    $('#'+fileId).val('');
+    $('#'+fileId).parent().find('.file-select').text(#{toJSON $ msgrender MsgFileUpload});
+    $('#'+fileId).parent().find('.icon-close').hide();
+    $('#'+fileId).parent().find('.file-input-size').remove();
+    $('#'+fileId).parent().find('.file-input-thumb').remove();
+}
+
+$(".file-input").each(function(){
+    handleFiles(this);
+    $(this).parent().show();
+});

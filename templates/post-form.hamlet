@@ -81,16 +81,11 @@
                 <td>
                     <div .form-files>
                         $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
-                            $if i == 0
-                                <div .file-input>
-                                    ^{fvInput fv}
-                                    ^{fvInput rv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
-                            $else
-                                <div style=display:none .file-input>
-                                    ^{fvInput fv}
-                                    ^{fvInput rv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
+                            <div .file-input-wrapper>
+                                ^{fvInput fv}
+                                <a .file-select onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
+                                ^{fvInput rv}
+                                <img alt=[remove] .clear-file title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

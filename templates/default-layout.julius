@@ -173,10 +173,6 @@ function markToDelete(t) {
 //-----------------------------------------------------------------
 // Forms
 //-----------------------------------------------------------------
-function clearFile(fileId) {
-    $('#'+fileId).val('');
-}
-
 function countSymbols(formId) {
     var maxLen = $('#maxMessageLength').html();
 

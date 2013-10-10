@@ -412,3 +412,7 @@ ul {
 .video-thumb {
     cursor: pointer;
 }
+
+.thumb {
+    outline: none;
+}

@@ -172,8 +172,10 @@ getApiBoardStatsR :: Handler TypedContent
 getApiBoardStatsR = do
   diff       <- getBoardStats
   posterId   <- getPosterId
+  hiddenThreads <- getAllHiddenThreads
   newDiff <- runDB $ forM diff $ \(board, lastId, _) -> do
-    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId]
+    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId
+                     ,PostDeleted ==. False, PostHellbanned ==. False, PostParent /<-. concatMap snd (filter ((==board).fst) hiddenThreads)]
     return (board, lastId, newPosts)
   saveBoardStats newDiff
   selectRep $ 

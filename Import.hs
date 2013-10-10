@@ -467,8 +467,10 @@ getBoardStats = do
     Just s  -> return $ readText s
     Nothing -> do
       boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      hiddenThreads <- getAllHiddenThreads
       stats  <- runDB $ forM boards $ \b -> do
-                  lastPost <- selectFirst [PostBoard ==. b] [Desc PostLocalId]
+                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. True
+                                         ,PostParent /<-. concatMap snd (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
                   return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
       saveBoardStats stats
       return stats
@@ -490,7 +492,7 @@ cleanBoardStats board = do
   newStats <- forM oldStats $ \s@(b,_,_) ->
     if b == board
     then do
-      lastPost <- runDB $ selectFirst [PostBoard ==. b] [Desc PostLocalId]
+      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. False] [Desc PostLocalId]
       return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
     else return s
   saveBoardStats newStats

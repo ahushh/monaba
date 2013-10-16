@@ -466,10 +466,11 @@ getBoardStats = do
   case maybeStats of
     Just s  -> return $ readText s
     Nothing -> do
+      posterId <- getPosterId
       boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
       hiddenThreads <- getAllHiddenThreads
       stats  <- runDB $ forM boards $ \b -> do
-                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. True
+                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. False, PostPosterId !=. posterId
                                          ,PostParent /<-. concatMap snd (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
                   return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
       saveBoardStats stats
@@ -488,11 +489,13 @@ saveBoardStats stats = do
 
 cleanBoardStats :: Text -> Handler ()
 cleanBoardStats board = do
+  hiddenThreads <- getAllHiddenThreads
   oldStats <- getBoardStats
   newStats <- forM oldStats $ \s@(b,_,_) ->
     if b == board
     then do
-      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. False] [Desc PostLocalId]
+      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. False
+                                      ,PostParent /<-. concatMap snd (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
       return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
     else return s
   saveBoardStats newStats

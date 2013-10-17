@@ -19,6 +19,36 @@ a:hover {
     text-decoration: underline;
 }
 
+.spoiler, .spoiler a, .quote .spoiler {
+    background: none;
+    color: transparent;
+    text-shadow:0 0 10px #72AEFE;
+    transition:all 0.2s ease;
+}
+
+.spoiler:hover, .spoiler a:hover, .quote .spoiler:hover {
+    color: #496CA0;
+    background:none;
+    text-shadow:none;
+}
+
+.spoiler a {
+    text-shadow:0 0 10px #DEBD18;
+}
+
+.quote .spoiler {
+    text-shadow:0 0 10px #8FC68E;
+}
+
+.spoiler a:hover {
+    color: #927908;
+    text-decoration: underline;
+}
+
+.quote, .quote .spoiler:hover {
+    color: #557755;
+}
+
 .container {
     width: 80%;
     margin: auto 10%;
@@ -286,10 +316,6 @@ pre {
     color: #666666;
 }
 
-.quote {
-    color: #557755 !important;
-}
-
 #next-page {
     border-right: 1px dotted rgba(10, 10, 10, 0.7);
     padding-right: 5px;
@@ -331,14 +357,4 @@ pre {
 
 #captcha {
     padding: 1px;
-}
-
-.spoiler {
-    background:#454545;
-    color:#454545;
-}
-
-.spoiler:hover {
-    background:#454545;
-    color:#496ca0;
 }

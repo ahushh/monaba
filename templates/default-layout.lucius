@@ -336,10 +336,6 @@ header {
     margin: 2px;
 }
 
-.quote {
-    color: green;
-}
-
 iframe {
     border: 0px;
 }

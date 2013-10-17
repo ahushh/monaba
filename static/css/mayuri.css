@@ -40,22 +40,35 @@ a:hover {
     color:#804040;
 }
 
+.spoiler, .spoiler a {
+    background: #000;
+    box-shadow: -2px 1px 2px #1A1A1A;
+    color: transparent;
+    transition:all 0.2s ease;
+}
+
+.spoiler:hover, .spoiler a:hover, .quote .spoiler:hover {
+    background: none;
+    color: #999;
+    box-shadow: none;
+}
+
+.spoiler a:hover {
+    color:#804040;
+}
+
+.quote, .quote .spoiler:hover {
+    color: #51860F;
+}
+
+#button-quote:hover {
+    color: #426E0F;
+}
+
 hr {
     border-color:#853737;
     border-style:solid none none none;
     border-width:1px;
-}
-
-.spoiler {
-	background: #000;
-    box-shadow: -2px 1px 2px #1A1A1A;
-	color: transparent;
-	transition:all 0.2s ease;
-}
-.spoiler:hover {
-	background: none;
-	color: #999;
-    box-shadow: none;
 }
 
 #board-list-full, .popupMessage {
@@ -71,7 +84,7 @@ hr {
 }
 
 .reply-post, .popup-post {
-	display: table;
+    display: table;
     overflow: hidden;
     padding: 8px 15px;
     margin-bottom: 6px;
@@ -86,15 +99,20 @@ hr {
     box-shadow: 0px 0px 10px #0C0C0C;
 }
 
+input, select, textarea, .post-block-named {
+    background:#212121;
+    color:#CCC;
+    border:1px solid #4C4C4C;
+    box-shadow: 0px 0px 10px #202020;
+}
+
 .post-block-named {
     padding: 1px 8px;
     background-color: #2E2E2E;
     border: 1px solid #0C0C0C;
-    box-shadow: 0px 0px 10px #202020;
-    color: #CCC;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="number"] {
     height: 20px;
 }
 
@@ -102,18 +120,7 @@ input[type="checkbox"], input[type="submit"] {
     margin: 3px 3px 3px 4px;
 }
 
-select, textarea, input[type="text"], input[type="password"], input[type="submit"] {
-    background:#212121;
-    color:#CCC;
-    border:1px solid #4C4C4C;
-    box-shadow: 0px 0px 10px #202020;
-}
-
-input::-webkit-input-placeholder {
-    color:#727272;
-}
-
-input::-moz-placeholder {
+input::-webkit-input-placeholder, input::-moz-placeholder {
     color:#727272;
 }
 
@@ -129,6 +136,18 @@ input::-moz-placeholder {
     border-top: 1px solid #5c1f1f;
     padding-top: 10px;
     text-align: right;
+}
+
+pre {
+    background-color: rgba(0,0,0,0.1);
+    border: 1px dashed #5c1f1f;
+    padding: 10px;
+}
+
+.reply-title {
+    color: #963428;
+    font-size: 1em;
+    font-weight: bold;
 }
 
 footer {

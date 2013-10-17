@@ -49,8 +49,41 @@ a:hover {
     color: #742307;
 }
 
+.spoiler, .spoiler a, .quote .spoiler {
+    background: none;
+    color: transparent;
+    text-shadow:0 0 10px #fff;
+    transition:all 0.2s ease;
+}
+
+.spoiler:hover, .spoiler a:hover, .quote .spoiler:hover {
+    color: #7C7C7C;
+    background:none;
+    text-shadow:none;
+}
+
+.spoiler a {
+    text-shadow:0 0 10px #FF8222;
+}
+
+.quote .spoiler {
+    text-shadow:0 0 10px #509550;
+}
+
+.spoiler a:hover {
+    color: #742307;
+}
+
+.quote, .quote .spoiler:hover {
+    color: #105510;
+}
+
+#button-quote:hover {
+    color: #004400;
+}
+
 header {
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);    
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
 }
 
 footer {
@@ -204,10 +237,6 @@ pre {
     color: #666666;
 }
 
-.quote {
-    color: #105510 !important;
-}
-
 #next-page {
     border-right: 1px solid rgba(100, 100, 100, 0.7);
     padding-right: 5px;
@@ -237,16 +266,4 @@ pre {
     border-left: 0 !important;
     border-bottom: 2px dashed rgba(100, 100, 100, 0.7) !important;
     border-top: 2px dashed rgba(100, 100, 100, 0.7) !important;
-}
-
-.spoiler {
-    background: none;
-    color: transparent;
-    text-shadow:0 0 10px #fff;
-}
-
-.spoiler:hover {
-    color: #e1e1e1;
-    background:none;
-    text-shadow:none;
 }

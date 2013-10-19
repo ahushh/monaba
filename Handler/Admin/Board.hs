@@ -14,7 +14,7 @@ getManageBoardsR action board = do
   (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
 
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
-  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  groups      <- map (pair' . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
 
   (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups
@@ -122,7 +122,7 @@ updateBoardForm board action bCategories groups extra = do
 postNewBoardsR :: Handler Html
 postNewBoardsR = do
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
-  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  groups      <- map (pair' . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   ((result, _), _) <- runFormPost $ updateBoardForm Nothing NewBoard bCategories groups
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR NewBoard "")
   case result of
@@ -176,7 +176,7 @@ postNewBoardsR = do
 postAllBoardsR :: Handler Html
 postAllBoardsR = do
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
-  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  groups      <- map (pair' . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   ((result, _), _) <- runFormPost $ updateBoardForm Nothing AllBoards bCategories groups
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR AllBoards "")
   case result of
@@ -230,7 +230,7 @@ postUpdateBoardsR :: Text -> Handler Html
 postUpdateBoardsR board = do
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
-  groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
+  groups      <- map (pair' . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   ((result, _), _) <- runFormPost $ updateBoardForm maybeBoard UpdateBoard bCategories groups
   let msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR UpdateBoard board)
   case result of

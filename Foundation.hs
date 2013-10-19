@@ -49,6 +49,7 @@ import           Data.Time               (getCurrentTime, UTCTime)
 ---------------------------------------------------------------------------------------------------------
 data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
                            , sseClientPermissions :: [Permission]
+                           , sseClientLiveIgnoredBoards :: [Text]
                            , sseClientRating :: Censorship
                            , sseClientTimeZone :: Int
                            , sseClientConnected :: UTCTime

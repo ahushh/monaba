@@ -369,6 +369,7 @@ YoutubeLoadTitles: Load titles
 YoutubeLoadThumbs: Load thumbnails
 YoutubeWidth: Width
 YoutubeHeight: Height
+LiveIgnoredBoards: /~/ ignored boards
 
 ######################################################################################
 #### Modlogs

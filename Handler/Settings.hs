@@ -8,19 +8,22 @@ import           Yesod.Auth
 import           Handler.Posting     (trickyRedirect)
 import           Handler.EventSource (deleteClient)
 -------------------------------------------------------------------------------------------------------------------
-settingsForm :: Int        -> -- ^ Default time offset
-               Text       -> -- ^ Default stylesheet 
-               Censorship -> -- ^ Default rating
-               Html       -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text), Widget)
-settingsForm defaultZone defaultStyle oldRating extra = do
+settingsForm :: [(Text,Text)] -> -- ^ All boards
+               [Text]        -> -- ^ Ignored boards
+               Int           -> -- ^ Default time offset
+               Text          -> -- ^ Default stylesheet 
+               Censorship    -> -- ^ Default rating
+               Html          -> -- ^ Extra token
+               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, [Text]), Widget)
+settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
   (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
   (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
-  let result = (,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes
+  (boardResults, boardViews  ) <- mreq (multiSelectFieldList allBoards) "" (Just ignoredBoards)
+  let result = (,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -29,15 +32,18 @@ postSettingsR = do
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra  
   oldRating    <- getCensorshipRating
-  ((result, _), _) <- runFormPost $ settingsForm defaultZone defaultStyle oldRating
+  allBoards    <- map ((boardDescription &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  ignoredBoards <- getLiveBoards
+  ((result, _), _) <- runFormPost $ settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, rating, lang) -> do
-      setSession "timezone"          $ showText timezone
-      setSession "stylesheet"        stylesheet
-      setSession "censorship-rating" $ showText rating
+    FormSuccess (timezone, stylesheet, rating, lang, boards) -> do
+      setSession "timezone"           $ showText timezone
+      setSession "stylesheet"           stylesheet
+      setSession "censorship-rating"  $ showText rating
+      setSession "live-ignore-boards" $ showText boards
       Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR
@@ -48,7 +54,9 @@ getSettingsR = do
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra
   oldRating    <- getCensorshipRating
-  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle oldRating
+  allBoards    <- map ((boardDescription &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  ignoredBoards <- getLiveBoards
+  (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

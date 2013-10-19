@@ -13,6 +13,9 @@
     <tr>
       <td>_{MsgLanguage}
       <td>^{fvInput langView}
+    <tr>
+      <td>_{MsgLiveIgnoredBoards}
+      <td>^{fvInput boardViews}
     <tr .js-settings-row>
       <td>
         <label for=useEventsource>

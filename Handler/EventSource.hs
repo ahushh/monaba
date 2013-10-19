@@ -42,11 +42,13 @@ getReceiveR = do
     rating      <- getCensorshipRating
     timeZone    <- getTimeZone
     now         <- liftIO getCurrentTime
+    ignoredBoards <- getLiveBoards
     let newClient = SSEClient { sseClientUser        = muser
                               , sseClientPermissions = permissions
                               , sseClientRating      = rating
                               , sseClientTimeZone    = timeZone
                               , sseClientConnected   = now
+                              , sseClientLiveIgnoredBoards = ignoredBoards
                               }
     liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId newClient)
   chan' <- liftIO $ dupChan chan
@@ -79,10 +81,11 @@ sendPost board thread postId hellbanned posterId = do
           encodedPost     = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ writeChan chan $ ServerEvent sourceEventName Nothing $ return encodedPost
 
-    renderedPost' <- renderPostLive client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
-    let sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
-        encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
-    liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return encodedPost'
+    when (board `notElem` sseClientLiveIgnoredBoards client) $ do
+      renderedPost' <- renderPostLive client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
+      let sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
+          encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
+      liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return encodedPost'
   where renderPost client post files displaySage geoIps maxLenOfFileName =
           bareLayout $ replyPostWidget (sseClientUser client) post
                        files (sseClientRating client) False True False

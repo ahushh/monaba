@@ -358,6 +358,9 @@ ignoreBoards group (Entity _ b)
 pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
 pair f g x = (f x, g x)
 
+pair' :: a -> (a,a)
+pair' x = (x,x)
+
 showText :: Show a => a -> Text
 showText = pack . show
 
@@ -384,7 +387,7 @@ getCensorshipRating :: Handler Censorship
 getCensorshipRating = do
   mRating <- lookupSession "censorship-rating"
   case mRating of
-    Just rating -> return $ read $ unpack rating
+    Just rating -> return $ readText rating
     Nothing     -> setSession "censorship-rating" "SFW" >> return SFW
 
 getPosterId :: Handler Text
@@ -411,8 +414,15 @@ getAllHiddenThreads :: Handler [(Text, [Int])]
 getAllHiddenThreads = do
   ht <- lookupSession "hidden-threads"
   case ht of
-    Just xs -> return $ read $ unpack xs
+    Just xs -> return $ readText xs
     Nothing -> setSession "hidden-threads" "[]" >> return []
+
+getLiveBoards :: Handler [Text]
+getLiveBoards = do
+  bs <- lookupSession "live-ignore-boards"
+  case bs of
+    Just xs -> return $ readText xs
+    Nothing -> setSession "live-ignore-boards" "[]" >> return []
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

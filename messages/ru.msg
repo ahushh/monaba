@@ -369,6 +369,7 @@ YoutubeLoadTitles: Загружать названия
 YoutubeLoadThumbs: Загружать превью
 YoutubeWidth: Ширина
 YoutubeHeight: Высота
+LiveIgnoredBoards: /~/ игнорируемые борды
 
 ######################################################################################
 #### Modlogs

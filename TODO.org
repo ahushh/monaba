@@ -147,40 +147,40 @@
    CLOSED: [2013-08-13 Вт 14:10]
 ** DONE message abbreviation
    CLOSED: [2013-08-14 Ср 20:46]
-* TODO
-** TODO API - geoip
-** TODO post deletion and thread hiding without JS
 ** DONE new posts count (all boards)
    CLOSED: [2013-10-06 Вс 17:16]
-** TODO eventsource
+* TODO
+** EventSource
 *** TODO fix i18n
-*** TODO proper work
+*** TODO proper work with nginx
 *** DONE post autoload
 *** DONE new posts count (thread)
     CLOSED: [2013-09-20 Пт 16:07]
 *** DONE dynamic post editing
 *** DONE dynamic post deletion
-** TODO reports
-** TODO refmap table (?)
-** TODO management
+** Hellbanning
+*** TODO Fix thread bumping
+*** TODO eventsource handling
+*** TODO ability to make a post visible only to specific UID
+** Management
+*** Bans
+**** TODO IP validation
+**** TODO ban by IP range
+**** TODO ban by session
+**** TODO R/O or no access at all
+*** TODO ability to forbid editing of a specific post
+*** TODO single file deletion
 *** DONE logging
     CLOSED: [2013-09-08 Вс 13:59]
+*** TODO log in/out logging
 *** DONE user groups
     CLOSED: [2013-08-05 Пн 09:44]
 *** TODO view deleted posts
 *** TODO post recovery
-*** TODO bans
-**** TODO IP validation
-**** TODO IP range
-**** TODO ban by session
-**** TODO R/O or no access at all
 *** TODO allow thread moving
-*** TODO improve user groups
-** TODO move JS to the html header
-** TODO sphinx search
-** TODO thread catalog (?)
-** TODO wordfilter
-** TODO user settings
+*** TODO user group hierarchy (?)
+
+** User settings
 *** DONE UTC -> local time, store timezone in cookies/session
     CLOSED: [2013-08-10 Сб 19:45]
 *** DONE Switchable youtube player
@@ -190,12 +190,19 @@
 *** TODO favorite threads
 *** DONE language switcher
     CLOSED: [2013-09-12 Чт 14:32]
+** TODO API: geoip
+** TODO Post deletion and thread hiding without JS
+** TODO reports
+** TODO refmap table (?)
+** TODO move JS to the html header (?)
+** TODO sphinx search
+** TODO thread catalog (?)
+** TODO wordfilter
 * Further
 ** TODO tags for threads
-** TODO full API
+** TODO full JSON API
 ** TODO best API error handling
 ** TODO check if all dirs exist before starting
 ** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
-** TODO return files with their real names (HOW??)
-** TODO CRUD
+** TODO save files with their real names
 ** TODO write some tests, huh?

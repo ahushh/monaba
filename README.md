@@ -8,7 +8,7 @@ Features
 * Multiple file attachment
 * File censorship ratings
 * [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning)
-* AJAX
+* AJAX, EventSource, HTML5
 * Prooflabes
 * Flexible account system
 * Internationalization
@@ -62,8 +62,6 @@ Download Monaba-[your-arch]-[your-platform].7z [here](https://github.com/ahushh/
     cabal install --only-dependencies
     cabal install yesod-bin
     cabal clean && yesod configure && yesod build
-
-Compilation will take about half an hour and probably run out of memory. You might need to enable swap. 
 
 **Run:**
 

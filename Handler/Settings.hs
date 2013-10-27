@@ -14,7 +14,7 @@ settingsForm :: [(Text,Text)] -> -- ^ All boards
                Text          -> -- ^ Default stylesheet 
                Censorship    -> -- ^ Default rating
                Html          -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, [Text]), Widget)
+               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, Maybe [Text]), Widget)
 settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
@@ -22,7 +22,7 @@ settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating extra = 
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
   (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
   (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
-  (boardResults, boardViews  ) <- mreq (multiSelectFieldList allBoards) "" (Just ignoredBoards)
+  (boardResults, boardViews  ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
   let result = (,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults
       widget = $(widgetFile "settings-form")
   return (result, widget)
@@ -43,7 +43,7 @@ postSettingsR = do
       setSession "timezone"           $ showText timezone
       setSession "stylesheet"           stylesheet
       setSession "censorship-rating"  $ showText rating
-      setSession "live-ignore-boards" $ showText boards
+      setSession "live-ignore-boards" $ showText $ fromMaybe [] boards
       Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR

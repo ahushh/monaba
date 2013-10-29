@@ -398,6 +398,7 @@ function expandImage(element, event) {
                   ,'bottom'  : (wHeight-height)/2 +'px'
                   ,'left'    : (wWidth-width)/2 +'px'
                   ,'right'   : (wWidth-width)/2 +'px'
+                  ,'z-index' : Monaba.zindex + 1
                  })
             .draggable()
             .click(function() { $(this).remove() })

@@ -204,6 +204,8 @@ function addEmbeddedPlayer(post) {
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         var first = true;
+        if ($('#'+postId).find('.video-container').length)
+            return true;
         $('#'+postId+' .message a').each(function(j, link) {
             var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/;
             var result = regex.exec(link.text);

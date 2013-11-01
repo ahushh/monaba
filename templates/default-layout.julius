@@ -25,6 +25,7 @@ if (getItem('youtubeHeight') == null)
 //-----------------------------------------------------------------
 function baseInit() {
     addEmbeddedPlayer();
+    addProstopleer();
     if (document.location.pathname != '/~') // FIX: костыли
         doRefMap();
     cachePopupPosts();
@@ -194,6 +195,24 @@ function initSymbolCounter() {
     countSymbols('post-form');
     $.each(['edit-form', 'post-form'], function(i,f) {
         $('#'+f+' textarea').on('change cut paste keyup', function() { countSymbols(f); });
+    });
+}
+//-----------------------------------------------------------------
+// Pleer.com
+//-----------------------------------------------------------------
+function addProstopleer(post) {
+    var posts = post ? ("#"+post+"") : ".reply-post, .op-post";
+    $(posts).each(function(i,p) {
+        var postId = $(p).attr('id');
+        if ($('#'+postId).find('.prosto-pleer').length)
+            return true;
+        $('#'+postId+' .message a').each(function(j, link) {
+            var regex = /https?:\/\/(?:www\.)?pleer\.com\/tracks\/(\w+)/;
+            var result = regex.exec(link.text);
+            if (!result) return true;
+            var videoId = result[1];
+            $(link).before('<object width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
+        });
     });
 }
 //-----------------------------------------------------------------
@@ -543,6 +562,7 @@ function reallyShowPopupPost(event, elem, post) {
     }
     var postFullId = post.attr('id');
     addEmbeddedPlayer(postFullId);
+    addProstopleer(postFullId);
     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
@@ -745,6 +765,7 @@ function showEditForm(postId, realId) {
                         if (isEventSourceSupported()) {
                             hideEditForm();
                             addEmbeddedPlayer(postId);
+                            addProstopleer(postId);
                             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                             popupMessage(response.ok,2000);
                         } else {
@@ -753,6 +774,7 @@ function showEditForm(postId, realId) {
                                 $('#'+postId).replaceWith(post);
 
                                 addEmbeddedPlayer(postId);
+                                addProstopleer(postId);
                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
                                 popupMessage(response.ok,2000);

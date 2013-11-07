@@ -204,8 +204,9 @@ postBoardR board _ = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }
-        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
-        sendPost board 0 nextId hellbanned posterId
+        postKey       <- runDB (insert newPost)
+        insertedFiles <- insertFiles files ratings thumbSize postKey
+        sendPost boardVal 0 (Entity postKey newPost) insertedFiles hellbanned posterId
         -- delete old threads
         let tl = boardThreadLimit boardVal
           in when (tl >= 0) $

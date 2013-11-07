@@ -42,21 +42,19 @@ getCaptchaInfoR = do
         chooseMsg _         = MsgReloadPage
 ---------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------------
-recordCaptcha :: Int -> HandlerT App IO ()
+recordCaptcha :: Int -> Handler ()
 recordCaptcha captchaLength = do
   maybeCaptchaId <- lookupSession "captchaId"
-  when (isJust maybeCaptchaId) $ return ()
-  --------------------------------------------------------------  
-  ip <- pack <$> getIp
-  maybeCaptchaEntity <- runDB $ selectFirst [CaptchaIp ==. ip] []
-  case maybeCaptchaEntity of
-    Just (Entity _ cap) -> do
-      setSession "captchaId"   (showText $ captchaLocalId cap)
-      setSession "captchaInfo" (captchaInfo cap)
-      return ()
-    _                   -> newCaptcha captchaLength ip
+  when (isNothing maybeCaptchaId) $ do
+    ip <- pack <$> getIp
+    maybeCaptchaEntity <- runDB $ selectFirst [CaptchaIp ==. ip] []
+    case maybeCaptchaEntity of
+      Just (Entity _ cap) -> do
+        setSession "captchaId"   (showText $ captchaLocalId cap)
+        setSession "captchaInfo" (captchaInfo cap)
+      _                   -> newCaptcha captchaLength ip
 ---------------------------------------------------------------------------------------------------------------------------
-newCaptcha :: Int -> Text -> HandlerT App IO ()
+newCaptcha :: Int -> Text -> Handler ()
 newCaptcha captchaLength ip = do
   cId    <- liftIO (abs <$> randomIO :: IO Int)
   langs  <- languages
@@ -83,7 +81,7 @@ newCaptcha captchaLength ip = do
 captchaExt :: String
 captchaExt = ".png"
 ---------------------------------------------------------------------------------------------------------------------------
-checkCaptcha :: Text -> HandlerT App IO () -> HandlerT App IO ()
+checkCaptcha :: Text -> Handler () -> Handler ()
 checkCaptcha captcha wrongCaptchaRedirect = do
   maybeCaptchaId <- lookupSession "captchaId"
   case maybeCaptchaId of
@@ -105,7 +103,7 @@ checkCaptcha captcha wrongCaptchaRedirect = do
       when (T.map toLower captcha /= value) wrongCaptchaRedirect
     _        -> wrongCaptchaRedirect
 ---------------------------------------------------------------------------------------------------------------------------
-updateAdaptiveCaptcha :: Maybe Text -> HandlerT App IO ()
+updateAdaptiveCaptcha :: Maybe Text -> Handler ()
 updateAdaptiveCaptcha acaptcha =
   when (isNothing acaptcha) $ do
     posted <- lookupSession "posted"
@@ -117,7 +115,7 @@ updateAdaptiveCaptcha acaptcha =
       deleteSession "posted"
       setSession "acaptcha" "1"
 ---------------------------------------------------------------------------------------------------------------------------
-getCaptchaInfo :: HandlerT App IO (Maybe Text)
+getCaptchaInfo :: Handler (Maybe Text)
 getCaptchaInfo = do
   maybeCaptchaInfo <- lookupSession "captchaInfo"
   case maybeCaptchaInfo of

@@ -178,8 +178,9 @@ postThreadR board thread = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            }
-        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
-        sendPost board thread nextId hellbanned posterId
+        postKey       <- runDB (insert newPost)
+        insertedFiles <- insertFiles files ratings thumbSize postKey
+        sendPost boardVal thread (Entity postKey newPost) insertedFiles hellbanned posterId
         -------------------------------------------------------------------------------------------------------
         -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])

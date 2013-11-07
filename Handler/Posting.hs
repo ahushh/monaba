@@ -106,47 +106,51 @@ insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
               [FormResult Censorship]       -> -- ^ Censorship ratings 
                Int      -> -- ^ Thumbnail height and width
                Key Post -> -- ^ Post key
-               HandlerT App IO ()
-insertFiles []    _       _         _      = return ()
-insertFiles files ratings thumbSize postId = forM_ (zip files ratings) (\(formfile, rating) ->
-  case formfile of
-    FormSuccess (Just f) -> do
-      md5                              <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
-      (origfilename, uploadedfilename) <- liftIO $ writeToServer  f md5
-      filepath                         <- return $ imageFilePath  filetype uploadedfilename
-      filesize                         <- liftIO $ formatFileSize <$> getFileSize filepath
-      newFile                          <- return  Attachedfile { attachedfileParentId    = postId
-                                                              , attachedfileMd5         = pack md5
-                                                              , attachedfileName        = uploadedfilename
-                                                              , attachedfileOrigName    = origfilename
-                                                              , attachedfileType        = filetype
-                                                              , attachedfileThumbSize   = thumbSize
-                                                              , attachedfileSize        = pack filesize
-                                                              , attachedfileThumbWidth  = 0
-                                                              , attachedfileThumbHeight = 0
-                                                              , attachedfileWidth       = 0
-                                                              , attachedfileHeight      = 0
-                                                              , attachedfileRating      = (\(FormSuccess r) -> showText r) rating
-                                                              }
-      if isImageFile filetype
-        then do
-          (imgW  , imgH  ) <- liftIO $ getImageResolution filepath filetype
-          (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
-          void $ runDB $ insert $ newFile { attachedfileWidth       = imgW
-                                          , attachedfileHeight      = imgH
-                                          , attachedfileThumbWidth  = thumbW
-                                          , attachedfileThumbHeight = thumbH
-                                          }
-        else do
-          liftIO $ makeThumbNonImg uploadedfilename filetype
-          void $ runDB $ insert newFile
-        where filetype = typeOfFile f
-    _                    -> return ())
+               Handler [Entity Attachedfile]
+insertFiles []    _       _         _      = return []
+insertFiles files ratings thumbSize postId = forM (filter myFilter $ zip files ratings) insertFile
+  where myFilter (FormSuccess (Just _), _) = True
+        myFilter _                         = False
+        insertFile (FormSuccess (Just f), rating) = do
+          let filetype = typeOfFile f
+          md5                              <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume)
+          (origfilename, uploadedfilename) <- liftIO $ writeToServer  f md5
+          filepath                         <- return $ imageFilePath  filetype uploadedfilename
+          filesize                         <- liftIO $ formatFileSize <$> getFileSize filepath
+          newFile                          <- return  Attachedfile { attachedfileParentId    = postId
+                                                                  , attachedfileMd5         = pack md5
+                                                                  , attachedfileName        = uploadedfilename
+                                                                  , attachedfileOrigName    = origfilename
+                                                                  , attachedfileType        = filetype
+                                                                  , attachedfileThumbSize   = thumbSize
+                                                                  , attachedfileSize        = pack filesize
+                                                                  , attachedfileThumbWidth  = 0
+                                                                  , attachedfileThumbHeight = 0
+                                                                  , attachedfileWidth       = 0
+                                                                  , attachedfileHeight      = 0
+                                                                  , attachedfileRating      = (\(FormSuccess r) -> showText r) rating
+                                                                  }
+          if isImageFile filetype
+            then do
+              (imgW  , imgH  ) <- liftIO $ getImageResolution filepath filetype
+              (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
+              let newFile' = newFile { attachedfileWidth       = imgW
+                                     , attachedfileHeight      = imgH
+                                     , attachedfileThumbWidth  = thumbW
+                                     , attachedfileThumbHeight = thumbH
+                                     }
+              newFileKey <- runDB $ insert newFile'
+              return $ Entity newFileKey newFile'
+            else do
+              liftIO $ makeThumbNonImg uploadedfilename filetype
+              newFileKey <- runDB $ insert newFile
+              return $ Entity newFileKey newFile
+        insertFile _ = error "This never happens"
 -------------------------------------------------------------------------------------------------------------------
 bumpThread :: Text    -> -- ^ Board name
              Int     -> -- ^ Thread internal ID
              UTCTime -> -- ^ Up the thread to this time
-             HandlerT App IO ()
+             Handler ()
 bumpThread board thread now = do
   maybeThread <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybeThread of

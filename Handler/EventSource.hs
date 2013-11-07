@@ -56,13 +56,10 @@ getReceiveR = do
   res   <- liftResourceT $ eventSourceAppChan chan' req
   sendWaiResponse res
 
-sendPost :: Text -> Int -> Int -> Bool -> Text -> Handler ()
-sendPost board thread postId hellbanned posterId = do
-  boardVal         <- getBoardVal404 board
-  maybePost        <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
-  when (isNothing maybePost) (return ())
-  files            <- runDB $ selectList  [AttachedfileParentId ==. entityKey (fromJust maybePost)] []
-  geoIps           <- getCountries [(fromJust maybePost, files) | boardEnableGeoIp boardVal]
+sendPost :: Board -> Int -> Entity Post -> [Entity Attachedfile] -> Bool -> Text -> Handler ()
+sendPost boardVal thread ePost files hellbanned posterId = do
+  let board = boardName boardVal
+  geoIps           <- getCountries [(ePost, files) | boardEnableGeoIp boardVal]
   displaySage      <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
 
@@ -76,22 +73,22 @@ sendPost board thread postId hellbanned posterId = do
                                                        , not (checkViewAccess' $ sseClientUser x)]
   forM_ filteredClients $ \(posterId', client) -> do
     when (thread /= 0) $ do
-      renderedPost  <- renderPost client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
+      renderedPost  <- renderPost client ePost displaySage geoIps maxLenOfFileName
       let sourceEventName = Just $ fromText $ T.concat [board, "-", showText thread, "-", posterId']
           encodedPost     = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ writeChan chan $ ServerEvent sourceEventName Nothing $ return encodedPost
 
     when (board `notElem` sseClientLiveIgnoredBoards client) $ do
-      renderedPost' <- renderPostLive client (fromJust maybePost) files displaySage geoIps maxLenOfFileName
+      renderedPost' <- renderPostLive client ePost displaySage geoIps maxLenOfFileName
       let sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
           encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
       liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return encodedPost'
-  where renderPost client post files displaySage geoIps maxLenOfFileName =
+  where renderPost client post displaySage geoIps maxLenOfFileName =
           bareLayout $ replyPostWidget (sseClientUser client) post
                        files (sseClientRating client) False True False
                        displaySage (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName
-        renderPostLive client post files displaySage geoIps maxLenOfFileName
+        renderPostLive client post displaySage geoIps maxLenOfFileName
           | postParent (entityVal post) == 0 = 
             bareLayout $ opPostWidget (sseClientUser client) post
             files (sseClientRating client) False False True

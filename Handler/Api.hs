@@ -10,7 +10,7 @@ getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [.
                  Text -> -- ^ Board name
                  Int  -> -- ^ Thread internal ID
                  Text -> -- ^ Error string
-                 HandlerT App IO TypedContent
+                 Handler TypedContent
 getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser

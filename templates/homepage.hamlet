@@ -1,27 +1,31 @@
-<div #main-title>
+<div .row #main-title>
+  <div .large-centered .large-3 .columns>
     <h1>#{nameOfTheBoard}
-<div #home-container>
-    <div #board-list-full>
+
+<div .row>
+  <div .columns .large-10 .large-centered>
+    <ul .large-block-grid-2>
+      <li>
         $forall c <- boardCategories
           $with bs <- widgetHelperFilterBoards boards c group
             $if not (null bs)
               <div .board-category>#{c}
               $forall Entity _ b <- bs
                 <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
-    <div #main-image>
+      <li>
         <img alt="Main" src=#{staticDir ++ "/home.jpg"}>
+
     $if not $ null latestNews
-        <div #latest-news>
-            <div #news-title>_{MsgNews}
+        <div .row #latest-news>
+            <div .columns .large-12 .large-centered .text-center>_{MsgNews}
             $forall (Entity _ t) <- latestNews
                 $if not $ t == entityVal (P.head latestNews)
                     <hr>
-                <div .news id="post-#{postLocalId t}-0-#{newsBoard}">
-                    <div .title>
+                <div .columns .large-12 .large-centered  .news id="post-#{postLocalId t}-0-#{newsBoard}">
+                    <div .columns .large-12 .large-centered  .title>
                         <a href=@{ThreadR newsBoard $ postLocalId t}>
                             <strong>#{postTitle t}
                             <span .time>#{myFormatTime timeZone $ postDate t}
                     &nbsp;&nbsp;
                     $with m <- preEscapedToHtml $ unTextarea $ postMessage t
                         <div .message>#{m}
-

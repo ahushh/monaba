@@ -1,11 +1,10 @@
 $with post <- show $ postLocalId $ entityVal eReplyW
   $with thread <- show $ postParent $ entityVal eReplyW
     $with board <- postBoard $ entityVal eReplyW
-        <div .reply-post id="post-#{post}-#{thread}-#{board}">
-            <div .post-header>
-                <span .mark-to-delete onclick="markToDelete(this)">
-                    <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
-                    <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif}  .icon-del-post>
+        <div .reply-post .row id="post-#{post}-#{thread}-#{board}">
+            <div .post-header .row>
+              <div .column .large-12>
+                <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eReplyW}>
                 <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{post}-#{thread}-#{board}',#{show $ fromKey $ entityKey eReplyW})" src=@{StaticR img_blank_gif}  .icon-edit-post>
                 $if displaySageW
                    $if postSage $ entityVal eReplyW
@@ -28,7 +27,7 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <span .ip-and-id>
                         IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp $ entityVal $ eReplyW)}>#{postIp $ entityVal $ eReplyW}</a>
                         UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId $ entityVal eReplyW)}>#{postPosterId $ entityVal eReplyW}</a>
-
+              <div .column .large-12>
                 <div .cpanel>
                     $if elem ManageBanP permissionsW
                         [
@@ -50,7 +49,8 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                             <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
                 $if showThreadW
                     <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{thread});},700)" onclick="highlightPost('post-#{thread}-0-#{board})" href=@{ThreadR board (read thread)}>>>/#{board}/#{thread}
-            $forall Entity fileKey file <- replyFilesW
+            <div .row>
+              $forall Entity fileKey file <- replyFilesW
                 $with c <- ifelse (length replyFilesW == 1) "file" "multi-file"
                   $with rating <- attachedfileRating file
                     <div class=#{c} id="file-#{show $ int64ToInt $ fromKey fileKey}">
@@ -104,23 +104,27 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                                 <img img-width=#{attachedfileWidth file} img-height=#{attachedfileHeight file} title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
                             $else
                                 <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
-            $with m <- unTextarea $ postMessage $ entityVal eReplyW
-                $if checkAbbr (T.length m) isInThreadW
-                    <div .message .abbreviated>#{preEscapedToHtml m}
-                    <div .expand-post>
-                        _{MsgPostMessageIsTooLong}
-                        <a onclick="expandPost('post-#{post}-#{thread}-#{board}');">_{MsgExpandPost}
-                    <div style=display:none .shrink-post>
-                        <a onclick="shrinkPost('post-#{post}-#{thread}-#{board}');">_{MsgShrinkPost}
-                $else
-                    <div .message>#{preEscapedToHtml m}
-         $maybe lm <- postLastModified $ entityVal eReplyW
-                <span .last-modified>
-                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
-                      _{MsgLastModified}
-                      <span .last-modified-date>#{myFormatTime tOffsetW lm}
-         $nothing
-                <span .last-modified style="display:none">
-                    <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
-                      _{MsgLastModified}
-                      <span .last-modified-date> 
+         <div .row>
+            <div .columns .large-12>
+              $with m <- unTextarea $ postMessage $ entityVal eReplyW
+                  $if checkAbbr (T.length m) isInThreadW
+                      <div .message .abbreviated>#{preEscapedToHtml m}
+                      <div .expand-post>
+                          _{MsgPostMessageIsTooLong}
+                          <a onclick="expandPost('post-#{post}-#{thread}-#{board}');">_{MsgExpandPost}
+                      <div style=display:none .shrink-post>
+                          <a onclick="shrinkPost('post-#{post}-#{thread}-#{board}');">_{MsgShrinkPost}
+                  $else
+                      <div .message>#{preEscapedToHtml m}
+         <div .row>
+            <div .columns .large-12>
+               $maybe lm <- postLastModified $ entityVal eReplyW
+                      <span .last-modified>
+                          <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
+                            _{MsgLastModified}
+                            <span .last-modified-date>#{myFormatTime tOffsetW lm}
+               $nothing
+                      <span .last-modified style="display:none">
+                          <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eReplyW}>
+                            _{MsgLastModified}
+                            <span .last-modified-date> 

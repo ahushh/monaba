@@ -182,7 +182,7 @@ function handleFiles(elem) {
     var files = elem.files;
     for (var i = 0; i < files.length; i++) {
         var file  = files[i];
-        $(elem).parent().find('.icon-close').show();
+        $(elem).parent().parent().find('.clear-file').show();
         // file name
         $(elem).parent().find('.file-select').text(file.name);
         // file size
@@ -191,8 +191,8 @@ function handleFiles(elem) {
         for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"], nMultiple = 0, nApprox = bytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
             fSize = " " + nApprox.toFixed(2) + " " + aMultiples[nMultiple];
         }
-        $(elem).parent().find('.file-input-size').remove();
-        $(elem).parent().find('.icon-close').after("<div class=file-input-size>"+fSize+"</div>");
+        $(elem).parent().parent().find('.file-input-size span').text(fSize);
+        $(elem).parent().parent().find('.file-input-size').show();
         // file thumbnail
         if (window.FileReader) {
             $(elem).parent().find('.file-input-thumb').remove();
@@ -210,8 +210,9 @@ function handleFiles(elem) {
 function clearFile(fileId) {
     $('#'+fileId).val('');
     $('#'+fileId).parent().find('.file-select').text(#{toJSON $ msgrender MsgFileUpload});
-    $('#'+fileId).parent().find('.icon-close').hide();
-    $('#'+fileId).parent().find('.file-input-size').remove();
+    $('#'+fileId).parent().parent().find('.clear-file').hide();
+    $('#'+fileId).parent().parent().find('.file-input-size').hide();
+    $('#'+fileId).parent().parent().find('.file-input-size span').text('');
     $('#'+fileId).parent().find('.file-input-thumb').remove();
 }
 

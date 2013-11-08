@@ -1,29 +1,29 @@
-#settings-form-container, #hidden-threads-list {
-    max-width: 40%;
-    display: table-cell;
-    padding: 0 15px;
-}
+/* #settings-form-container, #hidden-threads-list { */
+/*     max-width: 40%; */
+/*     display: table-cell; */
+/*     padding: 0 15px; */
+/* } */
 
-.hidden-threads-board {
-    display: inline-table;
-}
+/* .hidden-threads-board { */
+/*     display: inline-table; */
+/* } */
 
-#hidden-threads-title {
-    text-align: center;
-    font-size: 1.2em;
-    margin: 5px;
-}
+/* #hidden-threads-title { */
+/*     text-align: center; */
+/*     font-size: 1.2em; */
+/*     margin: 5px; */
+/* } */
 
-#hidden-thread-board-title {
-    font-weight: bold;
-    text-align: center;
-}
+/* #hidden-thread-board-title { */
+/*     font-weight: bold; */
+/*     text-align: center; */
+/* } */
 
-.js-settings-row {
-    display: none;
-}
+/* .js-settings-row { */
+/*     display: none; */
+/* } */
 
-.settings-title {
-    text-align: center;
-    font-weight: bold;
-}
+/* .settings-title { */
+/*     text-align: center; */
+/*     font-weight: bold; */
+/* } */

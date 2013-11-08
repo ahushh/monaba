@@ -139,37 +139,24 @@ function deletedPostsHandler(msg) {
 //-----------------------------------------------------------------
 // New post count from all boards
 //-----------------------------------------------------------------
-(function() {
-    var updateStats = function() {
-        $.getJSON("@{ApiBoardStatsR}", function(data){
-            $(".board-link").each(function() {
-                var board = $(this).attr('id').split('-')[1];
-                var newPosts = data[board] ? "["+data[board]+"]" : "";
-                var r = /\[\d+\]/.exec( $(this).html() );
-                if (r) {
-                    $(this).html( $(this).html().replace(/\[\d+\]/, newPosts) );
-                } else {
-                    $(this).html( $(this).html() + newPosts );
-                }
-            });
-        })
-    };
-    updateStats();
-    window.setInterval(updateStats, 30000);
-})();
-
-//-----------------------------------------------------------------
-// deletion checkboxes
-//-----------------------------------------------------------------
-function markToDelete(t) {
-    if ($(t).find('input').attr('checked')) {
-        $(t).find('input').removeAttr('checked');
-        $(t).find('img').css('opacity',0.3);
-    } else {
-        $(t).find('input').attr('checked',true);
-        $(t).find('img').css('opacity',1.0);
-    }
-}
+// (function() {
+//     var updateStats = function() {
+//         $.getJSON("@{ApiBoardStatsR}", function(data){
+//             $(".board-link").each(function() {
+//                 var board = $(this).attr('id').split('-')[1];
+//                 var newPosts = data[board] ? "["+data[board]+"]" : "";
+//                 var r = /\[\d+\]/.exec( $(this).html() );
+//                 if (r) {
+//                     $(this).html( $(this).html().replace(/\[\d+\]/, newPosts) );
+//                 } else {
+//                     $(this).html( $(this).html() + newPosts );
+//                 }
+//             });
+//         })
+//     };
+//     updateStats();
+//     window.setInterval(updateStats, 30000);
+// })();
 
 //-----------------------------------------------------------------
 // Forms
@@ -657,27 +644,32 @@ function showQuickPostForm(postId) {
 } 
 
 function showPlainPostForm() {
+    if ($("#post-form").hasClass("plain-post-form")) {
+        $(".show-plain-form").hide();
+        $("#post-form").show();
+        return true;
+    }
     $("#post-form").removeClass().addClass("plain-post-form");
     $("#post-form").children().find('.reply-to').remove();
     $('.show-plain-form').after($("#post-form"));
-    $(".show-plain-form").css("display","none");
-    $("#post-form").css("display","block");
+    $(".show-plain-form").hide();
+    $("#post-form").show();
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a board page
         $("#post-form").unbind();
-        $("#no-bump-block").css("display","none");
-        $("#go-back-block").css("display","");
+        $("#no-bump-block").hide();
+        $("#go-back-block").show();
         var action = $("#post-form").attr('action');
         if (/\/thread\/[\w_-]+\/\d+/.test(action)) {
             var newUrl = action.replace(/\/thread\/([\w_-]+)\/\d+/, "/board/$1");
             $("#post-form").attr('action', newUrl);
         }
     } else {
-        $("#go-back-block").css("display","none");
+        $("#go-back-block").hide();
     }
 }
 function closePostForm() {
-    $(".show-plain-form").css("display","block");
-    $("#post-form").css("display","none");
+    $(".show-plain-form").show();
+    $("#post-form").hide();
 }
 //-----------------------------------------------------------------
 function extractPost(postId) {

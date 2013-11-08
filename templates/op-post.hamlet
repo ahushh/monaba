@@ -1,44 +1,44 @@
 $with thread <- show $ postLocalId $ entityVal eOpPostW
   $with board <- postBoard $ entityVal eOpPostW
-      <div .op-post id="post-#{thread}-0-#{board}">
-          <div .post-header>
-              <span .mark-to-delete onclick="markToDelete(this)">
-                  <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
-                  <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif}  .icon-del-post>
-              <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif}  .icon-edit-post>
-              $maybe (code, name) <- lookup (entityKey eOpPostW) geoIpsW
-                  <img src=#{geoIconPath code} title=#{name}>
-              <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
-              <span .poster-name>#{postName $ entityVal eOpPostW}
-              <span .time>#{myFormatTime tOffsetW $ postDate $ entityVal $ eOpPostW}
-              $if not $ isInThreadW
-                  <img onclick="hideThread(#{thread}, '#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThread} alt=_{MsgHideThread} .icon-hide-thread> 
-                  <img onclick="hideThreadCompletely(#{thread}, '#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThreadCompletely} alt=_{MsgHideThreadCompletely} .icon-hide-thread-completely>
-              <div .thread-status>
-                  $if postSticked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
-                  $if postLocked $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
-                  $if postAutosage $ entityVal $ eOpPostW
-                      <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
-              <span .reflink>
-                  $if canPostW
-                      <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
-                      <a onclick="insert('>>#{thread}#{pack "\\n"}')">#{thread}
-                  $else
-                      <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.#{thread}
-              $if canPostW
-                  <span .extra-buttons>
-                      <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif}  .icon-reply>
-              &nbsp;&nbsp;
-              $if not $ isInThreadW
-                  [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
-                  &nbsp;&nbsp;
-              $if elem ViewIPAndIDP permissionsW
-                  <span .ip-and-id>
-                      IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp $ entityVal $ eOpPostW)}>#{postIp $ entityVal $ eOpPostW}</a>
-                      UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId $ entityVal eOpPostW)}>#{postPosterId $ entityVal eOpPostW}</a>
-              <div .cpanel>
+      <div .op-post .row id="post-#{thread}-0-#{board}">
+          <div .post-header .row>
+              <div .column .large-12>
+                <input type=checkbox name=postdelete value=#{show $ fromKey $ entityKey eOpPostW}>
+                <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('post-#{thread}-0-#{board}',#{show $ fromKey $ entityKey eOpPostW})" src=@{StaticR img_blank_gif}  .icon-edit-post>
+                $maybe (code, name) <- lookup (entityKey eOpPostW) geoIpsW
+                    <img src=#{geoIconPath code} title=#{name}>
+                <span .reply-title>#{postTitle $ entityVal $ eOpPostW}
+                <span .poster-name>#{postName $ entityVal eOpPostW}
+                <span .time>#{myFormatTime tOffsetW $ postDate $ entityVal $ eOpPostW}
+                $if not $ isInThreadW
+                    <img onclick="hideThread(#{thread}, '#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThread} alt=_{MsgHideThread} .icon-hide-thread> 
+                    <img onclick="hideThreadCompletely(#{thread}, '#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThreadCompletely} alt=_{MsgHideThreadCompletely} .icon-hide-thread-completely>
+                <span .thread-status>
+                    $if postSticked $ entityVal $ eOpPostW
+                        <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
+                    $if postLocked $ entityVal $ eOpPostW
+                        <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
+                    $if postAutosage $ entityVal $ eOpPostW
+                        <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
+                <span .reflink>
+                    $if canPostW
+                        <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.
+                        <a onclick="insert('>>#{thread}#{pack "\\n"}')">#{thread}
+                    $else
+                        <a onclick=highlightPost('post-#{thread}-0-#{board}') href=@{ThreadR board (read thread)}##{thread}>No.#{thread}
+                $if canPostW
+                    <span .extra-buttons>
+                        <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('post-#{thread}-0-#{board}');insert('>>#{thread}#{pack "\\n"}');" src=@{StaticR img_blank_gif}  .icon-reply>
+                &nbsp;&nbsp;
+                $if not $ isInThreadW
+                    [ <a href=@{ThreadR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>_{MsgOpen}</a> ]
+                    &nbsp;&nbsp;
+                $if elem ViewIPAndIDP permissionsW
+                    <span .ip-and-id>
+                        IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp $ entityVal $ eOpPostW)}>#{postIp $ entityVal $ eOpPostW}</a>
+                        UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId $ entityVal eOpPostW)}>#{postPosterId $ entityVal eOpPostW}</a>
+              <div .column .large-12>
+                <div .cpanel>
                   $if elem ManageBanP permissionsW
                       [
                       <a title="_{MsgBanPoster}" href=@{BanByIpR (postBoard $ entityVal eOpPostW) (postIp $ entityVal eOpPostW)}>B #
@@ -67,7 +67,8 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
                   $if showBoardW
                       <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
-          $forall Entity fileKey file <- opPostFilesW
+          <div .row>
+            $forall Entity fileKey file <- opPostFilesW
               $with c <- ifelse (length opPostFilesW == 1) "file" "multi-file"
                 $with fId <- show $ int64ToInt $ fromKey fileKey
                   <div class=#{c} id="file-#{fId}">
@@ -122,16 +123,20 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                               <img img-width=#{attachedfileWidth file} img-height=#{attachedfileHeight file} title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
                           $else
                               <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
-          $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
-              <div .message>#{m}
+          <div .row>
+            <div .columns .large-12>
+              $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
+                <div .message>#{m}
 
-          $maybe lm <- postLastModified $ entityVal eOpPostW
-              <span .last-modified>
-                  <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
-                    _{MsgLastModified}
-                    <span .last-modified-date>#{myFormatTime tOffsetW lm}
-          $nothing
-              <span .last-modified style="display:none">
-                  <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
-                    _{MsgLastModified}
-                    <span .last-modified-date> 
+          <div .row>
+            <div .columns .large-12>
+              $maybe lm <- postLastModified $ entityVal eOpPostW
+                  <span .last-modified>
+                      <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
+                        _{MsgLastModified}
+                        <span .last-modified-date>#{myFormatTime tOffsetW lm}
+              $nothing
+                  <span .last-modified style="display:none">
+                      <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey eOpPostW}>
+                        _{MsgLastModified}
+                        <span .last-modified-date> 

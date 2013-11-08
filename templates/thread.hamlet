@@ -1,23 +1,20 @@
 <span style=display:none id=maxMessageLength>#{maxMessageLength}
 $if T.null pagetitle
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    <h2 .text-center #board-title>#{boardDesc}
     $if not $ T.null boardLongDesc
-        <div id="board-full-desc">#{boardLongDesc}
+        <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
 $else
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    <h2 .text-center #board-title>#{boardDesc}
     $if not $ T.null boardLongDesc
-        <div id="board-long-desc">#{boardLongDesc}
-    <div id="board-subtitle">#{pagetitle}
-
-$if hasAccessToReply
-    <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
-$else
-    <div #thread-header> _{MsgThreadHeaderNumber thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+        <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
+    <div .text-center .subheader #thread-title>#{pagetitle}
 
 $if hasAccessToReply
     <div .show-plain-form>
-        [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+        <a .button .tiny onclick="showPlainPostForm();">_{MsgReply}
+    <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+      <fieldset>
+        <legend> _{MsgThreadHeaderReplyTo thread} <a href=@{BoardNoPageR board }> _{MsgBack}</a>
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">

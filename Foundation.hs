@@ -174,6 +174,7 @@ instance Yesod App where
         let group  = (groupName . entityVal) <$> mgroup
         defaultStylesheet <- extraStylesheet <$> getExtra
         stylesheet        <- flip mplus (Just defaultStylesheet) <$> lookupSession "stylesheet"
+        nameOfTheBoard   <- extraSiteName <$> getExtra
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final
@@ -183,7 +184,7 @@ instance Yesod App where
         pc <- widgetToPageContent $ do
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
-            addScript (StaticR js_jquery_autosize_js)
+            -- addScript (StaticR js_jquery_autosize_js)
             addScript (StaticR js_jquery_ui_1_10_3_custom_min_js)
             addScript (StaticR js_jquery_mousewheel_js)
             addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"

@@ -1,23 +1,73 @@
 $maybe msg <- mmsg
-    <div #message>#{msg}
+  <div #message data-alert .text-center .alert-box>
+    #{msg}
+    <a href="#" .close>&times;
 
 <header>
+  <!-- no JS header -->
   <div #control-panel>
     [ <a href=@{HomeR}>_{MsgHome}</a> ][ <a href=@{HelpR}>_{MsgHelp}</a> | <a href=@{SettingsR}>_{MsgSettings}</a> ]
     $maybe Entity _ user <- muser
         [ #{userName user} | <a href=@{AdminR}>_{MsgManage}</a> | <a href=@{AuthR LogoutR}>_{MsgLogout}</a> ]
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
-  <div .board-list>
+  <div #board-list>
     [ <a title="_{MsgLatestPosts}" href=@{LiveR}>/~/</a> ] 
     $forall Entity _ b <- widgetHelperFilterBoards boards "" group
-      [ <a .board-link #board-#{boardName b} title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
+      [ <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categories
       $with bs <- widgetHelperFilterBoards boards c group
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs
-            <a .board-link #board-#{boardName b} title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
+            <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
           ] 
+  <!-- no JS header -->
+  <nav .top-bar>
+    <ul .title-area>
+      <li .name>
+        <h1>
+          <a href=@{HomeR}>
+            #{nameOfTheBoard}
+      <li .toggle-topbar>
+        <a>
+    <section .top-bar-section>
+      <ul .left>
+        <li .divider>
+        <li .has-dropdown>
+          <a class="active">
+            <a>_{MsgBoards}
+          <ul .dropdown>
+            <li>
+              <a href=@{LiveR}>/~/ - _{MsgLatestPosts}
+            $forall Entity _ b <- widgetHelperFilterBoards boards "" group
+              <li>
+                <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
+            $forall c <- categories
+              $with bs <- widgetHelperFilterBoards boards c group
+                $if not (null bs)
+                  <li>
+                    <label>#{c}
+                  $forall Entity _ b <- bs
+                    <li>
+                      <a #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
+                  <li .divider>
+      <ul .right>
+        <li>
+          <a href=@{HelpR}>_{MsgHelp}
+        <li>
+          <a href=@{SettingsR}>_{MsgSettings}
+        $maybe Entity _ user <- muser
+            <li>
+              <a>
+                #{userName user}
+            <li>
+              <a href=@{AdminR}>_{MsgManage}
+            <li>
+              <a href=@{AuthR LogoutR}>_{MsgLogout}
+        $nothing         
+            <li>
+              <a href=@{AuthR LoginR}>_{MsgManage}
 
-^{widget}
+<div id="main" role="main">
+  ^{widget}

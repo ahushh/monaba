@@ -4,7 +4,6 @@ module Handler.Live where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
-import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
 getLiveR :: Handler Html
 getLiveR = do

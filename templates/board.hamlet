@@ -23,20 +23,20 @@ $else
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
               <div .columns .large-12>
-                ^{opPostWidget muser eOpPost opPostFiles rating False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
-                $if omitted > 01
+                ^{postWidget muser eOpPost opPostFiles rating False False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+                $if omitted > 0
                     <div .omitted .row>
                       <div .columns .large-12>
-                        _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
+                        _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}
                         <img style="display:none" .ajax-loading src=@{StaticR img_ajax_loader_gif}>
                     <div style="display:none" .truncate-thread .row>
                       <div .columns .large-12>
-                        _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
-                $forall (ePreview, previewFiles)  <- ps
-                    ^{replyPostWidget muser ePreview previewFiles rating False hasAccessToReply False displaySage permissions geoIps timeZone maxLenOfFileName}
+                        _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}
+                $forall (ePreview, previewFiles) <- ps
+                    ^{postWidget muser ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
                 <div style="display:none" .truncate-thread-after .row>
                   <div .columns .large-12>
-                    _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
+                    _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}
         <div #delete-container>
           <div .row>
             <div .columns .large-offset-10 .large-2>

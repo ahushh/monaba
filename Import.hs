@@ -76,6 +76,9 @@ titleDelimiter = " :: "
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
+checkRating :: Text -> Censorship -> Bool
+checkRating ratingF rating = T.null ratingF || (read $ unpack ratingF) <= rating
+
 int64ToInt :: Int64 -> Int
 int64ToInt = fromIntegral
 
@@ -118,48 +121,40 @@ truncateFileName maxLen s = if len > maxLen then result else s
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-opPostWidget :: Maybe (Entity User)      ->
-               Entity Post              -> 
-               [Entity Attachedfile]    -> 
-               Censorship               -> -- ^ Max allowed rating
-               Bool                     -> -- ^ Show or not "[ Open ]" link
-               Bool                     -> -- ^ Show or not the extra buttons such as "[>]"
-               Bool                     -> -- ^ Show or not parent board in the upper right corner
-               [Permission]             -> -- ^ List of the all permissions
-               [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
-               Int                      -> -- ^ Time offset in seconds
-               Int                      -> -- ^ Max file name length
-               WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW ratingW
-  isInThreadW canPostW showBoardW permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "op-post")
+postWidget :: Maybe (Entity User)      ->
+             Entity Post              -> 
+             [Entity Attachedfile]    -> 
+             Censorship               -> -- ^ Max allowed rating
+             Bool                     -> -- ^ Display sage icon
+             Bool                     -> -- ^ Are we in a thread
+             Bool                     -> -- ^ Have access to post
+             Bool                     -> -- ^ Show parent board/thread in the upper right corner
+             [Permission]             -> -- ^ List of the all permissions
+             [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
+             Int                      -> -- ^ Time offset in seconds
+             Int                      -> -- ^ Max file name length
+             Widget
+postWidget muser ePost eFiles rating sage inThread canPost showParent permissions geoIps tOffset maxLenOfFileName = 
+  let postVal   = entityVal ePost
+      sPostId   = show $ postLocalId $ entityVal ePost
+      sThreadId = show $ postParent  $ entityVal ePost
+      sPostKey  = show $ fromKey     $ entityKey ePost
+      board     = postBoard $ entityVal ePost
+      isThread  = sThreadId == "0"
+      pClass    = (if isThread then "op-post" else "reply-post") :: Text
+      pId       = if isThread then "post-"++sPostId++"-0-"++show board else "post-"++sPostId++"-"++sThreadId++"-"++show board
+  in $(widgetFile "post")
+             
+adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
+adminNavbarWidget muser permissions = $(widgetFile "admin/navbar")
 
-replyPostWidget :: Maybe (Entity User)      ->
-                  Entity Post              ->
-                  [Entity Attachedfile]    ->
-                  Censorship               -> -- ^ Max allowed rating
-                  Bool                     -> -- ^ Show full (True) or abbreviated (False) messagees
-                  Bool                     -> -- ^ Show or not the extra buttons such as [>]
-                  Bool                     -> -- ^ Show or not parent thread in the upper right corner
-                  Bool                     -> -- ^ Display or not sage icon
-                  [Permission]             -> -- ^ List of the all permissions
-                  [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
-                  Int                      -> -- ^ Time offset in seconds
-                  Int                      -> -- ^ Max file name length
-                  WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW ratingW
-  isInThreadW canPostW showThreadW displaySageW
-  permissionsW geoIpsW tOffsetW maxLenOfFileNameW = $(widgetFile "reply-post")
+adminHellbanningNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
+adminHellbanningNavbarWidget muser permissions = $(widgetFile "admin/hellban/navbar")
 
-adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
-adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
-
-adminHellbanningNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
-adminHellbanningNavbarWidget muserW permissionsW = $(widgetFile "admin/hellban/navbar")
-
-pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> WidgetT App IO ()
-pageSwitcherWidget pageW pagesW routeW = $(widgetFile "page-switcher")
+pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> Widget
+pageSwitcherWidget page pages route = $(widgetFile "page-switcher")
 -------------------------------------------------------------------------------------------------------------------
-bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
+bareLayout :: Widget -> Handler Html
 bareLayout widget = do
     pc <- widgetToPageContent widget
     giveUrlRenderer [hamlet| ^{pageBody pc} |]

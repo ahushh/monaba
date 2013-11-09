@@ -2,11 +2,11 @@
 <h2 style=text-align:center> IP: #{ip}
 <form .delete-form method=get action=@{DeleteR}>
     <div #post-list>
-      $forall (e, files) <- postsAndFiles
-        $if (postParent $ entityVal e) > 0
-            ^{replyPostWidget muser e files R18G False False True displaySage permissions geoIps timeZone maxLenOfFileName}
+      $forall (ePost, eFiles) <- postsAndFiles
+        $if (postParent $ entityVal ePost) > 0
+            ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
         $else
-            ^{opPostWidget muser e files R18G False False True permissions geoIps timeZone maxLenOfFileName}
+            ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
     <div #delete-container>
       <label>
           <input type=checkbox name=onlyfiles value=1>

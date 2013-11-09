@@ -91,7 +91,7 @@ $if enableCaptchaW
       <img alt=captcha #captcha src=@{CaptchaR}>
 
 $if length fileviews > 0
-  $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
+  $forall (fv, rv) <- zip fileviews ratingviews
     <div .row .collapse>
       <div .columns .large-9 .small-12>
         ^{fvInput fv}

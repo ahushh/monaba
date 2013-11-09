@@ -14,20 +14,21 @@ $if hasAccessToReply
         <a .button .tiny onclick="showPlainPostForm();">_{MsgReply}
     <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
       <fieldset>
-        <legend> _{MsgThreadHeaderReplyTo thread} <a href=@{BoardNoPageR board }> _{MsgBack}</a>
+        <legend> _{MsgThreadHeaderReplyTo thread}
+          <a href=@{BoardNoPageR board }> _{MsgBack}
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-        ^{opPostWidget muser eOpPost opPostFiles rating True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+        ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     
         $forall (eReply, files) <- repliesAndFiles
             $if checkHellbanned eReply permissions posterId
-                ^{replyPostWidget muser eReply files rating True hasAccessToReply False displaySage permissions geoIps timeZone maxLenOfFileName}
+                ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     <span id=get-new-posts-wrapper>
         <img src=@{StaticR img_blank_gif}  title=refresh alt=refresh .icon-thread-refresh>
         <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
-        [ <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a> ]
-    [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+        <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a>
+    <a href=@{BoardNoPageR board }> _{MsgBack}
     <div #delete-container>
       <label>
           <input type=checkbox name=onlyfiles value=1>
@@ -37,7 +38,7 @@ $if hasAccessToReply
               <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>
               _{MsgOpModeration}
           $if not noDeletedPosts
-              [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
+              <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}
       <div>
         $if elem DeletePostsP permissions
             <span style=display:none>

@@ -1,0 +1,134 @@
+<div class="#{pClass} row"  id=#{pId}>
+  <!-- Post header -->
+  <div .post-header .row>
+    <div .column .large-12>
+      <input type=checkbox name=postdelete value=#{sPostKey}>
+      <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})" src=@{StaticR img_blank_gif} .icon-edit-post>
+      $maybe (code, name) <- lookup (entityKey ePost) geoIps
+          <img src=#{geoIconPath code} title=#{name}>
+      <span .reply-title>#{postTitle postVal}
+      <span .poster-name>#{postName postVal}
+      <span .time>#{myFormatTime tOffset $ postDate postVal}
+      $if isThread
+        $if not inThread
+           <img onclick="hideThread(#{sPostId},'#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThread} alt=_{MsgHideThread} .icon-hide-thread> 
+           <img onclick="hideThreadCompletely(#{sPostId},'#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThreadCompletely} alt=_{MsgHideThreadCompletely} .icon-hide-thread-completely>
+      <span .thread-status>
+          $if postSticked postVal
+              <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
+          $if postLocked postVal
+              <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
+          $if postAutosage postVal
+              <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
+      <span .reflink>
+          $if isThread
+              <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sPostId)}##{sPostId}>No.
+          $else
+              <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sThreadId)}##{sPostId}>No.
+          <a onclick="insert('>>#{sPostId}#{pack "\\n"}')">#{sPostId}
+      $if canPost
+          <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} .icon-reply>
+      $if isThread
+        $if not inThread
+            <a href=@{ThreadR board $ postLocalId postVal}>_{MsgOpen}
+      $if elem ViewIPAndIDP permissions
+          <span .ip-and-id>
+              IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
+              UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
+      <div .column .large-12>
+        <div .cpanel>
+          $if elem ManageBanP permissions
+              <a title="_{MsgBanPoster}"   href=@{BanByIpR board (postIp postVal)}>B #
+          $if elem ManageThreadP permissions
+              <a title="_{MsgStickThread}" href=@{StickR board (postLocalId postVal)}>S #
+              <a title="_{MsgLockThread}"  href=@{LockR  board (postLocalId postVal)}>L #
+              <a title="_{MsgAutosage}"    href=@{AutoSageR board (postLocalId postVal)}>A #
+          $if elem HellBanP permissions
+              <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (read sPostKey) "none" True}>Hellban #
+              <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (read sPostKey) "one" True}>&& #
+              <a title="_{MsgHellbanHide}" href=@{HellBanDoR (read sPostKey) "one" False}>Hide #
+              <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (read sPostKey) "all" True}>Hide all && Hellban #
+              <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (read sPostKey) "show"}>Show #
+              <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (read sPostKey) "both"}>&& #
+              <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (read sPostKey) "unban"}>Unhellban
+              $if postHellbanned postVal
+                  <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
+        $if showParent
+          $if isThread
+            <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
+          $else
+            <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{sThreadId});},700)" onclick="highlightPost('#{pId}')" href=@{ThreadR board (read sThreadId)}>>>/#{board}/#{sThreadId}
+  <!-- End of post header -->
+  <div .row>      
+   <div .columns .large-12>
+    <!-- Post files -->
+    $forall Entity fileKey file <- eFiles
+      $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+        $with fId <- show $ int64ToInt $ fromKey fileKey
+          <div class=#{c} id="file-#{fId}">
+            $with ratingF <- attachedfileRating file
+              <div .file-name>
+                  <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName maxLenOfFileName $ attachedfileOrigName file}
+              $if isImageFile (attachedfileType file)
+                  <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
+              $else
+                  <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
+              $if elem ChangeFileRatingP permissions
+                $with rating1 <- read $ unpack ratingF
+                  $if rating1 == SFW
+                      SFW&nbsp;
+                  $else
+                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
+                  $if rating1 == R15
+                      R-15&nbsp;
+                  $else
+                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
+                  $if rating1 == R18
+                      R-18&nbsp;
+                  $else
+                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
+                  $if rating1 == R18G
+                      R-18G&nbsp;
+                  $else
+                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
+              $if checkRating ratingF rating
+                <a .thumb onclick="return expandImage(this, event)" title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>
+                  $if attachedfileThumbWidth file == -1
+                      <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+                  $elseif isImageFile (attachedfileType file)
+                      <img img-width=#{attachedfileWidth file} img-height=#{attachedfileHeight file} title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+                  $else
+                      <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+              $else
+                $case (read $ unpack ratingF)
+                  $of R15
+                    <img alt=R-15 src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                  $of R18
+                    <img alt=R-18 src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                  $of R18G
+                    <img alt=R-18G src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                  $of SFW
+                    Suppress warnings.
+    <!-- End of post files -->
+    <!-- Message -->
+    $with m <- unTextarea $ postMessage postVal
+        $if checkAbbr (T.length m) inThread
+            <div .message .abbreviated>#{preEscapedToHtml m}
+            <div .expand-post>
+                _{MsgPostMessageIsTooLong}
+                <a onclick="expandPost('#{pId}');">_{MsgExpandPost}
+            <div style=display:none .shrink-post>
+                <a onclick="shrinkPost('#{pId}');">_{MsgShrinkPost}
+        $else
+            <div .message>#{preEscapedToHtml m}
+    <!-- Last modified -->
+    $maybe lm <- postLastModified postVal
+        <span .last-modified>
+            <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey ePost}>
+                _{MsgLastModified}
+                <span .last-modified-date>#{myFormatTime tOffset lm}
+    $nothing
+        <span .last-modified style="display:none">
+            <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey ePost}>
+                _{MsgLastModified}
+                <span .last-modified-date> 

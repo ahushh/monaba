@@ -1,5 +1,13 @@
-<h2 style=text-align:center>_{MsgHelp}
-<div style="margin-left:30px">
-<ul>
-    <li><a href=@{HelpMarkupR}>_{MsgMarkup}</a>
-    <li><a href=@{HelpApiR}>_{MsgApi}</a>
+<h2 .text-center>_{MsgHelp}
+<div .row>
+  <div .columns .large-2>
+    <ul .side-nav>
+      <li .active>
+        <a href=@{HelpR}>[i18n]About
+      <li>
+        <a href=@{HelpMarkupR}>_{MsgMarkup}
+      <li>
+        <a href=@{HelpApiR}>_{MsgApi}
+  <div .columns .large-10>
+    <div .panel>
+      Blah-blah-blah

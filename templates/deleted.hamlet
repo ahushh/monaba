@@ -1,18 +1,9 @@
-<div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+<h2 .text-center #board-title>#{boardDesc}
 $if not $ T.null boardLongDesc
-    <div id="board-long-desc">#{boardLongDesc}
-<div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
+    <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
+<div .text-center>
+  _{MsgDeletedPostsIn thread} <a href=@{ThreadR board thread}> _{MsgBack}
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
         ^{postWidget muser eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
-    <div #delete-container>
-      <label>
-          <input type=checkbox name=onlyfiles value=1>
-          _{MsgOnlyFiles}
-      <div>
-        $if elem DeletePostsP permissions
-            <span style=display:none>
-                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $else
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        <input type=submit value=_{MsgDeleteBtn}>
+    ^{deleteWidget permissions}

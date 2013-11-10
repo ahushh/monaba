@@ -153,6 +153,9 @@ adminHellbanningNavbarWidget muser permissions = $(widgetFile "admin/hellban/nav
 
 pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> Widget
 pageSwitcherWidget page pages route = $(widgetFile "page-switcher")
+
+deleteWidget :: [Permission] -> Widget
+deleteWidget permissions = $(widgetFile "delete")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Widget -> Handler Html
 bareLayout widget = do

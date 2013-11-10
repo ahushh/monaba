@@ -1,37 +1,6 @@
 html, body {
     background-color: #E0E0E0;
     color: #333333;
-    font-family: serif;
-    font-size: 1em;
-    padding: 10px;
-}
-
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-black.png");
-}
-
-footer {
-    background-color: #E0E0E0;
-    color: #333333;
-}
-
-form {
-    font-size: 0.9em;
-}
-
-textarea {
-    background-color: #DDDDDD;;
-    color: #333333;
-}
-
-input {
-    background-color: #DDDDDD;;
-    color: #333333;
-}
-
-.time {
-    font-size: 0.8em;
-    color: #666666;
 }
 
 a {
@@ -43,6 +12,93 @@ a:hover {
     color: #FF6600;
 }
 
+footer {
+    font-family: serif;
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid rgba(10, 10, 10, 0.3);
+    padding-top: 10px;
+}
+
+/* Forms */
+fieldset {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+fieldset legend {
+    background-color: #E0E0E0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+    background-color: #DDDDDD;
+    color: #333333;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    background-color: #DFDFDF;
+    color: #333333;
+}
+/* *************************************** */
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-black.png");
+}
+/* *************************************** */
+/* *********** Post and threads ********** */
+/* *************************************** */
+.reply-post, .post-list .op-post {
+    display: table;
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+
+.popup-post {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+
+.highlighted-post {
+    background: none repeat scroll 0% 0% #EEDACB;
+    border-radius: 3px;
+    border: 2px dashed #EE6600;
+    padding: 5px;
+}
+
+.thread {
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 25px 2px;
+}
+
+/* Message */
 .spoiler, .spoiler a {
     background:#C0C0C0;
     color:transparent;
@@ -63,186 +119,11 @@ a:hover {
 .quote, .quote .spoiler:hover {
     color: #008000;
 }
-
-#button-quote:hover {
-    color: #206620;
-}
-
-header {
-    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
-}
-
-footer {
-    font-family: serif;
-    font-size: 12px;
-    margin: 2em 0pt 0pt;
-    text-align: center;
-    border-top: 1px solid rgba(10, 10, 10, 0.3);
-    padding-top: 10px;
-}
-
-.reflink {
-    font-size: 85%;
-    font-weight: bold;
-}
-
+/* Files */
 .file-info {
-    color: #666666;
-    font-size: 0.8em;
-    text-decoration: none;
+    display: none;
 }
+/* *************************************** */
+/* ****** End of posts and threads ******* */
+/* *************************************** */
 
-.file-name {
-    font-size: 0.8em;
-}
-
-.reply-post, #post-list .op-post {
-    display: table;
-    background: none repeat scroll 0% 0% #CFCFCF;
-    border-radius: 3px;
-    border: 1px solid #EEEEEE;
-    margin: 3px;
-    padding: 5px;
-}
-
-.popup-post {
-    background: none repeat scroll 0% 0% #CFCFCF;
-    border-radius: 3px;
-    border: 1px solid #EEEEEE;
-    margin: 3px;
-    padding: 5px;
-}
-
-.highlighted-post {
-    background: none repeat scroll 0% 0% #EEDACB;
-    border-radius: 3px;
-    border: 2px dashed #EE6600;
-    margin: 3px;
-    padding: 5px;
-}
-
-.thread {
-    margin: 2px;
-    border-top: 1px solid rgba(10, 10, 10, 0.3);
-    padding: 25px 2px;
-}
-
-.reply-title {
-    color: #002256;
-    font-size: 1em;
-    font-weight: bold;
-}
-
-hr {
-    border-color: #505050;
-    border-style: solid none none;
-    border-width: 1px;
-}
-
-table {
-    border-style: none;
-}
-
-table td {
-    border-style: none;
-}
-
-#delete-container {
-    text-align: right;
-}
-
-pre {
-    background-color: #EEEEEE;
-    border: 1px dashed #DFDFDF;
-    padding: 10px;
-}
-
-.board-category {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #CFCFCF;
-}
-
-#board-list-full {
-   border: 1px dotted black;
-}
-
-#latest-news {
-   border: 1px dotted black;
-}
-
-#news-title {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #CFCFCF;
-}
-
-.popupMessage {
-    background: none repeat scroll 0% 0% #CFCFCF;
-    border-radius: 3px;
-    border: 1px solid black;
-}
-
-.quick-post-form {
-    background: none repeat scroll 0% 0% #CFCFCF;
-    border-radius: 3px;
-    border: 1px solid #EEEEEE;
-    padding: 5px;
-}
-
-.hist-msg {
-    background: none repeat scroll 0% 0% #CFCFCF;
-    border-radius: 3px;
-    border: 1px solid #EEEEEE;
-    margin: 3px;
-    padding: 5px;
-}
-
-#board-header {
-    color: #800000;
-}
-
-#board-long-desc {
-   color: #800000;
-}
-
-#board-subtitle {
-    color: #800000;
-}
-
-.admin-navbar {
-    background-color: #CFCFCF;
-    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
-    padding: 3px;
-    margin-bottom: 10px;
-}
-
-#delete-container {
-    border-top: 1px solid rgba(10, 10, 10, 0.3);
-    padding-top: 10px;
-}
-
-.show-plain-form {
-    margin-bottom: 10px;
-}
-
-.expand-post {
-    color: #666666;
-}
-
-#next-page {
-    border-right: 1px solid rgba(10, 10, 10, 0.7);
-    padding-right: 5px;
-}
-
-#prev-page {
-    border-left: 1px solid rgba(10, 10, 10, 0.7);
-    padding-left: 5px;
-}
-
-#thread-header {
-    background-color: #CFCFCF;
-    padding: 2px;
-}
-
-.file-info {
-    display:none;
-}

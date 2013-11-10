@@ -22,32 +22,35 @@ footer, .push {
     margin: 0 !important;
 }
 
-/* body { */
-/*     padding: 8px; */
-/* } */
-
-/* a { */
-/*     text-decoration: none;     */
-/*     cursor: pointer; */
-/* } */
-
-/* hr { */
-/*     clear: left; */
-/* } */
-
 /* ********************************* */
 /* ************* Icons ************* */
 /* ********************************* */
 [class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-black.png");
     vertical-align: text-top;
     background-repeat: no-repeat;
     display: inline;
     height: 14px;
     line-height: 14px;
-    margin-top: 1px;
+    margin-top: 3px;
     width: 14px;
     cursor: pointer;
+}
+
+
+.icon-expand {
+    background-position: -581px -173px;
+}
+
+.icon-justify {
+    background-position: -365px -53px;
+}
+
+.icon-classic-hammer {
+    background-position: -773px -173px;
+}
+
+.icon-settings {
+    background-position: -845px -125px;
 }
 
 .icon-close-popup-all {
@@ -162,23 +165,17 @@ footer, .push {
 }
 
 /* *************************************** */
-/* ****************  *************** */
+/* ********** Posts and threads ********** */
 /* *************************************** */
 .thread {
     height: auto;
     overflow: visible;
     clear: both;
-}
-
-.thread {
-    /* margin: 2px; */
-    border-top: 1px solid rgba(10, 10, 10, 0.3);
     padding: 25px 2px;
 }
 
 .reply-post, .op-post {
-    /* margin: 3px; */
-    /* padding: 5px; */
+    padding: 5px;
 }
 
 .multi-file {
@@ -198,86 +195,49 @@ footer, .push {
     display: block;
 }
 
-/* #message { */
-/*     border: 2px dashed red; */
-/*     color: black; */
-/*     font-size: 1.7em; */
-/*     font-weight: bold; */
-/*     margin: 5px; */
-/*     padding: 5px; */
-/*     text-align: center; */
-/* } */
+.parent-link {
+    float: right;
+}
+/* Message */
+.message {
+    padding: 8px 10px;
+}
 
-/* .poster-name { */
-/*     font-weight: bolder; */
-/* } */
+.poster-name {
+    font-weight: bolder;
+}
 
-/* .poster-name-admin { */
-/*     font-weight: bolder; */
-/*     color: red; */
-/* } */
+.poster-name-admin {
+    font-weight: bolder;
+    color: red;
+}
 
-/* .poster-name-mod { */
-/*     font-weight: bolder; */
-/*     color: #d77d31; */
-/* } */
+.poster-name-mod {
+    font-weight: bolder;
+    color: #d77d31;
+}
 
-/* .op-post { */
-/*     word-wrap: break-word; */
-/* } */
+/* Popup posts */
+.popup-post {
+    position: absolute;
+    display: block;
+    min-width: 30em;
+    max-width: 90%;
+    overflow: hidden;
+    word-wrap: break-word;
+}
 
-/* #post-list .op-post { */
-/*    min-width: 40em; */
-/*    overflow: hidden; */
-/* } */
+.close-popup-container {
+    margin-left: 2px;
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+}
+/* *************************************** */
+/* ****** End of posts and threads ******* */
+/* *************************************** */
 
-/* .reply-post { */
-/*     min-width: 40em; */
-/*     overflow: hidden; */
-/*     word-wrap: break-word; */
-/* } */
 
-/* .popup-post { */
-/*     position: absolute; */
-/*     display: block; */
-/*     min-width: 30em; */
-/*     max-width: 90%; */
-/*     overflow: hidden; */
-/*     word-wrap: break-word; */
-/* } */
-
-/* .close-popup-container { */
-/*     margin-left: 2px;   */
-/*     position: absolute; */
-/*     bottom: 0; */
-/*     right: 5px; */
-/* } */
-
-/* #board-header { */
-/*     text-align: center; */
-/*     font-size: 2em; */
-/*     margin: 20px 0; */
-/* } */
-
-/* #board-long-desc { */
-/*     text-align: center; */
-/*     font-size: 1.5em; */
-/* } */
-
-/* #board-subtitle { */
-/*     text-align: center; */
-/*     margin-top: 7px; */
-/*     font-size: 0.9em; */
-/* } */
-
-/* #thread-header { */
-/*     margin: 10px; */
-/*     text-align: center; */
-/* } */
-
-/* .thread-status { */
-/*     display: inline; */
-/* } */
 
 /* .admin-table { */
 /*     border-collapse: collapse; */
@@ -394,10 +354,6 @@ footer, .push {
 /*     padding: 0 0 0 15px; */
 /* } */
 
-/* .message { */
-/*     padding: 8px 10px; */
-/*     max-width: 1280px; */
-/* } */
 
 /* .expand-post { */
 /*     padding: 3px 0 0 8px; */

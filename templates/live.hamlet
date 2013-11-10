@@ -1,5 +1,5 @@
 <h2 style=text-align:center> _{MsgLatestPosts}
-<div #post-list>
+<div .post-list>
   $forall (ePost, eFiles) <- postsAndFiles
     $if (postParent $ entityVal ePost) > 0
         ^{postWidget muser ePost eFiles rating displaySage False False True permissions geoIps timeZone maxLenOfFileName}

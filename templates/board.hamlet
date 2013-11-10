@@ -34,28 +34,7 @@ $else
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}
                 $forall (ePreview, previewFiles) <- ps
                     ^{postWidget muser ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
-                <div style="display:none" .truncate-thread-after .row>
-                  <div .columns .large-12>
-                    _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}
-        <div #delete-container>
-          <div .row>
-            <div .columns .large-offset-10 .large-2>
-              <label for=onlyfiles>
-                _{MsgOnlyFiles}
-              <input type=checkbox name=onlyfiles value=1>
-          <div .row .collapse>
-              $if elem DeletePostsP permissions
-                  <span style=display:none>
-                    <input type=password value="" size=15 name=postpassword>
-                  <input .button type=submit value=_{MsgDeleteBtn}>
-              $else
-                  <div .columns .large-offset-6 .large-2>
-                    <label .prefix for=postpassword>
-                      _{MsgPassword}
-                  <div .columns .large-2>
-                    <input type=password value="" size=15 name=postpassword>
-                  <div .columns .large-2>
-                    <input .button .postfix type=submit value=_{MsgDeleteBtn}>
+        ^{deleteWidget permissions}
     <div #edit-form style=display:none>
         ^{formWidget'}
 

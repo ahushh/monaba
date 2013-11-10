@@ -10,19 +10,19 @@ $newline never
 
         <title>#{pageTitle pc}
         <link rel="stylesheet" href=@{StaticR css_foundation_css}>
-        <!-- $maybe s <- stylesheet -->
-        <!--   $if s == "Ash" -->
-        <!--       <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}> -->
-        <!--   $elseif s == "Futaba" -->
-        <!--       <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_futaba_css}> -->
-        <!--   $elseif s == "Postmodern" -->
-        <!--       <link rel=stylesheet type=text/css title=Postmodern href=@{StaticR css_postmodern_css}> -->
-        <!--   $elseif s == "Nox" -->
-        <!--       <link rel=stylesheet type=text/css title=Nox href=@{StaticR css_nox_css}> -->
-        <!--   $elseif s == "Mayuri" -->
-        <!--       <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR css_mayuri_css}> -->
-        <!-- $nothing -->
-        <!--   <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}> -->
+        $maybe s <- stylesheet
+          $if s == "Ash"
+              <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+          $elseif s == "Futaba"
+              <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_futaba_css}>
+          $elseif s == "Postmodern"
+              <link rel=stylesheet type=text/css title=Postmodern href=@{StaticR css_postmodern_css}>
+          $elseif s == "Nox"
+              <link rel=stylesheet type=text/css title=Nox href=@{StaticR css_nox_css}>
+          $elseif s == "Mayuri"
+              <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR css_mayuri_css}>
+        $nothing
+          <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
         <link #favicon href="/favicon.ico" rel="shortcut icon">
         <script src=@{StaticR js_vendor_custom_modernizr_js}>
         <meta name="description" content="Haskell imageboard">

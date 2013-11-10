@@ -5,11 +5,10 @@
   <div .large-4 .small-7 .columns>
     ^{fvInput nameView}
 
-  <div .large-1 .small-5 .columns .no-bump-block>
-    <label for=#{fvId nobumpView}>
+  <div .large-7 .small-7 .columns .no-bump-block>
+    <label .inline for=#{fvId nobumpView}>
       _{MsgNobump}
-  <div .large-4 .pull-2 .small-7 .columns .no-bump-block>
-    ^{fvInput nobumpView}
+      ^{fvInput nobumpView}
 
 <div .row .collapse>
   <div .large-1 .small-5 .columns>
@@ -95,7 +94,7 @@ $if length fileviews > 0
     <div .row .collapse>
       <div .columns .large-9 .small-12>
         ^{fvInput fv}
-        <a .file-select .button .small onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
+        <a .file-select .button .tiny onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
       <div .columns .large-1 .small-4>
         ^{fvInput rv}
       <div .columns .large-1 .small-4 .file-input-size>

@@ -1,67 +1,88 @@
 #{extra}
-<table>
-  <tbody>
-    <tr>
-      <td>_{MsgTimeZone}
-      <td>^{fvInput timezoneView}
-    <tr>
-      <td>_{MsgStyle}
-      <td>^{fvInput styleView}
-    <tr>
-      <td>_{MsgMaxAllowedRating}
-      <td>^{fvInput ratingView}
-    <tr>
-      <td>_{MsgLanguage}
-      <td>^{fvInput langView}
-    <tr>
-      <td>_{MsgLiveIgnoredBoards}
-      <td>^{fvInput boardViews}
-    <tr .js-settings-row>
-      <td>
-        <label for=useEventsource>
-          _{MsgUseEventSource}
-      <td>
-        <input #useEventsource .js-settings type=checkbox>
-        <label for=useEventsource>
-          (experimental)
-    <tr .js-settings-row>
-      <td>
-        _{MsgExpandImage}
-      <td>
-        <select #expandImage .js-settings>
-          <option value=center>_{MsgExpandImageCenter}
-          <option value=inside>_{MsgExpandImageInside}
-    <tr .js-settings-row>
-      <td colspan=2 style="text-align:center">
-         <strong>
-           YouTube
-    <tr .js-settings-row>
-      <td>
-        <label for=youtubeHTML5>
-          HTML5
-      <td>
-        <input #youtubeHTML5 .js-settings type=checkbox>
-    <tr .js-settings-row>
-      <td>
-        <label for=youtubeLoadTitles>
-          _{MsgYoutubeLoadTitles}
-      <td>
-        <input #youtubeLoadTitles .js-settings type=checkbox>
-    <tr .js-settings-row>
-      <td>
-        <label for=youtubeLoadThumbs>
-          _{MsgYoutubeLoadThumbs}
-      <td>
-        <input #youtubeLoadThumbs .js-settings type=checkbox>
-    <tr .js-settings-row>
-      <td>
-        <label for=youtubeWidth>
-          _{MsgYoutubeWidth}
-      <td>
-        <input #youtubeWidth .js-settings type=number>
-    <tr .js-settings-row>
-      <td>
-        <label for=youtubeHeight>
-          _{MsgYoutubeHeight}
-      <td>
-        <input #youtubeHeight .js-settings type=number>
+
+<div .row>
+  <div .columns .large-6 .small-5>
+    _{MsgTimeZone}
+  <div .columns .large-6 .small-7>
+    ^{fvInput timezoneView}
+
+<div .row>
+  <div .columns .large-6 .small-5>
+    _{MsgStyle}
+  <div .columns .large-6 .small-7>
+    ^{fvInput styleView}
+
+<div .row>
+  <div .columns .large-6 .small-5>
+    _{MsgMaxAllowedRating}
+  <div .columns .large-6 .small-7>
+    ^{fvInput ratingView}
+      
+<div .row>
+  <div .columns .large-6 .small-5>
+    _{MsgLanguage}
+  <div .columns .large-6 .small-7>
+      ^{fvInput langView}
+      
+<div .row>
+  <div .columns .large-6 .small-5>
+    _{MsgLiveIgnoredBoards}
+  <div .columns .large-6 .small-7>
+    ^{fvInput boardViews}
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=useEventsource>
+      _{MsgUseEventSource}
+  <div .columns .large-6 .small-7>
+    <label for=useEventsource>
+      <input #useEventsource .js-settings type=checkbox>
+      (experimental)
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    _{MsgExpandImage}
+  <div .columns .large-6 .small-7>
+    <select #expandImage .js-settings>
+      <option value=center>_{MsgExpandImageCenter}
+      <option value=inside>_{MsgExpandImageInside}
+
+<div .row .js-settings-row>
+  <div .columns large-12 .text-center>
+    <strong>
+      YouTube
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=youtubeHTML5>
+      HTML5
+  <div .columns .large-6 .small-7>
+    <input #youtubeHTML5 .js-settings type=checkbox>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=youtubeLoadTitles>
+      _{MsgYoutubeLoadTitles}
+  <div .columns .large-6 .small-7>
+    <input #youtubeLoadTitles .js-settings type=checkbox>
+      
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=youtubeLoadThumbs>
+      _{MsgYoutubeLoadThumbs}
+  <div .columns .large-6 .small-7>
+    <input #youtubeLoadThumbs .js-settings type=checkbox>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=youtubeWidth>
+      _{MsgYoutubeWidth}
+  <div .columns .large-6 .small-7>
+    <input #youtubeWidth .js-settings type=number>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=youtubeHeight>
+      _{MsgYoutubeHeight}
+  <div .columns .large-6 .small-7>
+    <input #youtubeHeight .js-settings type=number>

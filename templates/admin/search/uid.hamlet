@@ -8,23 +8,13 @@ $else
     <div style=text-align:center>
       <a href=@{AdminSearchUIDOnlyHBNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
 <form .delete-form method=get action=@{DeleteR}>
-    <div #post-list>
+    <div .post-list>
       $forall (ePost, eFiles) <- postsAndFiles
         $if (postParent $ entityVal ePost) > 0
             ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
         $else
             ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
-    <div #delete-container>
-      <label>
-          <input type=checkbox name=onlyfiles value=1>
-          _{MsgOnlyFiles}
-      <div>
-        $if elem DeletePostsP permissions
-            <span style=display:none>
-                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $else
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        <input type=submit value=_{MsgDeleteBtn}>
+    ^{deleteWidget permissions}
 
 $if onlyHellbanned
     ^{pageSwitcherWidget page pages (AdminSearchUIDOnlyHBR posterId)}

@@ -26,38 +26,64 @@
           $else
               <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sThreadId)}##{sPostId}>No.
           <a onclick="insert('>>#{sPostId}#{pack "\\n"}')">#{sPostId}
+
+      $if showParent
+        $if isThread
+          <a .parent-link href=@{BoardNoPageR board}>>>/#{board}/
+        $else
+          <a .parent-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{sThreadId});},700)" onclick="highlightPost('#{pId}')" href=@{ThreadR board (read sThreadId)}>>>/#{board}/#{sThreadId}
+
+      <!-- Moderation -->
+      $if elem ManageBanP permissions
+        <a href=@{BanByIpR board (postIp postVal)}>
+          <img title="_{MsgBanPoster}" src=@{StaticR img_blank_gif} .icon-classic-hammer>
+
+      $if elem ManageThreadP permissions
+          <img title="_{MsgManageThread}" alt="_{MsgManageThread}" data-dropdown="manage-thread-#{sPostId}" src=@{StaticR img_blank_gif} .icon-settings>
+          <ul id="manage-thread-#{sPostId}" .f-dropdown>
+            <li>
+              <a href=@{StickR board (postLocalId postVal)}>_{MsgStickThread}
+            <li>
+              <a href=@{LockR  board (postLocalId postVal)}>_{MsgLockThread} 
+            <li>
+              <a href=@{AutoSageR board (postLocalId postVal)}>_{MsgAutosage}
+
+      $if elem HellBanP permissions
+          <img title="_{MsgHellbanning}" alt="_{MsgHellbanning}" data-dropdown="manage-hellban-#{sPostId}" src=@{StaticR img_blank_gif} .icon-justify>
+          <ul id="manage-hellban-#{sPostId}" .f-dropdown>
+            <li>
+              <a  href=@{HellBanDoR (read sPostKey) "none" True}>_{MsgHellbanPoster}
+            <li>
+              <a  href=@{HellBanDoR (read sPostKey) "one" True}>_{MsgHideAndHellban}
+            <li>
+              <a href=@{HellBanDoR (read sPostKey) "one" False}>_{MsgHellbanHide} 
+            <li>
+              <a href=@{HellBanDoR (read sPostKey) "all" True}>_{MsgHideAllAndHellban} 
+            <li>
+              <a href=@{HellBanUndoR (read sPostKey) "show"}>_{MsgHellbanShowPost} 
+            <li>
+              <a href=@{HellBanUndoR (read sPostKey) "both"}>_{MsgHellbanShowAndUnban} 
+            <li>
+              <a href=@{HellBanUndoR (read sPostKey) "unban"}>_{MsgHellbanUnbanUser} 
+          $if postHellbanned postVal
+              <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
+      <!-- End of moderation -->
       $if canPost
           <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} .icon-reply>
+
       $if isThread
         $if not inThread
-            <a href=@{ThreadR board $ postLocalId postVal}>_{MsgOpen}
+          <a href=@{ThreadR board $ postLocalId postVal}>
+            <img alt="_{MsgOpenThread}" title="_{MsgOpenThread}" src=@{StaticR img_blank_gif} .icon-expand>
+    <div .column .large-12>
       $if elem ViewIPAndIDP permissions
           <span .ip-and-id>
-              IP: <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
-              UID: <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
-      <div .column .large-12>
-        <div .cpanel>
-          $if elem ManageBanP permissions
-              <a title="_{MsgBanPoster}"   href=@{BanByIpR board (postIp postVal)}>B #
-          $if elem ManageThreadP permissions
-              <a title="_{MsgStickThread}" href=@{StickR board (postLocalId postVal)}>S #
-              <a title="_{MsgLockThread}"  href=@{LockR  board (postLocalId postVal)}>L #
-              <a title="_{MsgAutosage}"    href=@{AutoSageR board (postLocalId postVal)}>A #
-          $if elem HellBanP permissions
-              <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (read sPostKey) "none" True}>Hellban #
-              <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (read sPostKey) "one" True}>&& #
-              <a title="_{MsgHellbanHide}" href=@{HellBanDoR (read sPostKey) "one" False}>Hide #
-              <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (read sPostKey) "all" True}>Hide all && Hellban #
-              <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (read sPostKey) "show"}>Show #
-              <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (read sPostKey) "both"}>&& #
-              <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (read sPostKey) "unban"}>Unhellban
-              $if postHellbanned postVal
-                  <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
-        $if showParent
-          $if isThread
-            <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
-          $else
-            <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{sThreadId});},700)" onclick="highlightPost('#{pId}')" href=@{ThreadR board (read sThreadId)}>>>/#{board}/#{sThreadId}
+              IP:
+              <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp postVal)}>
+                #{postIp postVal}
+              UID:
+              <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>
+                #{postPosterId postVal}
   <!-- End of post header -->
   <div .row>      
    <div .columns .large-12>
@@ -67,30 +93,30 @@
         $with fId <- show $ int64ToInt $ fromKey fileKey
           <div class=#{c} id="file-#{fId}">
             $with ratingF <- attachedfileRating file
-              <div .file-name>
+              <span .file-name>
                   <a title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>#{truncateFileName maxLenOfFileName $ attachedfileOrigName file}
+
+              $if elem ChangeFileRatingP permissions
+                $with rating1 <- read $ unpack ratingF
+                  <a data-dropdown="manage-rating-#{fId}" .button .dropdown .tiny .secondary>#{show rating1}
+                  <ul id="manage-rating-#{fId}" .f-dropdown>
+                    $if not (rating1 == SFW)
+                      <li>
+                        <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
+                    $if not (rating1 == R15)
+                      <li>
+                        <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
+                    $if not (rating1 == R18)
+                      <li>
+                        <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
+                    $if not (rating1 == R18G)
+                      <li>
+                        <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
+
               $if isImageFile (attachedfileType file)
                   <div .file-info> #{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}
               $else
                   <div .file-info> #{attachedfileType file}, #{attachedfileSize file}
-              $if elem ChangeFileRatingP permissions
-                $with rating1 <- read $ unpack ratingF
-                  $if rating1 == SFW
-                      SFW&nbsp;
-                  $else
-                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) SFW}>SFW
-                  $if rating1 == R15
-                      R-15&nbsp;
-                  $else
-                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R15}>R-15
-                  $if rating1 == R18
-                      R-18&nbsp;
-                  $else
-                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18}>R-18
-                  $if rating1 == R18G
-                      R-18G&nbsp;
-                  $else
-                      <a href=@{ManageCensorshipR (fromIntegral $ fromKey fileKey) R18G}>R-18G
               $if checkRating ratingF rating
                 <a .thumb onclick="return expandImage(this, event)" title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>
                   $if attachedfileThumbWidth file == -1

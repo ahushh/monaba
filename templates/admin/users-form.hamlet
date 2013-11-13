@@ -1,6 +1,23 @@
-<form .users method=post action=@{UsersR}>
-    #{extra}
-    _{MsgName}: ^{fvInput userNameView}
-    _{MsgPassword}: ^{fvInput userPasswordView}
-    _{MsgGroup}: ^{fvInput userGroupView}
-    <input type=submit value=_{MsgAddNewUserOrUpdate}>
+<form .users .custom method=post action=@{UsersR}>
+  #{extra}
+  <div .row>
+    <div .columns .large-3>
+      <label for="#{fvId userNameView}">
+        _{MsgName}
+    <div .columns .large-9>
+      ^{fvInput userNameView}
+  <div .row>
+    <div .columns .large-3>
+      <label for="#{fvId userPasswordView}">
+        _{MsgPassword}
+    <div .columns .large-9>
+      ^{fvInput userPasswordView}
+  <div .row>
+    <div .columns .large-3>
+      <label for="#{fvId userGroupView}">
+        _{MsgGroup}
+    <div .columns .large-9>
+      ^{fvInput userGroupView}
+    <div .row>
+      <div .large-12 .columns>
+        <input .button .small type=submit value=_{MsgAddNewUserOrUpdate}>

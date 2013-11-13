@@ -63,7 +63,6 @@ $newline never
                 \  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
               }
-        <script>document.write('<script src=' + ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') + '.js><\/script>');
         <script src=@{StaticR js_foundation_min_js}>
         <script>$(document).foundation();
         \<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.  chromium.org/developers/how-tos/chrome-frame-getting-started -->

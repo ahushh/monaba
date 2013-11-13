@@ -1,15 +1,27 @@
-^{adminNavbarWidget muser permissions}
-^{formWidget}
-$forall g <- groups
-    <table .admin-table style=display:inline >
-        <tr>
-            <th>_{MsgName}
-            <td>#{groupName g}
-        <tr>
-            <th colspan=2 style=text-align:center>_{MsgPermissions}
-        $forall p <- groupPermissions g
-            <tr>
-                <td colspan=2>_{showPermission p}
-        <tr>
-            <td style=text-align:center colspan=2>
-               <a href=@{DeleteGroupsR $ groupName g}>_{MsgDeleteBtn}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgGroups}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-5>
+     ^{formWidget}
+  <div .columns .large-5>
+    <div .section-container .auto data-section>
+      $forall (i,g) <- enumerate groups
+        $with c <- ifelse (i == 0) "active" ""
+          <section class="#{c}">
+            <p .title data-section-little>
+              <a>#{groupName g}
+            <div .content data-section-content>
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan=2 .text-center>_{MsgPermissions}
+                <tbody>
+                  $forall p <- groupPermissions g
+                      <tr>
+                          <td colspan=2>_{showPermission p}
+                  <tr>
+                      <td .text-center colspan=2>
+                         <a .button .tiny href=@{DeleteGroupsR $ groupName g}>_{MsgDeleteBtn}

@@ -5,24 +5,24 @@
 <div .row>
   <div .columns .large-10 .large-centered>
     <ul .large-block-grid-2>
-      <li>
+      <li .panel>
         $forall c <- boardCategories
           $with bs <- widgetHelperFilterBoards boards c group
             $if not (null bs)
-              <div .board-category>#{c}
+              <div .text-center .board-category>
+                <h6>#{c}
               $forall Entity _ b <- bs
                 <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
       <li>
         <img alt="Main" src=#{staticDir ++ "/home.jpg"}>
 
     $if not $ null latestNews
-        <div .row #latest-news>
-            <div .columns .large-12 .large-centered .text-center>_{MsgNews}
+        <div .row .news-container>
+            <div .columns .large-12 .large-centered .text-center>
+              <h6>_{MsgNews}
             $forall (Entity _ t) <- latestNews
-                $if not $ t == entityVal (P.head latestNews)
-                    <hr>
-                <div .columns .large-12 .large-centered  .news id="post-#{postLocalId t}-0-#{newsBoard}">
-                    <div .columns .large-12 .large-centered  .title>
+                <div .radius .columns .large-12 .large-centered .news-entry .panel id="post-#{postLocalId t}-0-#{newsBoard}">
+                    <div .columns .large-12 .large-centered .text-center .news-title>
                         <a href=@{ThreadR newsBoard $ postLocalId t}>
                             <strong>#{postTitle t}
                             <span .time>#{myFormatTime timeZone $ postDate t}

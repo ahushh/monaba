@@ -1,45 +1,69 @@
-<form .config method=post action=@{ConfigR}>
-    #{extra}
-    <input type=submit value=_{MsgUpdateConfig}>
-    <table>
-        <tr>
-            <td>_{MsgCaptchaLength}
-            <td>^{fvInput captchaLengthView}
-        <tr>
-            <td>_{MsgACaptchaGuards}
-            <td>^{fvInput acaptchaGuardsView}
-        <tr>
-            <td>_{MsgCaptchaTimeout}
-            <td>^{fvInput captchaTimeoutView}
-        <tr>
-            <td>_{MsgReplyDelay}
-            <td>^{fvInput replyDelayView}
-        <tr>
-            <td>_{MsgThreadDelay}
-            <td>^{fvInput threadDelayView}
-        <tr>
-            <td>_{MsgBoardCategories}
-            <td>^{fvInput boardCategoriesView}
-        <tr>
-            <td>_{MsgNewsBoard}
-            <td>^{fvInput newsBoardView}
-        <tr>
-            <td>_{MsgShowNews}
-            <td>^{fvInput showNewsView}
-        <tr>
-            <td>_{MsgShowLatestPosts}
-            <td>^{fvInput showLatestPostsView}
-        <tr>
-            <td>_{MsgMaxEditings}
-            <td>^{fvInput maxEditingsView}
-        <tr>
-            <td>
-              <label for=#{fvId displaySageView}>
-                _{MsgDisplaySage}
-            <td>^{fvInput displaySageView}
-        <tr>
-            <td>_{MsgModlogMaxEntriesView}
-            <td>^{fvInput modlogMaxEntriesView}
-        <tr>
-            <td>_{MsgModlogEntriesPerPage}
-            <td>^{fvInput modlogEntriesPerPageView}
+<form .custom method=post action=@{ConfigR}>
+  #{extra}
+  <input .button .small type=submit value=_{MsgUpdateConfig}>
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgCaptchaLength}
+    <div .columns .large-6 .small-12>
+      ^{fvInput captchaLengthView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgACaptchaGuards}
+    <div .columns .large-6 .small-12>
+      ^{fvInput acaptchaGuardsView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgCaptchaTimeout}
+    <div .columns .large-6 .small-12>
+      ^{fvInput captchaTimeoutView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgReplyDelay}
+    <div .columns .large-6 .small-12>
+      ^{fvInput replyDelayView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgThreadDelay}
+    <div .columns .large-6 .small-12>
+      ^{fvInput threadDelayView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgBoardCategories}
+    <div .columns .large-6 .small-12>
+      ^{fvInput boardCategoriesView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgNewsBoard}
+    <div .columns .large-6 .small-12>
+      ^{fvInput newsBoardView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgShowNews}
+    <div .columns .large-6 .small-12>
+      ^{fvInput showNewsView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgShowLatestPosts}
+    <div .columns .large-6 .small-12>
+      ^{fvInput showLatestPostsView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgMaxEditings}
+    <div .columns .large-6 .small-12>
+      ^{fvInput maxEditingsView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      <label for=#{fvId displaySageView}>
+        _{MsgDisplaySage}
+    <div .columns .large-6 .small-12>
+      ^{fvInput displaySageView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgModlogMaxEntriesView}
+    <div .columns .large-6 .small-12>
+      ^{fvInput modlogMaxEntriesView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgModlogEntriesPerPage}
+    <div .columns .large-6 .small-12>
+      ^{fvInput modlogEntriesPerPageView}

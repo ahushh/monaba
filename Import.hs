@@ -141,15 +141,12 @@ postWidget muser ePost eFiles rating sage inThread canPost showParent permission
       sPostKey  = show $ fromKey     $ entityKey ePost
       board     = postBoard $ entityVal ePost
       isThread  = sThreadId == "0"
-      pClass    = (if isThread then "op-post" else "reply-post") :: Text
-      pId       = if isThread then "post-"++sPostId++"-0-"++show board else "post-"++sPostId++"-"++sThreadId++"-"++show board
+      pClass    = (if isThread then "opening post" else "reply post") :: Text
+      pId       = if isThread then "post-"++sPostId++"-0-"++unpack board else "post-"++sPostId++"-"++sThreadId++"-"++unpack board
   in $(widgetFile "post")
              
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
 adminNavbarWidget muser permissions = $(widgetFile "admin/navbar")
-
-adminHellbanningNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
-adminHellbanningNavbarWidget muser permissions = $(widgetFile "admin/hellban/navbar")
 
 pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> Widget
 pageSwitcherWidget page pages route = $(widgetFile "page-switcher")

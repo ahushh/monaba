@@ -19,16 +19,22 @@ $if hasAccessToReply
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-        ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+      <div .row>
+        <div .columns .large-12 .small-12>
+          ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     
-        $forall (eReply, files) <- repliesAndFiles
-            $if checkHellbanned eReply permissions posterId
-                ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
-    <span id=get-new-posts-wrapper>
-        <img src=@{StaticR img_blank_gif}  title=refresh alt=refresh .icon-thread-refresh>
+      $forall (eReply, files) <- repliesAndFiles
+        $if checkHellbanned eReply permissions posterId
+          <div .row>
+            <div .columns .large-12 .small-12>
+              ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+    
+    <div .row .thread-bottom>
+      <div .columns .large-12 .small-12>
+        <img src=@{StaticR img_blank_gif} title=refresh alt=refresh .icon-thread-refresh>
         <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
-        <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a>
-    <a href=@{BoardNoPageR board }> _{MsgBack}
+        <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}
+        <a href=@{BoardNoPageR board }> _{MsgBack}
 
     <div .delete-container>
       <div .row>

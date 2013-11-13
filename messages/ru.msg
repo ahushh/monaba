@@ -348,7 +348,7 @@ HideThread: Скрыть тред
 HideThreadCompletely: Скрыть тред полностью
 ThreadIsHidden: Тред скрыт.
 HiddenThreads: Скрытые треды
-Unhide: Раскрыть
+UnhideThread: Раскрыть тред
 ShowThread: Показать тред
 
 ######################################################################################

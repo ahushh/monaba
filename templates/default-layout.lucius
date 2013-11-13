@@ -36,7 +36,6 @@ footer, .push {
     cursor: pointer;
 }
 
-
 .icon-expand {
     background-position: -581px -173px;
 }
@@ -174,8 +173,9 @@ footer, .push {
     padding: 25px 2px;
 }
 
-.reply-post, .op-post {
+.post {
     padding: 5px;
+    margin: 3px;
 }
 
 .multi-file {
@@ -195,9 +195,10 @@ footer, .push {
     display: block;
 }
 
-.parent-link {
-    float: right;
+.censored {
+    display: block;
 }
+
 /* Message */
 .message {
     padding: 8px 10px;
@@ -217,8 +218,24 @@ footer, .push {
     color: #d77d31;
 }
 
+.pLabelTrue, .pLabelTrue a {
+    color: green;
+}
+
+.pLabelFalse, .pLabelFalse a {
+    color: red;
+}
+
+.last-modified {
+    float:right;
+}
+
+.refmap-list {
+    font-size: 75%;
+    font-style: italic;
+}
 /* Popup posts */
-.popup-post {
+.popup {
     position: absolute;
     display: block;
     min-width: 30em;
@@ -237,7 +254,12 @@ footer, .push {
 /* ****** End of posts and threads ******* */
 /* *************************************** */
 
-
+/* *************************************** */
+/* *********** Post deletion ************* */
+/* *************************************** */
+.delete-container label, .delete-container input {
+    float: right;
+}
 
 /* .admin-table { */
 /*     border-collapse: collapse; */
@@ -256,13 +278,6 @@ footer, .push {
 /*     width: 100%; */
 /* } */
 
-/* .pLabelTrue, .pLabelTrue a { */
-/*     color: green; */
-/* } */
-
-/* .pLabelFalse, .pLabelFalse a { */
-/*     color: red; */
-/* } */
 
 /* .popupMessageText { */
 /*     display: inline; */
@@ -288,10 +303,6 @@ footer, .push {
 /*     top: 10px; */
 /* } */
 
-/* .refmap-list { */
-/*     font-size: 75%; */
-/*     font-style: italic; */
-/* } */
 
 /* header { */
 /*     padding-bottom: 15px; */

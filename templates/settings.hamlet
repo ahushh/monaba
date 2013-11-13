@@ -21,5 +21,5 @@
                 <div .columns .large-12 .small-12>
                   <a href="@{ThreadR b t}">
                     No. #{t}
-                  <a onclick="unhideThreadCompletely(#{t},'#{b}')">
-                    _{MsgUnhide}
+                  <a title="_{MsgUnhideThread}" onclick="unhideThreadCompletely(#{t},'#{b}')">✖
+                    

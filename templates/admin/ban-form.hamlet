@@ -1,8 +1,33 @@
-<form method=post action=@{BanByIpR "" ""}>
+<form .users .custom method=post action=@{BanByIpR "" ""}>
     #{extra}
-    _{MsgBanIp}: ^{fvInput ipView}
-    _{MsgBanReason}: ^{fvInput reasonView}
-    _{MsgBanExpiresInHours} ^{fvInput expiresView}
-    _{MsgBanBoard}: ^{fvInput boardView}
-    <input type=submit value=_{MsgBan}>
+    <div .row>
+      <div .columns .small-12 .large-3>
+        <label for="#{fvId ipView}">
+          _{MsgBanIp}
+      <div .columns .small-12 .large-9>
+        ^{fvInput ipView}
 
+    <div .row>
+      <div .columns .small-12 .large-3>
+        <label for="#{fvId reasonView}">
+          _{MsgBanReason}
+      <div .columns .small-12 .large-9>
+        ^{fvInput reasonView}
+
+    <div .row>
+      <div .columns .small-12 .large-3>
+        <label for="#{fvId expiresView}">
+          _{MsgBanExpiresInHours}
+      <div .columns .small-12 .large-9>
+        ^{fvInput expiresView}
+
+    <div .row>
+      <div .columns .small-12 .large-3>
+        <label for="#{fvId boardView}">
+          _{MsgBanBoard}
+      <div .columns .small-12 .large-9>
+        ^{fvInput boardView}
+
+    <div .row>
+      <div .small-12 .large-12 .columns>
+        <input .button .tiny type=submit value=_{MsgBan}>

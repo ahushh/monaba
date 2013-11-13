@@ -3,7 +3,7 @@ $if not $ T.null boardLongDesc
     <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
 <div .text-center>
   _{MsgDeletedPostsIn thread} <a href=@{ThreadR board thread}> _{MsgBack}
-<form .delete-form method=get action=@{DeleteR}>
+<form .custom .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
         ^{postWidget muser eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
     ^{deleteWidget permissions}

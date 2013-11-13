@@ -3,19 +3,47 @@ module Handler.Admin where
 
 import           Import
 import           Yesod.Auth
+import           Yesod.Auth.HashDB    (setPassword)
 import qualified Data.Text            as T
 import           Handler.Admin.Modlog (addModlogEntry)
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
-getAdminR = do
-  muser           <- maybeAuth
-  permissions     <- getPermissions <$> getMaybeGroup muser
+getAdminR = getAccountR
+-------------------------------------------------------------------------------------------------------------
+-- Account  
+-------------------------------------------------------------------------------------------------------------
+newPasswordForm :: Html -> MForm Handler (FormResult Text, Widget)
+newPasswordForm extra = do
+  (newPasswordRes, newPasswordView) <- mreq textField "" Nothing
+  let widget = $(widgetFile "admin/account-form")
+  return (newPasswordRes, widget)
+
+getAccountR :: Handler Html
+getAccountR = do
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
+
+  (formWidget, formEnctype) <- generateFormPost newPasswordForm
+
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgManagement]
-    $(widgetFile "admin")
-
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgAccount]
+    $(widgetFile "admin/account")
+                 
+postNewPasswordR :: Handler Html
+postNewPasswordR = do
+  ((result, _), _) <- runFormPost newPasswordForm
+  let msgRedirect msg = setMessageI msg >> redirect AccountR
+  case result of
+    FormFailure []          -> msgRedirect MsgBadFormData
+    FormFailure xs          -> msgRedirect (MsgError $ T.intercalate "; " xs) 
+    FormMissing             -> msgRedirect MsgNoFormData
+    FormSuccess newPassword -> do
+      eUser               <- fromJust <$> maybeAuth
+      userWithNewPassword <- liftIO $ setPassword newPassword (entityVal eUser)
+      void $ runDB $ replace (entityKey eUser) userWithNewPassword
+      msgRedirect MsgPasswordChanged
 -------------------------------------------------------------------------------------------------------------
 -- Thread management
 -------------------------------------------------------------------------------------------------------------

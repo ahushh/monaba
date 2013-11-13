@@ -71,26 +71,24 @@ textarea:focus {
 /* *************************************** */
 /* *********** Post and threads ********** */
 /* *************************************** */
-.reply-post, .post-list .op-post {
-    display: table;
+.reply, .post-list .opening {
     background: none repeat scroll 0% 0% #CFCFCF;
     border-radius: 3px;
     border: 1px solid #EEEEEE;
     padding: 5px;
 }
 
-.popup-post {
+.popup {
     background: none repeat scroll 0% 0% #CFCFCF;
     border-radius: 3px;
     border: 1px solid #EEEEEE;
     padding: 5px;
 }
 
-.highlighted-post {
+.highlighted {
     background: none repeat scroll 0% 0% #EEDACB;
     border-radius: 3px;
     border: 2px dashed #EE6600;
-    padding: 5px;
 }
 
 .thread {
@@ -98,6 +96,15 @@ textarea:focus {
     padding: 25px 2px;
 }
 
+/* Header */
+.file-name {
+    font-size: 0.8em;
+}
+
+.time {
+    font-size: 0.8em;
+    color: #666666;
+}
 /* Message */
 .spoiler, .spoiler a {
     background:#C0C0C0;
@@ -127,3 +134,12 @@ textarea:focus {
 /* ****** End of posts and threads ******* */
 /* *************************************** */
 
+/* *************************************** */
+/* **************** Admin **************** */
+/* *************************************** */
+.admin-navbar {
+    border-right: 1px solid rgba(10, 10, 10, 0.3);
+}
+.admin-navbar li:hover {
+    background-color: #CFCFCF;
+}

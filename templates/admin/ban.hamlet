@@ -1,25 +1,34 @@
-^{adminNavbarWidget muser permissions}
-^{formWidget}
-<table .admin-table>
-    <tr>
-        <th>         
-        <th> ID
-        <th>_{MsgBanIp}
-        <th>_{MsgBanReason}
-        <th>_{MsgBanExpires}
-        <th>_{MsgBanBoard }
-    $forall Entity bId b <- bans
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgBans}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-5>
+     ^{formWidget}
+  <div .columns .large-5>
+    <table>
+      <thead>
         <tr>
-            <td>
-                <a href=@{BanDeleteR $ fromIntegral $ fromKey bId}>_{MsgDeleteBtn}
-            <td>##{show $ int64ToInt $ fromKey bId}
-            <td>#{banIp b}
-            <td>#{banReason b}
-            $if isJust $ banExpires b
-                <td>#{myFormatTime timeZone $ fromJust $ banExpires b}
-            $else
-                <td>_{MsgNeverExpires}
-            $if isJust $ banBoard b
-                <td>#{fromJust $ banBoard b}
-            $else
-                <td>_{MsgAllBoards}
+            <th>         
+            <th> ID
+            <th>_{MsgBanIp}
+            <th>_{MsgBanReason}
+            <th>_{MsgBanExpires}
+            <th>_{MsgBanBoard }
+      <tbody>
+        $forall Entity bId b <- bans
+            <tr>
+                <td>
+                    <a .button .tiny href=@{BanDeleteR $ fromIntegral $ fromKey bId}>_{MsgDeleteBtn}
+                <td>##{show $ int64ToInt $ fromKey bId}
+                <td>#{banIp b}
+                <td>#{banReason b}
+                $maybe exp <- banExpires b 
+                    <td>#{myFormatTime timeZone exp}
+                $nothing
+                    <td>_{MsgNeverExpires}
+                $maybe board <- banBoard b
+                    <td>#{board}
+                $nothing
+                    <td>_{MsgAllBoards}

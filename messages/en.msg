@@ -348,7 +348,7 @@ HideThread: Hide thread
 HideThreadCompletely: Hide thread completely
 ThreadIsHidden: Thread is hidden.
 HiddenThreads: Hidden threads
-Unhide: Раскрыть
+UnhideThread: Unhide thread
 ShowThread: Show thread
 
 ######################################################################################

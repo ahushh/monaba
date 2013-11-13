@@ -1,16 +1,24 @@
-^{adminNavbarWidget muser permissions}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgModlog}
 
-<table .admin-table>
-  <tr>
-      <td>_{MsgModlogDate}
-      <td>_{MsgModlogUser}
-      <td>_{MsgModlogGroup}
-      <td>_{MsgModlogMessage}      
-  $forall Entity _ entry <- entries
-      <tr>
-          <td> #{myFormatTime timeZone $ modlogDate entry}
-          <td> #{modlogUser entry}
-          <td> #{modlogGroup entry}
-          <td> #{modlogMessage entry}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-10>
+    <table .admin-table>
+      <thead>
+        <tr>
+          <td>_{MsgModlogDate}
+          <td>_{MsgModlogUser}
+          <td>_{MsgModlogGroup}
+          <td>_{MsgModlogMessage}      
+      <tbody>
+        $forall Entity _ entry <- entries
+          <tr>
+              <td> #{myFormatTime timeZone $ modlogDate entry}
+              <td> #{modlogUser entry}
+              <td> #{modlogGroup entry}
+              <td> #{modlogMessage entry}
 
 ^{pageSwitcherWidget page pages ModlogR}

@@ -188,7 +188,7 @@ function initSymbolCounter() {
 // Pleer.com
 //-----------------------------------------------------------------
 function addProstopleer(post) {
-    var posts = post ? ("#"+post+"") : ".reply-post, .op-post";
+    var posts = post ? ("#"+post+"") : "post";
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         if ($('#'+postId).find('.prosto-pleer').length)
@@ -206,7 +206,7 @@ function addProstopleer(post) {
 // youtube
 //-----------------------------------------------------------------
 function addEmbeddedPlayer(post) {
-    var posts = post ? ("#"+post+"") : ".reply-post, .op-post";
+    var posts = post ? ("#"+post+"") : "post";
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         var first = true;
@@ -288,7 +288,7 @@ function addEmbeddedPlayer(post) {
 function initHiddenThreads() {
     var ths = getItem('hidden-threads');
     if (!ths) return false;
-    $('.op-post').each(function() {
+    $('.opening').each(function() {
         var fullId = $(this).attr('id');
         var threadId = extractPost(fullId);
         var board    = extractBoard(fullId);
@@ -314,7 +314,7 @@ function hideThread(threadId, board) {
     }
     setItem('hidden-threads', ths);
 
-    $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').hide();
+    $('#thread-'+threadId).find('.post, .omitted').hide();
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
         $('#thread-'+threadId).find('.hidden-thread').show()
     } else {
@@ -328,7 +328,7 @@ function unhideThread(threadId,board) {
         delete ths[threadId+'-'+board];
         setItem('hidden-threads', ths);
     }    
-    $('#thread-'+threadId).find('.op-post, .reply-post, .omitted').show();
+    $('#thread-'+threadId).find('.post, .omitted').show();
     $('#thread-'+threadId).find('.hidden-thread').hide();
 }
 //-----------------------------------------------------------------
@@ -458,16 +458,16 @@ function checkHighlighted() {
 }
 
 function highlightPost(postId) {
-    $(".highlighted-post").removeClass('highlighted-post');
-    if (! $("#"+postId).hasClass('op-post')) {
-        $("#"+postId).addClass('highlighted-post');
+    $(".highlighted").removeClass('highlighted');
+    if (! $("#"+postId).hasClass('opening')) {
+        $("#"+postId).addClass('highlighted');
     }
 }
 //-----------------------------------------------------------------
 // refmap
 //-----------------------------------------------------------------
 function doRefMap(post) {
-    var selector = post ? post : $(".reply-post, .op-post");
+    var selector = post ? post : $(".post");
     selector.each(function() {
         var postId = extractPost( $(this).attr('id') );
         var board  = extractBoard( $(this).attr('id') );
@@ -510,14 +510,14 @@ function doRefMap(post) {
 // popup posts
 //-----------------------------------------------------------------
 function cachePopupPosts() {
-    $(".reply-post, .op-post").each(function() {
+    $(".post").each(function() {
         var postId = extractPost( $(this).attr('id') );
         var board  = extractBoard( $(this).attr('id') );
         if (!Monaba.postCache[board]) {
             Monaba.postCache[board] = {};
         }
         // if (! Monaba.postCache[board][postId]) {
-            var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+$(this).attr('id'));
+            var post = $(this).clone().removeClass().addClass("popup").attr('id', 'popup-'+$(this).attr('id'));
             var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
             var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
             var delPopup = " <div class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></div> ";
@@ -559,7 +559,7 @@ function showPopupPost(event, elem, board, postId) {
     }
     if (!Monaba.postCache[board][postId]) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
-            var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+$(data).attr('id'));
+            var post = $(data).removeClass().addClass("popup").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
             var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
             var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
@@ -580,7 +580,7 @@ function delPopupPost(post) {
     if (post) {
         $('#'+post).remove();
     } else {
-        $('.popup-post').remove();
+        $('.popup').remove();
     }
 }
 //-----------------------------------------------------------------
@@ -709,9 +709,9 @@ function refreshCaptcha() {
 }
 
 function refreshThread(board, threadId) {
-    var lastPost = $("#thread-"+threadId+" .reply-post:last");
+    var lastPost = $("#thread-"+threadId+" .reply:last");
     if (lastPost.length == 0) {
-        lastPost = $("#thread-"+threadId+" .op-post");
+        lastPost = $("#thread-"+threadId+" .opening");
     }
     var lastPostId = extractPost( lastPost.attr("id") );
     $(".delete-form .icon-thread-refresh").toggle();

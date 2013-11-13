@@ -42,7 +42,7 @@ $newline never
             <div id="main" role="main">
               ^{pageBody pc}
             <footer>
-                <a href=https://github.com/ahushh/Monaba>Monaba 1.1.4
+                <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5
                 <br />
                 Powered by #
                 <a href=http://www.haskell.org/>Haskell 

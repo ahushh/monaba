@@ -211,7 +211,7 @@ function addProstopleer(post) {
             var result = regex.exec(link.text);
             if (!result) return true;
             var videoId = result[1];
-            $(link).before('<object width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
+            $(link).before('<object class="prosto-pleer" width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
         });
     });
 }

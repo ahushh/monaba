@@ -1,50 +1,45 @@
-#main-title {
-    text-align: center;
-}
+/* #main-title { */
+/*     text-align: center; */
+/* } */
 
-#home-container {
-    overflow:hidden;
-    margin-left: 15%;
-    margin-right: 15%;
-/* width: 80%; */
-}
+/* #home-container { */
+/*     overflow:hidden; */
+/*     margin-left: 15%; */
+/*     margin-right: 15%; */
+/* /\* width: 80%; *\/ */
+/* } */
 
-#board-list-full {
-    width: 28%;
-    display:inline-block;
-    padding: 10px;
-}
+/* #board-list-full { */
+/*     width: 28%; */
+/*     display:inline-block; */
+/*     padding: 10px; */
+/* } */
 
-.board-category {
-    margin: 3px 3px 3px -4px;
-    padding: 3px 3px 3px 5px;
-}
+/* .board-category { */
+/*     margin: 3px 3px 3px -4px; */
+/*     padding: 3px 3px 3px 5px; */
+/* } */
 
-#main-image {
-    display:inline-block;
-    margin-left: 5%;
-    margin-bottom: 5%;
-}
+/* #main-image { */
+/*     display:inline-block; */
+/*     margin-left: 5%; */
+/*     margin-bottom: 5%; */
+/* } */
 
-#main-image img {
-}
+/* #main-image img { */
+/* } */
 
-#news-title {
-    padding: 3px 3px 3px 5px;
-    text-align: center;
-}
+/* #latest-news { */
+/*     margin: 5% 0; */
+/*     padding-bottom: 2%; */
+/* } */
 
-#latest-news {
-    margin: 5% 0;
-    padding-bottom: 2%;
-}
+/* .news { */
+/*     padding: 5px; */
+/* } */
 
-.news {
-    padding: 5px;
-}
-
-.title {
-    width: 50%;
-    margin: 5px auto -15px;
-    text-align: center;
-}
+/* .title { */
+/*     width: 50%; */
+/*     margin: 5px auto -15px; */
+/*     text-align: center; */
+/* } */

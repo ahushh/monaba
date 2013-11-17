@@ -63,7 +63,7 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #
 News: Новости
 LatestPosts: Последние посты
 ## thread
-Open: Открыть
+OpenThread: Открыть тред
 PostsOmitted n@Int: #{show n} #{omittedRus n}.
 ExpandThread: Развернуть тред.
 ThreadIsExpanded: Тред развернут.
@@ -348,7 +348,7 @@ HideThread: Скрыть тред
 HideThreadCompletely: Скрыть тред полностью
 ThreadIsHidden: Тред скрыт.
 HiddenThreads: Скрытые треды
-Unhide: Раскрыть
+UnhideThread: Раскрыть тред
 ShowThread: Показать тред
 
 ######################################################################################

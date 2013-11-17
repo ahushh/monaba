@@ -64,7 +64,7 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
 News: News
 LatestPosts: Latest posts
 ## thread
-Open: Open
+OpenThread: Open thread
 PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted.
 ExpandThread: Expand thread.
 ThreadIsExpanded: Thread is expanded.
@@ -348,7 +348,7 @@ HideThread: Hide thread
 HideThreadCompletely: Hide thread completely
 ThreadIsHidden: Thread is hidden.
 HiddenThreads: Hidden threads
-Unhide: Раскрыть
+UnhideThread: Unhide thread
 ShowThread: Show thread
 
 ######################################################################################

@@ -1,26 +1,25 @@
-<h2 style=text-align:center>_{MsgSettings}
-<div style="margin-left:30px">
-  <div #settings-form-container>
-    <form #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
+<h2 .text-center>_{MsgSettings}
+<div .row>
+  <div .columns .large-6 #settings-form-container .small-12>
+    <form .custom #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
       ^{formWidget}
-      <input type=submit onclick="setJSSettings()" value=_{MsgApply}>
-      <span style=display:none #settings-applied>
-  <div #hidden-threads-list>
-      $if not $ null hiddenThreads
-        <div #hidden-threads-title>
+      <input .button .tiny type=submit onclick="setJSSettings()" value=_{MsgApply}>
+      <span .hide #settings-applied>
+  <div .columns .large-6 .hidden-threads .small-12>
+    $if not $ null hiddenThreads
+      <div .text-center .title>
+        <strong>
           _{MsgHiddenThreads}:
-      $forall (b, ths) <- hiddenThreads
-        <div .hidden-threads-board #hidden-threads-board-#{b}>
-          <div #hidden-thread-board-title>
-            /#{b}/:
-          <table>
+      <ul .large-block-grid-5 .medium-block-grid-3 .small-block-grid-2>
+        $forall (b, ths) <- hiddenThreads
+          <li .board #board-#{b}>
+            <div .row>
+              <div #board-title .large-12 .small-12 .columns>
+                /#{b}/:
             $forall t <- ths
-              <tr #hidden-thread-elem-#{b}-#{t}>
-                <td>
+              <div .row .hidden-thread #hidden-thread-#{b}-#{t}>
+                <div .columns .large-12 .small-12>
                   <a href="@{ThreadR b t}">
                     No. #{t}
-                <td>
-                  [
-                  <a onclick="unhideThreadCompletely(#{t},'#{b}')">
-                    _{MsgUnhide}
-                  ]
+                  <a title="_{MsgUnhideThread}" href="@{ApiUnhideThreadR b t}" onclick="unhideThreadCompletely(#{t},'#{b}');return false;">✖
+                    

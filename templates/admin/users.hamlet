@@ -1,13 +1,22 @@
-^{adminNavbarWidget muser permissions}
-^{formWidget}
-<table .admin-table>
-    <tr>
-        <th>         
-        <th>_{MsgName}
-        <th>_{MsgGroup }
-    $forall Entity _ user <- users
-        <tr>
-            <td>
-                <a href=@{UsersDeleteR $ userName user}>_{MsgDeleteBtn}
-            <td>#{userName user}
-            <td>#{show $ userGroup user}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgUsers}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-5>
+     ^{formWidget}
+  <div .columns .large-5>
+    <table>
+      <thead>
+         <tr>
+           <th>         
+           <th>_{MsgName}
+           <th>_{MsgGroup }
+      <tbody>
+        $forall Entity _ user <- users
+           <tr>
+               <td>
+                   <a .button .tiny href=@{UsersDeleteR $ userName user}>_{MsgDeleteBtn}
+               <td>#{userName user}
+               <td>#{show $ userGroup user}

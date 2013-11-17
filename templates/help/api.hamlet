@@ -1,22 +1,32 @@
-<h2 style=text-align:center>_{MsgHelp} — _{MsgApi}
-<div style="margin-left:30px">
-    <p><strong>_{MsgApiParameters}:</strong>
-    <ul>
-        <li>{board} — _{MsgApiBoardName}
-        <li>{thread id} — _{MsgApiThreadId}
-        <li>{post id} — _{MsgApiPostId}
-        <li>{count} — _{MsgApiCount}
-    <p><strong>_{MsgApiPostsAfter}:</strong>
-    <p>/api/thread/{board}/{thread id}/new/{post id}
-    <p><strong>_{MsgApiLastPosts}:</strong>
-    <p>/api/thread/{board}/{thread id}/last/{count}
-    <p><strong>_{MsgApiAllPosts}:</strong>
-    <p>/api/thread/{board}/{thread id}/all
-    <p><strong>_{MsgApiDeletedPosts}:</strong>
-    <p>/api/thread/{board}/{thread id}/deleted
-    <p><strong>_{MsgApiPost}:</strong>
-    <p>/api/post/{board}/{post id}
-    <p><strong>Accept headers:</strong>
-    <ul>
-        <li>accept: application/json
-        <li>accept: text/html
+<h2 .text-center>_{MsgHelp} — _{MsgApi}
+<div .row>
+  <div .columns .large-2>
+    <ul .side-nav>
+      <li>
+        <a href=@{HelpR}>[i18n]About
+      <li>
+        <a href=@{HelpMarkupR}>_{MsgMarkup}
+      <li .active>
+        <a href=@{HelpApiR}>_{MsgApi}
+  <div .columns .large-10>
+    <div .panel>
+      <p><strong>_{MsgApiParameters}:</strong>
+      <ul>
+          <li>{board} — _{MsgApiBoardName}
+          <li>{thread id} — _{MsgApiThreadId}
+          <li>{post id} — _{MsgApiPostId}
+          <li>{count} — _{MsgApiCount}
+      <p><strong>_{MsgApiPostsAfter}:</strong>
+      <p>/api/thread/{board}/{thread id}/new/{post id}
+      <p><strong>_{MsgApiLastPosts}:</strong>
+      <p>/api/thread/{board}/{thread id}/last/{count}
+      <p><strong>_{MsgApiAllPosts}:</strong>
+      <p>/api/thread/{board}/{thread id}/all
+      <p><strong>_{MsgApiDeletedPosts}:</strong>
+      <p>/api/thread/{board}/{thread id}/deleted
+      <p><strong>_{MsgApiPost}:</strong>
+      <p>/api/post/{board}/{post id}
+      <p><strong>Accept headers:</strong>
+      <ul>
+          <li>accept: application/json
+          <li>accept: text/html

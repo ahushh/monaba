@@ -2,48 +2,58 @@
 <span style=display:none>
     ^{fvInput postIdView}
 
-<span style=padding:5px>
+<div .row>
+  <div .columns .large-12 .small-12>
     ^{fvInput messageView}
-<div style=padding:5px>
-    <div style=display:inline .markup-buttons>
-        <a id=button-bold-edit>
-           <strong>
-             _{MsgMarkupBold}
-        |
-        <a id=button-italic-edit>
-           <em>
-             _{MsgMarkupItalic}
-        |
-        <a id=button-underline-edit>
-           <u>
-             _{MsgMarkupUnderline}
-        |
-        <a id=button-strike-edit>
-           <span style="text-decoration:line-through">
-             _{MsgMarkupStrike}
-        |
-        <a id=button-spoiler-edit>
-           <span .spoiler>
-             _{MsgMarkupSpoiler}
-        |
-        <a id=button-code-edit>
-           _{MsgMarkupCode}
-        |
-        <a id=button-inline-latex-edit>
-           _{MsgMarkupInlineLatex}
-        |
-        <a id=button-latex-edit>
-           _{MsgMarkupLatex}
-        |
-        <a id=button-quote-edit .quote>
-           _{MsgMarkupQuote}
-        |
-        <span style=display:inline .symbol-counter>
+
+<div .row>
+  <div .columns .large-12 .small-12>  
+    <div .markup-buttons style=display:inline>
+      <ul .inline-list>
+        <li>
+         <a id=button-bold-edit>
+            <strong>
+              _{MsgMarkupBold}
+        <li>
+         <a id=button-italic-edit>
+            <em>
+              _{MsgMarkupItalic}
+        <li>
+         <a id=button-underline-edit>
+            <u>
+              _{MsgMarkupUnderline}
+        <li>
+         <a id=button-strike-edit>
+            <span style="text-decoration:line-through">
+              _{MsgMarkupStrike}
+        <li>
+         <a id=button-spoiler-edit>
+            <span .spoiler>
+              _{MsgMarkupSpoiler}
+        <li>
+         <a id=button-code-edit>
+            _{MsgMarkupCode}
+        <li>
+         <a id=button-inline-latex-edit>
+            _{MsgMarkupInlineLatex}
+        <li>
+         <a id=button-latex-edit>
+            _{MsgMarkupLatex}
+        <li>
+         <a id=button-quote-edit .quote>
+            _{MsgMarkupQuote}
+        <li>
+         <span style=display:inline .symbol-counter>
+<div .row>
+  <div .columns .large-3 .small-6>
     ^{fvInput passwordView}
-    <input type=button id=edit-button value=_{MsgEdit}>
-    <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif}  .icon-close #close-edit-form>
-    $if elem ShadowEditP permissions
-      <div>
-        <label for=#{fvId shadowView}>
-          _{MsgDontSaveHistory}
-        ^{fvInput shadowView}
+  <div .columns .large-9 .small-6>
+    <input .button .tiny type=button id=edit-button value=_{MsgEdit}>
+    <a title=_{MsgCloseIcon} onclick="hideEditForm()" #close-edit-form>
+
+$if elem ShadowEditP permissions
+  <div .row>
+    <div .columns .large-12 .small-12>
+      ^{fvInput shadowView}
+      <label style=display:inline for=#{fvId shadowView}>
+        _{MsgDontSaveHistory}

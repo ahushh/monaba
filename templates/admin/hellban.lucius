@@ -1,8 +1,8 @@
-.icon-edit-post {
-    display: none !important;
-}
+/* .icon-edit-post { */
+/*     display: none !important; */
+/* } */
 
-.thread-link {
-    float: right;
-    font-size: 0.8em
-}
+/* .thread-link { */
+/*     float: right; */
+/*     font-size: 0.8em */
+/* } */

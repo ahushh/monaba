@@ -1,27 +1,26 @@
-^{adminNavbarWidget muser permissions}
-$if not (action == NewBoard)
-    <a href=@{CleanBoardR  action board}>_{MsgCleanBoard}
-    <a href=@{DeleteBoardR action board}>_{MsgDeleteBtn}
-^{formWidget}
-<select onchange="location = '/admin/boards/list/'+this.options[this.selectedIndex].value;">
-    $if action == AllBoards
-        $if not $ null boards
-            <option selected=selected value="#{show AllBoards}/-">
-              _{MsgAllBoards}
-    $else
-        $if not $ null boards
-            <option value="#{show AllBoards}/-">
-              _{MsgAllBoards}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgBoards}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-10>
+    $if not (action == NewBoard)
+      <a .button .small href=@{CleanBoardR  action board}>_{MsgCleanBoard}
+      <a .button .small href=@{DeleteBoardR action board}>_{MsgDeleteBtn}
     $if action == NewBoard
-        <option selected=selected value="#{show NewBoard}/-">
-          _{MsgNewBoard}
+        <a data-dropdown=select-board .button .small .dropdown>_{MsgNewBoard}
+    $elseif action == AllBoards
+        <a data-dropdown=select-board .button .small .dropdown>_{MsgAllBoards}
     $else
-        <option value="#{show NewBoard}/-">
-          _{MsgNewBoard}
-    $forall Entity _ b <- boards
-        $if board == boardName b
-            <option selected=selected value="#{show UpdateBoard}/#{boardName b}">
-              #{boardName b}
-        $else
-            <option value="#{show UpdateBoard}/#{boardName b}">
-              #{boardName b}
+        <a data-dropdown=select-board .button .small .dropdown>/#{board}/
+    <ul #select-board .f-dropdown>
+      $if not $ null boards
+        <li>
+          <a href="/admin/boards/list/#{show AllBoards}/-">_{MsgAllBoards}
+      <li>
+        <a href="/admin/boards/list/#{show NewBoard}/-">_{MsgNewBoard}
+      $forall Entity _ b <- boards
+        <li>
+          <a href="/admin/boards/list/UpdateBoard/#{boardName b}">/#{boardName b}/
+    ^{formWidget}

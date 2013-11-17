@@ -174,6 +174,7 @@ instance Yesod App where
         let group  = (groupName . entityVal) <$> mgroup
         defaultStylesheet <- extraStylesheet <$> getExtra
         stylesheet        <- flip mplus (Just defaultStylesheet) <$> lookupSession "stylesheet"
+        nameOfTheBoard   <- extraSiteName <$> getExtra
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final

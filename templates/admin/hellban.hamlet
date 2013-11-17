@@ -1,22 +1,18 @@
-^{adminHellbanningNavbarWidget muser permissions}
-<h2 style=text-align:center> _{MsgHellbanAllPosts}
-<form .delete-form method=get action=@{DeleteR}>
-    <div #post-list>
-      $forall (e, files) <- postsAndFiles
-        $if (postParent $ entityVal e) > 0
-            ^{replyPostWidget muser e files R18G False False True displaySage permissions geoIps timeZone maxLenOfFileName}
-        $else
-            ^{opPostWidget muser e files R18G False False True permissions geoIps timeZone maxLenOfFileName}
-    <div #delete-container>
-      <label>
-        <input type=checkbox name=onlyfiles value=1>
-        _{MsgOnlyFiles}
-      <div>
-        $if elem DeletePostsP permissions
-            <span style=display:none>
-                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $else
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        <input type=submit value=_{MsgDeleteBtn}>
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2> _{MsgHellbanAllPosts}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-10>
+    <form .custom .delete-form method=get action=@{DeleteR}>
+      <div .post-list .row>
+        <div .columns .large-12 .small-12>
+          $forall (ePost, eFiles) <- postsAndFiles
+            $if (postParent $ entityVal ePost) > 0
+                ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
+            $else
+                ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
+        ^{deleteWidget permissions}
 
 ^{pageSwitcherWidget page pages HellBanR}

@@ -4,7 +4,6 @@ module Handler.Admin.Hellban where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text            as T
-import           Data.Maybe           (mapMaybe)
 import           Handler.Admin.Modlog (addModlogEntry)
 import           Handler.EventSource  (sendDeletedPosts)
 -------------------------------------------------------------------------------------------------------------

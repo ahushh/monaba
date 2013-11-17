@@ -1,15 +1,16 @@
-$if not $ pageW == 0
-    <a id=next-page href=@{routeW $ pageW - 1}>_{MsgPrevious}
-    &nbsp;
-<span #pages-list>
-  $forall (i,p) <- enumerate pagesW
-    $if p == pageW
-      <strong>#{ p }#
-    $else
-      <a href=@{routeW p}>#{ p }#
-    $if not $ i == (length pagesW - 1)
-      &nbsp;
- 
-$if (pageW + 1) < length pagesW
-    &nbsp;<a id=prev-page href=@{routeW $ pageW + 1}>_{MsgNext}
+<div .pagination-centered>
+  <ul .pagination>
+    $if not $ page == 0
+        <li .arrow>
+          <a id=next-page href=@{route $ page - 1}>_{MsgPrevious}
+    $forall p <- pages
+      $if p == page
+        <li .current>
+          <a>#{ p }#
+      $else
+        <li>
+          <a href=@{route p}>#{ p }#
+    $if (page + 1) < length pages
+        <li .arrow>
+          <a id=prev-page href=@{route $ page + 1}>_{MsgNext}
 

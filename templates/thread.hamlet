@@ -1,52 +1,66 @@
-<span style=display:none id=maxMessageLength>#{maxMessageLength}
+<span .hide id=maxMessageLength>#{maxMessageLength}
 $if T.null pagetitle
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    <h2 .text-center #board-title>#{boardDesc}
     $if not $ T.null boardLongDesc
-        <div id="board-full-desc">#{boardLongDesc}
+        <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
 $else
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
+    <h2 .text-center #board-title>#{boardDesc}
     $if not $ T.null boardLongDesc
-        <div id="board-long-desc">#{boardLongDesc}
-    <div id="board-subtitle">#{pagetitle}
-
-$if hasAccessToReply
-    <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
-$else
-    <div #thread-header> _{MsgThreadHeaderNumber thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+        <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
+    <div .text-center .subheader #thread-title>#{pagetitle}
 
 $if hasAccessToReply
     <div .show-plain-form>
-        [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+        <a onclick="showPlainPostForm();">_{MsgReply}
+    <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
+      <fieldset>
+        <legend> _{MsgThreadHeaderReplyTo thread}
+          <a href=@{BoardNoPageR board }> _{MsgBack}
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
-<form .delete-form method=get action=@{DeleteR}>
-    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-        ^{opPostWidget muser eOpPost opPostFiles rating True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
-    
+<form .custom .delete-form method=get action=@{DeleteR}>
+    <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+      <div .columns .large-12 .small-12>
+        ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+      
         $forall (eReply, files) <- repliesAndFiles
-            $if checkHellbanned eReply permissions posterId
-                ^{replyPostWidget muser eReply files rating True hasAccessToReply False displaySage permissions geoIps timeZone maxLenOfFileName}
-    <span id=get-new-posts-wrapper>
-        <img src=@{StaticR img_blank_gif}  title=refresh alt=refresh .icon-thread-refresh>
-        <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
-        [ <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}</a> ]
-    [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
-    <div #delete-container>
-      <label>
-          <input type=checkbox name=onlyfiles value=1>
-          _{MsgOnlyFiles}
-      $if opModeration
+          $if checkHellbanned eReply permissions posterId
+              ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+    
+    <div .row .thread-bottom>
+      <div .columns .large-12 .small-12>
+        <img src=@{StaticR img_blank_gif} title=refresh alt=refresh .icon-thread-refresh>
+        <img alt=loading .ajax-loading .hide src=@{StaticR img_ajax_loader_gif}>
+        <a class=refresh-thread onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}
+        <a href=@{BoardNoPageR board }> _{MsgBack}
+
+    <div .delete-container>
+      <div .row>
+        <div .columns .large-offset-8 .large-2 .small-6>
           <label>
-              <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>
+            _{MsgOnlyFiles}
+            <input type=checkbox name=onlyfiles value=1>
+        $if opModeration
+          <div .columns .large-2 .small-6>
+            <label>
               _{MsgOpModeration}
-          $if not noDeletedPosts
-              [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
-      <div>
-        $if elem DeletePostsP permissions
-            <span style=display:none>
-                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $else
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        <input type=submit value=_{MsgDeleteBtn}>
-<div #edit-form style=display:none>
+              <input type=checkbox name=opmoderation value=#{show $ fromKey $ entityKey eOpPost}>
+      $if not noDeletedPosts
+        <div .row>
+          <div .columns .large-4 .large-offset-8 .small-12>
+            <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}
+      <div .row .collapse>
+          $if elem DeletePostsP permissions
+            <div .columns .large-offset-10 .large-2 .small-offset-5 .small-5>
+              <span .hide>
+                <input type=password value="" size=15 name=postpassword>
+              <input .button .small type=submit value=_{MsgDeleteBtn}>
+          $else
+              <div .columns .large-offset-8 .large-1 .small-3>
+                <label .prefix for=postpassword>
+                  _{MsgPassword}
+              <div .columns .large-2 .small-6>
+                <input type=password value="" size=15 name=postpassword>
+              <div .columns .large-1 .small-3>
+                <input .button .postfix type=submit value=_{MsgDeleteBtn}>
+<div #edit-form .hide>
     ^{formWidget'}         

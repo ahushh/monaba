@@ -9,6 +9,7 @@ $newline never
         <meta charset="UTF-8">
 
         <title>#{pageTitle pc}
+        <link rel="stylesheet" href=@{StaticR css_foundation_css}>
         $maybe s <- stylesheet
           $if s == "Ash"
               <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
@@ -23,6 +24,7 @@ $newline never
         $nothing
           <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
         <link #favicon href="/favicon.ico" rel="shortcut icon">
+        <script src=@{StaticR js_vendor_custom_modernizr_js}>
         <meta name="description" content="Haskell imageboard">
         <meta name="keywords" content="haskell,haibane renmei,rakka,yesod,monaba,imageboard,хаскелль,имиджборда,альянс серокрылых">
         <meta name="author" content="">
@@ -38,18 +40,18 @@ $newline never
         <script>
           document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
     <body>
-        <div class="container">
-            <div id="main" role="main">
-              ^{pageBody pc}
-            <footer>
-                <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5
-                <br />
-                Powered by #
-                <a href=http://www.haskell.org/>Haskell 
-                and 
-                <a href=http://www.yesodweb.com/>Yesod
-                <br />
-                #{extraCopyright $ appExtra $ settings master}
+        <div #wrap>
+            ^{pageBody pc}
+            <div .push>
+        <footer>
+            <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5
+            <br />
+            Powered by #
+            <a href=http://www.haskell.org/>Haskell 
+            and 
+            <a href=http://www.yesodweb.com/>Yesod
+            <br />
+            #{extraCopyright $ appExtra $ settings master}
 
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>
@@ -61,9 +63,12 @@ $newline never
                 \  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
               }
+        <script src=@{StaticR js_foundation_min_js}>
+        <script>$(document).foundation();
         \<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.  chromium.org/developers/how-tos/chrome-frame-getting-started -->
         \<!--[if lt IE 7 ]>
             <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js">
             <script>
                 window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})
         \<![endif]-->
+

@@ -1,2 +1,8 @@
-^{adminNavbarWidget muser permissions}
-^{formWidget}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>_{MsgAccount}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-10>
+     ^{formWidget}

@@ -1,23 +1,24 @@
-<div .admin-navbar>
-    $if elem ViewModlogP permissionsW
-        <a href=@{ModlogR 0}>_{MsgModlog} #
-        | 
-    $if elem ManageBanP permissionsW
-        <a href=@{BanByIpR "" ""}>_{MsgBans} #
-        | 
-    $if elem ManageBoardP permissionsW
-        <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards} #
-        | 
-    $if elem ManageUsersP permissionsW
-        <a href=@{UsersR}>_{MsgUsers} #
-        | 
-    $if elem ManageUsersP permissionsW
-        <a href=@{ManageGroupsR}>_{MsgGroups} #
-        | 
-    $if elem ManageConfigP permissionsW
-        <a href=@{ConfigR}>_{MsgConfig} #
-        | 
-    $if elem HellBanP permissionsW
-        <a href=@{HellBanNoPageR}>_{MsgHellbanning} #
-        | 
+<div .side-nav .admin-navbar>
+  $if elem ViewModlogP permissions
+    <li>
+      <a href=@{ModlogR 0}>_{MsgModlog}
+  $if elem ManageBanP permissions
+    <li>
+      <a href=@{BanByIpR "" ""}>_{MsgBans}
+  $if elem ManageBoardP permissions
+    <li>
+      <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards}
+  $if elem ManageUsersP permissions
+    <li>
+      <a href=@{UsersR}>_{MsgUsers}
+  $if elem ManageUsersP permissions
+    <li>
+      <a href=@{ManageGroupsR}>_{MsgGroups}
+  $if elem ManageConfigP permissions
+    <li>
+      <a href=@{ConfigR}>_{MsgConfig}
+  $if elem HellBanP permissions
+    <li>
+      <a href=@{HellBanNoPageR}>_{MsgHellbanning}
+  <li>
     <a href=@{AccountR}>_{MsgAccount}

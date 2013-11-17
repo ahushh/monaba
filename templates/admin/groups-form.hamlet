@@ -1,78 +1,79 @@
-<form method=post action=@{ManageGroupsR}>
+<form .custom method=post action=@{ManageGroupsR}>
     #{extra}
-    <table>
-        <tr>
-            <td>_{MsgName                 }
-            <td>^{fvInput nameView        }
-        <tr>
-            <td>
-              <label for=#{fvId manageThreadView}>
-                _{MsgManageThread         }
-            <td>^{fvInput manageThreadView}
-        <tr>
-            <td>
-              <label for=#{fvId manageBoardView }>
-                _{MsgManageBoard          }
-            <td>^{fvInput manageBoardView }
-        <tr>
-            <td>
-              <label for=#{fvId manageUsersView }>
-                _{MsgManageUsers          }
-            <td>^{fvInput manageUsersView }
-        <tr>
-            <td>
-              <label for=#{fvId manageConfigView}>
-                _{MsgManageConfig         }
-            <td>^{fvInput manageConfigView}
-        <tr>
-            <td>
-              <label for=#{fvId deletePostsView }>
-                _{MsgDeletePosts          }
-            <td>^{fvInput deletePostsView }
-        <tr>
-            <td>
-              <label for=#{fvId managePanelView }>
-                _{MsgManagePanel          }
-            <td>^{fvInput managePanelView }
-        <tr>
-            <td>
-              <label for=#{fvId manageBanView   }>
-                _{MsgManageBan            }
-            <td>^{fvInput manageBanView   }
-        <tr>
-            <td>
-              <label for=#{fvId editPostsView   }>
-                _{MsgEditPosts            }
-            <td>^{fvInput editPostsView   }
-        <tr>
-            <td>
-              <label for=#{fvId shadowEditView  }>
-                _{MsgShadowEdit           }
-            <td>^{fvInput shadowEditView  }
-        <tr>
-            <td>
-              <label for=#{fvId aMarkupView     }>
-                _{MsgAdditionalMarkup     }
-            <td>^{fvInput aMarkupView     }
-        <tr>
-            <td>
-              <label for=#{fvId viewIPAndIDView }>
-                _{MsgViewIPAndID          }
-            <td>^{fvInput viewIPAndIDView }
-        <tr>
-            <td>
-              <label for=#{fvId viewModlogView  }>
-                _{MsgViewModlog           }
-            <td>^{fvInput viewModlogView  }
-        <tr>
-            <td>
-              <label for=#{fvId hellbanningView }>
-                _{MsgHellbanning          }
-            <td>^{fvInput hellbanningView }
-        <tr>
-            <td>
-              <label for=#{fvId ratingView      }>
-                _{MsgChangeFileRating     }
-            <td>^{fvInput ratingView      }
+    <div .row>
+        <div .columns .large-5 .small-5>_{MsgName                 }
+        <div .columns .large-5 .small-5>^{fvInput nameView        }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId manageThreadView}>
+            _{MsgManageThread         }
+        <div .columns .large-2 .small-3>^{fvInput manageThreadView}
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId manageBoardView }>
+            _{MsgManageBoard          }
+        <div .columns .large-2 .small-3>^{fvInput manageBoardView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId manageUsersView }>
+            _{MsgManageUsers          }
+        <div .columns .large-2 .small-3>^{fvInput manageUsersView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId manageConfigView}>
+            _{MsgManageConfig         }
+        <div .columns .large-2 .small-3>^{fvInput manageConfigView}
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId deletePostsView }>
+            _{MsgDeletePosts          }
+        <div .columns .large-2 .small-3>^{fvInput deletePostsView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId managePanelView }>
+            _{MsgManagePanel          }
+        <div .columns .large-2 .small-3>^{fvInput managePanelView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId manageBanView   }>
+            _{MsgManageBan            }
+        <div .columns .large-2 .small-3>^{fvInput manageBanView   }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId editPostsView   }>
+            _{MsgEditPosts            }
+        <div .columns .large-2 .small-3>^{fvInput editPostsView   }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId shadowEditView  }>
+            _{MsgShadowEdit           }
+        <div .columns .large-2 .small-3>^{fvInput shadowEditView  }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId aMarkupView     }>
+            _{MsgAdditionalMarkup     }
+        <div .columns .large-2 .small-3>^{fvInput aMarkupView     }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId viewIPAndIDView }>
+            _{MsgViewIPAndID          }
+        <div .columns .large-2 .small-3>^{fvInput viewIPAndIDView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId viewModlogView  }>
+            _{MsgViewModlog           }
+        <div .columns .large-2 .small-3>^{fvInput viewModlogView  }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId hellbanningView }>
+            _{MsgHellbanning          }
+        <div .columns .large-2 .small-3>^{fvInput hellbanningView }
+    <div .row>
+        <div .columns .large-8 .small-7>
+          <label for=#{fvId ratingView      }>
+            _{MsgChangeFileRating     }
+        <div .columns .large-2 .small-3>^{fvInput ratingView      }
 
-    <input type=submit value=_{MsgGroupAddOrUpdate}>
+    <div .row>
+      <div .columns .large-12>
+        <input .button .small type=submit value=_{MsgGroupAddOrUpdate}>

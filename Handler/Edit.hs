@@ -71,6 +71,8 @@ getEditHistoryR postId = do
   h     <- runDB $ getBy404 $ HistoryUniqPostId postKey
   post  <- runDB $ get404 postKey
   board <- getBoardVal404 (postBoard post)
+  let boardDesc     = boardDescription     board
+      boardLongDesc = boardLongDescription board
   unless (boardShowEditHistory board) $ do
     setMessageI MsgEditingHistoryIsDisabled
     redirectUltDest (BoardNoPageR $ boardName board)

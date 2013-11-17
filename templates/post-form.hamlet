@@ -1,115 +1,125 @@
 #{extra}
-<table>
-    <tbody>
-        <tr .post-block>
-            <td .post-block-named>_{MsgName}
-            <td>
-                ^{fvInput nameView}
-        <tr .post-block>
-            <td .post-block-named>_{MsgSubject}
-            <td #subject-block>
-                ^{fvInput subjectView}
-                <input type=submit value=_{MsgSubmitBtn}>
-        <tr .post-block>
-            <td .post-block-named>_{MsgMessage}
-            <td>
-                ^{fvInput messageView}
-                <div .markup-buttons>
-                     <a id=button-bold>
-                        <strong>
-                          _{MsgMarkupBold}
-                     |
-                     <a id=button-italic>
-                        <em>
-                          _{MsgMarkupItalic}
-                     |
-                     <a id=button-underline>
-                        <u>
-                          _{MsgMarkupUnderline}
-                     |
-                     <a id=button-strike>
-                        <span style="text-decoration:line-through">
-                          _{MsgMarkupStrike}
-                     |
-                     <a id=button-spoiler>
-                        <span .spoiler>
-                          _{MsgMarkupSpoiler}
-                     |
-                     <a id=button-code>
-                        _{MsgMarkupCode}
-                     |
-                     <a id=button-inline-latex>
-                        _{MsgMarkupInlineLatex}
-                     |
-                     <a id=button-latex>
-                        _{MsgMarkupLatex}
-                     |
-                     <a id=button-quote .quote>
-                        _{MsgMarkupQuote}
-                     |
-                     <span style=display:inline .symbol-counter>
-        <tr .post-block>
-            <td .post-block-named>_{MsgPassword}
-            <td>
-                ^{fvInput passwordView}
-        $if enableCaptchaW
-            <tr .post-block>
-                <td .post-block-named>_{MsgCaptcha}
-                <td #captcha-block>
-                    $if isJust muserW
-                        _{MsgYouDontNeedCaptcha}
-                    $else
-                        $maybe _ <- acaptchaW
-                            _{MsgYouDontNeedCaptcha}
-                        $nothing
-                            <img alt=captcha #captcha src=@{CaptchaR}>
-                            ^{fvInput captchaView} 
-                            <span #captcha-info>
-                                $maybe c <- maybeCaptchaInfoW
-                                    _{MsgTypeOnly} 
-                                    $if c == "Bold"
-                                        _{MsgBoldChars}
-                                    $elseif c == "Italic"
-                                        _{MsgItalicChars}
-                                    $elseif c == "Regular"
-                                        _{MsgRegularChars}
-                                $nothing
-                                    _{MsgReloadPage}
-        $if length fileviews > 0
-            <tr .post-block>
-                <td .post-block-named>_{MsgFile}
-                <td>
-                    <div .form-files>
-                        $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
-                            <div .file-input-wrapper>
-                                ^{fvInput fv}
-                                <a .file-select onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
-                                ^{fvInput rv}
-                                <img alt=[remove] .clear-file title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif}  .icon-close>
-        <tr #go-back-block .post-block>
-            <td .post-block-named>_{MsgGoback}
-            <td>
-                ^{fvInput gobackView}
-        <tr #no-bump-block .post-block>
-            <td .post-block-named>
-              <label for=#{fvId nobumpView}>
-                _{MsgNobump}
-            <td>
-                ^{fvInput nobumpView}
-<table #info-table>
-    <tr .post-block>
-        <td>
-            <div #board-info>
-                <ul>
-                    <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
-                    <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
-                    <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
-                    $with s <- boardThumbSize boardW
-                       <li>_{MsgImgsWillBeThumbnailed s}
-                    $if boardOpModeration boardW
-                       <li>_{MsgOpModerationIsEnabled}
-                    $forall r <- boardExtraRules boardW
-                       $if not $ T.null r
-                           <li>#{r}
+<div .row .collapse>
+  <div .large-1 .small-5 .columns>
+    <label .prefix for=#{fvId nameView}>_{MsgName}
+  <div .large-4 .small-7 .columns>
+    ^{fvInput nameView}
+
+  <div .large-7 .small-7 .columns .no-bump-block>
+    <label .inline for=#{fvId nobumpView}>
+      _{MsgNobump}
+      ^{fvInput nobumpView}
+
+<div .row .collapse .subject-block>
+  <div .large-1 .small-5 .columns>
+    <label for=#{fvId subjectView} .prefix>_{MsgSubject}
+  <div .large-4 .small-7 .columns>
+    ^{fvInput subjectView}
+  <div .large-2 .pull-5 .small-12 .columns>
+    <input type=submit .button .postfix value=_{MsgSubmitBtn}>
+
+<div .row .collapse>
+  <div .large-12 .columns >
+    ^{fvInput messageView}
+    <div .markup-buttons>
+      <ul .inline-list>
+        <li>
+         <a id=button-bold>
+            <strong>
+              _{MsgMarkupBold}
+        <li>
+         <a id=button-italic>
+            <em>
+              _{MsgMarkupItalic}
+        <li>
+         <a id=button-underline>
+            <u>
+              _{MsgMarkupUnderline}
+        <li>
+         <a id=button-strike>
+            <span style="text-decoration:line-through">
+              _{MsgMarkupStrike}
+        <li>
+         <a id=button-spoiler>
+            <span .spoiler>
+              _{MsgMarkupSpoiler}
+        <li>
+         <a id=button-code>
+            _{MsgMarkupCode}
+        <li>
+         <a id=button-inline-latex>
+            _{MsgMarkupInlineLatex}
+        <li>
+         <a id=button-latex>
+            _{MsgMarkupLatex}
+        <li>
+         <a id=button-quote .quote>
+            _{MsgMarkupQuote}
+        <li>
+         <span style=display:inline .symbol-counter>
+<div .row .collapse>
+  <div .large-1 .small-5 .columns>
+    <label for=#{fvId passwordView} .prefix>_{MsgPassword}
+  <div .large-4 .pull-7 .small-7 .columns>
+    ^{fvInput passwordView}
+
+$if enableCaptchaW
+  <div .row .collapse>
+    <div .large-1 .small-5 .columns>
+      <label for=#{fvId captchaView} .prefix>_{MsgCaptcha}
+    <div .large-4 .small-7 .columns>
+      $if isJust muserW
+          <span .prefix>_{MsgYouDontNeedCaptcha}      
+      $else
+          $maybe _ <- acaptchaW
+              <span .prefix>_{MsgYouDontNeedCaptcha}
+          $nothing
+              ^{fvInput captchaView} 
+              <label #captcha-info for="#{fvId captchaView}">
+                  $maybe c <- maybeCaptchaInfoW
+                      _{MsgTypeOnly} 
+                      $if c == "Bold"
+                          _{MsgBoldChars}
+                      $elseif c == "Italic"
+                          _{MsgItalicChars}
+                      $elseif c == "Regular"
+                          _{MsgRegularChars}
+                  $nothing
+                      _{MsgReloadPage}
+    <div .large-7 .small-12 .columns>                      
+      <img alt=captcha #captcha src=@{CaptchaR}>
+
+$if length fileviews > 0
+  $forall (fv, rv) <- zip fileviews ratingviews
+    <div .row .collapse>
+      <div .columns .large-9 .small-12>
+        ^{fvInput fv}
+        <a .file-select .button .tiny .secondary onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
+      <div .columns .large-1 .small-4>
+        ^{fvInput rv}
+      <div .columns .large-1 .small-4 .file-input-size>
+        <span .postfix>
+      <div .columns .large-1 .small-4>
+        <a .clear-file title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')"></a>
+
+<div .row .collapse .go-back-block>
+  <div .large-1 .small-5 .columns>
+    <label for=#{fvId gobackView} .prefix>_{MsgGoback}
+  <div .large-2 .pull-9 .small-7 .columns>
+    ^{fvInput gobackView}
+
+<div .row .collapse>
+  <div .columns .large-12 .small-12>
+    <ul .rules>
+      <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
+      <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
+      <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
+      $with s <- boardThumbSize boardW
+          <li>_{MsgImgsWillBeThumbnailed s}
+          $if boardOpModeration boardW
+              <li>_{MsgOpModerationIsEnabled}
+              $forall r <- boardExtraRules boardW
+                  $if not $ T.null r
+                      <li>#{r}
 <div .close-post-form>
-    [ <a onclick="closePostForm();">_{MsgClosePostForm}</a> ]
+  <a .text-center .tiny onclick="closePostForm();">_{MsgClosePostForm}</a>

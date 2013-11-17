@@ -1,629 +1,641 @@
-<h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
-<div .markup-wrapper>
-    $if elem AdditionalMarkupP permissions
-        <p style=text-align:center><strong>_{MsgAdditionalMarkup}</strong>
-        <table>
-          <tr>
-            <td>[color=red]nyak-nyak[/color]
-            <td>&nbsp;→&nbsp;
-            <td><span style=color:red>nyak-nyak</span>
-          <tr>
-            <td>[color=#0000FF]nyak-nyak[/color]
-            <td>&nbsp;→&nbsp;
-            <td><span style=color:#0000FF>nyak-nyak</span>
-          <tr>
-            <td>#group
-            <td>&nbsp;→&nbsp;
-            <td><span style='border-bottom: 1px red dotted'>#Admin</span>
-          <tr>
-            <td>#user
-            <td>&nbsp;→&nbsp;
-            <td><span style='border-bottom: 1px red dashed'>#ahushh</span>
-        <hr>
-    <table>
-      <tr>
-        <td>[b]bold[/b]
-        <td>&nbsp;→&nbsp;
-        <td><strong>bold</strong>
-      <tr>
-        <td>[i]italic[/i]
-        <td>&nbsp;→&nbsp;
-        <td><em>italic</em>
-      <tr>
-        <td>[spoiler]spoiler[/spoiler]
-        <td>&nbsp;→&nbsp;
-        <td>
-          <span .spoiler>spoiler
-      <tr>
-        <td>%%spoiler%%
-        <td>&nbsp;→&nbsp;
-        <td>
-          <span .spoiler>spoiler
-      <tr>
-        <td>[s]strike[/s]
-        <td>&nbsp;→&nbsp;
-        <td>
-          <span style="text-decoration:line-through">strike
-      <tr>
-        <td>[u]underline[/u]
-        <td>&nbsp;→&nbsp;
-        <td><u>underline</u>
-      <tr>
-        <td>[Арктогея](http://arcto.ru/)
-        <td>&nbsp;→&nbsp;
-        <td><a href="http://arcto.ru/">Арктогея</a>
-      <tr>
-        <td>http://yesodweb.com
-        <td>&nbsp;→&nbsp;
-        <td><a href="http://yesodweb.com">http://yesodweb.com</a>
-      <tr>
-        <td>>quote
-        <td>&nbsp;→&nbsp;
-        <td><span class=quote style="color:green">>quote</span>
-      <tr>
-        <td>>>1234
-        <td>&nbsp;→&nbsp;
-        <td><a href=/b/1234/#1234>>>1234</a>
-      <tr>
-        <td>>>/b/1234
-        <td>&nbsp;→&nbsp;
-        <td><a href=/b/1234#1234>>>/b/1234</a>
-      <tr>
-        <td>
-          * item 1
-          <br>
-          * item 2
-        <td>&nbsp;→&nbsp;
-        <td>
-          <ul>
-            <li> item 1
-            <li> item 2
-    <hr>
+<h2 .text-center>_{MsgHelp} — _{MsgMarkup}
 
-    <p style=text-align:center><strong>_{MsgProofLabels}</strong>
-    <table>
-      <tr>
-        <td>##OP
-        <td>&nbsp;→&nbsp;
-        <td><span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
-      <tr>
-        <td>##OP
-        <td>&nbsp;→&nbsp;
-        <td><span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
-      <tr>
-        <td>##1231
-        <td>&nbsp;→&nbsp;
-        <td><span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
-      <tr>
-        <td>##123
-        <td>&nbsp;→&nbsp;
-        <td><span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
-    <hr>
-
-    <p style=text-align:center><strong>_{MsgLatex}</strong>
-    <pre> \(\sqrt{3x-1}+(1+x)^2\) 
-    <p style=text-align:center>↓↓↓
-    <pre> $\sqrt{3x-1}+(1+x)^2$
-    <p style=text-align:center>↓↓↓
-    <pre> [l]\sqrt{3x-1}+(1+x)^2[/l]
-    <p style=text-align:center>↓↓↓
-    <p> [l]\sqrt{3x-1}+(1+x)^2[/l]
-    <hr>
-
-    <pre> \[\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} \]
-    <p style=text-align:center>↓↓↓
-    <pre> $$\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} $$
-    <p style=text-align:center>↓↓↓
-    <pre> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
-    <p style=text-align:center>↓↓↓
-    <p> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
-    <hr>
-
-    <p style=text-align:center><strong>_{MsgSourceCode}</strong>
-    <p>[code=<em>haskell</em>] rats2 = fix ((1:) . (>>= \x -> [1+x, 1/(1+x)])) :: [Rational] [/code]
-    <p style=text-align:center>↓↓↓
-    <pre class="haskell" style="font-family:monospace;">  rats2 <span style="color: #339933; font-weight: bold;">=</span> fix <span style="color: green;">&#40;</span><span style="color: green;">&#40;</span><span style="color: red;">1</span>:<span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">.</span> <span style="color: green;">&#40;</span><span style="color: #339933; font-weight: bold;">>>=</span> \x <span style="color: #339933; font-weight: bold;">-></span> <span style="color: green;">&#91;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: #339933; font-weight: bold;">,</span> <span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">/</span><span style="color: green;">&#40;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: green;">&#41;</span><span style="color: green;">&#93;</span><span style="color: green;">&#41;</span><span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">::</span> <span style="color: green;">&#91;</span><a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Prelude.html#t:Rational"><span style="color: #cccc00; font-weight: bold;">Rational</span></a><span style="color: green;">&#93;</span> 
-    <a href="http://qbnz.com/highlighter">
-        <img src="http://qbnz.com/highlighter/images/powered-by-geshi.png" alt="Powered by GeSHi">
-    <a #supported-languages-toggle>_{MsgSupportedLanguages}
-    <table style=display:none #supported-languages>
-        <tr>
-          <td><strong>abap</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ABAP
-        <tr>
-          <td><strong>actionscript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ActionScript
-        <tr>
-          <td><strong>actionscript3</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ActionScript 3
-        <tr>
-          <td><strong>ada</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Ada
-        <tr>
-          <td><strong>apache</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Apache configuration
-        <tr>
-          <td><strong>applescript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>AppleScript
-        <tr>
-          <td><strong>apt_sources</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Apt sources
-        <tr>
-          <td><strong>asm</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ASM
-        <tr>
-          <td><strong>asp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ASP
-        <tr>
-          <td><strong>avisynth</strong>
-          <td>&nbsp;→&nbsp;
-          <td>AviSynth
-        <tr>
-          <td><strong>bash</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Bash
-        <tr>
-          <td><strong>basic4gl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Basic4GL
-        <tr>
-          <td><strong>bf</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Brainfuck
-        <tr>
-          <td><strong>blitzbasic</strong>
-          <td>&nbsp;→&nbsp;
-          <td>BlitzBasic
-        <tr>
-          <td><strong>bnf</strong>
-          <td>&nbsp;→&nbsp;
-          <td>bnf
-        <tr>
-          <td><strong>boo</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Boo
-        <tr>
-          <td><strong>c</strong>
-          <td>&nbsp;→&nbsp;
-          <td>C
-        <tr>
-          <td><strong>c_mac</strong>
-          <td>&nbsp;→&nbsp;
-          <td>C (Mac)
-        <tr>
-          <td><strong>caddcl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>CAD DCL
-        <tr>
-          <td><strong>cadlisp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>CAD Lisp
-        <tr>
-          <td><strong>cfdg</strong>
-          <td>&nbsp;→&nbsp;
-          <td>CFDG
-        <tr>
-          <td><strong>cfm</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ColdFusion
-        <tr>
-          <td><strong>cil</strong>
-          <td>&nbsp;→&nbsp;
-          <td>CIL
-        <tr>
-          <td><strong>cobol</strong>
-          <td>&nbsp;→&nbsp;
-          <td>COBOL
-        <tr>
-          <td><strong>cpp-qt</strong>
-          <td>&nbsp;→&nbsp;
-          <td>C++ (QT)
-        <tr>
-          <td><strong>cpp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>C++
-        <tr>
-          <td><strong>csharp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>C#
-        <tr>
-          <td><strong>css</strong>
-          <td>&nbsp;→&nbsp;
-          <td>CSS
-        <tr>
-          <td><strong>d</strong>
-          <td>&nbsp;→&nbsp;
-          <td>D
-        <tr>
-          <td><strong>delphi</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Delphi
-        <tr>
-          <td><strong>diff</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Diff
-        <tr>
-          <td><strong>div</strong>
-          <td>&nbsp;→&nbsp;
-          <td>DIV
-        <tr>
-          <td><strong>dos</strong>
-          <td>&nbsp;→&nbsp;
-          <td>DOS
-        <tr>
-          <td><strong>dot</strong>
-          <td>&nbsp;→&nbsp;
-          <td>dot
-        <tr>
-          <td><strong>eiffel</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Eiffel
-        <tr>
-          <td><strong>email</strong>
-          <td>&nbsp;→&nbsp;
-          <td>eMail (mbox)
-        <tr>
-          <td><strong>fortran</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Fortran
-        <tr>
-          <td><strong>freebasic</strong>
-          <td>&nbsp;→&nbsp;
-          <td>FreeBasic
-        <tr>
-          <td><strong>genero</strong>
-          <td>&nbsp;→&nbsp;
-          <td>genero
-        <tr>
-          <td><strong>gettext</strong>
-          <td>&nbsp;→&nbsp;
-          <td>GNU Gettext
-        <tr>
-          <td><strong>glsl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>glSlang
-        <tr>
-          <td><strong>gml</strong>
-          <td>&nbsp;→&nbsp;
-          <td>GML
-        <tr>
-          <td><strong>gnuplot</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Gnuplot
-        <tr>
-          <td><strong>groovy</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Groovy
-        <tr>
-          <td><strong>haskell</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Haskell
-        <tr>
-          <td><strong>hq9plus</strong>
-          <td>&nbsp;→&nbsp;
-          <td>HQ9+
-        <tr>
-          <td><strong>html4strict</strong>
-          <td>&nbsp;→&nbsp;
-          <td>HTML
-        <tr>
-          <td><strong>idl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Uno Idl
-        <tr>
-          <td><strong>ini</strong>
-          <td>&nbsp;→&nbsp;
-          <td>INI
-        <tr>
-          <td><strong>inno</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Inno
-        <tr>
-          <td><strong>intercal</strong>
-          <td>&nbsp;→&nbsp;
-          <td>INTERCAL
-        <tr>
-          <td><strong>io</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Io
-        <tr>
-          <td><strong>java</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Java
-        <tr>
-          <td><strong>java5</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Java(TM) 2 Platform Standard Edition 5.0
-        <tr>
-          <td><strong>javascript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Javascript
-        <tr>
-          <td><strong>kixtart</strong>
-          <td>&nbsp;→&nbsp;
-          <td>KiXtart
-        <tr>
-          <td><strong>klonec</strong>
-          <td>&nbsp;→&nbsp;
-          <td>KLone C
-        <tr>
-          <td><strong>klonecpp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>KLone C++
-        <tr>
-          <td><strong>latex</strong>
-          <td>&nbsp;→&nbsp;
-          <td>LaTeX
-        <tr>
-          <td><strong>lisp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Lisp
-        <tr>
-          <td><strong>lolcode</strong>
-          <td>&nbsp;→&nbsp;
-          <td>LOLcode
-        <tr>
-          <td><strong>lotusformulas</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Lotus Notes @Formulas
-        <tr>
-          <td><strong>lotusscript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>LotusScript
-        <tr>
-          <td><strong>lscript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>LScript
-        <tr>
-          <td><strong>lua</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Lua
-        <tr>
-          <td><strong>m68k</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Motorola 68000 Assembler
-        <tr>
-          <td><strong>make</strong>
-          <td>&nbsp;→&nbsp;
-          <td>GNU make
-        <tr>
-          <td><strong>matlab</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Matlab M
-        <tr>
-          <td><strong>mirc</strong>
-          <td>&nbsp;→&nbsp;
-          <td>mIRC Scripting
-        <tr>
-          <td><strong>mpasm</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Microchip Assembler
-        <tr>
-          <td><strong>mxml</strong>
-          <td>&nbsp;→&nbsp;
-          <td>MXML
-        <tr>
-          <td><strong>mysql</strong>
-          <td>&nbsp;→&nbsp;
-          <td>MySQL
-        <tr>
-          <td><strong>nsis</strong>
-          <td>&nbsp;→&nbsp;
-          <td>NSIS
-        <tr>
-          <td><strong>objc</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Objective-C
-        <tr>
-          <td><strong>ocaml-brief</strong>
-          <td>&nbsp;→&nbsp;
-          <td>OCaml (brief)
-        <tr>
-          <td><strong>ocaml</strong>
-          <td>&nbsp;→&nbsp;
-          <td>OCaml
-        <tr>
-          <td><strong>oobas</strong>
-          <td>&nbsp;→&nbsp;
-          <td>OpenOffice.org Basic
-        <tr>
-          <td><strong>oracle11</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Oracle 11 SQL
-        <tr>
-          <td><strong>oracle8</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Oracle 8 SQL
-        <tr>
-          <td><strong>pascal</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Pascal
-        <tr>
-          <td><strong>per</strong>
-          <td>&nbsp;→&nbsp;
-          <td>per
-        <tr>
-          <td><strong>perl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Perl
-        <tr>
-          <td><strong>php-brief</strong>
-          <td>&nbsp;→&nbsp;
-          <td>PHP (brief)
-        <tr>
-          <td><strong>php</strong>
-          <td>&nbsp;→&nbsp;
-          <td>PHP
-        <tr>
-          <td><strong>pic16</strong>
-          <td>&nbsp;→&nbsp;
-          <td>PIC16
-        <tr>
-          <td><strong>pixelbender</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Pixel Bender 1.0
-        <tr>
-          <td><strong>plsql</strong>
-          <td>&nbsp;→&nbsp;
-          <td>PL/SQL
-        <tr>
-          <td><strong>povray</strong>
-          <td>&nbsp;→&nbsp;
-          <td>POVRAY
-        <tr>
-          <td><strong>powershell</strong>
-          <td>&nbsp;→&nbsp;
-          <td>posh
-        <tr>
-          <td><strong>progress</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Progress
-        <tr>
-          <td><strong>prolog</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Prolog
-        <tr>
-          <td><strong>providex</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ProvideX
-        <tr>
-          <td><strong>python</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Python
-        <tr>
-          <td><strong>qbasic</strong>
-          <td>&nbsp;→&nbsp;
-          <td>QBasic/QuickBASIC
-        <tr>
-          <td><strong>rails</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Rails
-        <tr>
-          <td><strong>reg</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Microsoft Registry
-        <tr>
-          <td><strong>robots</strong>
-          <td>&nbsp;→&nbsp;
-          <td>robots.txt
-        <tr>
-          <td><strong>ruby</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Ruby
-        <tr>
-          <td><strong>sas</strong>
-          <td>&nbsp;→&nbsp;
-          <td>SAS
-        <tr>
-          <td><strong>scala</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Scala
-        <tr>
-          <td><strong>scheme</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Scheme
-        <tr>
-          <td><strong>scilab</strong>
-          <td>&nbsp;→&nbsp;
-          <td>SciLab
-        <tr>
-          <td><strong>sdlbasic</strong>
-          <td>&nbsp;→&nbsp;
-          <td>sdlBasic
-        <tr>
-          <td><strong>smalltalk</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Smalltalk
-        <tr>
-          <td><strong>smarty</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Smarty
-        <tr>
-          <td><strong>sql</strong>
-          <td>&nbsp;→&nbsp;
-          <td>SQL
-        <tr>
-          <td><strong>tcl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>TCL
-        <tr>
-          <td><strong>teraterm</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Tera Term Macro
-        <tr>
-          <td><strong>text</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Text
-        <tr>
-          <td><strong>thinbasic</strong>
-          <td>&nbsp;→&nbsp;
-          <td>thinBasic
-        <tr>
-          <td><strong>tsql</strong>
-          <td>&nbsp;→&nbsp;
-          <td>T-SQL
-        <tr>
-          <td><strong>typoscript</strong>
-          <td>&nbsp;→&nbsp;
-          <td>TypoScript
-        <tr>
-          <td><strong>vb</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Visual Basic
-        <tr>
-          <td><strong>vbnet</strong>
-          <td>&nbsp;→&nbsp;
-          <td>vb.net
-        <tr>
-          <td><strong>verilog</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Verilog
-        <tr>
-          <td><strong>vhdl</strong>
-          <td>&nbsp;→&nbsp;
-          <td>VHDL
-        <tr>
-          <td><strong>vim</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Vim Script
-        <tr>
-          <td><strong>visualfoxpro</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Visual Fox Pro
-        <tr>
-          <td><strong>visualprolog</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Visual Prolog
-        <tr>
-          <td><strong>whitespace</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Whitespace
-        <tr>
-          <td><strong>winbatch</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Winbatch
-        <tr>
-          <td><strong>xml</strong>
-          <td>&nbsp;→&nbsp;
-          <td>XML
-        <tr>
-          <td><strong>xorg_conf</strong>
-          <td>&nbsp;→&nbsp;
-          <td>Xorg configuration
-        <tr>
-          <td><strong>xpp</strong>
-          <td>&nbsp;→&nbsp;
-          <td>X++
-        <tr>
-          <td><strong>z80</strong>
-          <td>&nbsp;→&nbsp;
-          <td>ZiLOG Z80 Assembler
+<div .row>
+  <div .columns .large-2>
+    <ul .side-nav>
+      <li>
+        <a href=@{HelpR}>[i18n]About
+      <li .active>
+        <a href=@{HelpMarkupR}>_{MsgMarkup}
+      <li>
+        <a href=@{HelpApiR}>_{MsgApi}
+  <div .columns .large-10>
+    <div .panel>
+       <div .markup-wrapper>
+           $if elem AdditionalMarkupP permissions
+               <p .text-center><strong>_{MsgAdditionalMarkup}</strong>
+               <table>
+                 <tr>
+                   <td>[color=red]nyak-nyak[/color]
+                   <td>&nbsp;→&nbsp;
+                   <td><span style=color:red>nyak-nyak</span>
+                 <tr>
+                   <td>[color=#0000FF]nyak-nyak[/color]
+                   <td>&nbsp;→&nbsp;
+                   <td><span style=color:#0000FF>nyak-nyak</span>
+                 <tr>
+                   <td>#group
+                   <td>&nbsp;→&nbsp;
+                   <td><span style='border-bottom: 1px red dotted'>#Admin</span>
+                 <tr>
+                   <td>#user
+                   <td>&nbsp;→&nbsp;
+                   <td><span style='border-bottom: 1px red dashed'>#ahushh</span>
+               <hr>
+           <table>
+             <tr>
+               <td>[b]bold[/b]
+               <td>&nbsp;→&nbsp;
+               <td><strong>bold</strong>
+             <tr>
+               <td>[i]italic[/i]
+               <td>&nbsp;→&nbsp;
+               <td><em>italic</em>
+             <tr>
+               <td>[spoiler]spoiler[/spoiler]
+               <td>&nbsp;→&nbsp;
+               <td>
+                 <span .spoiler>spoiler
+             <tr>
+               <td>%%spoiler%%
+               <td>&nbsp;→&nbsp;
+               <td>
+                 <span .spoiler>spoiler
+             <tr>
+               <td>[s]strike[/s]
+               <td>&nbsp;→&nbsp;
+               <td>
+                 <span style="text-decoration:line-through">strike
+             <tr>
+               <td>[u]underline[/u]
+               <td>&nbsp;→&nbsp;
+               <td><u>underline</u>
+             <tr>
+               <td>[Арктогея](http://arcto.ru/)
+               <td>&nbsp;→&nbsp;
+               <td><a href="http://arcto.ru/">Арктогея</a>
+             <tr>
+               <td>http://yesodweb.com
+               <td>&nbsp;→&nbsp;
+               <td><a href="http://yesodweb.com">http://yesodweb.com</a>
+             <tr>
+               <td>>quote
+               <td>&nbsp;→&nbsp;
+               <td><span class=quote style="color:green">>quote</span>
+             <tr>
+               <td>>>1234
+               <td>&nbsp;→&nbsp;
+               <td><a href=/b/1234/#1234>>>1234</a>
+             <tr>
+               <td>>>/b/1234
+               <td>&nbsp;→&nbsp;
+               <td><a href=/b/1234#1234>>>/b/1234</a>
+             <tr>
+               <td>
+                 * item 1
+                 <br>
+                 * item 2
+               <td>&nbsp;→&nbsp;
+               <td>
+                 <ul>
+                   <li> item 1
+                   <li> item 2
+           <hr>
+       
+           <p style=text-align:center><strong>_{MsgProofLabels}</strong>
+           <table>
+             <tr>
+               <td>##OP
+               <td>&nbsp;→&nbsp;
+               <td><span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
+             <tr>
+               <td>##OP
+               <td>&nbsp;→&nbsp;
+               <td><span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
+             <tr>
+               <td>##1231
+               <td>&nbsp;→&nbsp;
+               <td><span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
+             <tr>
+               <td>##123
+               <td>&nbsp;→&nbsp;
+               <td><span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
+           <hr>
+       
+           <p style=text-align:center><strong>_{MsgLatex}</strong>
+           <pre> \(\sqrt{3x-1}+(1+x)^2\) 
+           <p style=text-align:center>↓↓↓
+           <pre> $\sqrt{3x-1}+(1+x)^2$
+           <p style=text-align:center>↓↓↓
+           <pre> [l]\sqrt{3x-1}+(1+x)^2[/l]
+           <p style=text-align:center>↓↓↓
+           <p> [l]\sqrt{3x-1}+(1+x)^2[/l]
+           <hr>
+       
+           <pre> \[\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} \]
+           <p style=text-align:center>↓↓↓
+           <pre> $$\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} $$
+           <p style=text-align:center>↓↓↓
+           <pre> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
+           <p style=text-align:center>↓↓↓
+           <p> [latex]\begin{aligned} \dot{x} & = \sigma(y-x) \\ \dot{y} & = \rho x - y - xz \\ \dot{z} & = -\beta z + xy \end{aligned} [/latex]
+           <hr>
+       
+           <p style=text-align:center><strong>_{MsgSourceCode}</strong>
+           <p>[code=<em>haskell</em>] rats2 = fix ((1:) . (>>= \x -> [1+x, 1/(1+x)])) :: [Rational] [/code]
+           <p style=text-align:center>↓↓↓
+           <pre class="haskell" style="font-family:monospace;">  rats2 <span style="color: #339933; font-weight: bold;">=</span> fix <span style="color: green;">&#40;</span><span style="color: green;">&#40;</span><span style="color: red;">1</span>:<span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">.</span> <span style="color: green;">&#40;</span><span style="color: #339933; font-weight: bold;">>>=</span> \x <span style="color: #339933; font-weight: bold;">-></span> <span style="color: green;">&#91;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: #339933; font-weight: bold;">,</span> <span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">/</span><span style="color: green;">&#40;</span><span style="color: red;">1</span><span style="color: #339933; font-weight: bold;">+</span>x<span style="color: green;">&#41;</span><span style="color: green;">&#93;</span><span style="color: green;">&#41;</span><span style="color: green;">&#41;</span> <span style="color: #339933; font-weight: bold;">::</span> <span style="color: green;">&#91;</span><a href="http://haskell.org/ghc/docs/latest/html/libraries/base/Prelude.html#t:Rational"><span style="color: #cccc00; font-weight: bold;">Rational</span></a><span style="color: green;">&#93;</span> 
+           <a href="http://qbnz.com/highlighter">
+               <img src="http://qbnz.com/highlighter/images/powered-by-geshi.png" alt="Powered by GeSHi">
+           <a #supported-languages-toggle>_{MsgSupportedLanguages}
+           <table .hide #supported-languages>
+               <tr>
+                 <td><strong>abap</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ABAP
+               <tr>
+                 <td><strong>actionscript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ActionScript
+               <tr>
+                 <td><strong>actionscript3</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ActionScript 3
+               <tr>
+                 <td><strong>ada</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Ada
+               <tr>
+                 <td><strong>apache</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Apache configuration
+               <tr>
+                 <td><strong>applescript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>AppleScript
+               <tr>
+                 <td><strong>apt_sources</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Apt sources
+               <tr>
+                 <td><strong>asm</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ASM
+               <tr>
+                 <td><strong>asp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ASP
+               <tr>
+                 <td><strong>avisynth</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>AviSynth
+               <tr>
+                 <td><strong>bash</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Bash
+               <tr>
+                 <td><strong>basic4gl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Basic4GL
+               <tr>
+                 <td><strong>bf</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Brainfuck
+               <tr>
+                 <td><strong>blitzbasic</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>BlitzBasic
+               <tr>
+                 <td><strong>bnf</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>bnf
+               <tr>
+                 <td><strong>boo</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Boo
+               <tr>
+                 <td><strong>c</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>C
+               <tr>
+                 <td><strong>c_mac</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>C (Mac)
+               <tr>
+                 <td><strong>caddcl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>CAD DCL
+               <tr>
+                 <td><strong>cadlisp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>CAD Lisp
+               <tr>
+                 <td><strong>cfdg</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>CFDG
+               <tr>
+                 <td><strong>cfm</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ColdFusion
+               <tr>
+                 <td><strong>cil</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>CIL
+               <tr>
+                 <td><strong>cobol</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>COBOL
+               <tr>
+                 <td><strong>cpp-qt</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>C++ (QT)
+               <tr>
+                 <td><strong>cpp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>C++
+               <tr>
+                 <td><strong>csharp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>C#
+               <tr>
+                 <td><strong>css</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>CSS
+               <tr>
+                 <td><strong>d</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>D
+               <tr>
+                 <td><strong>delphi</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Delphi
+               <tr>
+                 <td><strong>diff</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Diff
+               <tr>
+                 <td><strong>div</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>DIV
+               <tr>
+                 <td><strong>dos</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>DOS
+               <tr>
+                 <td><strong>dot</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>dot
+               <tr>
+                 <td><strong>eiffel</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Eiffel
+               <tr>
+                 <td><strong>email</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>eMail (mbox)
+               <tr>
+                 <td><strong>fortran</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Fortran
+               <tr>
+                 <td><strong>freebasic</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>FreeBasic
+               <tr>
+                 <td><strong>genero</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>genero
+               <tr>
+                 <td><strong>gettext</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>GNU Gettext
+               <tr>
+                 <td><strong>glsl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>glSlang
+               <tr>
+                 <td><strong>gml</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>GML
+               <tr>
+                 <td><strong>gnuplot</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Gnuplot
+               <tr>
+                 <td><strong>groovy</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Groovy
+               <tr>
+                 <td><strong>haskell</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Haskell
+               <tr>
+                 <td><strong>hq9plus</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>HQ9+
+               <tr>
+                 <td><strong>html4strict</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>HTML
+               <tr>
+                 <td><strong>idl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Uno Idl
+               <tr>
+                 <td><strong>ini</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>INI
+               <tr>
+                 <td><strong>inno</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Inno
+               <tr>
+                 <td><strong>intercal</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>INTERCAL
+               <tr>
+                 <td><strong>io</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Io
+               <tr>
+                 <td><strong>java</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Java
+               <tr>
+                 <td><strong>java5</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Java(TM) 2 Platform Standard Edition 5.0
+               <tr>
+                 <td><strong>javascript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Javascript
+               <tr>
+                 <td><strong>kixtart</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>KiXtart
+               <tr>
+                 <td><strong>klonec</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>KLone C
+               <tr>
+                 <td><strong>klonecpp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>KLone C++
+               <tr>
+                 <td><strong>latex</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>LaTeX
+               <tr>
+                 <td><strong>lisp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Lisp
+               <tr>
+                 <td><strong>lolcode</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>LOLcode
+               <tr>
+                 <td><strong>lotusformulas</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Lotus Notes @Formulas
+               <tr>
+                 <td><strong>lotusscript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>LotusScript
+               <tr>
+                 <td><strong>lscript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>LScript
+               <tr>
+                 <td><strong>lua</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Lua
+               <tr>
+                 <td><strong>m68k</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Motorola 68000 Assembler
+               <tr>
+                 <td><strong>make</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>GNU make
+               <tr>
+                 <td><strong>matlab</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Matlab M
+               <tr>
+                 <td><strong>mirc</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>mIRC Scripting
+               <tr>
+                 <td><strong>mpasm</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Microchip Assembler
+               <tr>
+                 <td><strong>mxml</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>MXML
+               <tr>
+                 <td><strong>mysql</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>MySQL
+               <tr>
+                 <td><strong>nsis</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>NSIS
+               <tr>
+                 <td><strong>objc</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Objective-C
+               <tr>
+                 <td><strong>ocaml-brief</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>OCaml (brief)
+               <tr>
+                 <td><strong>ocaml</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>OCaml
+               <tr>
+                 <td><strong>oobas</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>OpenOffice.org Basic
+               <tr>
+                 <td><strong>oracle11</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Oracle 11 SQL
+               <tr>
+                 <td><strong>oracle8</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Oracle 8 SQL
+               <tr>
+                 <td><strong>pascal</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Pascal
+               <tr>
+                 <td><strong>per</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>per
+               <tr>
+                 <td><strong>perl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Perl
+               <tr>
+                 <td><strong>php-brief</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>PHP (brief)
+               <tr>
+                 <td><strong>php</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>PHP
+               <tr>
+                 <td><strong>pic16</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>PIC16
+               <tr>
+                 <td><strong>pixelbender</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Pixel Bender 1.0
+               <tr>
+                 <td><strong>plsql</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>PL/SQL
+               <tr>
+                 <td><strong>povray</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>POVRAY
+               <tr>
+                 <td><strong>powershell</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>posh
+               <tr>
+                 <td><strong>progress</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Progress
+               <tr>
+                 <td><strong>prolog</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Prolog
+               <tr>
+                 <td><strong>providex</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ProvideX
+               <tr>
+                 <td><strong>python</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Python
+               <tr>
+                 <td><strong>qbasic</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>QBasic/QuickBASIC
+               <tr>
+                 <td><strong>rails</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Rails
+               <tr>
+                 <td><strong>reg</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Microsoft Registry
+               <tr>
+                 <td><strong>robots</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>robots.txt
+               <tr>
+                 <td><strong>ruby</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Ruby
+               <tr>
+                 <td><strong>sas</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>SAS
+               <tr>
+                 <td><strong>scala</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Scala
+               <tr>
+                 <td><strong>scheme</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Scheme
+               <tr>
+                 <td><strong>scilab</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>SciLab
+               <tr>
+                 <td><strong>sdlbasic</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>sdlBasic
+               <tr>
+                 <td><strong>smalltalk</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Smalltalk
+               <tr>
+                 <td><strong>smarty</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Smarty
+               <tr>
+                 <td><strong>sql</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>SQL
+               <tr>
+                 <td><strong>tcl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>TCL
+               <tr>
+                 <td><strong>teraterm</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Tera Term Macro
+               <tr>
+                 <td><strong>text</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Text
+               <tr>
+                 <td><strong>thinbasic</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>thinBasic
+               <tr>
+                 <td><strong>tsql</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>T-SQL
+               <tr>
+                 <td><strong>typoscript</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>TypoScript
+               <tr>
+                 <td><strong>vb</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Visual Basic
+               <tr>
+                 <td><strong>vbnet</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>vb.net
+               <tr>
+                 <td><strong>verilog</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Verilog
+               <tr>
+                 <td><strong>vhdl</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>VHDL
+               <tr>
+                 <td><strong>vim</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Vim Script
+               <tr>
+                 <td><strong>visualfoxpro</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Visual Fox Pro
+               <tr>
+                 <td><strong>visualprolog</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Visual Prolog
+               <tr>
+                 <td><strong>whitespace</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Whitespace
+               <tr>
+                 <td><strong>winbatch</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Winbatch
+               <tr>
+                 <td><strong>xml</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>XML
+               <tr>
+                 <td><strong>xorg_conf</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>Xorg configuration
+               <tr>
+                 <td><strong>xpp</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>X++
+               <tr>
+                 <td><strong>z80</strong>
+                 <td>&nbsp;→&nbsp;
+                 <td>ZiLOG Z80 Assembler

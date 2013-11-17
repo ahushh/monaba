@@ -39,7 +39,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{replyPostWidget muser post files rating True True False displaySage permissions geoIps timeZone maxLenOfFileName}
+                                   ^{postWidget muser post files rating displaySage True True False  permissions geoIps timeZone maxLenOfFileName}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -123,8 +123,8 @@ getApiPostR board postId = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then opPostWidget muser post files rating False True False permissions geoIps timeZone maxLenOfFileName
-                       else replyPostWidget muser post files rating False True False displaySage permissions geoIps timeZone maxLenOfFileName
+                       then postWidget muser post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName
+                       else postWidget muser post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

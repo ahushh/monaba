@@ -83,12 +83,12 @@ sendPost boardVal thread ePost files hellbanned posterId = do
       let sourceEventName'= Just $ fromText $ T.concat ["live-", posterId']
           encodedPost'    = fromText $ decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
       liftIO $ writeChan chan $ ServerEvent sourceEventName' Nothing $ return encodedPost'
-  where renderPost client post files displaySage geoIps maxLenOfFileName =
+  where renderPost client post displaySage geoIps maxLenOfFileName =
           bareLayout $ postWidget (sseClientUser client) post
                        files (sseClientRating client) displaySage True True False
                        (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName
-        renderPostLive client post files displaySage geoIps maxLenOfFileName =
+        renderPostLive client post displaySage geoIps maxLenOfFileName =
           bareLayout $ postWidget (sseClientUser client) post
                        files (sseClientRating client) False True True True
                        (sseClientPermissions client) geoIps

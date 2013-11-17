@@ -24,7 +24,7 @@ $if hasAccessToReply
       
         $forall (eReply, files) <- repliesAndFiles
           $if checkHellbanned eReply permissions posterId
-              ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+              ^{postWidget muser eReply (reverse files) rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     
     <div .row .thread-bottom>
       <div .columns .large-12 .small-12>

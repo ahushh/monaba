@@ -6,14 +6,13 @@
      ^{adminNavbarWidget muser permissions}
   <div .columns .large-10>
     <form .custom .delete-form method=get action=@{DeleteR}>
-        <div .post-list>
+      <div .post-list .row>
+        <div .columns .large-12 .small-12>
           $forall (ePost, eFiles) <- postsAndFiles
-            <div .row>
-              <div .columns .large-12 .small-12>
-                $if (postParent $ entityVal ePost) > 0
-                    ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
-                $else
-                    ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
+            $if (postParent $ entityVal ePost) > 0
+                ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
+            $else
+                ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
         ^{deleteWidget permissions}
 
 ^{pageSwitcherWidget page pages HellBanR}

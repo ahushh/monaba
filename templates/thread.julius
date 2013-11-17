@@ -13,7 +13,7 @@ if (isEventSourceSupported()) {
 
         // post autoload
         src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
-            $('.thread').append( decodeBase64(msg.data) );
+            $('.thread > .columns').append(decodeBase64(msg.data));
             baseInit();
             updateTitle();
         });
@@ -32,31 +32,31 @@ if (isEventSourceSupported()) {
 var pMsg;
 $('#post-form').ajaxForm({
     beforeSend: function() {
-        pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
     },
     success: function(data) {
-        closePopupMessage(pMsg);
+        closePopupAlert(pMsg);
         if (data.ok) {
             $('#post-form #subject-block input[type=text]').clearFields();
             $('#post-form input[type=file]').clearFields();
             $('#post-form textarea').clearFields();
-            popupMessage(data.ok,2000);
+            popupAlert(data.ok,2000);
             closePostForm();
             var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
             var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
             if (!isEventSourceSupported())
                 refreshThread(board, thread);
         } else {
-            popupMessage(data.error,2000);
+            popupAlert(data.error,2000);
         }
         refreshCaptcha();
     },
     error: function(x, e) {
-        closePopupMessage(pMsg);                
+        closePopupAlert(pMsg);                
         if (x.status == 0)
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+            popupAlert(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
         else
-            popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
+            popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
     }
 }); 
 })();

@@ -138,7 +138,7 @@
            <a href="http://qbnz.com/highlighter">
                <img src="http://qbnz.com/highlighter/images/powered-by-geshi.png" alt="Powered by GeSHi">
            <a #supported-languages-toggle>_{MsgSupportedLanguages}
-           <table style=display:none #supported-languages>
+           <table .hide #supported-languages>
                <tr>
                  <td><strong>abap</strong>
                  <td>&nbsp;→&nbsp;

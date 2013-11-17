@@ -4,6 +4,8 @@ $if not $ T.null boardLongDesc
 <div .text-center>
   _{MsgDeletedPostsIn thread} <a href=@{ThreadR board thread}> _{MsgBack}
 <form .custom .delete-form method=get action=@{DeleteR}>
-    $forall (eReply, files) <- allPosts
-        ^{postWidget muser eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
-    ^{deleteWidget permissions}
+  <div .post-list .row>
+    <div .columns .large-12 .small-12>
+      $forall (eReply, files) <- allPosts
+          ^{postWidget muser eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
+      ^{deleteWidget permissions}

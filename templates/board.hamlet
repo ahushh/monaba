@@ -1,16 +1,16 @@
-<span style=display:none id=maxMessageLength>#{maxMessageLength}
+<span .hide id=maxMessageLength>#{maxMessageLength}
 <h2 .text-center #board-title>#{boardDesc}
 $if not $ T.null boardLongDesc
     <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
 $if hasAccessToNewThread
     <div .show-plain-form>
-        <a .text-center .tiny onclick="showPlainPostForm();">_{MsgNewThread}
+        <a .text-center onclick="showPlainPostForm();">_{MsgNewThread}
     <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
       <fieldset>
         <legend>_{MsgNewThread}
         ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
 $else
-    <form .custom style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+    <form .custom .hide .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
       <fieldset>
         <legend>_{MsgNewThread}
         ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
@@ -22,22 +22,24 @@ $else
     <form .custom .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-              <div .columns .large-12>
+              <div .columns .large-12 .small-12>
                 ^{postWidget muser eOpPost opPostFiles rating False False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
                 $if omitted > 0
                     <div .omitted .row>
                       <div .columns .large-12>
-                        _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}
-                        <img style="display:none" .ajax-loading src=@{StaticR img_ajax_loader_gif}>
-                    <div style="display:none" .truncate-thread .row>
+                        _{MsgPostsOmitted omitted}
+                        <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>
+                          _{MsgExpandThread}
+                        <img .hide .ajax-loading src=@{StaticR img_ajax_loader_gif}>
+                    <div .hide .truncate-thread .row>
                       <div .columns .large-12>
-                        _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}
+                        _{MsgThreadIsExpanded}
+                        <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>
+                          _{MsgTruncateThread}
                 $forall (ePreview, previewFiles) <- ps
-                  <div .row>
-                    <div .columns .large-12 .small-12>
-                      ^{postWidget muser ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+                  ^{postWidget muser ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
         ^{deleteWidget permissions}
-    <div #edit-form style=display:none>
+    <div #edit-form .hide>
         ^{formWidget'}
 
 ^{pageSwitcherWidget page pages (BoardR board)}

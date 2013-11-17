@@ -49,7 +49,7 @@
     ^{fvInput passwordView}
   <div .columns .large-9 .small-6>
     <input .button .tiny type=button id=edit-button value=_{MsgEdit}>
-    <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif}  .icon-close #close-edit-form>
+    <a title=_{MsgCloseIcon} onclick="hideEditForm()" #close-edit-form>
 
 $if elem ShadowEditP permissions
   <div .row>

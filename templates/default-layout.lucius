@@ -4,6 +4,7 @@
 
 html, body {
     height: 100%;
+    overflow-x: hidden;
 }
 
 #wrap {
@@ -22,6 +23,23 @@ footer, .push {
     margin: 0 !important;
 }
 
+#sidebar {
+    background: none repeat scroll 0 0 #333333;
+    box-shadow: -2px 0 8px -1px #111111 inset;
+    padding: 10px 0 0 5px;
+    position: absolute;
+    z-index: 999999;
+}
+/* ********************************* */
+/* ************* Forms ************* */
+/* ********************************* */
+#close-edit-form {
+    font-size: 1.2em;
+}
+
+#close-edit-form:before {
+    content: "✖";
+}
 /* ********************************* */
 /* ************* Icons ************* */
 /* ********************************* */
@@ -234,6 +252,7 @@ footer, .push {
     font-size: 75%;
     font-style: italic;
 }
+
 /* Popup posts */
 .popup {
     position: absolute;
@@ -244,11 +263,12 @@ footer, .push {
     word-wrap: break-word;
 }
 
-.close-popup-container {
-    margin-left: 2px;
-    position: absolute;
-    bottom: 0;
-    right: 5px;
+.popup .row > .columns {
+    padding: 0 5px;
+}
+
+.close-popup-container a {
+    float: right;
 }
 /* *************************************** */
 /* ****** End of posts and threads ******* */
@@ -259,6 +279,35 @@ footer, .push {
 /* *************************************** */
 .delete-container label, .delete-container input {
     float: right;
+}
+
+/* *************************************** */
+/* *********** Popup alerts ************** */
+/* *************************************** */
+.popup-alert .message {
+    display: inline;
+}
+
+.close-popup-alert {
+    cursor: pointer;
+    display: inline;
+    vertical-align: top;
+}
+
+.popup-alert {
+    /* width: auto; */
+    display: table;
+    float: right;
+    margin: 5px 0;
+    word-wrap: break-word;
+    padding: 10px 10px;
+}
+
+#popup-alert-wrapper {
+    max-width: 90%;
+    right: 10px;
+    position: fixed;
+    top: 10px;
 }
 
 /* .admin-table { */
@@ -278,30 +327,6 @@ footer, .push {
 /*     width: 100%; */
 /* } */
 
-
-/* .popupMessageText { */
-/*     display: inline; */
-/* } */
-
-/* .closePopupMessage { */
-/*     cursor: pointer; */
-/*     display: inline; */
-/*     vertical-align: top; */
-/* } */
-
-/* .popupMessage { */
-/*     width: auto; */
-/*     margin: 5px 0; */
-/*     word-wrap: break-word; */
-/*     padding: 10px 10px; */
-/* } */
-
-/* #popupMessageContainer { */
-/*     max-width: 90%; */
-/*     right: 10px; */
-/*     position: fixed; */
-/*     top: 10px; */
-/* } */
 
 
 /* header { */

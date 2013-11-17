@@ -1,6 +1,6 @@
-/* .no-js .omitted a { */
-/*     display: none; */
-/* } */
+.no-js .omitted a {
+    display: none;
+}
 
 .no-bump-block {
     display: none;

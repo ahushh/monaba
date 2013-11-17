@@ -4,22 +4,22 @@
     <form .custom #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
       ^{formWidget}
       <input .button .tiny type=submit onclick="setJSSettings()" value=_{MsgApply}>
-      <span style=display:none #settings-applied>
-  <div .columns .large-6 #hidden-threads-list .small-12>
+      <span .hide #settings-applied>
+  <div .columns .large-6 .hidden-threads .small-12>
     $if not $ null hiddenThreads
-      <div .text-center #hidden-threads-title>
+      <div .text-center .title>
         <strong>
           _{MsgHiddenThreads}:
       <ul .large-block-grid-5 .medium-block-grid-3 .small-block-grid-2>
         $forall (b, ths) <- hiddenThreads
-          <li .hidden-threads-board #hidden-threads-board-#{b}>
+          <li .board #board-#{b}>
             <div .row>
-              <div #hidden-thread-board-title .large-12 .small-12 .columns>
+              <div #board-title .large-12 .small-12 .columns>
                 /#{b}/:
             $forall t <- ths
-              <div .row #hidden-thread-elem-#{b}-#{t}>
+              <div .row .hidden-thread #hidden-thread-#{b}-#{t}>
                 <div .columns .large-12 .small-12>
                   <a href="@{ThreadR b t}">
                     No. #{t}
-                  <a title="_{MsgUnhideThread}" onclick="unhideThreadCompletely(#{t},'#{b}')">✖
+                  <a title="_{MsgUnhideThread}" href="@{ApiUnhideThreadR b t}" onclick="unhideThreadCompletely(#{t},'#{b}');return false;">✖
                     

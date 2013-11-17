@@ -20,13 +20,25 @@ footer {
     padding-top: 10px;
 }
 
-/* Forms */
+/* *************************************** */
+/* *************** Forms ***************** */
+/* *************************************** */
+.show-plain-form {
+    border-top: 1px solid rgba(10, 10, 10, 0.3);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 1em;
+}
+
+#post-form input, #post-form label, #post-form textarea, #post-form .file-select, #post-form .dropdown {
+    margin-bottom: 3px !important;
+}
+
 fieldset {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    border: 1px solid black;
 }
 
 fieldset legend {
+    padding: 3px;
     background-color: #E0E0E0;
 }
 
@@ -64,6 +76,10 @@ textarea:focus {
     background-color: #DFDFDF;
     color: #333333;
 }
+
+.rules {
+    font-size: 0.7em;
+}
 /* *************************************** */
 [class^="icon-"], [class*=" icon-"] {
     background-image: url("/static/img/glyphicons-black.png");
@@ -96,6 +112,13 @@ textarea:focus {
     padding: 25px 2px;
 }
 
+.post-list .hidden-thread {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+
 /* Header */
 .file-name {
     font-size: 0.8em;
@@ -126,14 +149,14 @@ textarea:focus {
 .quote, .quote .spoiler:hover {
     color: #008000;
 }
+
+.last-modified {
+    font-size: 0.7em;
+}
 /* Files */
 .file-info {
     display: none;
 }
-/* *************************************** */
-/* ****** End of posts and threads ******* */
-/* *************************************** */
-
 /* *************************************** */
 /* **************** Admin **************** */
 /* *************************************** */
@@ -142,4 +165,20 @@ textarea:focus {
 }
 .admin-navbar li:hover {
     background-color: #CFCFCF;
+}
+
+/* *************************************** */
+/* *********** Popup alerts ************** */
+/* *************************************** */
+.popup-alert {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid black;
+}
+/* *************************************** */
+/* ************ Home page **************** */
+/* *************************************** */
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0% 0% #CFCFCF;
 }

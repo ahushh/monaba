@@ -10,7 +10,7 @@
       _{MsgNobump}
       ^{fvInput nobumpView}
 
-<div .row .collapse>
+<div .row .collapse .subject-block>
   <div .large-1 .small-5 .columns>
     <label for=#{fvId subjectView} .prefix>_{MsgSubject}
   <div .large-4 .small-7 .columns>
@@ -94,7 +94,7 @@ $if length fileviews > 0
     <div .row .collapse>
       <div .columns .large-9 .small-12>
         ^{fvInput fv}
-        <a .file-select .button .tiny onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
+        <a .file-select .button .tiny .secondary onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
       <div .columns .large-1 .small-4>
         ^{fvInput rv}
       <div .columns .large-1 .small-4 .file-input-size>
@@ -102,23 +102,24 @@ $if length fileviews > 0
       <div .columns .large-1 .small-4>
         <a .clear-file title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')"></a>
 
-<div .row .collapse #go-back-block>
+<div .row .collapse .go-back-block>
   <div .large-1 .small-5 .columns>
     <label for=#{fvId gobackView} .prefix>_{MsgGoback}
   <div .large-2 .pull-9 .small-7 .columns>
     ^{fvInput gobackView}
 
 <div .row .collapse>
-  <ul>
-    <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
-    <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
-    <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
-    $with s <- boardThumbSize boardW
-        <li>_{MsgImgsWillBeThumbnailed s}
-        $if boardOpModeration boardW
-            <li>_{MsgOpModerationIsEnabled}
-            $forall r <- boardExtraRules boardW
-                $if not $ T.null r
-                    <li>#{r}
+  <div .columns .large-12 .small-12>
+    <ul .rules>
+      <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
+      <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
+      <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
+      $with s <- boardThumbSize boardW
+          <li>_{MsgImgsWillBeThumbnailed s}
+          $if boardOpModeration boardW
+              <li>_{MsgOpModerationIsEnabled}
+              $forall r <- boardExtraRules boardW
+                  $if not $ T.null r
+                      <li>#{r}
 <div .close-post-form>
   <a .text-center .tiny onclick="closePostForm();">_{MsgClosePostForm}</a>

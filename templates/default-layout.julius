@@ -61,9 +61,9 @@ MathJax.Hub.Config({
 $.ajaxSetup({
     error: function(x, e) {
         if (x.status == 0)
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+            popupAlert(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
         else
-            popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
+            popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
     }
 });
 //-----------------------------------------------------------------
@@ -188,7 +188,7 @@ function initSymbolCounter() {
 // Pleer.com
 //-----------------------------------------------------------------
 function addProstopleer(post) {
-    var posts = post ? ("#"+post+"") : "post";
+    var posts = post ? ("#"+post+"") : ".post";
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         if ($('#'+postId).find('.prosto-pleer').length)
@@ -198,7 +198,7 @@ function addProstopleer(post) {
             var result = regex.exec(link.text);
             if (!result) return true;
             var videoId = result[1];
-            $(link).before('<object width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
+            $(link).before('<object class=prosto-pleer width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
         });
     });
 }
@@ -206,7 +206,7 @@ function addProstopleer(post) {
 // youtube
 //-----------------------------------------------------------------
 function addEmbeddedPlayer(post) {
-    var posts = post ? ("#"+post+"") : "post";
+    var posts = post ? ("#"+post+"") : ".post";
     $(posts).each(function(i,p) {
         var postId = $(p).attr('id');
         var first = true;
@@ -301,6 +301,7 @@ function initHiddenThreads() {
 function hideThreadCompletely(threadId, board) {
     $.getJSON("/api/hide/thread/"+board+"/"+threadId, function(data) {
         $('#thread-'+threadId).hide();
+        $(".post-list #post-"+threadId+"-0-"+board).hide();
     });
 }
 
@@ -318,7 +319,14 @@ function hideThread(threadId, board) {
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
         $('#thread-'+threadId).find('.hidden-thread').show()
     } else {
-        $('#thread-'+threadId).append('<span class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></span>');
+        $('#thread-'+threadId+" > .columns").append('<div class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></div>');
+    }
+
+    $(".post-list #post-"+threadId+"-0-"+board).hide();
+    if ($(".post-list").has("#hidden-thread-"+threadId+"-0-"+board).length) {
+        $('.post-list #hidden-thread-'+threadId+"-0-"+board).show();
+    } else {
+        $('.post-list #post-'+threadId+"-0-"+board).after('<div id="hidden-thread-'+threadId+"-0-"+board+'" class="hidden-thread row"> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></div>');
     }
 }
 
@@ -330,34 +338,38 @@ function unhideThread(threadId,board) {
     }    
     $('#thread-'+threadId).find('.post, .omitted').show();
     $('#thread-'+threadId).find('.hidden-thread').hide();
+    console.log(".post-list #hidden-thread-"+threadId+"-0-"+board);
+    $(".post-list #hidden-thread-"+threadId+"-0-"+board).hide();
+    $('.post-list #post-'+threadId+"-0-"+board).show();
 }
 //-----------------------------------------------------------------
-// popup messages
+// popup alerts
 //-----------------------------------------------------------------
-function popupMessage(text, delay, ajax, close) {
-    if ($('#popupMessageContainer').get() == '') {
-        $('body').children().last().after('<div id=popupMessageContainer></div>');
+function popupAlert(text, delay, ajax, close) {
+    if ($('#popup-alert-wrapper').get() == '') {
+        $('body').children().last().after('<div id=popup-alert-wrapper></div>');
     }
-    var msg = $('<div class="popupMessage"></div>');
+    var msg = $('<div class="popup-alert"></div>');
     $(msg).hide();
-    $(msg).html("<div class='popupMessageText'>"+text+"</div>");
+    $(msg).html("<div class='message'>"+text+"</div>");
     if (ajax)
         $(msg).prepend("<img style='display:inline' alt=loading... src=@{StaticR img_ajax_loader_gif}> ");
     if (close)
-        $(msg).prepend("<div class='closePopupMessage'><a onclick='$(this).parent().parent().fadeOut(400,function(){$(this).remove()});'>✖ </a></div>");
-    $('#popupMessageContainer').prepend(msg);
+        $(msg).prepend("<div class='close-popup-alert'><a onclick='$(this).parent().parent().fadeOut(400,function(){$(this).remove()});'>✖ </a></div>");
+    $('#popup-alert-wrapper').prepend(msg);
     $(msg).fadeIn(400);
     if (delay) {
         $(msg).delay(delay).fadeOut(400,function(){$(this).remove()});
     }
+    $(msg).wrap("<div class=row></div>");
     return msg;
 }
 
-function closePopupMessage(msg) {
+function closePopupAlert(msg) {
     $(msg).fadeOut(400,function(){$(this).remove()});
 }
 //-----------------------------------------------------------------
-// thread expanding
+// post expanding
 //-----------------------------------------------------------------
 function expandPost(postId) {
     if ($('#'+postId+' .message.abbreviated').length == 0)
@@ -517,10 +529,10 @@ function cachePopupPosts() {
             Monaba.postCache[board] = {};
         }
         // if (! Monaba.postCache[board][postId]) {
-            var post = $(this).clone().removeClass().addClass("popup").attr('id', 'popup-'+$(this).attr('id'));
+            var post = $(this).clone().removeClass().addClass("post").addClass("popup").attr('id', 'popup-'+$(this).attr('id'));
             var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
             var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
-            var delPopup = " <div class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></div> ";
+            var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
             post.append(delPopup);
             Monaba.postCache[board][postId] = post;
@@ -559,7 +571,7 @@ function showPopupPost(event, elem, board, postId) {
     }
     if (!Monaba.postCache[board][postId]) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
-            var post = $(data).removeClass().addClass("popup").attr('id', 'popup-'+$(data).attr('id'));
+            var post = $(data).removeClass().addClass('post').addClass("popup").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
             var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
             var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
@@ -580,7 +592,7 @@ function delPopupPost(post) {
     if (post) {
         $('#'+post).remove();
     } else {
-        $('.popup').remove();
+        $('.popup.post').remove();
     }
 }
 //-----------------------------------------------------------------
@@ -594,44 +606,43 @@ function timeout(elem, f, time) {
 function showQuickPostForm(postId) {
     $("#post-form").removeClass().addClass("quick-post-form");
     $("#"+postId).after($("#post-form"));
-    $("#post-form").css("display","table");
-    $("#go-back-block").css("display","none");
+    $("#post-form").show();
+    $(".go-back-block").hide();
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a board page
         var action = $("#post-form").attr('action');
-        var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
+        var thread = /thread-(\d+)/.exec( $("#post-form").parent().parent().attr('id') )[1];
         var pMsg;
         $('#post-form').ajaxForm({
             beforeSend: function() {
-                pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
             },
             success: function(data) {
-                closePopupMessage(pMsg);
+                closePopupAlert(pMsg);
                 if (data.ok) {
-                    $('#post-form #subject-block input[type=text]').clearFields();
+                    $('#post-form .subject-block input[type=text]').clearFields();
                     $('#post-form input[type=file]').clearFields();
                     $('#post-form textarea').clearFields();
-                    popupMessage(data.ok,2000);
+                    popupAlert(data.ok,2000);
                     closePostForm();
                     var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
                     // if (!isEventSourceSupported)
                     refreshThread(board, thread)
                 } else {
-                    popupMessage(data.error,0,false,true);
+                    popupAlert(data.error,0,false,true);
                 }
                 refreshCaptcha();
             },
             error: function(x, e) {
-                closePopupMessage(pMsg);                
+                closePopupAlert(pMsg);                
                 if (x.status == 0)
-                    popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+                    popupAlert(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
                 else
-                    popupMessage(x.responseText+" ("+x.status+")", 0, false, true);
+                    popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
             }
         }); 
 
-        $("#post-form").children().find('.reply-to').remove();
-        $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
-        $("#no-bump-block").css("display","");
+        $("#post-form fieldset legend").text(#{toJSON $ msgrender MsgReplyToThread}+thread);
+        $(".no-bump-block").show();
 
         var newUrl;
         if (/\/board\/[\w_-]+/.test(action)) {
@@ -649,22 +660,22 @@ function showPlainPostForm() {
         $("#post-form").show();
         return true;
     }
-    $("#post-form").removeClass().addClass("plain-post-form");
-    $("#post-form").children().find('.reply-to').remove();
+    $("#post-form").removeClass().addClass("plain-post-form").addClass("custom");
+    $("#post-form fieldset legend").text(#{toJSON $ msgrender MsgNewThread});
     $('.show-plain-form').after($("#post-form"));
     $(".show-plain-form").hide();
     $("#post-form").show();
     if (/\/board\/[\w_-]+/.test(document.URL)) { // we're on a board page
         $("#post-form").unbind();
-        $("#no-bump-block").hide();
-        $("#go-back-block").show();
+        $(".no-bump-block").hide();
+        $(".go-back-block").show();
         var action = $("#post-form").attr('action');
         if (/\/thread\/[\w_-]+\/\d+/.test(action)) {
             var newUrl = action.replace(/\/thread\/([\w_-]+)\/\d+/, "/board/$1");
             $("#post-form").attr('action', newUrl);
         }
     } else {
-        $("#go-back-block").hide();
+        $(".go-back-block").hide();
     }
 }
 function closePostForm() {
@@ -720,13 +731,13 @@ function refreshThread(board, threadId) {
         $(".delete-form .icon-thread-refresh").toggle();
         $(".delete-form .ajax-loading").toggle();
         if (/reply/.test(data)) {
-            $("#thread-"+threadId).append(data);
+            $("#thread-"+threadId+" > .columns").append(data);
             baseInit();
             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         } else if (data == "No such thread ") {
-            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+            popupAlert(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
         } else if (data == "No new posts ") {
-            popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+            popupAlert( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
         }
     });
 }
@@ -749,17 +760,17 @@ function showEditForm(postId, realId) {
             obj[ $('#edit-form input[type=checkbox]').attr('name')] = $('#edit-form input[type=checkbox]').val();
         }
         obj[ $('#edit-form input[type=number]').attr('name')  ] = realId;
-        var pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        var pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
         $.post( '@{PostEditR}', obj,
                 function(response) {
-                    closePopupMessage(pMsg);
+                    closePopupAlert(pMsg);
                     if (response.ok) {
                         if (isEventSourceSupported()) {
                             hideEditForm();
                             addEmbeddedPlayer(postId);
                             addProstopleer(postId);
                             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-                            popupMessage(response.ok,2000);
+                            popupAlert(response.ok,2000);
                         } else {
                             $.get("/api/post/"+board+"/"+pId, function(post) {
                                 hideEditForm();
@@ -769,16 +780,16 @@ function showEditForm(postId, realId) {
                                 addProstopleer(postId);
                                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
-                                popupMessage(response.ok,2000);
+                                popupAlert(response.ok,2000);
                             });
                         }
                     } else {
-                        popupMessage(response.error,0,false,true);
+                        popupAlert(response.error,0,false,true);
                     }
               });
     });
 
-    var pMsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+    var pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
         var raw = json[0].rawMessage;
         if (raw) {
@@ -789,14 +800,14 @@ function showEditForm(postId, realId) {
             $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ).trigger('autosize.resize');
         }
         countSymbols('edit-form');
-        $('#edit-form').css('display','table')
-    }).fail(hideEditForm).always(function () { closePopupMessage(pMsg)});
+        $('#edit-form').show();
+    }).fail(hideEditForm).always(function () { closePopupAlert(pMsg)});
 }
 
 function hideEditForm() {
-    $('#edit-form').css('display','none');
+    $('#edit-form').hide();
     $('#edit-form').val('');
-    $('#edit-form').appendTo('.container');
+    $('#edit-form').appendTo('#main');
 }
 // ---------------------------------------------------------
 //  Visibility API

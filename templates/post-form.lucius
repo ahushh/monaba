@@ -39,7 +39,7 @@ textarea {
     left: -999999px;
 }
 
-.no-js .file-select {
+.no-js .file-select, .no-js .close-post-form, .no-js .markup-buttons {
     display: none;
 }
 
@@ -48,4 +48,3 @@ textarea {
     margin-bottom: 1%;
     display: block;
 }
-

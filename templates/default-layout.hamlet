@@ -22,16 +22,18 @@ $maybe msg <- mmsg
           $forall Entity _ b <- bs
             <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
           ] 
-  <!-- no JS header -->
+  <!-- JS header -->
   <nav .top-bar>
     <ul .title-area>
       <li .name>
         <h1>
-          <a href=@{HomeR}>
+          <a href=@{HomeR} .hide-for-small>
+            #{nameOfTheBoard}
+          <a onclick="$('#sidebar').toggle();" .show-for-small>
             #{nameOfTheBoard}
       <li .toggle-topbar>
         <a>
-    <section .top-bar-section>
+    <section .top-bar-section .hide-for-small>
       <ul .left>
         <li .divider>
         <li .has-dropdown>
@@ -69,5 +71,40 @@ $maybe msg <- mmsg
             <li>
               <a href=@{AuthR LoginR}>_{MsgManage}
 
-<div id="main" role="main">
+<!-- for small screens -->
+<aside .hide id="sidebar">
+  <ul>
+    <li>
+      <a href=@{LiveR}>/~/ - _{MsgLatestPosts}
+    $forall Entity _ b <- widgetHelperFilterBoards boards "" group
+      <li>
+        <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
+    $forall c <- categories
+      $with bs <- widgetHelperFilterBoards boards c group
+        $if not (null bs)
+          <li>
+            <label>#{c}
+          $forall Entity _ b <- bs
+            <li>
+              <a #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
+          <li .divider>
+    <li .divider>
+    <li>
+      <a href=@{HelpR}>_{MsgHelp}
+    <li>
+      <a href=@{SettingsR}>_{MsgSettings}
+    $maybe Entity _ user <- muser
+        <li>
+          <a>
+            #{userName user}
+        <li>
+          <a href=@{AdminR}>_{MsgManage}
+        <li>
+          <a href=@{AuthR LogoutR}>_{MsgLogout}
+    $nothing         
+        <li>
+          <a href=@{AuthR LoginR}>_{MsgManage}
+
+<section id="main" role="main">
   ^{widget}
+

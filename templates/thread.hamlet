@@ -1,4 +1,4 @@
-<span style=display:none id=maxMessageLength>#{maxMessageLength}
+<span .hide id=maxMessageLength>#{maxMessageLength}
 $if T.null pagetitle
     <h2 .text-center #board-title>#{boardDesc}
     $if not $ T.null boardLongDesc
@@ -11,29 +11,26 @@ $else
 
 $if hasAccessToReply
     <div .show-plain-form>
-        <a .button .tiny onclick="showPlainPostForm();">_{MsgReply}
+        <a onclick="showPlainPostForm();">_{MsgReply}
     <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
       <fieldset>
         <legend> _{MsgThreadHeaderReplyTo thread}
           <a href=@{BoardNoPageR board }> _{MsgBack}
         ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
-<form .delete-form method=get action=@{DeleteR}>
-    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" style="clear:both">
-      <div .row>
-        <div .columns .large-12 .small-12>
-          ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
-    
-      $forall (eReply, files) <- repliesAndFiles
-        $if checkHellbanned eReply permissions posterId
-          <div .row>
-            <div .columns .large-12 .small-12>
+<form .custom .delete-form method=get action=@{DeleteR}>
+    <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+      <div .columns .large-12 .small-12>
+        ^{postWidget muser eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+      
+        $forall (eReply, files) <- repliesAndFiles
+          $if checkHellbanned eReply permissions posterId
               ^{postWidget muser eReply files rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
     
     <div .row .thread-bottom>
       <div .columns .large-12 .small-12>
         <img src=@{StaticR img_blank_gif} title=refresh alt=refresh .icon-thread-refresh>
-        <img style=display:none alt=loading .ajax-loading src=@{StaticR img_ajax_loader_gif}>
-        <a class=get-new-posts-btn onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}
+        <img alt=loading .ajax-loading .hide src=@{StaticR img_ajax_loader_gif}>
+        <a class=refresh-thread onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}
         <a href=@{BoardNoPageR board }> _{MsgBack}
 
     <div .delete-container>
@@ -54,7 +51,7 @@ $if hasAccessToReply
       <div .row .collapse>
           $if elem DeletePostsP permissions
             <div .columns .large-offset-10 .large-2 .small-offset-5 .small-5>
-              <span style=display:none>
+              <span .hide>
                 <input type=password value="" size=15 name=postpassword>
               <input .button .small type=submit value=_{MsgDeleteBtn}>
           $else
@@ -65,5 +62,5 @@ $if hasAccessToReply
                 <input type=password value="" size=15 name=postpassword>
               <div .columns .large-1 .small-3>
                 <input .button .postfix type=submit value=_{MsgDeleteBtn}>
-<div #edit-form style=display:none>
+<div #edit-form .hide>
     ^{formWidget'}         

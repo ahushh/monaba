@@ -7,7 +7,7 @@
   <div .row .collapse>
       $if elem DeletePostsP permissions
         <div .columns .large-offset-10 .large-2 .small-offset-5 .small-5>
-          <span style=display:none>
+          <span .hide>
             <input type=password value="" size=15 name=postpassword>
           <input .button .small type=submit value=_{MsgDeleteBtn}>
       $else

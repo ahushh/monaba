@@ -10,11 +10,12 @@ html {
 
 body {
     margin: 0 0 30px; /* bottom = footer height */
+    line-height: 1.2 !important;
 }
 
 footer {
     bottom: 0;
-    height: 30px;
+    height: 20px;
     left: 0;
     position: absolute;
     width: 100%;
@@ -41,6 +42,75 @@ footer {
 
 #close-edit-form:before {
     content: "✖";
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+    display: block;
+    font-size: 0.875em;
+    margin: 0 0 1em 0;
+    padding: 0.1em;
+    height: 1.5em;
+    width: 100%;
+}
+
+.prefix,
+.postfix {
+    font-size: 0.875em;
+    height: 1.5em;
+    line-height: 1.25em;
+}
+
+/* Adjust padding, alignment and radius if pre/post element is a button */
+.postfix.button {
+    line-height: 2.125em;
+}
+
+.prefix.button {
+    line-height: 2.125em;
+}
+
+button, .button {
+    margin: 0 0 1.25em;
+    padding-top: 0.75em;
+    padding-right: 1.5em;
+    padding-bottom: 0.8125em;
+    padding-left: 1.5em;
+    font-size: 0.875em;
+}
+
+form.custom .custom.dropdown .current {
+    line-height: 1.225em;
+    fon-size: 0.875em;
+}
+
+form.custom .custom.dropdown {
+    height: 1.5em;
+}
+
+form.custom .custom.dropdown .selector {
+    height: 1.5em;
+}
+
+label.inline {
+    margin: 0 0 1em;
+    padding: 0;
+}
+
+form.custom .custom.checkbox:before {
+    line-height: 1;
 }
 /* ********************************* */
 /* ************* Icons ************* */

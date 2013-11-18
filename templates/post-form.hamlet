@@ -2,10 +2,9 @@
 <div .row .collapse>
   <div .large-1 .small-5 .columns>
     <label .prefix for=#{fvId nameView}>_{MsgName}
-  <div .large-4 .small-7 .columns>
+  <div .large-3 .small-7 .columns>
     ^{fvInput nameView}
-
-  <div .large-7 .small-7 .columns .no-bump-block>
+  <div .large-2 .pull-6 .small-7 .columns .no-bump-block>
     <label .inline for=#{fvId nobumpView}>
       _{MsgNobump}
       ^{fvInput nobumpView}
@@ -13,9 +12,9 @@
 <div .row .collapse .subject-block>
   <div .large-1 .small-5 .columns>
     <label for=#{fvId subjectView} .prefix>_{MsgSubject}
-  <div .large-4 .small-7 .columns>
+  <div .large-3 .small-7 .columns>
     ^{fvInput subjectView}
-  <div .large-2 .pull-5 .small-12 .columns>
+  <div .large-2 .pull-6 .small-12 .columns>
     <input type=submit .button .postfix value=_{MsgSubmitBtn}>
 
 <div .row .collapse>
@@ -60,7 +59,7 @@
 <div .row .collapse>
   <div .large-1 .small-5 .columns>
     <label for=#{fvId passwordView} .prefix>_{MsgPassword}
-  <div .large-4 .pull-7 .small-7 .columns>
+  <div .large-3 .pull-8 .small-7 .columns>
     ^{fvInput passwordView}
 
 $if enableCaptchaW
@@ -92,14 +91,14 @@ $if enableCaptchaW
 $if length fileviews > 0
   $forall (fv, rv) <- zip fileviews ratingviews
     <div .row .collapse>
-      <div .columns .large-9 .small-12>
+      <div .columns .large-6 .small-12>
         ^{fvInput fv}
         <a .file-select .button .tiny .secondary onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
       <div .columns .large-1 .small-4>
         ^{fvInput rv}
       <div .columns .large-1 .small-4 .file-input-size>
         <span .postfix>
-      <div .columns .large-1 .small-4>
+      <div .columns .large-1 .pull-3 .small-4>
         <a .clear-file title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')"></a>
 
 <div .row .collapse .go-back-block>
@@ -122,4 +121,4 @@ $if length fileviews > 0
                   $if not $ T.null r
                       <li>#{r}
 <div .close-post-form>
-  <a .text-center .tiny onclick="closePostForm();">_{MsgClosePostForm}</a>
+  <a .text-center onclick="closePostForm();">_{MsgClosePostForm}</a>

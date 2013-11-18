@@ -53,7 +53,7 @@ $if hasAccessToReply
             <div .columns .large-offset-10 .large-2 .small-offset-5 .small-5>
               <span .hide>
                 <input type=password value="" size=15 name=postpassword>
-              <input .button .small type=submit value=_{MsgDeleteBtn}>
+              <input .button .tiny type=submit value=_{MsgDeleteBtn}>
           $else
               <div .columns .large-offset-8 .large-1 .small-3>
                 <label .prefix for=postpassword>

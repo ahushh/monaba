@@ -2,7 +2,7 @@ var Monaba = {
     expThreads: {},
     refMap: {},
     postCache: {},
-    zindex: 0,
+    zindex: 3,
 };
 
 //-----------------------------------------------------------------

@@ -1,10 +1,12 @@
 textarea {
     height: 150px;
     min-height: 150px;
+    width: 90% !important;
 }
 
 .clear-file {
-    font-size: 2em;
+    font-size: 1.5em;
+    line-height: 1;
 }
 
 .clear-file:before {
@@ -47,4 +49,8 @@ textarea {
     width: 50%;
     margin-bottom: 1%;
     display: block;
+}
+
+.markup-buttons ul {
+    line-height: 1em;    
 }

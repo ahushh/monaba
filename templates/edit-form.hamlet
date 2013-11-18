@@ -47,8 +47,9 @@
 <div .row>
   <div .columns .large-3 .small-6>
     ^{fvInput passwordView}
-  <div .columns .large-9 .small-6>
+  <div .columns .large-3 .small-5>
     <input .button .tiny type=button id=edit-button value=_{MsgEdit}>
+  <div .columns .large-1 .pull-5 .small-1>
     <a title=_{MsgCloseIcon} onclick="hideEditForm()" #close-edit-form>
 
 $if elem ShadowEditP permissions

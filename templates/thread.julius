@@ -23,9 +23,10 @@ if (isEventSourceSupported()) {
         src.addEventListener(#{toJSON sourceEventName}+"-edited-"+#{toJSON posterId}, editedPostsHandler);
     };
     src = initEventSource();
+    $(".icon-thread-refresh").remove();
+    $(".refresh-thread").remove();
 } else {
     console.log("Eventsource isn't supported.");
-    $("#get-new-posts-wrapper").show();
 }
 
 (function() {

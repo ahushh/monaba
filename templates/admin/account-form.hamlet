@@ -3,6 +3,6 @@
     #{extra}
     <div .row .collapse>
       <div .columns .large-3 .small-6>
-        <input .button .prefix .small type=submit value=_{MsgNewPassword}>
+        <input .button .prefix type=submit value=_{MsgNewPassword}>
       <div .columns .large-9 .small-6>
         ^{fvInput newPasswordView}

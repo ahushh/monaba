@@ -42,7 +42,6 @@ $newline never
     <body>
         <div #wrap>
             ^{pageBody pc}
-            <div .push>
         <footer>
             <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5
             <br />

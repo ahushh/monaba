@@ -2,21 +2,23 @@
     margin: 0;
 }
 
-html, body {
-    height: 100%;
+html {
+    min-height: 97%;
+    position: relative;
     overflow-x: hidden;
 }
 
-#wrap {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -4em;
+body {
+    margin: 0 0 30px; /* bottom = footer height */
 }
 
-footer, .push {
+footer {
+    bottom: 0;
+    height: 30px;
+    left: 0;
+    position: absolute;
+    width: 100%;
     text-align: center;
-    height: 4em;
 }
 
 #message {

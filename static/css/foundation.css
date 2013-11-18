@@ -30,7 +30,7 @@ body {
   font-weight: normal;
   font-style: normal;
   line-height: 1;
-  position: relative;
+  /* position: relative; */
   cursor: default; }
 
 a:hover {

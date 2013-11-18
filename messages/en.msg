@@ -363,6 +363,8 @@ TimeZone: Time zone
 Style: Style
 MaxAllowedRating: Max allowed rating
 Language: Language
+UseMathjax: Use MathJax
+WidePosts: Wide posts
 UseEventSource: Use Eventsource
 ExpandImage: Expand image
 ExpandImageCenter: in the center

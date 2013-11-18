@@ -17,6 +17,8 @@ var defaultSettings = {
     'youtubeWidth': 360,
     'youtubeHeight': 270,
     'hideRules': false,
+    'widePosts': false,
+    'useMathjax': true,
 };
 
 for (var i in defaultSettings) {
@@ -44,20 +46,26 @@ initHiddenThreads();
 baseInit();
 initSymbolCounter();
 $('textarea').autosize()
+if (getItem('widePosts'))
+    $(".reply").css("display","block");
+else
+    $(".reply").css("display","table");
 
-MathJax.Hub.Config({
-    tex2jax: {
-        inlineMath : [ ['[l]','[/l]'],
-                       ['$','$'],
-                       ['\\(','\\)']
-                     ],
-        displayMath: [ ['[latex]','[/latex]'],
-                       ['$$','$$'],
-                       ["\\[","\\]"]
-                     ],
-        processEscapes: true
-    },
-});
+if (getItem("useMathjax")) {
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath : [ ['[l]','[/l]'],
+                           ['$','$'],
+                           ['\\(','\\)']
+                         ],
+            displayMath: [ ['[latex]','[/latex]'],
+                           ['$$','$$'],
+                           ["\\[","\\]"]
+                         ],
+            processEscapes: true
+        },
+    });
+}
 
 $.ajaxSetup({
     error: function(x, e) {
@@ -563,7 +571,9 @@ function reallyShowPopupPost(event, elem, post) {
     var postFullId = post.attr('id');
     addEmbeddedPlayer(postFullId);
     addProstopleer(postFullId);
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    if (getItem("useMathjax")) {
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
 }
 
 function showPopupPost(event, elem, board, postId) {
@@ -734,7 +744,9 @@ function refreshThread(board, threadId) {
         if (/reply/.test(data)) {
             $("#thread-"+threadId+" > .columns").append(data);
             baseInit();
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            if (getItem("useMathjax")) {
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
         } else if (data == "No such thread ") {
             popupAlert(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
         } else if (data == "No new posts ") {
@@ -770,7 +782,9 @@ function showEditForm(postId, realId) {
                             hideEditForm();
                             addEmbeddedPlayer(postId);
                             addProstopleer(postId);
-                            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                            if (getItem("useMathjax")) {
+                                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                            }
                             popupAlert(response.ok,2000);
                         } else {
                             $.get("/api/post/"+board+"/"+pId, function(post) {
@@ -779,8 +793,9 @@ function showEditForm(postId, realId) {
 
                                 addEmbeddedPlayer(postId);
                                 addProstopleer(postId);
-                                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
+                                if (getItem("useMathjax")) {
+                                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                                }
                                 popupAlert(response.ok,2000);
                             });
                         }

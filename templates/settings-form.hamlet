@@ -32,6 +32,14 @@
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>
+    _{MsgExpandImage}
+  <div .columns .large-6 .small-7>
+    <select #expandImage .js-settings>
+      <option value=center>_{MsgExpandImageCenter}
+      <option value=inside>_{MsgExpandImageInside}
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
     <label for=useEventsource>
       _{MsgUseEventSource}
   <div .columns .large-6 .small-7>
@@ -41,11 +49,19 @@
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>
-    _{MsgExpandImage}
+    <label for=widePosts>
+      _{MsgWidePosts}
   <div .columns .large-6 .small-7>
-    <select #expandImage .js-settings>
-      <option value=center>_{MsgExpandImageCenter}
-      <option value=inside>_{MsgExpandImageInside}
+    <label for=widePosts>
+      <input #widePosts .js-settings type=checkbox>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=useMathjax>
+      _{MsgUseMathjax}
+  <div .columns .large-6 .small-7>
+    <label for=useMathjax>
+      <input #useMathjax .js-settings type=checkbox>
 
 <div .row .js-settings-row>
   <div .columns large-12 .text-center>

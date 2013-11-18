@@ -55,7 +55,9 @@ function expandThread(board, thread) {
                 $("#thread-"+thread+" .reply").remove();
                 $("#thread-"+thread+" .truncate-thread").toggle().after(data);
                 baseInit();
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                if (getItem("useMathjax")) {
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                }
             }
         });
     }

@@ -363,6 +363,8 @@ TimeZone: Часовой пояс
 Style: Стиль
 MaxAllowedRating: Максимальный рейтинг
 Language: Язык
+UseMathjax: Использовать MathJax
+WidePosts: Широкие посты
 UseEventSource: Использовать Eventsource
 ExpandImage: Разворачивать изображения
 ExpandImageCenter: по центру

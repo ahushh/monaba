@@ -75,11 +75,11 @@ textarea {
 
 /* Adjust padding, alignment and radius if pre/post element is a button */
 .postfix.button {
-    line-height: 2.125em;
+    line-height: 1.25em;
 }
 
 .prefix.button {
-    line-height: 2.125em;
+    line-height: 1.25em;
 }
 
 button, .button {
@@ -110,7 +110,7 @@ label.inline {
 }
 
 form.custom .custom.checkbox:before {
-    line-height: 1;
+    line-height: 1.11;
 }
 /* ********************************* */
 /* ************* Icons ************* */

@@ -343,10 +343,6 @@ form.custom .custom.checkbox:before {
     float: right;
 }
 /* *************************************** */
-/* ****** End of posts and threads ******* */
-/* *************************************** */
-
-/* *************************************** */
 /* *********** Post deletion ************* */
 /* *************************************** */
 .delete-container label, .delete-container input {

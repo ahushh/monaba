@@ -52,8 +52,9 @@ if (getItem('widePosts'))
 else
     $(".reply").css("display","table");
 
-if (getItem('stickyTopbar'))
-    $('.top-bar').wrap("<div class='contain-to-grid sticky'></div>");
+if (getItem('stickyTopbar')) {
+    $('.top-bar').wrap("<div class='sticky'></div>");
+}
 
 if (getItem("useMathjax")) {
     MathJax.Hub.Config({
@@ -361,6 +362,9 @@ function unhideThread(threadId,board) {
 function popupAlert(text, delay, ajax, close) {
     if ($('#popup-alert-wrapper').get() == '') {
         $('body').children().last().after('<div id=popup-alert-wrapper></div>');
+        if (getItem('stickyTopbar')) {
+            $("#popup-alert-wrapper").css("top", parseInt($(".top-bar").css("height"))+(+10)+"px");
+        }
     }
     var msg = $('<div class="popup-alert"></div>');
     $(msg).hide();

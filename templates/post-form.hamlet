@@ -120,5 +120,7 @@ $if length fileviews > 0
               $forall r <- boardExtraRules boardW
                   $if not $ T.null r
                       <li>#{r}
+    <a .show-rules .hide onclick="showRules()">_{MsgShowRules}
+    <a .hide-rules .hide onclick="hideRules()">_{MsgHideRules}
 <div .close-post-form>
   <a .text-center onclick="closePostForm();">_{MsgClosePostForm}</a>

@@ -13,6 +13,8 @@ Nobump: Не бампать
 ToThread: треду
 ToBoard: борде
 ### Post form rules
+ShowRules: Показать правила
+HideRules: Скрыть правила
 SupportedFileTypes: Поддерживаемые типы файлов:
 MaxFileSize: Маскимальный размер файла:
 ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.

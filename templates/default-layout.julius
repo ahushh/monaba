@@ -8,20 +8,21 @@ var Monaba = {
 //-----------------------------------------------------------------
 // Load default settings
 //-----------------------------------------------------------------
-if (getItem('useEventsource') == null)
-    setItem('useEventsource', false);
-if (getItem('expandImage') == null)
-    setItem('expandImage', 'center');
-if (getItem('youtubeHTML5') == null)
-    setItem('youtubeHTML5', true);
-if (getItem('youtubeLoadTitles') == null)
-    setItem('youtubeLoadTitles', true);
-if (getItem('youtubeLoadThumbs') == null)
-    setItem('youtubeLoadThumbs', true);
-if (getItem('youtubeWidth') == null)
-    setItem('youtubeWidth', 360);
-if (getItem('youtubeHeight') == null)
-    setItem('youtubeHeight', 270);
+var defaultSettings = {
+    'useEventsource': false,
+    'expandImage': 'center',
+    'youtubeHTML5': true,
+    'youtubeLoadTitles': true,
+    'youtubeLoadThumbs': true,
+    'youtubeWidth': 360,
+    'youtubeHeight': 270,
+    'hideRules': false,
+};
+
+for (var i in defaultSettings) {
+    if (getItem(i) == null)
+        setItem(i, defaultSettings[i]);
+}
 //-----------------------------------------------------------------
 function baseInit() {
     addEmbeddedPlayer();

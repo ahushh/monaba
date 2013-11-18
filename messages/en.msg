@@ -14,6 +14,8 @@ ToBoard: board
 Nobump: No bump
 
 ### Post form rules
+ShowRules: Show rules
+HideRules: Hide rules
 SupportedFileTypes: Supported file types are
 MaxFileSize: Max file size allowed is
 ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.

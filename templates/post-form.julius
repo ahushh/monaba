@@ -103,8 +103,26 @@ function insert(text, textarea) {
     textarea.focus();
     $(textarea).trigger('autosize.resize');
 } 
+
+function showRules() {
+    setItem("hideRules",false);
+    $(".hide-rules").show();
+    $(".show-rules").hide();
+    $(".rules").show();
+}
+
+function hideRules() {
+    setItem("hideRules",true);
+    $(".hide-rules").hide();
+    $(".show-rules").show();
+    $(".rules").hide();
+}
 // ----------------------------------------------------------------------------------------------------------
 $(document).ready(function() {
+    if (getItem("hideRules"))
+        hideRules();
+    else
+        showRules();
     var password = getItem("password")
     if (!password) {
         password = generatePassword();

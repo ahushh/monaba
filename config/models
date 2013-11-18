@@ -116,6 +116,7 @@ Config
     displaySage     Bool default=0
     modlogMaxEntries     Int default=3000
     modlogEntriesPerPage Int default=30
+    about           Textarea
 Hellban
     userId          Text
     userIp          Text

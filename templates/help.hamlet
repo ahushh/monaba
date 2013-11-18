@@ -3,11 +3,11 @@
   <div .columns .large-2>
     <ul .side-nav>
       <li .active>
-        <a href=@{HelpR}>[i18n]About
+        <a href=@{HelpR}>_{MsgAbout}
       <li>
         <a href=@{HelpMarkupR}>_{MsgMarkup}
       <li>
         <a href=@{HelpApiR}>_{MsgApi}
   <div .columns .large-10>
     <div .panel>
-      Blah-blah-blah
+      #{preEscapedToHtml $ unTextarea about}

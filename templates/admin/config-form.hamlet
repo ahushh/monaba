@@ -67,3 +67,8 @@
       _{MsgModlogEntriesPerPage}
     <div .columns .large-6 .small-12>
       ^{fvInput modlogEntriesPerPageView}
+  <div .row>
+    <div .columns .large-6 .small-12>
+      _{MsgAbout}
+    <div .columns .large-6 .small-12>
+      ^{fvInput aboutView}

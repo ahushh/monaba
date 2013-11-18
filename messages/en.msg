@@ -282,6 +282,7 @@ HellbanAllPosts: All hidden posts
 #### Help
 ######################################################################################
 Help: Help
+About: About
 ## Markup
 Markup: Markup
 IfYouAreOp: If you are OP

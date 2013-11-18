@@ -21,6 +21,7 @@ configForm :: Config ->
                                        , Maybe Bool -- ^ Display sage icon
                                        , Maybe Int  -- ^ Max modlog entries
                                        , Maybe Int  -- ^ Modlog entries per page
+                                       , Maybe Textarea  -- ^ About
                                        )
                            , Widget)
 configForm config extra = do
@@ -42,12 +43,13 @@ configForm config extra = do
   (displaySageRes     , displaySageView    ) <- mopt checkBoxField "" (f configDisplaySage)
   (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
   (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
-  let result = (,,,,,,,,,,,,) <$>
+  (aboutRes           , aboutView          ) <- mopt textareaField "" (f configAbout)
+  let result = (,,,,,,,,,,,,,) <$>
                captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes   <*>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes  <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes      <*>
                showLatestPostsRes <*> displaySageRes    <*> modlogMaxEntriesRes <*>
-               modlogEntriesPerPageRes
+               modlogEntriesPerPageRes <*> aboutRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -78,7 +80,7 @@ postConfigR = do
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay     , threadDelay, boardCategories,
                  newsBoard    , showNews      , maxEditings   , showLatestPosts, displaySage, modlogMaxEntries,
-                 modlogEntriesPerPage
+                 modlogEntriesPerPage, about
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
                              , configACaptchaGuards  = fromMaybe (configACaptchaGuards  oldConfigVal) aCaptchaGuards
@@ -93,6 +95,7 @@ postConfigR = do
                              , configDisplaySage     = fromMaybe (configDisplaySage     oldConfigVal) displaySage
                              , configModlogMaxEntries     = fromMaybe (configModlogMaxEntries     oldConfigVal) modlogMaxEntries
                              , configModlogEntriesPerPage = fromMaybe (configModlogEntriesPerPage oldConfigVal) modlogEntriesPerPage
+                             , configAbout           = fromMaybe (configAbout oldConfigVal) about
                              }
       void $ runDB $ replace oldConfigKey newConfig
       addModlogEntry MsgModlogUpdateConfig

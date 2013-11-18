@@ -3,7 +3,7 @@
   <div .columns .large-2>
     <ul .side-nav>
       <li>
-        <a href=@{HelpR}>[i18n]About
+        <a href=@{HelpR}>_{MsgAbout}
       <li>
         <a href=@{HelpMarkupR}>_{MsgMarkup}
       <li .active>

@@ -64,6 +64,14 @@
       <input #useMathjax .js-settings type=checkbox>
 
 <div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=stickyTopbar>
+      _{MsgStickyTopbar}
+  <div .columns .large-6 .small-7>
+    <label for=stickyTopbar>
+      <input #stickyTopbar .js-settings type=checkbox>
+
+<div .row .js-settings-row>
   <div .columns large-12 .text-center>
     <strong>
       YouTube

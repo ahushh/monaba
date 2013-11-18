@@ -19,6 +19,7 @@ var defaultSettings = {
     'hideRules': false,
     'widePosts': false,
     'useMathjax': true,
+    'stickyTopbar': true
 };
 
 for (var i in defaultSettings) {
@@ -50,6 +51,9 @@ if (getItem('widePosts'))
     $(".reply").css("display","block");
 else
     $(".reply").css("display","table");
+
+if (getItem('stickyTopbar'))
+    $('.top-bar').wrap("<div class='contain-to-grid sticky'></div>");
 
 if (getItem("useMathjax")) {
     MathJax.Hub.Config({

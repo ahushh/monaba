@@ -365,6 +365,7 @@ Style: Style
 MaxAllowedRating: Max allowed rating
 Language: Language
 UseMathjax: Use MathJax
+StickyTopbar: Sticky topbar
 WidePosts: Wide posts
 UseEventSource: Use Eventsource
 ExpandImage: Expand image

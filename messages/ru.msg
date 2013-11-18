@@ -365,6 +365,7 @@ Style: Стиль
 MaxAllowedRating: Максимальный рейтинг
 Language: Язык
 UseMathjax: Использовать MathJax
+StickyTopbar: Закрепить верхнюю панель
 WidePosts: Широкие посты
 UseEventSource: Использовать Eventsource
 ExpandImage: Разворачивать изображения

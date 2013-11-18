@@ -1,21 +1,26 @@
-^{adminNavbarWidget muser permissions}
-<h2 style=text-align:center> UID: #{posterId}
-$if onlyHellbanned
-    <div style=text-align:center>
-      <a href=@{AdminSearchUIDNoPageR posterId}>_{MsgDisplayAllPosts}
-$else
-  $if elem HellBanP permissions
-    <div style=text-align:center>
-      <a href=@{AdminSearchUIDOnlyHBNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
-<form .delete-form method=get action=@{DeleteR}>
-    <div .post-list .row>
-      <div .columns .large-12 .small-12>
-        $forall (ePost, eFiles) <- postsAndFiles
-          $if (postParent $ entityVal ePost) > 0
-              ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
-          $else
-              ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
-    ^{deleteWidget permissions}
+<div .row>
+  <div .columns .large-12 .text-center>
+    <h2>UID: #{posterId}
+    $if onlyHellbanned
+        <div .text-center>
+          <a href=@{AdminSearchUIDNoPageR posterId}>_{MsgDisplayAllPosts}
+    $else
+      $if elem HellBanP permissions
+        <div .text-center>
+          <a href=@{AdminSearchUIDOnlyHBNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
+<div .row>
+  <div .columns .large-2>
+     ^{adminNavbarWidget muser permissions}
+  <div .columns .large-10>
+    <form .custom .delete-form method=get action=@{DeleteR}>
+      <div .post-list .row>
+        <div .columns .large-12 .small-12>
+          $forall (ePost, eFiles) <- postsAndFiles
+            $if (postParent $ entityVal ePost) > 0
+                ^{postWidget muser ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
+            $else
+                ^{postWidget muser ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
+        ^{deleteWidget permissions}
 
 $if onlyHellbanned
     ^{pageSwitcherWidget page pages (AdminSearchUIDOnlyHBR posterId)}

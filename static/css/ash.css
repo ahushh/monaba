@@ -182,3 +182,19 @@ textarea:focus {
     font-weight: bold;
     background: none repeat scroll 0% 0% #CFCFCF;
 }
+/* *************************************** */
+/* ************ Edit history ************* */
+/* *************************************** */
+.history-entry {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.history-date {
+    background-color: #CFCFCF;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 3px;
+}

@@ -2,10 +2,10 @@
 $if not $ T.null boardLongDesc
     <h3 .subheader .text-center #board-long-title>#{boardLongDesc}
 
-<h3 .text-center .subheader>
+<h4 .text-center .subheader>
   _{MsgEditingHistoryOfPost (postLocalId post)}
 
-<h4 .text-center .subheader>
+<h5 .text-center .subheader>
    _{MsgGoTo} 
    $if postParent post == 0
        <a href=@{ThreadR (boardName board) (postLocalId post)}>_{MsgToThread}
@@ -15,9 +15,11 @@ $if not $ T.null boardLongDesc
        <a href=@{BoardNoPageR (boardName board)}>_{MsgToBoard}
 
 $forall (date, msg) <- history
-  <div .row .history-date>
-    <div .columns .large-12 .small-12 .text-center>
-      #{myFormatTime timeZone date}
-  <div .row .history-message>
+  <div .row .history-entry>
     <div .columns .large-12 .small-12>
-      <div .message>#{preEscapedToHtml $ unTextarea msg}
+      <div .row .history-date>
+        <div .columns .large-12 .small-12 .text-center>
+          #{myFormatTime timeZone date}
+      <div .row .history-message>
+        <div .columns .large-12 .small-12>
+          <div .message>#{preEscapedToHtml $ unTextarea msg}

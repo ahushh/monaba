@@ -294,6 +294,11 @@ form.custom .custom.checkbox:before {
     padding: 8px 10px;
 }
 
+.message ul, .message ol {
+    line-height: 1.2;
+    margin-left: 1em;
+}
+
 .poster-name {
     font-weight: bolder;
 }

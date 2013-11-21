@@ -1,1 +1,306 @@
+html, body {
+    font: 15px "Arial", serif;
+    color: #999;
+    background-color: #353535;
+}
 
+.side-nav li a,
+a {
+    color:#A75353;
+}
+
+a:hover {
+    color: #804040;
+}
+
+header, .fixed.sticky {
+    border-bottom: 2px solid #863D3D !important;
+}
+
+li.has-dropdown {
+    text-align:center;
+}
+
+#wrap {
+    overflow: hidden;
+    background-color: #292929;
+    border-bottom: 2px solid #863D3D;
+}
+
+#main {
+    margin: auto 3%;
+    padding:5px 25px;
+    border-right:1px solid #000;
+    border-left: 2px dashed #863D3D;
+    box-shadow: -2px 0px 10px #1A1A1A;
+}
+
+hr {
+    border: 1px #853737;
+    border-style:solid none none;
+}
+
+.current a {
+    background: none !important;
+}
+
+/* *************************************** */
+/* *************** Forms ***************** */
+/* *************************************** */
+.show-plain-form {
+    border-top: 1px solid rgba(10, 10, 10, 0.3);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 1em;
+}
+
+fieldset {
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid rgba(134, 61, 61, 0.67);
+    border-bottom: 1px solid rgba(134, 61, 61, 0.67);
+
+}
+
+fieldset legend {
+    padding: 3px 5px;
+    background: none;
+    border: 1px dashed rgba(134, 61, 61, 0.67);
+}
+
+label.prefix, span.postfix {
+    background-color: #2E2E2E;
+    border: 1px solid #0C0C0C;
+    box-shadow: 0 0 10px #202020;
+    color: #CCCCCC;
+}
+
+form.custom .custom.dropdown {
+    background: none repeat scroll 0 0 #353535;
+    color: #999999;
+}
+
+form.custom .custom.dropdown a.current {
+    color: #999999;
+}
+
+form.custom .custom{
+    color: #999999;
+    background: none repeat scroll 0 0 #353535;
+    border: 1px solid #000000;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    top: -1px;
+    vertical-align: middle;
+    width: 16px;
+}
+
+form.custom .custom.checkbox.checked:before {
+    color: #999999;
+}
+
+form.custom .custom.checkbox:before {
+    line-height: 1.2;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea, .button {
+    box-shadow: 0px 0px 10px #202020;
+    border:1px solid black;
+    background: #212121;
+    color: #CCC;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    box-shadow: 0 1px 4px black;
+    background: #212121;
+    border:1px solid black;
+}
+
+.button {
+    border:1px solid #3a3a3a;
+}
+
+.button:hover, .button:focus {
+    background: #863d3d;
+}
+
+button.secondary, .button.secondary {
+    background-color: #999999;
+    color: #333333;
+}
+
+.rules {
+    font-size: 0.7em;
+}
+
+input::-webkit-input-placeholder {
+    color:#4C4C4C ;
+}
+
+input::-moz-placeholder {
+    color:#727272 ;
+
+}
+/* *************************************** */
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-white.png");
+    opacity: 0.5;
+}
+/* *************************************** */
+/* *********** Post and threads ********** */
+/* *************************************** */
+.reply, .post-list .opening, .popup {
+    background: #252525;
+    border: 1px solid #000;
+}
+
+.popup, .highlighted {
+    border:1px dashed #863D3D;
+    box-shadow: 0px 0px 10px #0C0C0C;
+}
+
+.highlighted {
+    background: #1A1A1A;
+}
+
+.thumb, .video-thumb, iframe {
+    box-shadow: 0 1px 4px black;
+}
+
+pre {
+    background-color: rgba(0,0,0,0.1);
+    border: 1px dashed #5c1f1f;
+    padding: 10px;
+    margin: 10px 7px ;
+}
+
+.thread {
+    border-bottom: 2px solid rgba(134, 61, 61, 0.67);
+}
+
+.post-list .hidden-thread {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+
+.post-title {
+    color: #963428;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* Header */
+.file-name {
+    font-size: 0.8em;
+}
+
+.time {
+    font-size: 0.8em;
+    color: #666666;
+}
+/* Message */
+.spoiler, .spoiler a, .spoiler .quote {
+    background: #000;
+    box-shadow: -2px 1px 2px #1A1A1A;
+    color: transparent;
+    transition:all 0.2s ease;
+}
+
+.spoiler:hover, .spoiler a:hover, .spoiler:hover .quote {
+    background: none;
+    color: #999;
+    box-shadow: none;
+}
+
+.spoiler a:hover {
+    color:#804040;
+}
+
+.quote, #button-quote, .quote .spoiler:hover, .spoiler:hover .quote {
+    color: #51860F;
+}
+
+#button-quote:hover {
+    color: #426E0F;
+}
+
+.last-modified {
+    font-size: 0.7em;
+}
+/* Files */
+.file-info {
+    display: none;
+}
+/* *************************************** */
+/* **************** Admin **************** */
+/* *************************************** */
+.admin-navbar {
+    border-right: 1px solid rgba(10, 10, 10, 0.3);
+}
+.admin-navbar li:hover {
+    background-color: #CFCFCF;
+}
+
+/* *************************************** */
+/* *********** Popup alerts ************** */
+/* *************************************** */
+.popup-alert, .panel {
+    background: none repeat scroll 0% 0% #2C2C2C;
+    border-radius: 3px;
+    border: 1px dashed #5c1f1f;
+    box-shadow: 2px 4px 25px -4px #1A1A1A;
+}
+/* *************************************** */
+/* ************ Home page **************** */
+/* *************************************** */
+.news-container h6,
+.board-category h6 {
+    font-weight: bold;
+    color: #A75353;
+}
+.panel p, #board-title, #main-title h1, #main h2, .pagination a, .top-bar a {
+    color: #a2a2a2 !important;
+}
+/* *************************************** */
+/* ************ Edit history ************* */
+/* *************************************** */
+.history-entry {
+    background: none repeat scroll 0% 0% #2C2C2C;
+    border-radius: 3px;
+    border: 1px dashed #5c1f1f;
+    box-shadow: 2px 4px 25px -4px #1A1A1A;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.history-date {
+    padding: 3px;
+}

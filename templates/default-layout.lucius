@@ -36,6 +36,10 @@ footer {
 /* ********************************* */
 /* ************* Forms ************* */
 /* ********************************* */
+.f-dropdown {
+    top: -9999px;
+}
+
 #close-edit-form {
     font-size: 1.2em;
 }
@@ -63,7 +67,10 @@ textarea {
     margin: 0 0 1em 0;
     padding: 0.1em;
     height: 1.5em;
-    width: 100%;
+}
+
+textarea {
+   resize: both;
 }
 
 .prefix,
@@ -274,6 +281,24 @@ form.custom .custom.checkbox:before {
     margin: 7px;
 }
 
+/* Video */
+.video-container {
+    cursor: pointer;
+}
+
+iframe {
+    border: none;
+}
+
+.focused {
+    text-decoration: underline;
+}
+
+/* Files */
+.thumb {
+    outline: none;
+}
+
 .file {
     margin: 7px 14px 7px 7px;
     float: left;
@@ -297,6 +322,20 @@ form.custom .custom.checkbox:before {
 .message ul, .message ol {
     line-height: 1.2;
     margin-left: 1em;
+}
+
+pre {
+    background-color: #EEEEEE;
+    border: 1px dashed #DFDFDF;
+    padding: 10px;
+    overflow: auto;
+    max-height: 300px;
+    resize: both !important;
+}
+
+.abbreviated {
+    max-height: 250px;
+    overflow: hidden;
 }
 
 .poster-name {
@@ -382,133 +421,3 @@ form.custom .custom.checkbox:before {
     position: fixed;
     top: 10px;
 }
-
-/* .admin-table { */
-/*     border-collapse: collapse; */
-/*     font-size: 0.8em; */
-/*     margin: 7px; */
-/* } */
-
-/* .admin-table td, .admin-table th { */
-/*     border: 1px solid black; */
-/*     border-collapse: collapse; */
-/*     padding: 5px; */
-/*     padding-right: 8px; */
-/* } */
-
-/* .admin-table input { */
-/*     width: 100%; */
-/* } */
-
-
-
-/* header { */
-/*     padding-bottom: 15px; */
-/* } */
-
-/* .js .mark-to-delete input[type=checkbox] { */
-/*     display:none; */
-/* } */
-
-/* #edit-form textarea { */
-/*     width: 98%; */
-/* } */
-
-/* #close-edit-form { */
-/*     float:right; */
-/*     margin: 3px 5px; */
-/* } */
-
-/* .last-modified { */
-/*     font-size: 0.7em; */
-/*     float:right; */
-/* } */
-
-/* .hist-date { */
-/*     margin: 10px; */
-/*     text-align: center; */
-/*     font-weight: bold; */
-/* } */
-
-/* .hist-msg { */
-/*     word-wrap: break-word; */
-/*     width: 50%; */
-/*     margin: 0 auto; */
-/* } */
-
-/* #edit-history-header { */
-/*     text-align: center; */
-/* } */
-
-/* .file-name { */
-/*     margin: 2px; */
-/* } */
-
-/* .file-info { */
-/*     font-style: italic; */
-/*     margin: 2px; */
-/* } */
-
-/* iframe { */
-/*     border: 0px; */
-/* } */
-
-/* .focused { */
-/*     text-decoration: underline; */
-/* } */
-
-/* ul { */
-/*     list-style-position: inside; */
-/*     margin: 0; */
-/*     padding: 0 0 0 15px; */
-/* } */
-
-
-/* .expand-post { */
-/*     padding: 3px 0 0 8px; */
-/* } */
-
-/* .shrink-post { */
-/*     padding-left: 8px; */
-/* } */
-
-/* .expand-post, .shrink-post { */
-/*     color: #666666; */
-/* } */
-
-/* .markup-wrapper { */
-/*     margin:0 auto; */
-/*     width:90%; */
-/*     padding: 5px; */
-/* } */
-
-/* .abbreviated { */
-/*     max-height: 250px; */
-/*     overflow:hidden; */
-/* } */
-
-/* #delete-container { */
-/*     clear: both; */
-/* } */
-
-
-/* #captcha { */
-/*     display: block; */
-/* } */
-
-/* .censored { */
-/*     display: block; */
-/* } */
-
-/* .no-js .markup-buttons { */
-/*     visibility: hidden; */
-/*     height: 0px; */
-/* } */
-
-/* .video-thumb { */
-/*     cursor: pointer; */
-/* } */
-
-/* .thumb { */
-/*     outline: none; */
-/* } */

@@ -47,13 +47,13 @@
       <input #useEventsource .js-settings type=checkbox>
       (experimental)
 
-<div .row .js-settings-row>
+<div .row>
   <div .columns .large-6 .small-5>
-    <label for=widePosts>
+    <label for=#{fvId widePostsView}>
       _{MsgWidePosts}
   <div .columns .large-6 .small-7>
-    <label for=widePosts>
-      <input #widePosts .js-settings type=checkbox>
+    <label for=#{fvId widePostsView}>
+      ^{fvInput widePostsView}
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>

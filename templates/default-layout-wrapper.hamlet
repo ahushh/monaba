@@ -30,9 +30,16 @@ $newline never
         <meta name="author" content="">
 
         <meta name="viewport" content="width=device-width,initial-scale=1">
-
         ^{pageHead pc}
 
+        <style type=text/css>
+          $maybe b <- widePosts
+            $if b == "True"
+              .reply {display: block !important;}
+            $else
+              .reply {display: table !important;}
+          $nothing 
+            .reply {display: table !important;}
         \<!--[if lt IE 9]>
         \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         \<![endif]-->

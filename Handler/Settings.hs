@@ -14,16 +14,18 @@ settingsForm :: [(Text,Text)] -> -- ^ All boards
                Text          -> -- ^ Default stylesheet 
                Censorship    -> -- ^ Default rating
                Html          -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, Maybe [Text]), Widget)
+               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, Maybe [Text], Bool), Widget)
 settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating extra = do
-  oldTimeZone <- lookupSession "timezone"
-  oldStyle    <- lookupSession "stylesheet"
-  (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
-  (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
-  (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
-  (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
-  (boardResults, boardViews  ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
-  let result = (,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults
+  oldTimeZone  <- lookupSession "timezone"
+  oldStyle     <- lookupSession "stylesheet"
+  oldWidePosts <- lookupSession "wide-posts"
+  (timezoneRes , timezoneView ) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
+  (styleRes    , styleView    ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
+  (ratingRes   , ratingView   ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
+  (langRes     , langView     ) <- mopt (selectFieldList langs      ) "" Nothing
+  (widePostsRes, widePostsView) <- mreq checkBoxField                 "" (readText <$> oldWidePosts)
+  (boardResults, boardViews   ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
+  let result = (,,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults <*> widePostsRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -39,11 +41,12 @@ postSettingsR = do
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, rating, lang, boards) -> do
+    FormSuccess (timezone, stylesheet, rating, lang, boards, widePosts) -> do
       setSession "timezone"           $ showText timezone
       setSession "stylesheet"           stylesheet
       setSession "censorship-rating"  $ showText rating
       setSession "live-ignore-boards" $ showText $ fromMaybe [] boards
+      setSession "wide-posts"         $ showText widePosts
       Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR

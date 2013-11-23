@@ -17,7 +17,6 @@ var defaultSettings = {
     'youtubeWidth': 360,
     'youtubeHeight': 270,
     'hideRules': false,
-    'widePosts': false,
     'useMathjax': true,
     'stickyTopbar': true
 };
@@ -47,10 +46,6 @@ initHiddenThreads();
 baseInit();
 initSymbolCounter();
 $('textarea').autosize()
-if (getItem('widePosts'))
-    $(".reply").css("display","block");
-else
-    $(".reply").css("display","table");
 
 if (getItem('stickyTopbar')) {
     $('.top-bar').wrap("<div class='sticky'></div>");

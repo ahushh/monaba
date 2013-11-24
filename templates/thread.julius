@@ -14,6 +14,7 @@ if (isEventSourceSupported()) {
         // post autoload
         src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
             $('.thread > .columns').append(decodeBase64(msg.data));
+            $('.thread').foundation();
             baseInit();
             updateTitle();
         });

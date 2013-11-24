@@ -18,7 +18,8 @@ var defaultSettings = {
     'youtubeHeight': 270,
     'hideRules': false,
     'useMathjax': true,
-    'stickyTopbar': true
+    'stickyTopbar': true,
+    'ppleerEmbedByClick': true 
 };
 
 for (var i in defaultSettings) {
@@ -207,7 +208,18 @@ function addProstopleer(post) {
             var result = regex.exec(link.text);
             if (!result) return true;
             var videoId = result[1];
-            $(link).before('<object class=prosto-pleer width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object><br>');
+            var obj = '<object class=prosto-pleer width="410" height="40"><param value="http://embed.pleer.com/track?id='+videoId+'" name="movie"><embed width="410" height="40" type="application/x-shockwave-flash" src="http://embed.pleer.com/track?id='+videoId+'"></object>';
+            if (getItem('ppleerEmbedByClick')) {
+                $(link).click(function(){
+                    if ($(link).has('.prosto-pleer').length)
+                        $(link).find('.prosto-pleer').remove();
+                    else
+                        $(link).prepend(obj);
+                    return false;
+                });
+            } else {
+                $(link).prepend(obj);
+            }
         });
     });
 }

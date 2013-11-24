@@ -366,6 +366,7 @@ MaxAllowedRating: Максимальный рейтинг
 Language: Язык
 UseMathjax: Использовать MathJax
 StickyTopbar: Закрепить верхнюю панель
+PpleerEmbedByClick: Загружать pleer.com по клику
 WidePosts: Широкие посты
 UseEventSource: Использовать Eventsource
 ExpandImage: Разворачивать изображения

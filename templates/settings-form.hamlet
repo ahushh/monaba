@@ -47,6 +47,14 @@
       <input #useEventsource .js-settings type=checkbox>
       (experimental)
 
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=useMathjax>
+      _{MsgUseMathjax}
+  <div .columns .large-6 .small-7>
+    <label for=useMathjax>
+      <input #useMathjax .js-settings type=checkbox>
+
 <div .row>
   <div .columns .large-6 .small-5>
     <label for=#{fvId widePostsView}>
@@ -57,19 +65,19 @@
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>
-    <label for=useMathjax>
-      _{MsgUseMathjax}
-  <div .columns .large-6 .small-7>
-    <label for=useMathjax>
-      <input #useMathjax .js-settings type=checkbox>
-
-<div .row .js-settings-row>
-  <div .columns .large-6 .small-5>
     <label for=stickyTopbar>
       _{MsgStickyTopbar}
   <div .columns .large-6 .small-7>
     <label for=stickyTopbar>
       <input #stickyTopbar .js-settings type=checkbox>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
+    <label for=ppleerEmbedByClick>
+      _{MsgPpleerEmbedByClick}
+  <div .columns .large-6 .small-7>
+    <label for=ppleerEmbedByClick>
+      <input #ppleerEmbedByClick .js-settings type=checkbox>
 
 <div .row .js-settings-row>
   <div .columns large-12 .text-center>

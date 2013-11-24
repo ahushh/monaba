@@ -22,6 +22,10 @@ footer {
     text-align: center;
 }
 
+object {
+    display: block;
+}
+
 #message {
     margin: 0 !important;
 }

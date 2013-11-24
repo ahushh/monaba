@@ -35,11 +35,11 @@ $newline never
         <style type=text/css>
           $maybe b <- widePosts
             $if b == "True"
-              .reply {display: block !important;}
+              .reply {display: block;}
             $else
-              .reply {display: table !important;}
+              .reply {display: table;}
           $nothing 
-            .reply {display: table !important;}
+            .reply {display: table;}
         \<!--[if lt IE 9]>
         \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         \<![endif]-->

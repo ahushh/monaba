@@ -1,1 +1,214 @@
+html, body {
+    background-color: #2b2b2b;
+    color: #c8c8c8;
+}
 
+a {
+    color: #6ca0cf;
+}
+
+a:hover, .spoiler a:hover {
+    color: #8cc0ef;
+}
+
+hr {
+    border-top: 1px solid #111;
+    box-shadow: 0px 1px 1px #444;
+}
+
+#button-quote:hover {
+    color: #a0c627;
+}
+
+.rules, .file-name, .last-modified {
+    font-size: 12px;
+}
+
+.file-info {
+    display: none;
+}
+
+.large-centered h1, .panel p, #board-title,
+.news-container h6, #main h2, #header h1 {
+    color: #dedede;
+}
+
+.time, #captcha-info, #thread-title, .panel h6, 
+.no-bump-block label, #settings-form label,
+.delete-container label, .markup-wrapper p {
+    color: #666;
+}
+
+.side-nav a {
+    color: #6ca0cf!important;
+}
+
+.side-nav a:hover {
+    color: #8cc0ef!important;
+}
+
+.pagination a, .pagination a:hover,
+.active a, .active a:hover,
+.alert-box {
+    color: #666!important;
+}
+
+.alert-box {
+    background-color: #e6e6e6;
+    border-color: #666;
+}
+
+.current a, .current a:hover {
+    background: none!important;
+    box-shadow: none;
+    color: #dedede!important;
+}
+
+/* *************************************** */
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-white.png");
+    opacity: 0.6;
+}
+/* *************************************** */
+/* *********** Post and threads ********** */
+/* *************************************** */
+
+fieldset, .reply, .opening, .show-plain-form, #board-title, .omitted {
+    border: 1px #191919;
+    border-style: none none solid none;
+    box-shadow: 0px 3px 6px -4px #444;
+}
+
+blockquote {
+    border-color: #444;
+    box-shadow: inset 3px 0px 6px -4px #444;
+}
+
+.thread, .panel {
+    background-color: #222;
+    border: none;
+}
+
+.omitted {
+    display: table;
+    padding: 2px;
+}
+
+.popup {
+    background-color: #2b2b2b;
+    border: 1px outset #444;
+}
+
+.popup-alert {
+    background-color: #1e1e1e;
+    border: 1px outset #222;
+}
+
+.spoiler, .spoiler a, .spoiler .quote {
+    background-color: #565756;;
+    color:transparent;
+    transition:all 0.2s ease;
+    border: 1px outset #777;
+    border-left-style: none;
+}
+
+.spoiler:hover, .spoiler a:hover, .spoiler:hover .quote {
+    background: none;
+    box-shadow: none;
+    border: none;
+}
+
+.spoiler:hover {
+    color: #c8c8c8;
+}
+
+.quote, .spoiler:hover .quote, .quote .spoiler:hover {
+    color: #809c28;
+}
+
+pre {
+    background: #343434!important;
+}
+
+/* *************************************** */
+/* *************** Forms ***************** */
+/* *************************************** */
+
+.show-plain-form, #board-title {
+    padding-bottom: 1em;
+}
+
+.show-plain-form {
+    margin-bottom: 1em;
+}
+
+legend {
+    background: none!important;
+}
+
+.dropdown, .prefix, .postfix, .tiny {
+    border: 1px #555!important;
+    background: #464646!important;
+}
+
+.prefix {
+    border-style: ridge!important;
+    border-right-style: none!important;
+}
+
+.dropdown {
+    border-style: outset!important;
+}
+
+.left .dropdown {
+    border: none!important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea, #x {
+    box-shadow: inset 0 0 4px black;
+    border: 1px inset #555;
+    background: #565656;
+    color: #dedede;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+textarea:focus, #x:focus {
+    box-shadow: 0 0 4px black;
+    border: 1px inset rgba(99, 99, 99, 0.1);
+    background: #565656;
+}
+
+.checkbox {
+    box-shadow: inset 0 0 4px black;
+    border: 1px inset #444!important;
+    background: #383838!important;
+}
+
+.checkbox.checked:before, .top-bar a, .prefix, .top-bar a, .dropdown a, .postfix, .tiny {
+    color: #dedede!important;
+}

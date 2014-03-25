@@ -20,17 +20,42 @@ footer {
     padding-top: 10px;
 }
 
+/* Get rid of centered posts */
+.row {
+    margin: 0 1%;
+    max-width: 97%;
+    width: none;
+}
+
 /* *************************************** */
 /* ************* Navigation ************** */
 /* *************************************** */
+.side-nav li a {
+    color: #995b46;
+    display: block;
+}
+
 .side-nav li:hover > a:first-child {
-    background: none repeat scroll 0 0 rgba(0, 64, 84, 0.03);
-    color: #006887;
+    background: none repeat scroll 0 0 rgba(0, 64, 84, 0.08);
+    color: grey;
     margin: 0 -20px;
     padding-left: 20px;
     padding-right: 20px;
     position: relative;
 }
+
+.side-nav li.active:hover > a:first-child {
+    color: black;
+}
+
+ul.pagination li.current a {
+    background: none repeat scroll 0 0 #787878;
+}
+
+ul.pagination li.current a:hover, ul.pagination li.current a:focus {
+    background: none repeat scroll 0 0 #787878;
+}
+
 /* *************************************** */
 /* *************** Forms ***************** */
 /* *************************************** */
@@ -86,6 +111,16 @@ input[type="url"]:focus,
 textarea:focus {
     background-color: #DFDFDF;
     color: #333333;
+}
+
+.button {
+    border-color: grey;
+    background: #999;
+    color: #EEE;
+}
+
+.button:hover, .button:focus {
+    background: #AAA;
 }
 
 .rules {
@@ -183,7 +218,12 @@ textarea:focus {
 /* *************************************** */
 .board-category {
     font-weight: bold;
-    background: none repeat scroll 0% 0% #CFCFCF;
+    background: none repeat scroll 0% 0% rgba(141,141,141,0.4);
+    box-shadow: 0px 0px 1px #999;
+}
+.news-title {
+    border-bottom: 1px solid rgba(99,99,99,0.1);
+    padding-bottom: 1px;
 }
 /* *************************************** */
 /* ************ Edit history ************* */

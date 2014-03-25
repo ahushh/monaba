@@ -418,7 +418,8 @@ function expandImage(element, event) {
     if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
         return true;
     }
-    var thumbUrl    = $(element).find('img').attr('src');
+    var currentUrl  = $(element).find('img').attr('src');
+    var thumbUrl    = $(element).find('img').attr('thumb-url');
     var thumbWidth  = $(element).find('img').attr('width');
     var thumbHeight = $(element).find('img').attr('height');
     if (event.which == 2 || event.which == 3) {
@@ -467,10 +468,11 @@ function expandImage(element, event) {
             $(element).find('img').css('width', "");
         } else {
             $(element).find('img').css('opacity', 0.7);
+            $(element).find('img').attr('thumb-url', $(element).find('img').attr('src') );
             $(element).find('img').attr('src', fullUrl);
             $(element).find('img').removeAttr('width');
             $(element).find('img').removeAttr('height');
-            $(element).find('img').css('width', '93%');
+            $(element).find('img').css('width', '99%');
 
             $(element).find('img').load(function() {
                 $(this).css('opacity', 1);

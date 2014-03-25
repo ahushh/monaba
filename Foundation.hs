@@ -20,7 +20,7 @@ import Model
 import ModelTypes
 import Text.Jasmine (minifym)
 import Text.Hamlet (hamletFile)
-import System.Log.FastLogger (Logger)
+import Yesod.Core.Types (Logger)
 
 import Data.Text (Text)
 import qualified Data.Text as T

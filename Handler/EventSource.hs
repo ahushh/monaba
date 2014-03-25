@@ -53,7 +53,7 @@ getReceiveR = do
     liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId newClient)
   chan' <- liftIO $ dupChan chan
   req   <- waiRequest
-  res   <- liftResourceT $ eventSourceAppChan chan' req
+  res   <- liftIO $ eventSourceAppChan chan' req
   sendWaiResponse res
 
 sendPost :: Board -> Int -> Entity Post -> [Entity Attachedfile] -> Bool -> Text -> Handler ()

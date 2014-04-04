@@ -1,1 +1,333 @@
+html, body {
+    background-color: black;
+    color: #7C7C7C;
+}
 
+a, a:visited, a:link {
+    color: #964509;
+    padding: 0px;
+    outline: none;
+}
+
+a:hover, a:active {
+    color: #742307;
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid rgba(90, 90, 90, 0.5);
+    padding-top: 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #797979;
+}
+
+.panel {
+    background: black;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
+    color: #797979;
+}
+
+.alert-box {
+    background-color: grey;
+    border-color: #797979;
+    border-style: solid;
+    border-width: 1px;
+    color: white;
+}
+
+/* Get rid of centered posts */
+.row {
+    margin: 0 1%;
+    max-width: 97%;
+    width: none;
+}
+
+/* *************************************** */
+/* ************* Navigation ************** */
+/* *************************************** */
+.side-nav li a {
+    color: #995b46;
+    display: block;
+}
+
+.side-nav li:hover > a:first-child {
+    border: 1px solid rgba(100, 100, 100, 0.5);
+    background: none repeat scroll 0 0 rgba(0, 64, 84, 0.08);
+    color: grey;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+}
+
+.side-nav li.active:hover > a:first-child {
+    color: grey;
+}
+
+ul.pagination li.current a {
+    background: none repeat scroll 0 0 black;
+}
+
+ul.pagination li.current a:hover, ul.pagination li.current a:focus {
+    background: none repeat scroll 0 0 black;
+}
+
+ul.pagination li a:hover, ul.pagination li a:focus {
+    background: none repeat scroll 0 0 #333;
+}
+
+/* *************************************** */
+/* *************** Forms ***************** */
+/* *************************************** */
+.show-plain-form {
+    border-top: 1px solid rgba(10, 10, 10, 0.3);
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 1em;
+}
+
+#post-form input, #post-form label, #post-form textarea, #post-form .file-select, #post-form .dropdown {
+    margin-bottom: 3px !important;
+}
+
+/* Dropdown */
+form.custom .custom, form.custom .custom.dropdown {
+    border-top: 1px solid rgba(100, 100, 100, 0.5);
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    border-right: 0;
+    border-left: 0;
+    background: black;
+}
+
+form.custom .custom.dropdown .current {
+    color: #797979;
+    background-color: black;
+}
+
+form.custom .custom.dropdown ul {
+    border: none;
+    border-right: 1px solid rgba(100, 100, 100, 0.5);
+    background: black;
+    box-shadow: none;
+    color: #191919;
+}
+
+form.custom .custom.dropdown ul li.selected {
+    background: none repeat scroll 0 0 #191919;
+    color: grey;
+}
+
+form.custom .custom.dropdown ul li:hover {
+    background: none repeat scroll 0 0 #191919;
+    box-shadow: 0px 0px 1px #999;
+    color: grey;
+}
+
+form.custom .custom.dropdown ul li.selected:hover {
+    background: none repeat scroll 0 0 #191919;
+    box-shadow: 0px 0px 1px #999;
+    color: white;
+}
+/* Dropdown end */
+
+span.prefix, label.prefix {
+    background-color: #191919;
+    border-right: medium none;
+    border-left: 1px solid rgba(100, 100, 100, 0.5);
+    border-top: 1px solid rgba(100, 100, 100, 0.5);
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    color: #797979;
+    box-shadow: none;
+}
+
+span.postfix, label.postfix {
+    background-color: #191919;
+    border-left: medium none;
+    border-right: 1px solid rgba(100, 100, 100, 0.5);
+    border-top: 1px solid rgba(100, 100, 100, 0.5);
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    color: #797979;
+    box-shadow: none;
+}
+
+fieldset {
+    border: 1px solid black;
+}
+
+fieldset legend {
+    padding: 3px;
+    background-color: black;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+    border-top: 1px solid rgba(100, 100, 100, 0.5);
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    border-right: 0;
+    border-left: 0;
+    background-color: black;
+    color: #7C7C7C;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    background-color: #191919;
+}
+
+.button, .file-select.button {
+    border: 1px solid rgba(100, 100, 100, 0.5);
+    box-shadow: none;
+    background: black;
+    color: #797979;
+}
+
+.button:hover, .button:focus, .file-select.button:focus, .file-select.button:hover {
+    background-color: #191919;
+}
+
+.file-select.button:focus, .file-select.button:hover {
+    color: white;
+}
+
+.rules {
+    font-size: 0.7em;
+}
+/* *************************************** */
+[class^="icon-"], [class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-white.png");
+    opacity: 0.5;
+}
+/* *************************************** */
+/* *********** Post and threads ********** */
+/* *************************************** */
+.reply, .post-list .opening {
+    border: 1px solid #383838;
+    background: none repeat scroll 0% 0% #050505;
+    padding: 5px;
+    margin: 5px !important;
+}
+
+.popup {
+    background: none repeat scroll 0% 0% #050505;
+    border: 1px solid #383838;
+    padding: 5px;
+}
+
+.highlighted {
+    border: 2px dashed grey;
+}
+
+.thread {
+    border-bottom: 1px solid rgba(10, 10, 10, 0.3);
+    padding: 25px 2px;
+}
+
+.post-list .hidden-thread {
+    background: none repeat scroll 0% 0% #CFCFCF;
+    border-radius: 3px;
+    border: 1px solid #EEEEEE;
+    padding: 5px;
+}
+
+/* Header */
+.file-name {
+    font-size: 0.8em;
+}
+
+.time {
+    font-size: 0.8em;
+    color: #666666;
+}
+
+/* Message */
+.quote {
+    color: #050 !important;
+}
+.spoiler, .spoiler a, .spoiler .quote {
+    background: none;
+    color: transparent;
+}
+
+.spoiler:hover, .spoiler a:hover, .spoiler:hover .quote {
+    color: #7C7C7C;
+    background:none;
+    text-shadow:none;
+}
+
+.last-modified {
+    font-size: 0.7em;
+}
+
+/* Files */
+.file-info {
+    display: block;
+    font-size: 0.6em;
+}
+/* *************************************** */
+/* *********** Popup alerts ************** */
+/* *************************************** */
+.popup-alert {
+    background: none repeat scroll 0% 0% #050505;
+    border: 1px solid #383838;
+    padding: 5px;
+}
+/* *************************************** */
+/* ************ Home page **************** */
+/* *************************************** */
+.news-title {
+    border-bottom: 1px solid rgba(99,99,99,0.9);
+    padding-bottom: 1px;
+}
+ul.large-block-grid-2 li img {
+    opacity: 0.5;
+}
+/* *************************************** */
+/* ************ Edit history ************* */
+/* *************************************** */
+.history-entry {
+    border: 1px solid #383838;
+    background: none repeat scroll 0% 0% #050505;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.history-date {
+    border-bottom: 1px solid rgba(90, 90, 90, 0.7);
+    padding: 3px;
+}
+/* *************************************** */
+/* ************** Settings *************** */
+/* *************************************** */
+#settings-form .row .columns.large-6.small-5 {
+    color: #4D4D4D;
+    font-size: 0.875em;
+}

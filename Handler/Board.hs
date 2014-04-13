@@ -79,10 +79,11 @@ getBoardR board page = do
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       hasAccessToReply     = checkAccessToReply     mgroup boardVal
       permissions          = getPermissions mgroup
+      canViewHellbanned    = HellBanP `elem` permissions
   ------------------------------------------------------------------------------------------------------- 
   cleanBoardStats board
   hiddenThreads   <- getHiddenThreads board
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. canViewHellbanned
                                   ,PostLocalId /<-. hiddenThreads]
   posterId        <- getPosterId
   let numberFiles       = boardNumberFiles       boardVal

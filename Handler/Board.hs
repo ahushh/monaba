@@ -136,6 +136,7 @@ postBoardR board _ = do
       thumbSize        = boardThumbSize     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       opFile           = boardOpFile        boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm boardVal
   case result of
@@ -189,7 +190,7 @@ postBoardR board _ = do
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         = maybe defaultName (T.take maxLenOfPostName ) name
+                           , postName         = if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName ) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now

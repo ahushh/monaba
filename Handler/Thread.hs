@@ -104,6 +104,7 @@ postThreadR board thread = do
       bumpLimit        = boardBumpLimit     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       replyFile        = boardReplyFile     boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal      
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm boardVal
@@ -162,7 +163,7 @@ postThreadR board thread = do
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         = maybe defaultName (T.take maxLenOfPostName ) name
+                           , postName         = if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName ) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

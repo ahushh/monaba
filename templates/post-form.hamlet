@@ -1,21 +1,33 @@
 #{extra}
-<div .row .collapse>
-  <div .large-1 .small-5 .columns>
-    <label .prefix for=#{fvId nameView}>_{MsgName}
-  <div .large-3 .small-7 .columns>
-    ^{fvInput nameView}
-  <div .large-2 .pull-6 .small-7 .columns .no-bump-block>
-    <label .inline for=#{fvId nobumpView}>
-      _{MsgNobump}
-      ^{fvInput nobumpView}
+$if not forcedAnon
+    <div .row .collapse>
+      <div .large-1 .small-5 .columns>
+        <label .prefix for=#{fvId nameView}>_{MsgName}
+      <div .large-3 .small-7 .columns>
+        ^{fvInput nameView}
+      <div .large-2 .pull-6 .small-7 .columns .no-bump-block>
+        <label .inline for=#{fvId nobumpView}>
+          _{MsgNobump}
+          ^{fvInput nobumpView}
+$else
+    <span style="display:none">
+      ^{fvInput nameView}
 
 <div .row .collapse .subject-block>
   <div .large-1 .small-5 .columns>
     <label for=#{fvId subjectView} .prefix>_{MsgSubject}
   <div .large-3 .small-7 .columns>
     ^{fvInput subjectView}
-  <div .large-2 .pull-6 .small-12 .columns>
-    <input type=submit .button .postfix value=_{MsgSubmitBtn}>
+  $if forcedAnon
+      <div .large-2 .small-5 .columns>
+        <input type=submit .button .postfix value=_{MsgSubmitBtn}>
+      <div .large-2 .pull-4 .small-7 .columns .no-bump-block>
+        <label .inline for=#{fvId nobumpView}>
+          _{MsgNobump}
+          ^{fvInput nobumpView}
+  $else
+      <div .large-2 .pull-6 .small-12 .columns>
+        <input type=submit .button .postfix value=_{MsgSubmitBtn}>
 
 <div .row .collapse>
   <div .large-12 .columns >

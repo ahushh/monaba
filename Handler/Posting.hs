@@ -53,6 +53,7 @@ postForm boardVal extra = do
       bumpLimit        = boardBumpLimit     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       replyFile        = boardReplyFile     boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal
       myMessageField   = checkBool (not . tooLongMessage maxMessageLength)
                                    (MsgTooLongMessage maxMessageLength )
                                    textareaField

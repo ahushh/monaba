@@ -56,6 +56,7 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                                             , Maybe Text   -- ^ Enable OP editing
                                             , Maybe Text   -- ^ Enable post editing
                                             , Maybe Text   -- ^ Show or not editing history
+                                            , Maybe Text   -- ^ Enable forced anonymity (no name input)
                                             , Maybe Text   -- ^ Long description
                                             )
                                 , Widget)
@@ -105,16 +106,17 @@ updateBoardForm board action bCategories groups extra = do
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
-               nameRes              <*> descriptionRes     <*> bumpLimitRes      <*>
-               numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
-               maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
-               previewsPerThreadRes <*> threadLimitRes     <*> opFileRes         <*>
-               replyFileRes         <*> isHiddenRes        <*> enableCaptchaRes  <*>
-               categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
-               threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
-               enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
-               showEditHistoryRes   <*> longDescriptionRes
+  (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableForcedAnon)
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+               nameRes              <*> descriptionRes      <*> bumpLimitRes      <*>
+               numberFilesRes       <*> allowedTypesRes     <*> defaultNameRes    <*>
+               maxMsgLengthRes      <*> thumbSizeRes        <*> threadsPerPageRes <*>
+               previewsPerThreadRes <*> threadLimitRes      <*> opFileRes         <*>
+               replyFileRes         <*> isHiddenRes         <*> enableCaptchaRes  <*>
+               categoryRes          <*> viewAccessRes       <*> replyAccessRes    <*>
+               threadAccessRes      <*> opModerationRes     <*> extraRulesRes     <*>
+               enableGeoIpRes       <*> opEditingRes        <*> postEditingRes    <*>
+               showEditHistoryRes   <*> enableForcedAnonRes <*> longDescriptionRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -134,7 +136,7 @@ postNewBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bLongDescription
+                , bEnableForcedAnon, bLongDescription
                 ) -> do
       when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -168,6 +170,7 @@ postNewBoardsR = do
                            , boardOpEditing         = onoff bOpEditing
                            , boardPostEditing       = onoff bPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory
+                           , boardEnableForcedAnon  = onoff bEnableForcedAnon
                            }
       void $ runDB $ insert newBoard
       addModlogEntry $ MsgModlogNewBoard (fromJust bName)
@@ -188,7 +191,7 @@ postAllBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bLongDescription
+                , bEnableForcedAnon, bLongDescription
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -221,6 +224,7 @@ postAllBoardsR = do
                              , boardOpEditing         = onoff bOpEditing       boardOpEditing
                              , boardPostEditing       = onoff bPostEditing     boardPostEditing
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                             , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                              }
           in runDB $ replace oldBoardId newBoard)
       addModlogEntry MsgModlogUpdateAllBoards
@@ -242,7 +246,7 @@ postUpdateBoardsR board = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bLongDescription
+                , bEnableForcedAnon, bLongDescription
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -275,6 +279,7 @@ postUpdateBoardsR board = do
                            , boardOpEditing         = onoff bOpEditing       boardOpEditing
                            , boardPostEditing       = onoff bPostEditing     boardPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                           , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                            }
       runDB $ replace oldBoardId newBoard
       addModlogEntry $ MsgModlogUpdateBoard (fromJust bName)

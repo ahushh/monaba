@@ -61,12 +61,13 @@ postForm boardVal extra = do
       ratings :: [(Text, Censorship)]
       ratings = map (showText &&& id) [minBound..maxBound]
       fInput lbl = lbl { fsAttrs = [("onchange","handleFiles(this)"),("class","file-input")] }
+      acInput lbl = lbl { fsAttrs = [("autocomplete","off")] }
   ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              "" (Just <$> lastName)
-  (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
+  (subjectRes  , subjectView ) <- mopt textField              (acInput "") (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
-  (passwordRes , passwordView) <- mreq passwordField          "" Nothing
-  (captchaRes  , captchaView ) <- mopt textField              "" Nothing
+  (passwordRes , passwordView) <- mreq passwordField          (acInput "") Nothing
+  (captchaRes  , captchaView ) <- mopt textField              (acInput "") Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField (fInput "") Nothing)

@@ -14,7 +14,6 @@ if (isEventSourceSupported()) {
         // post autoload
         src.addEventListener("live-"+#{toJSON posterId}, function(msg) {
             $('.post-list > .columns').prepend("<div class='row'><div class='columns large-12 small-12'>"+ decodeBase64(msg.data) +"</div></div>");
-            $('.post-list').foundation();
             baseInit();
             updateTitle();
         });

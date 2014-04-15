@@ -762,7 +762,6 @@ function refreshThread(board, threadId) {
         $(".delete-form .ajax-loading").toggle();
         if (/reply/.test(data)) {
             $("#thread-"+threadId+" > .columns").append(data);
-            $("#thread-"+threadId).foundation();
             baseInit();
             if (getItem("useMathjax")) {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
@@ -772,6 +771,7 @@ function refreshThread(board, threadId) {
         } else if (data == "No new posts ") {
             popupAlert( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
         }
+        Foundation.libs.forms.assemble();
     });
 }
 //-----------------------------------------------------------------

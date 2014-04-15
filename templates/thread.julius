@@ -14,9 +14,9 @@ if (isEventSourceSupported()) {
         // post autoload
         src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
             $('.thread > .columns').append(decodeBase64(msg.data));
-            $('.thread').foundation();
             baseInit();
             updateTitle();
+            Foundation.libs.forms.assemble();
         });
         // remove deleted posts
         src.addEventListener(#{toJSON sourceEventName}+"-deleted-"+#{toJSON posterId}, deletedPostsHandler);

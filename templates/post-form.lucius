@@ -1,16 +1,19 @@
 textarea {
     height: 150px;
     min-height: 150px;
-    width: 90%;
 }
 
-.clear-file {
+.clear-file, .add-file {
     font-size: 1.5em;
     line-height: 1;
 }
 
 .clear-file:before {
     content: "✖";
+}
+
+.add-file:before {
+    content: "+";
 }
 
 .clear-file, .file-input-size {
@@ -21,13 +24,17 @@ textarea {
     text-align: center;
 }
 
+.js .file-container > div:not(:first-child) {
+    display: none;
+}
+
 .js .file-input {
     visibility: none;
     position: absolute;
     left: -999999px;
 }
 
-.no-js .file-select, .no-js .close-post-form, .no-js .markup-buttons {
+.no-js .file-select, .no-js .add-file, .no-js .close-post-form, .no-js .markup-buttons {
     display: none;
 }
 

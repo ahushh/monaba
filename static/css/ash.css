@@ -20,8 +20,10 @@ footer {
     padding-top: 10px;
 }
 
+
 /* Get rid of centered posts */
-.row {
+.post-list, .delete-form > .row.post, .post-list > .row.post,
+.delete-form > .row.thread, .post-list > .row.thread  {
     margin: 0 1%;
     max-width: 97%;
     width: none;
@@ -72,6 +74,10 @@ ul.pagination li.current a:hover, ul.pagination li.current a:focus {
 fieldset {
     border: 1px solid black;
 }
+
+/* fieldset .row { */
+/*     margin: 0 25%; */
+/* } */
 
 fieldset legend {
     padding: 3px;

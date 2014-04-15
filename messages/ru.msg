@@ -337,6 +337,7 @@ MarkToDeleteIcon: Отметить к удалению
 EditIcon: Редактировать
 ReplyIcon: Ответить
 RemoveFileIcon: Убрать файл
+AddFileIcon: Добавить еще один файл
 CloseIcon: Закрыть
 
 PostMessageIsTooLong: Сообщение слишком длинное.

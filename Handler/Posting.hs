@@ -17,7 +17,9 @@ data GoBackTo = ToThread | ToBoard
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Board -> -- ^ Board value
+postForm :: Int   -> -- ^ The maximium length of post title
+           Int   -> -- ^ The maximium length of poster name
+           Board -> -- ^ Board value
            Html  -> -- ^ Extra token
            MForm Handler (FormResult ( Maybe Text     -- ^ Poster name
                                      , Maybe Text     -- ^ Thread subject
@@ -36,7 +38,7 @@ postForm :: Board -> -- ^ Board value
                            Bool         -> -- ^ enableCaptchaW
                            Maybe (Entity User) -> -- ^ muserW
                            Widget)
-postForm boardVal extra = do
+postForm maxLenOfPostTitle maxLenOfPostName boardVal extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -61,16 +63,18 @@ postForm boardVal extra = do
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
       ratings :: [(Text, Censorship)]
       ratings = map (showText &&& id) [minBound..maxBound]
-      fInput lbl = lbl { fsAttrs = [("onchange","handleFiles(this)"),("class","file-input")] }
-      acInput lbl = lbl { fsAttrs = [("autocomplete","off")] }
+      fInput       lbl = lbl { fsAttrs = [("onchange","handleFiles(this)"),("class","file-input")] }
+      acInput      lbl = lbl { fsAttrs = [("autocomplete","off")] }
+      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName )] }
+      subjectInput lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostTitle)] }
   ----------------------------------------------------------------------------------------------------------------
-  (nameRes     , nameView    ) <- mopt textField              "" (Just <$> lastName)
-  (subjectRes  , subjectView ) <- mopt textField              (acInput "") (Just              <$> lastTitle)
-  (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
-  (passwordRes , passwordView) <- mreq passwordField          (acInput "") Nothing
-  (captchaRes  , captchaView ) <- mopt textField              (acInput "") Nothing
-  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
-  (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
+  (nameRes     , nameView    ) <- mopt textField              (nameInput    "") (Just <$> lastName)
+  (subjectRes  , subjectView ) <- mopt textField              (subjectInput "") (Just <$> lastTitle)
+  (messageRes  , messageView ) <- mopt myMessageField                       ""  ((Just . Textarea) <$> lastMessage)
+  (passwordRes , passwordView) <- mreq passwordField          (acInput      "") Nothing
+  (captchaRes  , captchaView ) <- mopt textField              (acInput      "") Nothing
+  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
+  (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField (fInput "") Nothing)
   (ratingresults, ratingviews) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mreq (selectFieldList ratings) "" Nothing)
   let result = (,,,,,,,,) <$>  nameRes <*> subjectRes  <*> messageRes <*> passwordRes <*> captchaRes <*>

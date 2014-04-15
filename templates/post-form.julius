@@ -201,6 +201,8 @@ function handleFiles(elem) {
     for (var i = 0; i < files.length; i++) {
         var file  = files[i];
         $(elem).parent().parent().find('.clear-file').show();
+        if (i != files.length) 
+            $(elem).parent().parent().find('.add-file').show();
         // file name
         $(elem).parent().find('.file-select').text(file.name);
         // file size
@@ -232,6 +234,24 @@ function clearFile(fileId) {
     $('#'+fileId).parent().parent().find('.file-input-size').hide();
     $('#'+fileId).parent().parent().find('.file-input-size span').text('');
     $('#'+fileId).parent().find('.file-input-thumb').remove();
+    $(".file-container > div:not(:first-child)").has('#'+fileId).hide();
+}
+
+function clearAllFiles() {
+    $('.file-input').val('');
+    $('.file-input').parent().find('.file-select').text(#{toJSON $ msgrender MsgFileUpload});
+    $('.file-input').parent().parent().find('.clear-file').hide();
+    $('.file-input').parent().parent().find('.file-input-size').hide();
+    $('.file-input').parent().parent().find('.file-input-size span').text('');
+    $('.file-input').parent().find('.file-input-thumb').remove();
+}
+
+function addFileAfter() {
+    $('.file-row:hidden').first().show();
+}
+
+function hideFileRows() {
+    $(".file-container > div:not(:first-child)").hide();
 }
 
 $(".file-input").each(function(){

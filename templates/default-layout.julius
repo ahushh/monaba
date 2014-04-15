@@ -658,6 +658,8 @@ function showQuickPostForm(postId) {
                 } else {
                     popupAlert(data.error,0,false,true);
                 }
+                clearAllFiles();
+                hideFileRows();
                 refreshCaptcha();
             },
             error: function(x, e) {

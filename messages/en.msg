@@ -337,6 +337,7 @@ MarkToDeleteIcon: Mark to delete
 EditIcon: Edit
 ReplyIcon: Reply
 RemoveFileIcon: Remove file
+AddFileIcon: Add one more file
 CloseIcon: Close
 
 PostMessageIsTooLong: Message is too long.

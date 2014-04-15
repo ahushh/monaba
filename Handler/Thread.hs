@@ -69,7 +69,9 @@ getThreadR board thread = do
   acaptcha <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget , formEnctype) <- generateFormPost $ postForm boardVal
+  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+  (formWidget , formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal
   (formWidget',           _) <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
@@ -107,7 +109,7 @@ postThreadR board thread = do
       forcedAnon       = boardEnableForcedAnon boardVal      
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm boardVal
+  ((result, _), _) <- runFormPost $ postForm 0 0 boardVal
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl

@@ -107,7 +107,9 @@ getBoardR board page = do
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
+  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal
   (formWidget', _)          <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
   maybeCaptchaInfo <- getCaptchaInfo
@@ -138,7 +140,7 @@ postBoardR board _ = do
       opFile           = boardOpFile        boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm boardVal
+  ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs

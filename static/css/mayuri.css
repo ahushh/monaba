@@ -72,6 +72,10 @@ fieldset {
 
 }
 
+/* fieldset .row { */
+/*     margin: 0 25% !important; */
+/* } */
+
 fieldset legend {
     padding: 3px 5px;
     background: none;

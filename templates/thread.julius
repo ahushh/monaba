@@ -51,6 +51,8 @@ $('#post-form').ajaxForm({
         } else {
             popupAlert(data.error,2000);
         }
+        clearAllFiles();
+        hideFileRows();
         refreshCaptcha();
     },
     error: function(x, e) {

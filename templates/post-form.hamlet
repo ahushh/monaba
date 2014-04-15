@@ -30,7 +30,7 @@ $else
         <input type=submit .button .postfix value=_{MsgSubmitBtn}>
 
 <div .row .collapse>
-  <div .large-12 .columns >
+  <div .large-12 .small-12 .columns >
     ^{fvInput messageView}
     <div .markup-buttons>
       <ul .inline-list>
@@ -101,9 +101,12 @@ $if enableCaptchaW
       <img alt=captcha #captcha src=@{CaptchaR}>
 
 $if length fileviews > 0
-  $forall (fv, rv) <- zip fileviews ratingviews
-    <div .row .collapse>
+<span .file-container>
+  $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
+    <div .row .collapse .file-row #file-row-#{i}>
       <div .columns .large-6 .small-12>
+        $if i == 0
+            <a .add-file title=_{MsgAddFileIcon} onclick="addFileAfter()"></a>
         ^{fvInput fv}
         <a .file-select .button .tiny .secondary onclick="fileSelect('#{fvId fv}')">_{MsgFileUpload}
       <div .columns .large-1 .small-4>

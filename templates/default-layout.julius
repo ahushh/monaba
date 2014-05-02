@@ -168,26 +168,26 @@ function deletedPostsHandler(msg) {
         $("#"+ids[i]).remove();
 }
 //-----------------------------------------------------------------
-// New post count from all boards
+// New post counter
 //-----------------------------------------------------------------
-// (function() {
-//     var updateStats = function() {
-//         $.getJSON("@{ApiBoardStatsR}", function(data){
-//             $(".board-link").each(function() {
-//                 var board = $(this).attr('id').split('-')[1];
-//                 var newPosts = data[board] ? "["+data[board]+"]" : "";
-//                 var r = /\[\d+\]/.exec( $(this).html() );
-//                 if (r) {
-//                     $(this).html( $(this).html().replace(/\[\d+\]/, newPosts) );
-//                 } else {
-//                     $(this).html( $(this).html() + newPosts );
-//                 }
-//             });
-//         })
-//     };
-//     updateStats();
-//     window.setInterval(updateStats, 30000);
-// })();
+(function() {
+    var updateStats = function() {
+        $.getJSON("@{ApiBoardStatsR}", function(data){
+            $(".board-link").each(function() {
+                var board = $(this).attr('id').split('-')[1];
+                var newPosts = data[board] ? "["+data[board]+"]" : "";
+                var r = /\[\d+\]/.exec( $(this).html() );
+                if (r) {
+                    $(this).html( $(this).html().replace(/\[\d+\]/, newPosts) );
+                } else {
+                    $(this).html( $(this).html() + newPosts );
+                }
+            });
+        })
+    };
+    updateStats();
+    window.setInterval(updateStats, 30000);
+})();
 
 //-----------------------------------------------------------------
 // Forms

@@ -14,13 +14,13 @@ $maybe msg <- mmsg
   <div #board-list>
     [ <a title="_{MsgLatestPosts}" href=@{LiveR}>/~/</a> ] 
     $forall Entity _ b <- widgetHelperFilterBoards boards "" group
-      [ <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
+      [ <a .board-link #board-#{boardName b} title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categories
       $with bs <- widgetHelperFilterBoards boards c group
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs
-            <a title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
+            <a .board-link #board-#{boardName b} title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/
           ] 
   <!-- JS header -->
   <nav .top-bar>
@@ -52,7 +52,7 @@ $maybe msg <- mmsg
                     <label>#{c}
                   $forall Entity _ b <- bs
                     <li>
-                      <a #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
+                      <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
                   <li .divider>
       <ul .right>
         <li>

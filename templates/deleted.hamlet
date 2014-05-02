@@ -7,5 +7,5 @@ $if not $ T.null boardLongDesc
   <div .post-list .row>
     <div .columns .large-12 .small-12>
       $forall (eReply, files) <- allPosts
-          ^{postWidget muser eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
+          ^{postWidget eReply files rating displaySage True False False permissions geoIps timeZone maxLenOfFileName}
       ^{deleteWidget permissions}

@@ -92,12 +92,12 @@ sendPost boardVal thread ePost files hellbanned posterId = do
           encodedPost' = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
       liftIO $ atomically $ writeTChan chan (nameLive, encodedPost')
   where renderPost client post displaySage geoIps maxLenOfFileName =
-          bareLayout $ postWidget (sseClientUser client) post
+          bareLayout $ postWidget post
                        files (sseClientRating client) displaySage True True False
                        (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName
         renderPostLive client post geoIps maxLenOfFileName =
-          bareLayout $ postWidget (sseClientUser client) post
+          bareLayout $ postWidget  post
                        files (sseClientRating client) False True True True
                        (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName

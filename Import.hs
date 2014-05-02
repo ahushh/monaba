@@ -121,8 +121,7 @@ truncateFileName maxLen s = if len > maxLen then result else s
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-postWidget :: Maybe (Entity User)      ->
-             Entity Post              -> 
+postWidget :: Entity Post              -> 
              [Entity Attachedfile]    -> 
              Censorship               -> -- ^ Max allowed rating
              Bool                     -> -- ^ Display sage icon
@@ -134,7 +133,7 @@ postWidget :: Maybe (Entity User)      ->
              Int                      -> -- ^ Time offset in seconds
              Int                      -> -- ^ Max file name length
              Widget
-postWidget muser ePost eFiles rating sage inThread canPost showParent permissions geoIps tOffset maxLenOfFileName = 
+postWidget ePost eFiles rating sage inThread canPost showParent permissions geoIps tOffset maxLenOfFileName = 
   let postVal   = entityVal ePost
       sPostId   = show $ postLocalId $ entityVal ePost
       sThreadId = show $ postParent  $ entityVal ePost

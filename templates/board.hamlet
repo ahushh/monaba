@@ -23,7 +23,7 @@ $else
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
               <div .columns .large-12 .small-12>
-                ^{postWidget muser eOpPost opPostFiles rating False False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+                ^{postWidget eOpPost opPostFiles rating False False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
                 $if omitted > 0
                     <div .omitted .row>
                       <div .columns .large-12>
@@ -37,7 +37,7 @@ $else
                         <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>
                           _{MsgTruncateThread}
                 $forall (ePreview, previewFiles) <- ps
-                  ^{postWidget muser ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
+                  ^{postWidget ePreview previewFiles rating displaySage False hasAccessToReply False permissions geoIps timeZone maxLenOfFileName}
         ^{deleteWidget permissions}
     <div #edit-form .hide>
         ^{formWidget'}

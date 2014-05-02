@@ -9,7 +9,7 @@ import qualified Database.Esqueleto  as E
 import qualified Data.Map.Strict     as MapS
 import qualified Text.Blaze.Html.Renderer.String as RHS
 import           Utils.YobaMarkup    (doYobaMarkup)
-import           Handler.Captcha     (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
+import           Handler.Captcha     (checkCaptcha, generateCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 import           Handler.EventSource (sendPost)
 -------------------------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ getThreadR board thread = do
   geoIps <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
   acaptcha <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
+  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ generateCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra

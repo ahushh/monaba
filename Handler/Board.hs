@@ -5,7 +5,7 @@ import           Import
 import           Yesod.Auth
 import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
-import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
+import           Handler.Captcha (checkCaptcha, generateCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 import           Handler.EventSource (sendPost)
 import           Utils.YobaMarkup (doYobaMarkup)
@@ -105,7 +105,7 @@ getBoardR board page = do
   -------------------------------------------------------------------------------------------------------
   now       <- liftIO getCurrentTime
   acaptcha  <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
+  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ generateCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra

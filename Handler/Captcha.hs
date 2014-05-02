@@ -5,29 +5,25 @@ import           Import
 import           Yesod.Auth
 import           Data.Char        (toLower)
 import qualified Data.Text        as T
-import           System.Directory (removeFile)
+import           System.Directory (removeFile, doesFileExist)
 import           System.Random    (randomIO, randomRIO)
 import           Utils.SillyCaptcha (makeCaptcha)
----------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------w
 getCaptchaR :: Handler Html
 getCaptchaR = do
-  -- muser     <- maybeAuth
-  -- acaptcha  <- lookupSession "acaptcha"  
-  -- when (isNothing acaptcha && isNothing muser) $
-  --   recordCaptcha =<< getConfig configCaptchaLength
-
+  generateCaptcha =<< getConfig configCaptchaLength
   maybeCaptchaId <- lookupSession "captchaId"
-  when (isJust maybeCaptchaId) $
-      sendFile typePng $ captchaFilePath (unpack (fromJust maybeCaptchaId) ++ captchaExt)
-  notFound
-
+  case maybeCaptchaId of
+    Just cID -> sendFile typePng $ captchaFilePath (unpack cID) ++ captchaExt
+    Nothing  -> notFound -- should never happen
+---------------------------------------------------------------------------------------------------------------------------w
 getCaptchaInfoR :: Handler TypedContent
 getCaptchaInfoR = do
   acaptcha  <- lookupSession "acaptcha"
   muser     <- maybeAuth
   msgrender <- getMessageRender
   when (isNothing acaptcha && isNothing muser) $
-    recordCaptcha =<< getConfig configCaptchaLength
+    generateCaptcha =<< getConfig configCaptchaLength
   maybeCaptchaInfo <- getCaptchaInfo
   case () of
     _ | isJust acaptcha         -> selectRep $ provideJson $ object [("acaptcha", toJSON $ msgrender MsgYouDontNeedCaptcha)]
@@ -40,23 +36,39 @@ getCaptchaInfoR = do
         chooseMsg "Italic"  = MsgItalicChars
         chooseMsg "Regular" = MsgRegularChars
         chooseMsg _         = MsgReloadPage
+
+getCaptchaInfo :: Handler (Maybe Text)
+getCaptchaInfo = do
+  maybeCaptchaInfo <- lookupSession "captchaInfo"
+  case maybeCaptchaInfo of
+    Just _ -> return maybeCaptchaInfo
+    _      -> do
+      ip           <- getIp
+      maybeCaptcha <- runDB $ selectFirst [CaptchaIp ==. pack ip] []
+      return $ (captchaInfo . entityVal) <$> maybeCaptcha
 ---------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------
-recordCaptcha :: Int -> Handler ()
-recordCaptcha captchaLength = do
+captchaExt :: String
+captchaExt = ".png"
+
+generateCaptcha :: Int -> Handler ()
+generateCaptcha captchaLength = do
   maybeCaptchaId <- lookupSession "captchaId"
-  when (isNothing maybeCaptchaId) $ do
-    ip <- pack <$> getIp
-    maybeCaptchaEntity <- runDB $ selectFirst [CaptchaIp ==. ip] []
-    case maybeCaptchaEntity of
-      Just (Entity _ cap) -> do
-        setSession "captchaId"   (showText $ captchaLocalId cap)
-        setSession "captchaInfo" (captchaInfo cap)
-      _                   -> newCaptcha captchaLength ip
----------------------------------------------------------------------------------------------------------------------------
-newCaptcha :: Int -> Text -> Handler ()
-newCaptcha captchaLength ip = do
-  cId    <- liftIO (abs <$> randomIO :: IO Int)
+  ip <- pack <$> getIp
+  case maybeCaptchaId of
+    Nothing -> do
+      maybeCaptchaEntity <- runDB $ selectFirst [CaptchaIp ==. ip] []
+      case maybeCaptchaEntity of
+        Just (Entity _ cap) -> do
+          setSession "captchaId"   (showText $ captchaLocalId cap)
+          setSession "captchaInfo" (captchaInfo cap)
+        _                   -> generateCaptcha' captchaLength ip
+    Just cID -> do
+      exists <- liftIO $ doesFileExist $ captchaFilePath (unpack cID) ++ captchaExt
+      when (not exists) $ generateCaptcha' captchaLength ip
+
+generateCaptcha' :: Int -> Text -> Handler ()
+generateCaptcha' captchaLength ip = do
+  cID    <- liftIO (abs <$> randomIO :: IO Int)
   langs  <- languages
   let lang = if "ru" `elem` langs then "ru" else "en"
   wCount <- runDB $ count [CaptchaDictLang ==. lang]
@@ -64,29 +76,25 @@ newCaptcha captchaLength ip = do
     offset <- liftIO (randomRIO (1,wCount) :: IO Int)
     selectFirst [CaptchaDictLang ==. lang] [OffsetBy offset]
 
-  (info, value) <- liftIO $ makeCaptcha (captchaFilePath (show cId ++ captchaExt))
+  (info, value) <- liftIO $ makeCaptcha (captchaFilePath (show cID ++ captchaExt))
                                        (unwords $ map (unpack . captchaDictWord . entityVal) $ catMaybes cWords)
-  setSession "captchaId"   (showText cId)
+  setSession "captchaId"   (showText cID)
   setSession "captchaInfo" info
   captchaTimeout <- getConfig configCaptchaTimeout
   now <- liftIO getCurrentTime
   void $ runDB $ insert Captcha { captchaIp      = ip
-                                , captchaLocalId = cId
+                                , captchaLocalId = cID
                                 , captchaInfo    = info
                                 , captchaValue   = value
                                 , captchaExpires = addUTCTime' captchaTimeout now
                                 }
 ---------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------
-captchaExt :: String
-captchaExt = ".png"
----------------------------------------------------------------------------------------------------------------------------
 checkCaptcha :: Text -> Handler () -> Handler ()
 checkCaptcha captcha wrongCaptchaRedirect = do
   maybeCaptchaId <- lookupSession "captchaId"
   case maybeCaptchaId of
-    Just cId -> do
-      maybeCaptchaEntity <- runDB $ getBy (CaptchaUniqueLocalId (read $ unpack cId))
+    Just cID -> do
+      maybeCaptchaEntity <- runDB $ getBy (CaptchaUniqueLocalId (read $ unpack cID))
       let value = captchaValue $ entityVal $ fromJust maybeCaptchaEntity
       -- delete entered captcha from DB
       deleteSession "captchaId"
@@ -102,7 +110,7 @@ checkCaptcha captcha wrongCaptchaRedirect = do
         liftIO $ removeFile $ captchaFilePath (show (captchaLocalId $ entityVal cap) ++ captchaExt)
       when (T.map toLower captcha /= value) wrongCaptchaRedirect
     _        -> wrongCaptchaRedirect
----------------------------------------------------------------------------------------------------------------------------
+
 updateAdaptiveCaptcha :: Maybe Text -> Handler ()
 updateAdaptiveCaptcha acaptcha =
   when (isNothing acaptcha) $ do
@@ -114,13 +122,3 @@ updateAdaptiveCaptcha acaptcha =
     when (p' >= aCaptchaGuards) $ do
       deleteSession "posted"
       setSession "acaptcha" "1"
----------------------------------------------------------------------------------------------------------------------------
-getCaptchaInfo :: Handler (Maybe Text)
-getCaptchaInfo = do
-  maybeCaptchaInfo <- lookupSession "captchaInfo"
-  case maybeCaptchaInfo of
-    Just _ -> return maybeCaptchaInfo
-    _      -> do
-      ip           <- getIp
-      maybeCaptcha <- runDB $ selectFirst [CaptchaIp ==. pack ip] []
-      return $ (captchaInfo . entityVal) <$> maybeCaptcha

@@ -747,27 +747,25 @@ function extractBoard(postId) {
 }
 //-----------------------------------------------------------------
 function refreshCaptcha() {
-    if ( $("#captcha") ) {
-        $.getJSON('@{CaptchaInfoR}', function(data) {
-            console.log(JSON.stringify(data));
-            if (data.info) {
-                $("#captcha-info").show();
-                $("#captcha-block input[type=text]").show();
-                $("#captcha").show();
-                $("#captcha-info").html(data.info);
-                $("#no-captcha-need").remove();
-                $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
-            } else if (data.acaptcha) {
-                $("#captcha-info").hide();
-                $("#captcha-block input[type=text]").hide();
-                $("#captcha").hide();
-                if ($("#no-captcha-need").length == 0)
-                    $("#captcha-block").append("<span id='no-captcha-need'>"+data.acaptcha+"</span>");
-            } else {
-                $("#captcha-block").append(data.error);
-            }
-        });
-    }
+    if ( $("#captcha").length == 0 ) return;
+    $.getJSON('@{CaptchaInfoR}', function(data) {
+        if (data.info) {
+            $("#captcha-info").show();
+            $("#captcha-block input[type=text]").show();
+            $("#captcha").show();
+            $("#captcha-info").html(data.info);
+            $("#no-captcha-need").remove();
+            $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
+        } else if (data.acaptcha) {
+            $("#captcha-info").hide();
+            $("#captcha-block input[type=text]").hide();
+            $("#captcha").hide();
+            if ($("#no-captcha-need").length == 0)
+                $("#captcha-block").append("<span id='no-captcha-need'>"+data.acaptcha+"</span>");
+        } else {
+            $("#captcha-block").append(data.error);
+        }
+    });
 }
 
 function refreshThread(board, threadId) {

@@ -16,9 +16,16 @@ getHomeR = do
 
   newsBoard  <- getConfig configNewsBoard
   showNews   <- getConfig configShowNews
-  latestNews <- runDB $ selectList [PostBoard ==. newsBoard, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
-                                  [Desc PostLocalId, LimitTo showNews]
-  timeZone   <- getTimeZone
+
+  let selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
+      selectNews    = selectList [PostBoard ==. newsBoard, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
+                                 [Desc PostLocalId, LimitTo showNews]
+  newsAndFiles <- runDB selectNews >>= mapM (\p -> do
+    files <- selectFiles p
+    return (p, files))
+  rating           <- getCensorshipRating
+  timeZone         <- getTimeZone
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setTitle $ toHtml nameOfTheBoard
     $(widgetFile "homepage")

@@ -16,16 +16,46 @@
       <li>
         <img alt="Main" src=#{staticDir ++ "/home.jpg"}>
 
-    $if not $ null latestNews
+    $if not $ null newsAndFiles
         <div .row .news-container>
             <div .columns .large-12 .large-centered .text-center>
               <h6>_{MsgNews}
-            $forall (Entity _ t) <- latestNews
+            $forall (Entity _ t, eFiles) <- newsAndFiles
                 <div .radius .columns .large-12 .large-centered .news-entry .panel id="post-#{postLocalId t}-0-#{newsBoard}">
+                  <div .row>
                     <div .columns .large-12 .large-centered .text-center .news-title>
                         <a href=@{ThreadR newsBoard $ postLocalId t}>
                             <strong>#{postTitle t}
                             <span .time>#{myFormatTime timeZone $ postDate t}
-                    &nbsp;&nbsp;
-                    $with m <- preEscapedToHtml $ unTextarea $ postMessage t
-                        <div .message>#{m}
+                  <div .row>      
+                    <div .columns .large-12>
+                      $forall Entity fileKey file <- eFiles
+                        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+                          $with fId <- show $ int64ToInt $ fromKey fileKey
+                            <div class=#{c} id="file-#{fId}">
+                              $with ratingF <- attachedfileRating file
+                                $if checkRating ratingF rating
+                                  <a .thumb style="float:left" onclick="return expandImage(this, event)" title=#{attachedfileOrigName file} target=_blank href=#{imageUrlPath (attachedfileType file) (attachedfileName file)}>
+                                    $if attachedfileThumbWidth file == -1
+                                        <img alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+                                    $elseif isImageFile (attachedfileType file)
+                                        <img img-width=#{attachedfileWidth file} img-height=#{attachedfileHeight file} title="#{attachedfileType file}, #{attachedfileSize file}, #{attachedfileWidth file}x#{attachedfileHeight file}" alt=#{attachedfileName file} width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+                                    $else
+                                        <img title="#{attachedfileType file}, #{attachedfileSize file}" alt=#{attachedfileName file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file)}">
+                                $else
+                                  $case (read $ unpack ratingF)
+                                    $of R15
+                                      <img alt=R-15 src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                                    $of R18
+                                      <img alt=R-18 src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                                    $of R18G
+                                      <img alt=R-18G src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                                    $of SFW
+                                      Suppress warnings.
+                                $if length eFiles == 1
+                                  $with m <- preEscapedToHtml $ unTextarea $ postMessage t
+                                    <span .message>#{m}
+                  $if not (length eFiles == 1)
+                    <div .row>
+                      $with m <- preEscapedToHtml $ unTextarea $ postMessage t
+                          <div .message>#{m}

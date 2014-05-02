@@ -368,6 +368,7 @@ MaxAllowedRating: Max allowed rating
 Language: Language
 UseMathjax: Use MathJax
 StickyTopbar: Sticky topbar
+PlainTopbar: Plain topbar
 PpleerEmbedByClick: Embed pleer.com by click
 WidePosts: Wide posts
 UseEventSource: Use Eventsource

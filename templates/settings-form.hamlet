@@ -73,6 +73,14 @@
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>
+    <label for=stickyTopbar>
+      _{MsgPlainTopbar}
+  <div .columns .large-6 .small-7>
+    <label for=plainTopbar>
+      <input #plainTopbar .js-settings type=checkbox>
+
+<div .row .js-settings-row>
+  <div .columns .large-6 .small-5>
     <label for=ppleerEmbedByClick>
       _{MsgPpleerEmbedByClick}
   <div .columns .large-6 .small-7>

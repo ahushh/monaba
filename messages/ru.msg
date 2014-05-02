@@ -368,6 +368,7 @@ MaxAllowedRating: Максимальный рейтинг
 Language: Язык
 UseMathjax: Использовать MathJax
 StickyTopbar: Закрепить верхнюю панель
+PlainTopbar: Простая верхняя панель
 PpleerEmbedByClick: Загружать pleer.com по клику
 WidePosts: Широкие посты
 UseEventSource: Использовать Eventsource

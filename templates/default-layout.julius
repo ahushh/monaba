@@ -19,6 +19,7 @@ var defaultSettings = {
     'hideRules': false,
     'useMathjax': true,
     'stickyTopbar': true,
+    'plainTopbar': false,
     'ppleerEmbedByClick': true 
 };
 
@@ -45,6 +46,15 @@ $('textarea').autosize()
 
 if (getItem('stickyTopbar')) {
     $('.top-bar').wrap("<div class='sticky'></div>");
+    $('#control-panel, #board-list').css({'position'   : 'fixed',
+                                          'z-index'    : 9999999999999999,
+                                          'text-shadow': '3px 3px 3px grey'});
+    $('#control-panel').css('right',0);
+}
+
+if (getItem('plainTopbar')) {
+    $('.top-bar').hide();
+    $('#control-panel, #board-list').show();
 }
 
 if (getItem("useMathjax")) {

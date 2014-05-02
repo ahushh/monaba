@@ -1,31 +1,20 @@
 if (isEventSourceSupported()) {
-    var src;
-    var initEventSource = function () {
-        src = new EventSource("@{ReceiveR}");
-        src.onopen = function() { console.log("Eventsource opened."); };
-        src.onerror = function(e) { 
-            console.log("Eventsource error. " + (e.readyState == 1 ? "Reconnecting..." : "Connection closed. Reconnecting...") );
-            if (e.readyState == 2) {
-                src = initEventSource();
-            }
-        };
+    console.log("Eventsource initialization...");
+    var src = getEventSource();
+    // remove deleted posts
+    var board   = /\/board\/([\w_]+)/.exec(document.URL);
+    //     var threads = $(".thread").each(function() {
+    //         src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1]) +"-deleted", function(msg) {
+    //             var ids = eval(msg.data);
+    //             for (var i = 0; i < ids.length; i++)
+    //                 $("#"+ids[i]).remove();
+    //         });
+    //     });
 
-        // remove deleted posts
-        var board   = /\/board\/([\w_]+)/.exec(document.URL);
-        //     var threads = $(".thread").each(function() {
-        //         src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1]) +"-deleted", function(msg) {
-        //             var ids = eval(msg.data);
-        //             for (var i = 0; i < ids.length; i++)
-        //                 $("#"+ids[i]).remove();
-        //         });
-        //     });
-
-        // dynamic updating of edited posts
-        $(".thread").each(function() {
-            src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited-"+#{toJSON posterId}, editedPostsHandler);
-        });
-    };
-    src = initEventSource();
+    // dynamic updating of edited posts
+    $(".thread").each(function() {
+        src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited-"+#{toJSON posterId}, editedPostsHandler);
+    });
 } else {
     console.log("Eventsource isn't supported.");
 }

@@ -1,28 +1,17 @@
 if (isEventSourceSupported()) {
     var updateTitle = getUpdateTitle();
-    var src;
-    var initEventSource = function () {
-        src = new EventSource("@{ReceiveR}");
-        src.onopen  = function()  { console.log("Eventsource opened."); };
-        src.onerror = function(e) { 
-            console.log("Eventsource error. " + (e.readyState == 1 ? "Reconnecting..." : "Connection closed. Reconnecting...") );
-            if (e.readyState == 2) {
-                src = initEventSource();
-            }
-        };
-
-        // post autoload
-        src.addEventListener("live-"+#{toJSON posterId}, function(msg) {
-            $('.post-list > .columns').prepend("<div class='row'><div class='columns large-12 small-12'>"+ decodeBase64(msg.data) +"</div></div>");
-            baseInit();
-            updateTitle();
-        });
-        // remove deleted posts
-        src.addEventListener("live-deleted-"+#{toJSON posterId}, deletedPostsHandler);
-        // dynamic updating of edited posts
-        src.addEventListener("live-edited-"+#{toJSON posterId}, editedPostsHandler);
-    };
-    src = initEventSource();
+    console.log("Eventsource initialization...");
+    var src = getEventSource();
+    // post autoload
+    src.addEventListener("live-"+#{toJSON posterId}, function(msg) {
+        $('.post-list > .columns').prepend("<div class='row'><div class='columns large-12 small-12'>"+ decodeBase64(msg.data) +"</div></div>");
+        baseInit();
+        updateTitle();
+    });
+    // remove deleted posts
+    src.addEventListener("live-deleted-"+#{toJSON posterId}, deletedPostsHandler);
+    // dynamic updating of edited posts
+    src.addEventListener("live-edited-"+#{toJSON posterId}, editedPostsHandler);
 } else {
     console.log("Eventsource isn't supported.");
 }

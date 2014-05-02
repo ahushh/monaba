@@ -42,5 +42,6 @@ getLiveR = do
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgLatestPosts]
+    addScript (StaticR js_eventsource_js)
     $(widgetFile "live")
   

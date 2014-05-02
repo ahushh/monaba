@@ -85,6 +85,7 @@ getThreadR board thread = do
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, if T.null pagetitle then "" else titleDelimiter, pagetitle]
+    addScript (StaticR js_eventsource_js)
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 -- Handlers

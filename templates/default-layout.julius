@@ -9,7 +9,7 @@ var Monaba = {
 // Load default settings
 //-----------------------------------------------------------------
 var defaultSettings = {
-    'useEventsource': false,
+    'useEventsource': true,
     'expandImage': 'center',
     'youtubeHTML5': true,
     'youtubeLoadTitles': true,
@@ -33,11 +33,6 @@ function baseInit() {
     if (document.location.pathname != '/~') // FIX: костыли
         doRefMap();
     cachePopupPosts();
-}
-
-function isEventSourceSupported() {
-    return getItem('useEventsource') && typeof(EventSource) !== "undefined";
-    // return typeof(EventSource) !== "undefined";
 }
 //-----------------------------------------------------------------
 // Init
@@ -79,6 +74,22 @@ $.ajaxSetup({
 //-----------------------------------------------------------------
 // Eventsource
 //-----------------------------------------------------------------
+function isEventSourceSupported() {
+    return getItem('useEventsource') && typeof(EventSource) !== "undefined";
+    // return typeof(EventSource) !== "undefined";
+}
+
+function getEventSource() {
+    var src = new EventSource("@{EventR}");
+    src.onopen  = function()      { console.log("Eventsource opened."); };
+    src.onclose = function()      { console.log("Eventsource closed."); };
+    src.onmessage = function(msg) {console.log(msg.data);};
+    src.onerror = function(e) {
+        console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+    };
+    return src;
+}
+
 function getUpdateTitle() {
     var hidden = getHidden();
     var visibilityChange = getVisibilityChange();

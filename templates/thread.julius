@@ -1,29 +1,18 @@
 if (isEventSourceSupported()) {
     var updateTitle = getUpdateTitle();
-    var src;
-    var initEventSource = function () {
-        src = new EventSource("@{ReceiveR}");
-        src.onopen  = function() { console.log("Eventsource opened."); };
-        src.onerror = function(e) { 
-            console.log("Eventsource error. " + (e.readyState == 1 ? "Reconnecting..." : "Connection closed. Reconnecting...") );
-            if (e.readyState == 2) {
-                src = initEventSource();
-            }
-        };
-
-        // post autoload
-        src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
-            $('.thread > .columns').append(decodeBase64(msg.data));
-            baseInit();
-            updateTitle();
-            Foundation.libs.forms.assemble();
-        });
-        // remove deleted posts
-        src.addEventListener(#{toJSON sourceEventName}+"-deleted-"+#{toJSON posterId}, deletedPostsHandler);
-        // dynamic updating of edited posts
-        src.addEventListener(#{toJSON sourceEventName}+"-edited-"+#{toJSON posterId}, editedPostsHandler);
-    };
-    src = initEventSource();
+    console.log("Eventsource initialization...");
+    var src = getEventSource();
+    // post autoload
+    src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
+        $('.thread > .columns').append(decodeBase64(msg.data));
+        baseInit();
+        updateTitle();
+        Foundation.libs.forms.assemble();
+    });
+    // remove deleted posts
+    src.addEventListener(#{toJSON sourceEventName}+"-deleted-"+#{toJSON posterId}, deletedPostsHandler);
+    // dynamic updating of edited posts
+    src.addEventListener(#{toJSON sourceEventName}+"-edited-"+#{toJSON posterId}, editedPostsHandler);
     $(".icon-thread-refresh").remove();
     $(".refresh-thread").remove();
 } else {

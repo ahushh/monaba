@@ -33,9 +33,7 @@ import Control.Monad       (when, mplus)
 import Control.Applicative ((<$>))
 import Data.Maybe          (fromJust, isNothing, isJust)
 
-import Control.Concurrent.Chan (Chan)
-import Network.Wai.EventSource (ServerEvent (..))
-
+import           Control.Concurrent.STM.TChan
 import           Control.Concurrent.STM.TVar
 import           Control.Concurrent.STM (atomically)
 import           Data.Map   (Map)
@@ -68,7 +66,7 @@ data App = App
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
     , sseClients :: TVar (Map Text SSEClient)
-    , sseChan :: Chan ServerEvent
+    , sseChan :: TChan (Text, Text)
     }
 ---------------------------------------------------------------------------------------------------------
 -- Data types appear in models
@@ -331,6 +329,7 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool
 
+-- Delete eventsource client from the connection pool
 deleteClient' :: Handler ()
 deleteClient' = do
   maybePosterId <- lookupSession "posterId"
@@ -349,7 +348,7 @@ instance YesodAuth App where
     loginDest _ = HomeR
     -- Where to send a user after logout
     logoutDest _ = HomeR
-    
+    -- It's necessary because authorized users have different permissions
     onLogin  = setMessageI NowLoggedIn >> deleteClient'
     onLogout = deleteClient'
       

@@ -27,7 +27,8 @@ import Yesod.Core.Types (loggerSet, Logger (Logger))
 
 import qualified Data.Map as Map
 import           Control.Concurrent.STM.TVar
-import           Control.Concurrent.Chan (newChan)
+import           Control.Concurrent.STM.TChan
+import           Control.Concurrent.STM (atomically)
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -104,7 +105,7 @@ makeFoundation conf = do
     _ <- forkIO updateLoop
 
     clients <- newTVarIO Map.empty
-    chan    <- newChan
+    chan    <- atomically newTChan
 
     let logger = Yesod.Core.Types.Logger loggerSet' getter
         foundation = App conf s p manager dbconf logger clients chan

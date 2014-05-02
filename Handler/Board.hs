@@ -122,6 +122,7 @@ getBoardR board page = do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", showText page, ")"] else ""
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, p]
+    addScript (StaticR js_eventsource_js)
     $(widgetFile "board")
 --------------------------------------------------------------------------------------------------------- 
 postBoardR :: Text -> Int -> Handler Html

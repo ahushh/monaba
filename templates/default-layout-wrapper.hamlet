@@ -57,7 +57,7 @@ $newline never
             and 
             <a href=http://www.yesodweb.com/>Yesod
             <br />
-            #{extraCopyright $ appExtra $ settings master}
+            #{preEscapedToHtml $ extraCopyright $ appExtra $ settings master}
 
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>

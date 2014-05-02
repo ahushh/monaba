@@ -44,6 +44,7 @@ import           System.Random           (randomIO)
 import qualified Data.ByteString.UTF8    as B
 import           Control.Applicative     (liftA2)
 import           Data.Time               (getCurrentTime, UTCTime)
+import           Text.Blaze.Html as Import (preEscapedToHtml)
 ---------------------------------------------------------------------------------------------------------
 data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
                            , sseClientPermissions :: [Permission]

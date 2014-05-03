@@ -52,7 +52,7 @@ getThreadR board thread = do
       boardDesc        = boardDescription     boardVal
       boardLongDesc    = boardLongDescription boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
-      sourceEventName  = T.concat [board, "-", showText thread]
+      sourceEventName  = board <> "-" <> showText thread
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread
   when (null allPosts) notFound

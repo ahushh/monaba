@@ -120,8 +120,8 @@ getBoardR board page = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    let p = if page > 0 then T.concat [" (", showText page, ")"] else ""
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, p]
+    let p = if page > 0 then " (" <> showText page <> ")" else ""
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> boardDesc <> p
     addScript (StaticR js_eventsource_js)
     $(widgetFile "board")
 --------------------------------------------------------------------------------------------------------- 

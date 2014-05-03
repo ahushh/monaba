@@ -163,7 +163,7 @@ bumpThread board thread now = do
     Just (Entity thrId _) -> runDB $ update thrId [PostBumped =. Just now]
     _                     -> error "pattern matching failed at bumpThread"
 -------------------------------------------------------------------------------------------------------------------
--- | Check if ban expired
+-- | Check a if ban has expired
 isBanExpired :: Entity Ban -> Handler Bool
 isBanExpired (Entity banId ban) =
   case banExpires ban of
@@ -174,8 +174,8 @@ isBanExpired (Entity banId ban) =
         then runDB (delete banId) >> return True
         else return False
 -------------------------------------------------------------------------------------------------------------------      
--- | If ajax request, redirects to page that makes JSON from message and status string.
---   If regular request, redirects to given URL.
+-- | If an ajax request, redirects to page that makes JSON from message and status string.
+--   If a regular request, redirects to given URL.
 trickyRedirect :: forall (m :: * -> *) b msg url.
                   (RedirectUrl
                    (HandlerSite m)

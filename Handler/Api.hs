@@ -143,7 +143,7 @@ getApiHideThreadR board threadId
               zs  = filter ((/=board).fst) xs
               new = showText ((board, threadId:ys):zs)
           in setSession "hidden-threads" new
-        Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[",showText threadId,"])]"]
+        Nothing -> setSession "hidden-threads" $ "[("<>board<>",["<>showText threadId<>"])]"
       selectRep $ do
         provideRep  $ bareLayout [whamlet|ok: hidden|]
         provideJson $ object [("ok", "hidden")]

@@ -3,7 +3,6 @@ module Handler.Admin.Search where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text  as T
 -------------------------------------------------------------------------------------------------------------
 getAdminSearchUIDNoPageR :: Text -> Handler Html
 getAdminSearchUIDNoPageR = flip getAdminSearchUIDR 0
@@ -46,7 +45,7 @@ getAdminSearchIPR ip page = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgPostsByUserID
     $(widgetFile "admin/search/ip")
 
 -------------------------------------------------------------------------------------------------------------
@@ -78,6 +77,6 @@ helperUID onlyHellbanned posterId page = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgPostsByUserID
     $(widgetFile "admin/search/uid")
 

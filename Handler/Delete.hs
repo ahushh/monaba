@@ -42,7 +42,7 @@ getDeletedByOpR board thread = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgDeletedPosts]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgDeletedPosts
     $(widgetFile "deleted")
 
 getDeleteR :: Handler Html

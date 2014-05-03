@@ -84,5 +84,5 @@ getEditHistoryR postId = do
   timeZone       <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgEditingHistory]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgEditingHistory
     $(widgetFile "edit-history")

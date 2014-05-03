@@ -103,11 +103,11 @@ postAbbrLength :: Int
 postAbbrLength = 1500
 
 myFormatTime :: Int     -> -- ^ Time offset in seconds
-               UTCTime -> -- ^ UTCTime
+               UTCTime -> -- ^ UTCTime to format
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 
--- | Truncate file name if its length is greater than 47
+-- | Truncate a file name if its length is greater than 47
 truncateFileName :: Int -> String -> String
 truncateFileName maxLen s = if len > maxLen then result else s
   where len      = length s
@@ -160,8 +160,8 @@ bareLayout widget = do
 -------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
-geoIconPath :: Text -> Text
-geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
+geoIconPath :: Text -> String
+geoIconPath code = "static" </> "geoicons" </> unpack (T.toLower code <> ".png")
 
 uploadDirectory :: FilePath
 uploadDirectory = staticDir </> "files"
@@ -205,7 +205,7 @@ formatFileSize size | b > mb    = printf "%.2f" (b/mb) ++ " MB"
         mb  = 1048576 :: Double
         b   = fromIntegral size :: Double
 -------------------------------------------------------------------------------------------------------------------
--- | Save a file to upload directory
+-- | Save a file to the upload directory
 writeToServer :: FileInfo -> String -> IO (FilePath, FilePath)
 writeToServer file md5 = do
     let filetype = typeOfFile file
@@ -315,7 +315,7 @@ getPermissions = maybe [] (groupPermissions . entityVal)
 -------------------------------------------------------------------------------------------------------------------
 -- Misc stuff
 -------------------------------------------------------------------------------------------------------------------
--- | Check if request has X-Requested-With header
+-- | Check if a request has X-Requested-With header
 isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
 isAjaxRequest = do
   maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
@@ -324,7 +324,7 @@ isAjaxRequest = do
 keyValuesToMap :: (Ord k) => [(k, a)] -> MapS.Map k [a]  
 keyValuesToMap = MapS.fromListWith (++) . map (\(k,v) -> (k,[v]))
 
--- | Add UTCTime with Integer seconds
+-- | Add a UTCTime with Integer seconds
 addUTCTime' :: Int -> UTCTime -> UTCTime
 addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 

@@ -28,7 +28,7 @@ getAccountR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgAccount]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgAccount
     $(widgetFile "admin/account")
                  
 postNewPasswordR :: Handler Html

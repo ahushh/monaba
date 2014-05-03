@@ -3,7 +3,6 @@ module Handler.Help where
 
 import Import
 import Yesod.Auth
-import qualified Data.Text as T
 ---------------------------------------------------------------------------------------------
 getHelpR :: Handler Html
 getHelpR = do
@@ -11,7 +10,7 @@ getHelpR = do
   msgrender      <- getMessageRender
   about          <- getConfig configAbout
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHelp]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgHelp
     $(widgetFile "help")
 
 getHelpMarkupR :: Handler Html
@@ -22,7 +21,7 @@ getHelpMarkupR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgMarkup]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgMarkup
     $(widgetFile "help/markup")
 
 getHelpApiR :: Handler Html
@@ -30,6 +29,6 @@ getHelpApiR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgApi]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgApi
     $(widgetFile "help/api")
   

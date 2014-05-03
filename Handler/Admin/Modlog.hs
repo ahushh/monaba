@@ -2,7 +2,6 @@ module Handler.Admin.Modlog where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text       as T
 ---------------------------------------------------------------------------------------------------------
 getModlogR :: Int -> Handler Html
 getModlogR page = do
@@ -16,7 +15,7 @@ getModlogR page = do
   timeZone       <- getTimeZone
   let pages = listPages perPage logEntryCount
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgModlog]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgModlog
     $(widgetFile "admin/modlog")
 
 ---------------------------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@ module Handler.Admin.Hellban where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text            as T
 import           Handler.Admin.Modlog (addModlogEntry)
 import           Handler.EventSource  (sendDeletedPosts)
 -------------------------------------------------------------------------------------------------------------
@@ -37,7 +36,7 @@ getHellBanR page = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHellbanning]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgHellbanning
     $(widgetFile "admin/hellban")
 -------------------------------------------------------------------------------------------------------------
 getHellBanDoR :: Int  -> -- ^ Post internal ID

@@ -3,7 +3,6 @@ module Handler.Live where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text  as T
 -------------------------------------------------------------------------------------------------------------
 getLiveR :: Handler Html
 getLiveR = do
@@ -41,7 +40,7 @@ getLiveR = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgLatestPosts]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgLatestPosts
     addScript (StaticR js_eventsource_js)
     $(widgetFile "live")
   

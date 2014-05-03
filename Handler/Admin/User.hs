@@ -35,7 +35,7 @@ getUsersR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgUsers]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgUsers
     $(widgetFile "admin/users")
 
 postUsersR :: Handler Html

@@ -78,7 +78,7 @@ getManageGroupsR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgGroups]
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgGroups
     $(widgetFile "admin/groups")
   
 postManageGroupsR :: Handler Html

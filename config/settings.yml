@@ -22,6 +22,6 @@ Staging:
   <<: *defaults
 
 Production:
-  approot: "http://haibane.ru"
-  sitename: "Хайбане.ru"
+  approot: "http://haibane.ru" # change this
+  sitename: "Хайбане.ru"       # and this
   <<: *defaults

@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE RankNTypes #-}
 module Foundation where
 
@@ -9,7 +10,7 @@ import Yesod.Auth.HashDB (authHashDB, getAuthIdHashDB)
 import Yesod.Auth.Message
 import Yesod.Default.Config
 import Yesod.Default.Util (addStaticContentExternal)
-import Network.HTTP.Conduit (Manager)
+import Network.HTTP.Client.Conduit (Manager, HasHttpManager (getHttpManager))
 import qualified Settings
 import Settings.Development (development)
 import qualified Database.Persist
@@ -69,6 +70,9 @@ data App = App
     , sseClients :: TVar (Map Text SSEClient)
     , sseChan :: TChan (Text, Text)
     }
+
+instance HasHttpManager App where
+    getHttpManager = httpManager
 ---------------------------------------------------------------------------------------------------------
 -- Data types appear in models
 ---------------------------------------------------------------------------------------------------------

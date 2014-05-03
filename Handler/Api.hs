@@ -3,7 +3,6 @@ module Handler.Api where
 
 import           Import
 import           Yesod.Auth
-import qualified Data.Text as T (concat)
 --------------------------------------------------------------------------------------------------------- 
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]

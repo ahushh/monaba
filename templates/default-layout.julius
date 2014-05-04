@@ -9,7 +9,7 @@ var Monaba = {
 // Load default settings
 //-----------------------------------------------------------------
 var defaultSettings = {
-    'useEventsource': true,
+    'useEventsource': false,
     'expandImage': 'center',
     'youtubeHTML5': true,
     'youtubeLoadTitles': true,

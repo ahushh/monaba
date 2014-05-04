@@ -106,7 +106,7 @@ makeFoundation conf = do
     _ <- forkIO updateLoop
 
     clients <- newTVarIO Map.empty
-    chan    <- atomically newTChan
+    chan    <- atomically newBroadcastTChan
 
     let logger = Yesod.Core.Types.Logger loggerSet' getter
         foundation = App conf s p manager dbconf logger clients chan

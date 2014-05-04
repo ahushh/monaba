@@ -57,10 +57,11 @@ getEventR = do
                               , sseClientLiveIgnoredBoards = ignoredBoards
                               }
     liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId newClient)
+  chan' <- liftIO $ atomically $ dupTChan chan
   repEventSource $ \pf -> do
     yield $ ServerEvent Nothing Nothing [fromText $ "Eventsource works. Used polyfill: " <> showText pf]
     forever $ do
-      (name, content) <- liftIO $ atomically $ readTChan chan
+      (name, content) <- liftIO $ atomically $ readTChan chan'
       yield $ ServerEvent (Just $ fromText $ name) Nothing [fromText $ content]
       yield $ ServerEvent Nothing Nothing [fromText $ name <> " : " <> content]
 

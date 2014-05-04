@@ -131,6 +131,8 @@ Required: Required
 XForUnlim x@Text: #{x} for unlimited
 Boards: Boards
 Bans: Bans
+MoveThread: Move thread
+WhichBoard: Which board?
 
 ### Boards
 BoardName: Name

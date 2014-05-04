@@ -30,6 +30,7 @@ Features
     - Flexible account system with customizable groups and permissions
     - Ability to stick and lock threads and to put on auto-sage
     - Modlog which allows to view previous action
+    - Moving threads between boards
 
 Dependencies
 ------

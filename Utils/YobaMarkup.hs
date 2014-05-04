@@ -2,6 +2,7 @@
 module Utils.YobaMarkup
        (
          doYobaMarkup
+       , fixReferences
        ) where
 
 import           Import
@@ -27,6 +28,7 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | InnerRef      Int    -- >>1308
           | ExternalRef Text Int -- >>/b/1632
           | ProofLabel    Int    -- ##1717
+          | ExternalProofLabel Text Int -- ##/b/1717
           | ProofLabelOP         -- ##OP
           | Color  Text   [Expr] -- [color=red]blah-blah[/color]
           | GroupProof           -- #group
@@ -42,6 +44,54 @@ geshi :: String
 geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
+-------------------------------------------------------------------------------------------------------------------
+-- Fix post referencies after thread moving
+-------------------------------------------------------------------------------------------------------------------
+plain' :: Parser Expr
+plain' = Plain . pack <$> many1 (myCheck >> anyChar)
+  where myCheck = foldr (\f acc -> acc >> notFollowedBy (try f)) (notFollowedBy $ try proof) [innerref]
+
+onlyRefs :: Parsec Text () Expr
+onlyRefs = try proof
+       <|> try innerref
+       <|> try plain'
+
+parseOnlyRefs :: Text -> Either ParseError [Expr]
+parseOnlyRefs = parse (many onlyRefs) "yoa markup"
+
+processFixRefs :: [Expr] -> Text -> [(Int,Int)] -> IO Textarea
+processFixRefs xs oldBoard ids = Textarea <$> foldM f "" xs
+  where
+    oldIds = map fst ids
+    ----------------------------------------------------------------------------------------------------------
+    f acc (Plain         x) = return $ acc <> x -- remain unchanged
+    ----------------------------------------------------------------------------------------------------------
+    f acc (InnerRef postId) = do
+      if postId `elem` oldIds
+        then return $ acc <> ">>"  <> (showText $ fromJust $ lookup postId ids)
+        else return $ acc <> ">>/" <> oldBoard <> "/" <> (showText postId)
+    ----------------------------------------------------------------------------------------------------------
+    -- Don't think there is a need to implement the following
+    ----------------------------------------------------------------------------------------------------------
+    -- f acc (ExternalRef board postId) = do
+    ----------------------------------------------------------------------------------------------------------
+    -- f acc (ExternalProofLabel board' postId) = do
+    ----------------------------------------------------------------------------------------------------------
+    f acc (ProofLabel postId) = do
+      if postId `elem` oldIds
+        then return $ acc <> "##"  <> (showText $ fromJust $ lookup postId ids)
+        else return $ acc <> "##/" <> oldBoard <> "/" <> (showText postId)
+    f acc _ = return acc
+
+fixReferences :: Text -> [(Int,Int)] -> Textarea -> IO Textarea
+fixReferences oldBoard ids s = do
+  let parsed = parseOnlyRefs $ unTextarea s
+  case parsed of
+    Right xs -> processFixRefs xs oldBoard ids
+    Left err -> return $ Textarea $ pack $ show err
+
+-------------------------------------------------------------------------------------------------------------------
+-- Yoba markup
 -------------------------------------------------------------------------------------------------------------------
 doYobaMarkup :: Maybe Textarea -> Text -> Int -> Handler Textarea
 doYobaMarkup Nothing  _     _      = return $ Textarea ""
@@ -66,11 +116,11 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     openSpoiler = "<span class='spoiler'>"
     openStrike  = "<span style='text-decoration:line-through'>"
     refHtml :: Text -> Text -> Text -> Text -> Text -> Text
-    refHtml acc brd "0" p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p}, )},700)'
-                                           onclick='highlightPost("post-#{p}-0-{#brd}") href='/thread/#{brd}/#{p}'>#{ref}</a>
+    refHtml acc brd "0" p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
+                                           onclick='highlightPost("post-#{p}-0-#{brd}") href='/thread/#{brd}/#{p}'>#{ref}</a>
                                 |]
-    refHtml acc brd thr p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p}, )},700)'
-                                           onclick='highlightPost("post-#{p}-#{p}-{#brd}") href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a>
+    refHtml acc brd thr p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
+                                           onclick='highlightPost("post-#{p}-#{p}-#{brd}") href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a>
                                 |]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
@@ -140,7 +190,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity _ pVal) -> do
           let parent = pack $ show $ postParent pVal
           return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p)
-        Nothing              -> return $ acc <> ">>" <> p
+        Nothing              -> return $ acc <> ">>/" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel    postId) = do
       posterId  <- getPosterId
@@ -154,6 +204,19 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
               link'     = refHtml "" board parent p ("##" <> p)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> p
+    ----------------------------------------------------------------------------------------------------------
+    f acc (ExternalProofLabel board' postId) = do
+      posterId  <- getPosterId
+      maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
+      let p = pack $ show postId
+      case maybePost of
+        Just (Entity _ pVal) -> do
+          let posterId' = postPosterId pVal
+              parent    = pack $ show (postParent pVal)
+              spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
+              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p)
+          return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
+        Nothing              -> return $ acc <> "##" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc ProofLabelOP = do
       posterId  <- getPosterId
@@ -182,7 +245,7 @@ plain = Plain . pack <$> many1 (myCheck >> myCheck' >> anyChar)
                           (notFollowedBy $ try quote)
                           wholeTags
         wholeTags = [ spoilerwakaba, newline, namedLink, link, bold, italic, underline, strike, spoiler,
-                      color, code, extref, innerref, proof, proofop, userproof, groupproof]
+                      color, code, extref, innerref, proof, extproof, proofop, userproof, groupproof]
 --------------------------------------------------------------
 -- Kusaba-like tags
 --------------------------------------------------------------
@@ -291,8 +354,17 @@ extref = do
   void $ optional $ char '/'
   board <- many1 $ noneOf "/\n\t\r "
   void $ char '/'
-  post <- many1 digit  
+  post <- many1 digit
   return $ ExternalRef (escapeHTML $ pack board) $ read post
+
+extproof :: Parser Expr
+extproof = do
+  void $ string "##"
+  void $ optional $ char '/'
+  board <- many1 $ noneOf "/\n\t\r "  
+  void $ char '/'
+  post <- many1 digit
+  return $ ExternalProofLabel (escapeHTML $ pack board) $ read post
 
 proof :: Parser Expr
 proof = string "##" >> ((\postId -> ProofLabel $ read postId) <$> many1 digit)
@@ -331,6 +403,7 @@ onelineExpr = try bold
           <|> try groupproof
           <|> try proofop
           <|> try proof
+          <|> try extproof
           <|> try plain
 
 expr :: Parsec Text () Expr
@@ -345,6 +418,7 @@ expr = try quote
    <|> try groupproof
    <|> try proofop
    <|> try proof
+   <|> try extproof
    <|> try list
    <|> try newline
    <|> try plain

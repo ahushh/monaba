@@ -177,7 +177,8 @@
     CLOSED: [2013-08-05 Пн 09:44]
 *** TODO view deleted posts
 *** TODO post recovery
-*** TODO allow thread moving
+*** DONE allow thread moving
+    CLOSED: [2014-05-04 Вс 19:20]
 *** TODO user group hierarchy (?)
 
 ** User settings

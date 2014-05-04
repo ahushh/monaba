@@ -40,6 +40,7 @@
 
       $if elem ManageThreadP permissions
         $if isThread
+          <img title="_{MsgMoveThread}" alt="_{MsgMoveThread}" onclick="moveThread('#{board}', #{sPostId})" src=@{StaticR img_blank_gif} .icon-move-thread> 
           <img title="_{MsgManageThread}" alt="_{MsgManageThread}" data-dropdown="manage-thread-#{sPostId}" src=@{StaticR img_blank_gif} .icon-settings>
           <ul id="manage-thread-#{sPostId}" .f-dropdown>
             <li>

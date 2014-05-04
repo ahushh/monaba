@@ -153,6 +153,10 @@ form.custom .custom.checkbox:before {
     background-position: -845px -125px;
 }
 
+.icon-move-thread {
+    background-position: -365px -101px;
+}
+
 .icon-close-popup-all {
     background-position: -1085px -77px;
 }

@@ -81,6 +81,12 @@ $.ajaxSetup({
             popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
     }
 });
+
+function moveThread(board, thread) {
+    var destBoard = prompt(#{toJSON $ msgrender MsgWhichBoard});
+    console.log("/admin/move/"+board+"/"+thread+"/"+destBoard);
+    window.location.href = "/admin/move/"+board+"/"+thread+"/"+destBoard;
+}
 //-----------------------------------------------------------------
 // Eventsource
 //-----------------------------------------------------------------

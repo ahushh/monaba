@@ -147,63 +147,69 @@
    CLOSED: [2013-08-13 Вт 14:10]
 ** DONE message abbreviation
    CLOSED: [2013-08-14 Ср 20:46]
-** DONE new posts count (all boards)
+** DONE new posts counter (all boards)
    CLOSED: [2013-10-06 Вс 17:16]
 * TODO
+** Distant future
+*** TODO tagging system
+*** TODO full REST API
+*** TODO best API error handling
+*** TODO save (or return) files with their real names
+*** TODO sphinx based search
+*** TODO tests
+*** TODO what about caching?
 ** EventSource
-*** TODO fix i18n
-*** TODO proper work with nginx
+*** TODO FIX: i18n
+*** TODO need more tests
 *** DONE post autoload
-*** DONE new posts count (thread)
+*** DONE new posts counter (thread)
     CLOSED: [2013-09-20 Пт 16:07]
 *** DONE dynamic post editing
 *** DONE dynamic post deletion
-** Hellbanning
-*** TODO Fix thread bumping
-*** TODO eventsource handling
-*** TODO ability to make a post visible only to specific UID
 ** Management
 *** Bans
 **** TODO IP validation
-**** TODO ban by IP range
-**** TODO ban by session
+**** TODO banning TOR
+**** TODO banning by IP range
+**** TODO banning by session
 **** TODO R/O or no access at all
+*** Hellbanning
+**** TODO Fix thread bumping (hellbanned post bumps thread for all users)
+**** TODO eventsource handler
+**** TODO ability to make a post visible only to specific UID
+*** TODO field validation
 *** TODO ability to forbid editing of a specific post
 *** TODO single file deletion
+*** TODO log in/out logging
+*** TODO viewing deleted posts
+*** TODO recovering deleted posts
+*** TODO user group hierarchy (?)
 *** DONE logging
     CLOSED: [2013-09-08 Вс 13:59]
-*** TODO log in/out logging
 *** DONE user groups
     CLOSED: [2013-08-05 Пн 09:44]
-*** TODO view deleted posts
-*** TODO post recovery
 *** DONE allow thread moving
     CLOSED: [2014-05-04 Вс 19:20]
-*** TODO user group hierarchy (?)
-
 ** User settings
+*** TODO thread bookmarks
 *** DONE UTC -> local time, store timezone in cookies/session
     CLOSED: [2013-08-10 Сб 19:45]
 *** DONE Switchable youtube player
     CLOSED: [2013-10-07 Пн 23:33]
 *** DONE thread hiding
     CLOSED: [2013-08-31 Сб 22:09]
-*** TODO favorite threads
 *** DONE language switcher
     CLOSED: [2013-09-12 Чт 14:32]
-** TODO API: geoip
+** API
+*** TODO GeoIP
+*** TODO docs
+** TODO FIX: max file size limit doesn't work
+** TODO Invite system
+** TODO HTML5 field validation (message, file presence and size, captcha)
+** TODO RSS: recent posts
 ** TODO Post deletion and thread hiding without JS
-** TODO reports
-** TODO refmap table (?)
-** TODO move JS to the html header (?)
-** TODO sphinx search
-** TODO thread catalog (?)
-** TODO wordfilter
-* Further
-** TODO tags for threads
-** TODO full JSON API
-** TODO best API error handling
-** TODO check if all dirs exist before starting
-** TODO breadcrumbs/subsite for /admin/ and /api/ (?)
-** TODO save files with their real names
-** TODO write some tests, huh?
+** TODO reporting posts by user
+** TODO store reference map in DB (?)
+** TODO kusaba-like catalog of all threads (?)
+** TODO regex wordfilter/blacklist
+** TODO posting from /~/ page

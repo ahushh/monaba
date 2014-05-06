@@ -1,18 +1,18 @@
 Monaba
 ======
 
-Imageboard engine written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
+Anonymouse imageboard engine written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
 
 Features
 ------
 * Multiple file attachment
 * File censorship ratings SFW/R-15/R-18/R-18G
 * AJAX posting
-* Post autoload based on Server-Send Events (experimental)
+* Live update based on Server-Send Events
 * Answer map and previews
 * Thread and image expanding
 * Thread hiding
-* Post deletion and editing with password
+* Post deletion and editing by user
 * Prooflabes as replacement of tripcodes
 * Kusaba-like formatting with code highlighting and LaTeX support
 * Internationalization
@@ -29,8 +29,8 @@ Features
     - Thread moderation by OP
     - Flexible account system with customizable groups and permissions
     - Ability to stick and lock threads and to put on auto-sage
-    - Modlog which allows to view previous action
     - Moving threads between boards
+    - Modlog which allows to view previous actions
 
 Dependencies
 ------
@@ -41,9 +41,13 @@ Dependencies
 
 Installation
 ------
-Setup `approot` and `sitename` in config/settings.yml
 
-Change MySQL `user` and `password` in config/mysql.yml
+    git clone https://github.com/ahushh/Monaba
+    cd Monaba
+
+Setup MySQL `user` and `password` in config/mysql.yml
+
+Application root, port, site name and other settings you can change in config/settings.yml
 
 **Download GeoIPCity:**
 
@@ -106,9 +110,13 @@ Open another terminal and fill database with default values:
 
     mysql -u mysqluser -pmysqlpassword -e 'use Monaba_production; source init-db.sql;'
 
-You are done. Navigate to manage page and use "admin" both for username and for password to log in.
+You are done. Open http://localhost:3000 and navigate to manage page and use "admin" both for username and for password to log in.
 
 Deployment
 ------
 
-Coming soon.
+See `extra/nginx.conf` example if you want to use Nginx as reverse proxy.
+
+For systemd users: `extra/monaba.service`
+
+Coming soon…

@@ -2,7 +2,7 @@ Default: &defaults
   host: "*4" # any IPv4 host
   port: 3000
   approot: "http://localhost:3000"
-  copyright: " "
+  copyright: "<a href='http://9ch.ru'>Девятый канал</a>"
   #analytics: UA-YOURCODE
   sitename: "Monaba"
   geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"
@@ -10,7 +10,7 @@ Default: &defaults
   stylesheet: Ash # default stylesheet
   maxLenOfPostTitle: 60
   maxLenOfPostName: 20
-  maxLenOfFileName: 20
+  maxLenOfFileName: 30
 
 Development:
   <<: *defaults

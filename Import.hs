@@ -160,8 +160,8 @@ bareLayout widget = do
 -------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
-geoIconPath :: Text -> String
-geoIconPath code = "static" </> "geoicons" </> unpack (T.toLower code <> ".png")
+geoIconPath :: Text -> Text
+geoIconPath code = "/static/geoicons/" <> T.toLower code <> ".png"
 
 uploadDirectory :: FilePath
 uploadDirectory = staticDir </> "files"

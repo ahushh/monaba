@@ -47,7 +47,7 @@ Installation
 
 Setup MySQL `user` and `password` in config/mysql.yml
 
-Application root, port, site name and other settings you can change in config/settings.yml
+Application root, port, site name and other settings you can change in `config/settings.yml`
 
 **Download GeoIPCity:**
 
@@ -78,20 +78,9 @@ Be aware that it might be quite old.
 
 **Manual building:**
 
-Preparing:
-
     cabal update
-    cabal install hsenv
-    ~/.cabal/bin/hsenv
-    source .hsenv/bin/activate
-
-Dependencies:
-
-    cabal install happy
+    cabal sandbox init
     cabal install --only-dependencies
-
-Building:
-
     cabal clean && cabal configure && cabal build
 
 You may also want to change meta tags such as `description` and `keywords` in templates/default-layout-wrapper.hamlet. Do it before building.
@@ -110,7 +99,7 @@ Open another terminal and fill database with default values:
 
     mysql -u mysqluser -pmysqlpassword -e 'use Monaba_production; source init-db.sql;'
 
-You are done. Open http://localhost:3000 and navigate to manage page and use "admin" both for username and for password to log in.
+You are done. Open [http://localhost:3000](http://localhost:3000) and navigate to manage page and use "admin" both for username and for password to log in.
 
 Deployment
 ------

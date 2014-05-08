@@ -15,3 +15,5 @@ config/client_session_key.aes
 .hsenv*
 .ghci
 yesod-devel/
+.cabal-sandbox/
+cabal.sandbox.config

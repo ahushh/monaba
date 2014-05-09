@@ -79,7 +79,9 @@ Be aware that it might be quite old.
 **Manual building:**
 
     cabal update
-    cabal sandbox init
+    cabal install hsenv
+    ~/.cabal/bin/hsenv
+    source .hsenv/bin/activate
     cabal install --only-dependencies
     cabal clean && cabal configure && cabal build
 

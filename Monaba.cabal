@@ -43,6 +43,7 @@ library
                      Handler.EventSource
                      Utils.YobaMarkup
                      Utils.SillyCaptcha
+                     Utils.Image
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -99,7 +100,7 @@ library
                  , unix                          >= 2.6        && < 2.7
                  , nano-md5                      >= 0.1.2      && < 0.2.0
                  , process                       >= 1.1.0      && < 1.2.0
-                 , gd                            >= 3000.7.3   && < 3000.8
+                 , imagemagick
                  , blaze-markup                  >= 0.5.1.5    
                  , old-locale                    >= 1.0.0.5    && < 1.0.0.6
                  , persistent                    >= 1.2.3.0    
@@ -123,6 +124,8 @@ library
                  , base64-bytestring
                  , resourcet
                  , stm
+                 , system-filepath
+                 , transformers
 
 executable         Monaba
     if flag(library-only)

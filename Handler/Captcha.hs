@@ -77,7 +77,7 @@ generateCaptcha' captchaLength ip = do
     selectFirst [CaptchaDictLang ==. lang] [OffsetBy offset]
 
   (info, value) <- liftIO $ makeCaptcha (captchaFilePath (show cID ++ captchaExt))
-                                       (unwords $ map (unpack . captchaDictWord . entityVal) $ catMaybes cWords)
+                                       (T.unwords $ map (captchaDictWord . entityVal) $ catMaybes cWords)
   setSession "captchaId"   (showText cID)
   setSession "captchaInfo" info
   captchaTimeout <- getConfig configCaptchaTimeout

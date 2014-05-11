@@ -36,7 +36,7 @@ Dependencies
 ------
 * GHC >= 7.6
 * PHP 5
-* GD image library
+* Imagemagick library
 * MySQL 5
 
 Installation
@@ -67,7 +67,7 @@ Set your path to GeSHi in `highlight.php`
 
 **Install all required packages (apt based distros):**
 
-    apt-get install ghc php5 libgd-dev mysql-server
+    apt-get install ghc php5 imagemagick libmagickwand-dev libmagickcore-dev mysql-server
     apt-get install cabal-install zlibc libpcre++-dev libpcre3 libpcre3-dev libgeoip-dev libcrypto++-dev libssl-dev libmysqlclient-dev
 
 **Using already compiled binary:**

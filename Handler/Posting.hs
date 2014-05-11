@@ -8,6 +8,7 @@ import           Data.Conduit            (($$))
 import qualified Data.Text               as T
 import qualified Data.ByteString         as BS
 import qualified Data.Conduit.List       as CL
+import           Utils.Image
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -138,7 +139,7 @@ insertFiles files ratings thumbSize postId = forM (filter myFilter $ zip files r
                                                                   }
           if isImageFile filetype
             then do
-              (imgW  , imgH  ) <- liftIO $ getImageResolution filepath filetype
+              (imgW  , imgH  ) <- liftIO $ getImageResolution filepath
               (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
               let newFile' = newFile { attachedfileWidth       = imgW
                                      , attachedfileHeight      = imgH

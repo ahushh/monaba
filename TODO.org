@@ -156,6 +156,7 @@
 *** TODO best API error handling
 *** TODO save (or return) files with their real names
 *** TODO sphinx based search
+*** TODO Invite system
 *** TODO tests
 *** TODO what about caching?
 ** EventSource
@@ -177,7 +178,7 @@
 **** TODO Fix thread bumping (hellbanned post bumps thread for all users)
 **** TODO eventsource handler
 **** TODO ability to make a post visible only to specific UID
-*** TODO field validation
+*** TODO field validation (very annoying)
 *** TODO ability to forbid editing of a specific post
 *** TODO single file deletion
 *** TODO log in/out logging
@@ -203,8 +204,14 @@
 ** API
 *** TODO GeoIP
 *** TODO docs
-** TODO FIX: max file size limit doesn't work
-** TODO Invite system
+** TODO FIX: image deformation while scaling with centred expanding
+** TODO FIX: max file size limit is hard coded
+** TODO FIX: boards without a category are shown two times
+** TODO Get rid of enormous tuples in Handler/Admin/*
+** TODO Statistics
+** TODO Showing last 50/100 posts from a thread
+** TODO Improve frontend performance
+** TODO Clean up the JavaScript mess
 ** TODO HTML5 field validation (message, file presence and size, captcha)
 ** TODO RSS: recent posts
 ** TODO Post deletion and thread hiding without JS

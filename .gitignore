@@ -1,3 +1,4 @@
+*.~undo-tree~
 dist*
 cabal-dev/*
 static/tmp/

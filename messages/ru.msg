@@ -16,7 +16,7 @@ ToBoard: борде
 ShowRules: Показать правила
 HideRules: Скрыть правила
 SupportedFileTypes: Поддерживаемые типы файлов:
-MaxFileSize: Маскимальный размер файла:
+MaxFileSize: Маскимальный размер всех файлов:
 ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
 OpModerationIsEnabled: На этой доске включена ОП-модерация.
 PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
@@ -24,7 +24,7 @@ PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
 ThreadHeaderNumber t@Int: Тред №#{show t}
 ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
 NewThread: Новый тред
-ClosePostForm: Закрыть форму
+ClosePostForm: Закрыть форму постинга
 Reply: Ответить
 ReplyToThread: Ответ в тред №
 
@@ -72,7 +72,6 @@ ThreadIsExpanded: Тред развернут.
 TruncateThread: Свернуть.
 NoThreads: Нет тредов
 ## pages
-Pages: Страницы:
 Back: Назад
 Next: Вперед
 Previous: Назад
@@ -352,7 +351,7 @@ Sage: сажа
 #### Thread hiding
 ######################################################################################
 HideThread: Скрыть тред
-HideThreadCompletely: Скрыть тред полностью
+HideThreadCompletely: Развидеть!
 ThreadIsHidden: Тред скрыт.
 HiddenThreads: Скрытые треды
 UnhideThread: Раскрыть тред
@@ -373,7 +372,7 @@ StickyTopbar: Закрепить верхнюю панель
 PlainTopbar: Простая верхняя панель
 PpleerEmbedByClick: Загружать pleer.com по клику
 WidePosts: Широкие посты
-UseEventSource: Использовать Eventsource
+UseEventSource: Автозагрузка постов (EventSource)
 ExpandImage: Разворачивать изображения
 ExpandImageCenter: по центру
 ExpandImageInside: в посте

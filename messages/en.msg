@@ -17,15 +17,15 @@ Nobump: No bump
 ShowRules: Show rules
 HideRules: Hide rules
 SupportedFileTypes: Supported file types are
-MaxFileSize: Max file size allowed is
+MaxFileSize: The maximum size of all attached files is
 ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.
 OpModerationIsEnabled: OP moderation is enabled on this board.
-PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}
+PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "∞"}
 ### misc
 ThreadHeaderNumber t@Int: Thread №#{show t}
 ThreadHeaderReplyTo t@Int: Reply to #{show t} thread
 NewThread: New thread
-ClosePostForm: Close form
+ClosePostForm: Close post form
 Reply: Reply
 ReplyToThread: Reply to thread №
 
@@ -73,7 +73,6 @@ ThreadIsExpanded: Thread is expanded.
 TruncateThread: Truncate.
 NoThreads: No threads yet
 ## pages
-Pages: Pages:
 Back: Back
 Next: Next
 Previous: Previous
@@ -91,7 +90,7 @@ LockThread: Lock/unlock
 Autosage: Autosage
 ThreadIsSticked: Thread is sticked
 ThreadIsLocked: Thread is locked
-ThreadAutosage: Autosage
+ThreadAutosage: Thread is on autosage
 ### Deleted posts
 DeletedPosts: Deleted posts
 DeletedPostsIn z@Int: Deleted posts in thread №#{show z}
@@ -352,7 +351,7 @@ Sage: sage
 #### Thread hiding
 ######################################################################################
 HideThread: Hide thread
-HideThreadCompletely: Hide thread completely
+HideThreadCompletely: Unsee it!
 ThreadIsHidden: Thread is hidden.
 HiddenThreads: Hidden threads
 UnhideThread: Unhide thread
@@ -373,7 +372,7 @@ StickyTopbar: Sticky topbar
 PlainTopbar: Plain topbar
 PpleerEmbedByClick: Embed pleer.com by click
 WidePosts: Wide posts
-UseEventSource: Use Eventsource
+UseEventSource: Post autoload (EventSource)
 ExpandImage: Expand image
 ExpandImageCenter: in the center
 ExpandImageInside: inside post

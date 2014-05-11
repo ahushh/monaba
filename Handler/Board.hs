@@ -109,10 +109,10 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal
+  maybeCaptchaInfo  <- getCaptchaInfo
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal maybeCaptchaInfo
   (formWidget', _)          <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
-  maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
   rating           <- getCensorshipRating
@@ -141,7 +141,7 @@ postBoardR board _ = do
       opFile           = boardOpFile        boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal
+  ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal Nothing
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs

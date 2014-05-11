@@ -71,10 +71,10 @@ getThreadR board thread = do
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (formWidget , formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal
+  maybeCaptchaInfo  <- getCaptchaInfo
+  (formWidget , formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal maybeCaptchaInfo
   (formWidget',           _) <- generateFormPost $ editForm permissions
   nameOfTheBoard   <- extraSiteName <$> getExtra
-  maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
   boards           <- runDB $ selectList ([]::[Filter Board]) []
@@ -110,7 +110,7 @@ postThreadR board thread = do
       forcedAnon       = boardEnableForcedAnon boardVal      
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm 0 0 boardVal
+  ((result, _), _) <- runFormPost $ postForm 0 0 boardVal Nothing
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl

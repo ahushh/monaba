@@ -16,7 +16,7 @@ $if hasAccessToReply
       <fieldset>
         <legend> _{MsgThreadHeaderReplyTo thread}
           <a href=@{BoardNoPageR board }> _{MsgBack}
-        ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
+        ^{formWidget boardVal True acaptcha enableCaptcha muser}
 <form .custom .delete-form method=get action=@{DeleteR}>
     <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
       <div .columns .large-12 .small-12>

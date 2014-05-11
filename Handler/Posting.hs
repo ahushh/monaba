@@ -18,10 +18,11 @@ data GoBackTo = ToThread | ToBoard
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Int   -> -- ^ The maximium length of post title
-           Int   -> -- ^ The maximium length of poster name
-           Board -> -- ^ Board value
-           Html  -> -- ^ Extra token
+postForm :: Int        -> -- ^ The maximium length of post title
+           Int        -> -- ^ The maximium length of poster name
+           Board      -> -- ^ Board value
+           Maybe Text -> -- ^ Captcha info
+           Html       -> -- ^ Extra token
            MForm Handler (FormResult ( Maybe Text     -- ^ Poster name
                                      , Maybe Text     -- ^ Thread subject
                                      , Maybe Textarea -- ^ Message
@@ -34,12 +35,11 @@ postForm :: Int   -> -- ^ The maximium length of post title
                                      )
                          , Board        -> -- ^ boardW
                            Bool         -> -- ^ isthreadW
-                           Maybe Text   -> -- ^ maybeCaptchaInfoW
                            Maybe Text   -> -- ^ acaptchaW
                            Bool         -> -- ^ enableCaptchaW
                            Maybe (Entity User) -> -- ^ muserW
                            Widget)
-postForm maxLenOfPostTitle maxLenOfPostName boardVal extra = do
+postForm maxLenOfPostTitle maxLenOfPostName boardVal maybeCaptchaInfo extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -60,11 +60,18 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal extra = do
       myMessageField   = checkBool (not . tooLongMessage maxMessageLength)
                                    (MsgTooLongMessage maxMessageLength )
                                    textareaField
-  let urls :: [(Text, GoBackTo)]
+  let captchaHelper "Bold"    = msgrender MsgBoldChars
+      captchaHelper "Italic"  = msgrender MsgItalicChars
+      captchaHelper "Regular" = msgrender MsgRegularChars
+      captchaHelper _         = msgrender MsgReloadPage
+      urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
       ratings :: [(Text, Censorship)]
       ratings = map (showText &&& id) [minBound..maxBound]
       fInput       lbl = lbl { fsAttrs = [("onchange","handleFiles(this)"),("class","file-input")] }
+      captchaInput lbl = lbl { fsAttrs = ("autocomplete","off") :
+                                         maybe [] (\x -> [("placeholder",msgrender MsgTypeOnly <> " " <> captchaHelper x)]) maybeCaptchaInfo
+                             }
       acInput      lbl = lbl { fsAttrs = [("autocomplete","off")] }
       nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName )] }
       subjectInput lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostTitle)] }
@@ -73,14 +80,14 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal extra = do
   (subjectRes  , subjectView ) <- mopt textField              (subjectInput "") (Just <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField                       ""  ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          (acInput      "") Nothing
-  (captchaRes  , captchaView ) <- mopt textField              (acInput      "") Nothing
+  (captchaRes  , captchaView ) <- mopt textField              (captchaInput "") Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField (fInput "") Nothing)
   (ratingresults, ratingviews) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mreq (selectFieldList ratings) "" Nothing)
   let result = (,,,,,,,,) <$>  nameRes <*> subjectRes  <*> messageRes <*> passwordRes <*> captchaRes <*>
                FormSuccess fileresults <*> FormSuccess ratingresults  <*> gobackRes   <*> nobumpRes
-      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
+      widget boardW isthreadW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
 editForm :: [Permission] -> Html -> MForm Handler (FormResult (Textarea, Text, Int, Maybe Bool), Widget)

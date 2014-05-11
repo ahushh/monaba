@@ -8,12 +8,12 @@ $if hasAccessToNewThread
     <form .plain-post-form .custom #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
       <fieldset>
         <legend>_{MsgNewThread}
-        ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+        ^{formWidget boardVal False acaptcha enableCaptcha muser}
 $else
     <form .custom .hide .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
       <fieldset>
         <legend>_{MsgNewThread}
-        ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+        ^{formWidget boardVal False acaptcha enableCaptcha muser}
 
 $if null threadsAndPreviews
   <div .panel .text-center>

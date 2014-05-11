@@ -755,21 +755,19 @@ function extractBoard(postId) {
 function refreshCaptcha() {
     if ( $("#captcha").length == 0 ) return;
     $.getJSON('@{CaptchaInfoR}', function(data) {
+        $("#captcha-wrapper input[type=text]").val("");
         if (data.info) {
-            $("#captcha-info").show();
-            $("#captcha-block input[type=text]").show();
+            $("#captcha-wrapper input[type=text]").show();
             $("#captcha").show();
-            $("#captcha-info").html(data.info);
+            $("#captcha-wrapper input[type=text]").attr("placeholder", data.info);
             $("#no-captcha-need").remove();
             $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
         } else if (data.acaptcha) {
-            $("#captcha-info").hide();
-            $("#captcha-block input[type=text]").hide();
-            $("#captcha").hide();
+            $("#captcha-wrapper input[type=text]").hide();
             if ($("#no-captcha-need").length == 0)
-                $("#captcha-block").append("<span id='no-captcha-need'>"+data.acaptcha+"</span>");
+                $("#captcha-wrapper").append("<span class=prefix id='no-captcha-need'>"+data.acaptcha+"</span>");
         } else {
-            $("#captcha-block").append(data.error);
+            popupAlert(data.error, 2000);
         }
     });
 }

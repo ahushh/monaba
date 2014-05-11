@@ -78,25 +78,14 @@ $if enableCaptchaW
   <div .row .collapse>
     <div .large-1 .small-5 .columns>
       <label for=#{fvId captchaView} .prefix>_{MsgCaptcha}
-    <div .large-4 .small-7 .columns>
+    <div .large-4 .small-7 .columns #captcha-wrapper>
       $if isJust muserW
-          <span .prefix>_{MsgYouDontNeedCaptcha}      
+          <span #no-captcha-need .prefix>_{MsgYouDontNeedCaptcha}      
       $else
           $maybe _ <- acaptchaW
-              <span .prefix>_{MsgYouDontNeedCaptcha}
+              <span #no-captcha-need .prefix>_{MsgYouDontNeedCaptcha}
           $nothing
               ^{fvInput captchaView} 
-              <label #captcha-info for="#{fvId captchaView}">
-                  $maybe c <- maybeCaptchaInfoW
-                      _{MsgTypeOnly} 
-                      $if c == "Bold"
-                          _{MsgBoldChars}
-                      $elseif c == "Italic"
-                          _{MsgItalicChars}
-                      $elseif c == "Regular"
-                          _{MsgRegularChars}
-                  $nothing
-                      _{MsgReloadPage}
     <div .large-7 .small-12 .columns>                      
       <img alt=captcha #captcha src=@{CaptchaR}>
 

@@ -160,6 +160,7 @@ BoardViewAccess: Для просмотра доски нужно быть
 BoardReplyAccess: Для ответа в тред нужно быть
 BoardThreadAccess: Для создание треда нужно быть
 BoardEnableForcedAnon: Принудительная анонимность (отключение ввода имени)
+BoardShowPostDate: Показывать дату постов
 WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
 OpModeration: ОП-модерация
 PostEditing: Редактирование постов

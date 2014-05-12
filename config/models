@@ -43,6 +43,7 @@ Board
     postEditing       Bool     default=0
     showEditHistory   Bool     default=0
     enableForcedAnon  Bool     default=0
+    showPostDate      Bool     default=0
     deriving          Typeable
 Post
     board        Text

@@ -68,6 +68,7 @@ getEventR = do
 sendPost :: Board -> Int -> Entity Post -> [Entity Attachedfile] -> Bool -> Text -> Handler ()
 sendPost boardVal thread ePost files hellbanned posterId = do
   let board = boardName boardVal
+      showPostDate = boardShowPostDate boardVal
   geoIps           <- getCountries [(ePost, files) | boardEnableGeoIp boardVal]
   displaySage      <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
@@ -82,26 +83,26 @@ sendPost boardVal thread ePost files hellbanned posterId = do
                                                            , not (checkViewAccess' $ sseClientUser x)]
   forM_ filteredClients $ \(posterId', client) -> do
     when (thread /= 0) $ do
-      renderedPost  <- renderPost client ePost displaySage geoIps maxLenOfFileName
+      renderedPost  <- renderPost client ePost displaySage geoIps maxLenOfFileName showPostDate
       let name        = board <> "-" <> showText thread <> "-" <> posterId'
           encodedPost = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ atomically $ writeTChan chan (name, encodedPost)
 
     when (board `notElem` sseClientLiveIgnoredBoards client) $ do
-      renderedPost' <- renderPostLive client ePost geoIps maxLenOfFileName
+      renderedPost' <- renderPostLive client ePost geoIps maxLenOfFileName showPostDate
       let nameLive     = "live-" <> posterId'
           encodedPost' = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
       liftIO $ atomically $ writeTChan chan (nameLive, encodedPost')
-  where renderPost client post displaySage geoIps maxLenOfFileName =
+  where renderPost client post displaySage geoIps maxLenOfFileName showPostDate =
           bareLayout $ postWidget post
                        files (sseClientRating client) displaySage True True False
                        (sseClientPermissions client) geoIps
-                       (sseClientTimeZone client) maxLenOfFileName
-        renderPostLive client post geoIps maxLenOfFileName =
+                       (sseClientTimeZone client) maxLenOfFileName showPostDate
+        renderPostLive client post geoIps maxLenOfFileName showPostDate =
           bareLayout $ postWidget  post
                        files (sseClientRating client) False True True True
                        (sseClientPermissions client) geoIps
-                       (sseClientTimeZone client) maxLenOfFileName
+                       (sseClientTimeZone client) maxLenOfFileName showPostDate
 
 sendDeletedPosts :: [Post] -> Handler ()
 sendDeletedPosts posts = do

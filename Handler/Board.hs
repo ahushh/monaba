@@ -94,6 +94,7 @@ getBoardR board page = do
       boardDesc         = boardDescription       boardVal
       boardLongDesc     = boardLongDescription   boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
+      showPostDate      = boardShowPostDate      boardVal
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 

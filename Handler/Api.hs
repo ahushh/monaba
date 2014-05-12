@@ -17,6 +17,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
+      showPostDate = boardShowPostDate boardVal
       selectPosts  = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
@@ -38,7 +39,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget post files rating displaySage True True False  permissions geoIps timeZone maxLenOfFileName}
+                                   ^{postWidget post files rating displaySage True True False  permissions geoIps timeZone maxLenOfFileName showPostDate}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -106,6 +107,7 @@ getApiPostR board postId = do
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
+      showPostDate = boardShowPostDate boardVal
       selectPosts    = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectPostsAll = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False]
       selectPostsHB  = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. False] ||.
@@ -122,8 +124,8 @@ getApiPostR board postId = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName
-                       else postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName
+                       then postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate
+                       else postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

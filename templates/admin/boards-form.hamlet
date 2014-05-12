@@ -73,6 +73,9 @@
       <div .columns .large-4 .small-6>_{MsgBoardEnableForcedAnon}
       <div .columns .large-4 .small-6 .pull-4>^{fvInput enableForcedAnonView}
     <div .row>
+      <div .columns .large-4 .small-6>_{MsgBoardShowPostDate}
+      <div .columns .large-4 .small-6 .pull-4>^{fvInput showPostDateView}
+    <div .row>
       <div .columns .large-4 .small-6>_{MsgOpModeration}
       <div .columns .large-4 .small-6 .pull-4>^{fvInput opModerationView}
     <div .row>

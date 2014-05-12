@@ -8,7 +8,8 @@
           <img src=#{geoIconPath code} title=#{name}>
       <span .post-title>#{postTitle postVal}
       <span .poster-name>#{postName postVal}
-      <span .time>#{myFormatTime tOffset $ postDate postVal}
+      $if showPostDate
+          <span .time>#{myFormatTime tOffset $ postDate postVal}
       $if isThread
         $if not inThread
            <img onclick="hideThread(#{sPostId},'#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThread} alt=_{MsgHideThread} .icon-hide-thread> 

@@ -10,9 +10,9 @@
         <div .columns .large-12 .small-12>
           $forall (ePost, eFiles) <- postsAndFiles
             $if (postParent $ entityVal ePost) > 0
-                ^{postWidget ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName}
+                ^{postWidget ePost eFiles R18G displaySage False False True permissions geoIps timeZone maxLenOfFileName True}
             $else
-                ^{postWidget ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName}
+                ^{postWidget ePost eFiles R18G False       False False True permissions geoIps timeZone maxLenOfFileName True}
         ^{deleteWidget permissions}
 
 ^{pageSwitcherWidget page pages (AdminSearchIPR ip)}

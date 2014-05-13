@@ -5,9 +5,6 @@ var Monaba = {
     zindex: 3,
 };
 
-//-----------------------------------------------------------------
-// Load default settings
-//-----------------------------------------------------------------
 var defaultSettings = {
     'useEventsource': false,
     'expandImage': 'center',
@@ -22,66 +19,65 @@ var defaultSettings = {
     'plainTopbar': false,
     'ppleerEmbedByClick': true 
 };
-
-for (var i in defaultSettings) {
-    if (getItem(i) == null)
-        setItem(i, defaultSettings[i]);
-}
 //-----------------------------------------------------------------
-function baseInit() {
+// Initialization
+//-----------------------------------------------------------------
+initialization();
+
+function initPosts() {
     addEmbeddedPlayer();
     addProstopleer();
     if (document.location.pathname != '/~') // FIX: костыли
         doRefMap();
     cachePopupPosts();
 }
-//-----------------------------------------------------------------
-// Init
-//-----------------------------------------------------------------
-checkHighlighted();
-initHiddenThreads();
-baseInit();
-initSymbolCounter();
-$('textarea').autosize()
-
-if (getItem('stickyTopbar')) {
-    $('.top-bar').wrap("<div class='sticky'></div>");
-    $('#control-panel, #board-list').css({'position'   : 'fixed',
-                                          'z-index'    : 9999999999999999,
-                                          'text-shadow': '3px 3px 3px grey'});
-    $('#control-panel').css('right',0);
-}
-
-if (getItem('plainTopbar')) {
-    $('.top-bar').hide();
-    $('#control-panel, #board-list').show();
-}
-
-if (getItem("useMathjax")) {
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath : [ ['[l]','[/l]'],
-                           ['$','$'],
-                           ['\\(','\\)']
-                         ],
-            displayMath: [ ['[latex]','[/latex]'],
-                           ['$$','$$'],
-                           ["\\[","\\]"]
-                         ],
-            processEscapes: true
-        },
+function initialization() {
+    // load default settings
+    for (var i in defaultSettings) {
+        if (getItem(i) == null)
+            setItem(i, defaultSettings[i]);
+    }
+    checkHighlighted();
+    initHiddenThreads();
+    initPosts();
+    initSymbolCounter();
+    $('textarea').autosize()
+    if (getItem('stickyTopbar')) {
+        $('.top-bar').wrap("<div class='sticky'></div>");
+        $('#control-panel, #board-list').css({'position'   : 'fixed',
+                                              'z-index'    : 9999999999999999,
+                                              'text-shadow': '3px 3px 3px grey'});
+        $('#control-panel').css('right',0);
+    }
+    if (getItem('plainTopbar')) {
+        $('.top-bar').hide();
+        $('#control-panel, #board-list').show();
+    }
+    if (getItem("useMathjax")) {
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath : [ ['[l]','[/l]'],
+                               ['$','$'],
+                               ['\\(','\\)']
+                             ],
+                displayMath: [ ['[latex]','[/latex]'],
+                               ['$$','$$'],
+                               ["\\[","\\]"]
+                             ],
+                processEscapes: true
+            },
+        });
+    }
+    $.ajaxSetup({
+        error: function(x, e) {
+            if (x.status == 0)
+                popupAlert(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
+            else
+                popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
+        }
     });
 }
-
-$.ajaxSetup({
-    error: function(x, e) {
-        if (x.status == 0)
-            popupAlert(#{toJSON $ msgrender MsgConnectionError}+" ("+x.status+")", 0, false, true);
-        else
-            popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
-    }
-});
-
+//-----------------------------------------------------------------
 function moveThread(board, thread) {
     var destBoard = prompt(#{toJSON $ msgrender MsgWhichBoard});
     console.log("/admin/move/"+board+"/"+thread+"/"+destBoard);
@@ -740,17 +736,7 @@ function closePostForm() {
     $("#post-form").hide();
 }
 //-----------------------------------------------------------------
-function extractPost(postId) {
-    return postId.split('-')[1];
-}
-
-function extractThread(postId) {
-    return postId.split('-')[2];
-}
-
-function extractBoard(postId) {
-    return postId.split('-')[3];
-}
+// Refreshing
 //-----------------------------------------------------------------
 function refreshCaptcha() {
     if ( $("#captcha").length == 0 ) return;
@@ -785,7 +771,7 @@ function refreshThread(board, threadId) {
         $(".delete-form .ajax-loading").toggle();
         if (/reply/.test(data)) {
             $("#thread-"+threadId+" > .columns").append(data);
-            baseInit();
+            initPosts();
             if (getItem("useMathjax")) {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }
@@ -798,7 +784,7 @@ function refreshThread(board, threadId) {
     });
 }
 //-----------------------------------------------------------------
-// edit form
+// Editing form
 //-----------------------------------------------------------------
 function showEditForm(postId, realId) {
     var pId = extractPost(postId);
@@ -951,4 +937,13 @@ function set_cookie(name,value,days)
 // ---------------------------------------------------------
 function decodeBase64(b) {
     return decodeURIComponent(escape(atob(b)));
+}
+function extractPost(postId) {
+    return postId.split('-')[1];
+}
+function extractThread(postId) {
+    return postId.split('-')[2];
+}
+function extractBoard(postId) {
+    return postId.split('-')[3];
 }

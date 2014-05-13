@@ -43,7 +43,7 @@ function expandThread(board, thread) {
                 $("#thread-"+thread+" .omitted").toggle();
                 $("#thread-"+thread+" .reply").remove();
                 $("#thread-"+thread+" .truncate-thread").toggle().after(data);
-                baseInit();
+                initPosts();
                 if (getItem("useMathjax")) {
                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                 }

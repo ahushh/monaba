@@ -3,7 +3,8 @@
   <div .columns .large-12 .small-12>
     $forall (ePost, eFiles) <- postsAndFiles
       $with showDate <- elem (postBoard (entityVal ePost)) boardsWhereShowDate
-        $if (postParent $ entityVal ePost) > 0
-          ^{postWidget ePost eFiles rating displaySage False False True permissions geoIps timeZone maxLenOfFileName showDate}
-        $else
-          ^{postWidget ePost eFiles rating False       False False True permissions geoIps timeZone maxLenOfFileName showDate}
+        $with showEditHistory <- elem (postBoard (entityVal ePost)) boardsWhereShowHistory
+            $if (postParent $ entityVal ePost) > 0
+              ^{postWidget ePost eFiles rating displaySage False False True permissions geoIps timeZone maxLenOfFileName showDate showEditHistory}
+            $else
+              ^{postWidget ePost eFiles rating False       False False True permissions geoIps timeZone maxLenOfFileName showDate showEditHistory}

@@ -129,8 +129,10 @@ postWidget :: Entity Post              ->
              Int                      -> -- ^ Time offset in seconds
              Int                      -> -- ^ Max file name length
              Bool                     -> -- ^ Show date
+             Bool                     -> -- ^ Show editing history
              Widget
-postWidget ePost eFiles rating sage inThread canPost showParent permissions geoIps tOffset maxLenOfFileName showPostDate = 
+postWidget ePost eFiles rating sage inThread canPost
+  showParent permissions geoIps tOffset maxLenOfFileName showPostDate showEditHistory = 
   let postVal   = entityVal ePost
       sPostId   = show $ postLocalId $ entityVal ePost
       sThreadId = show $ postParent  $ entityVal ePost

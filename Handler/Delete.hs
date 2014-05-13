@@ -22,6 +22,7 @@ getDeletedByOpR board thread = do
       boardDesc     = boardDescription     boardVal
       boardLongDesc = boardLongDescription boardVal
       showPostDate  = boardShowPostDate    boardVal
+      showEditHistory  = boardShowEditHistory boardVal
   unless (boardOpModeration boardVal) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do

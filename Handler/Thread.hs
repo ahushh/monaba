@@ -53,6 +53,7 @@ getThreadR board thread = do
       boardLongDesc    = boardLongDescription boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
       showPostDate     = boardShowPostDate    boardVal
+      showEditHistory  = boardShowEditHistory boardVal
       sourceEventName  = board <> "-" <> showText thread
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread

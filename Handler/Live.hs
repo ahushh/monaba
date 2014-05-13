@@ -16,7 +16,8 @@ getLiveR = do
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   selectedBoards <- getLiveBoards
   hiddenThreads <- (concatMap snd) <$> getAllHiddenThreads
-  let boardsWhereShowDate =  map boardName $ filter boardShowPostDate $ map entityVal boards
+  let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
+      boardsWhereShowHistory = map boardName $ filter boardShowEditHistory $ map entityVal boards
       boards'        = mapMaybe (ignoreBoards group) boards ++ selectedBoards
       selectPostsAll = [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostLocalId /<-. hiddenThreads
                        ,PostParent /<-. hiddenThreads]

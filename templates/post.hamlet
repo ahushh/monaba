@@ -151,12 +151,13 @@
         $else
             <div .message>#{preEscapedToHtml m}
     <!-- Last modified -->
-    $maybe lm <- postLastModified postVal
+    $if showEditHistory
+      $maybe lm <- postLastModified postVal
         <span .last-modified>
             <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey ePost}>
                 _{MsgLastModified}
                 <span .last-modified-date>#{myFormatTime tOffset lm}
-    $nothing
+      $nothing
         <span .last-modified .hide>
             <a href=@{EditHistoryR $ fromIntegral $ fromKey $ entityKey ePost}>
                 _{MsgLastModified}

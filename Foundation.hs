@@ -49,7 +49,7 @@ import           Text.Blaze.Html as Import (preEscapedToHtml)
 ---------------------------------------------------------------------------------------------------------
 data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
                            , sseClientPermissions :: [Permission]
-                           , sseClientLiveIgnoredBoards :: [Text]
+                           , sseClientRecentIgnoredBoards :: [Text]
                            , sseClientRating :: Censorship
                            , sseClientTimeZone :: Int
                            , sseClientConnected :: UTCTime

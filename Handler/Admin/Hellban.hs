@@ -15,7 +15,7 @@ getHellBanR page = do
   (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
   -------------------------------------------------------------------------------------------------------------------
   posterId  <- getPosterId
-  showPosts <- getConfig configShowLatestPosts
+  showPosts <- getConfig configShowRecentPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostHellbanned ==. True, PostDeleted ==. False]
   let boards'     = mapMaybe (ignoreBoards group) boards

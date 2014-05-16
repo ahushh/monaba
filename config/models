@@ -114,7 +114,7 @@ Config
     newsBoard       Text
     showNews        Int  default=2
     maxEditings     Int  default=10
-    showLatestPosts Int  default=15
+    showRecentPosts Int  default=15
     displaySage     Bool default=0
     modlogMaxEntries     Int default=3000
     modlogEntriesPerPage Int default=30

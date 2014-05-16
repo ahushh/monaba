@@ -48,13 +48,13 @@ getEventR = do
     rating      <- getCensorshipRating
     timeZone    <- getTimeZone
     now         <- liftIO getCurrentTime
-    ignoredBoards <- getLiveBoards
+    ignoredBoards <- getRecentBoards
     let newClient = SSEClient { sseClientUser        = muser
                               , sseClientPermissions = permissions
                               , sseClientRating      = rating
                               , sseClientTimeZone    = timeZone
                               , sseClientConnected   = now
-                              , sseClientLiveIgnoredBoards = ignoredBoards
+                              , sseClientRecentIgnoredBoards = ignoredBoards
                               }
     liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId newClient)
   chan' <- liftIO $ atomically $ dupTChan chan
@@ -89,17 +89,17 @@ sendPost boardVal thread ePost files hellbanned posterId = do
           encodedPost = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ atomically $ writeTChan chan (name, encodedPost)
 
-    when (board `notElem` sseClientLiveIgnoredBoards client) $ do
-      renderedPost' <- renderPostLive client ePost geoIps maxLenOfFileName showPostDate showEditHistory
-      let nameLive     = "live-" <> posterId'
+    when (board `notElem` sseClientRecentIgnoredBoards client) $ do
+      renderedPost' <- renderPostRecent client ePost geoIps maxLenOfFileName showPostDate showEditHistory
+      let nameRecent     = "recent-" <> posterId'
           encodedPost' = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
-      liftIO $ atomically $ writeTChan chan (nameLive, encodedPost')
+      liftIO $ atomically $ writeTChan chan (nameRecent, encodedPost')
   where renderPost client post displaySage geoIps maxLenOfFileName showPostDate showEditHistory =
           bareLayout $ postWidget post
                        files (sseClientRating client) displaySage True True False
                        (sseClientPermissions client) geoIps
                        (sseClientTimeZone client) maxLenOfFileName showPostDate showEditHistory
-        renderPostLive client post geoIps maxLenOfFileName showPostDate showEditHistory =
+        renderPostRecent client post geoIps maxLenOfFileName showPostDate showEditHistory =
           bareLayout $ postWidget  post
                        files (sseClientRating client) False True True True
                        (sseClientPermissions client) geoIps
@@ -115,10 +115,10 @@ sendDeletedPosts posts = do
       posts'  = map (\(b,t) -> (b,t,filter (\p -> postBoard p == b && postParent p == t) posts)) $ zip boards threads
   forM_ (Map.keys clients) (\posterId -> forM_ posts' (\(b,t,ps) -> do
       let name     = b <> "-" <> showText t <> "-deleted-" <> posterId
-          nameLive = "live-deleted-" <> posterId
+          nameRecent = "recent-deleted-" <> posterId
           postIDs  = map (\x -> "post-" <> showText (postLocalId x) <> "-" <> showText t <> "-" <> b) ps
       liftIO $ atomically $ writeTChan chan (name    , showText postIDs)
-      liftIO $ atomically $ writeTChan chan (nameLive, showText postIDs)
+      liftIO $ atomically $ writeTChan chan (nameRecent, showText postIDs)
       ))
 
 sendEditedPost :: Text -> Text -> Int -> Int -> Maybe UTCTime -> Handler ()
@@ -129,9 +129,9 @@ sendEditedPost msg board thread post time = do
   forM_ (Map.toList clients) $ \(posterId,client) -> do
       let thread'         = if thread == 0 then post else thread
           name            = board <> "-" <> showText thread' <> "-edited-" <> posterId
-          nameLive        = "live-edited-" <> posterId
+          nameRecent        = "recent-edited-" <> posterId
           encodedMsg      = decodeUtf8 $ Base64.encode $ encodeUtf8 msg
           timeZone        = sseClientTimeZone client
           lastModified    = maybe "" (pack . myFormatTime timeZone) time
       liftIO $ atomically $ writeTChan chan (name    , showText [board, showText thread, showText post, encodedMsg, lastModified])
-      liftIO $ atomically $ writeTChan chan (nameLive, showText [board, showText thread, showText post, encodedMsg, lastModified])
+      liftIO $ atomically $ writeTChan chan (nameRecent, showText [board, showText thread, showText post, encodedMsg, lastModified])

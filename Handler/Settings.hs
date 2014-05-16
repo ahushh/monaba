@@ -35,18 +35,18 @@ postSettingsR = do
   defaultStyle <- extraStylesheet <$> getExtra  
   oldRating    <- getCensorshipRating
   allBoards    <- map ((boardDescription &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
-  ignoredBoards <- getLiveBoards
+  ignoredBoards <- getRecentBoards
   ((result, _), _) <- runFormPost $ settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
     FormSuccess (timezone, stylesheet, rating, lang, boards, widePosts) -> do
-      setSession "timezone"           $ showText timezone
-      setSession "stylesheet"           stylesheet
-      setSession "censorship-rating"  $ showText rating
-      setSession "live-ignore-boards" $ showText $ fromMaybe [] boards
-      setSession "wide-posts"         $ showText widePosts
+      setSession "timezone"             $ showText timezone
+      setSession "stylesheet"             stylesheet
+      setSession "censorship-rating"    $ showText rating
+      setSession "recent-ignore-boards" $ showText $ fromMaybe [] boards
+      setSession "wide-posts"           $ showText widePosts
       Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR
@@ -58,7 +58,7 @@ getSettingsR = do
   defaultStyle <- extraStylesheet <$> getExtra
   oldRating    <- getCensorshipRating
   allBoards    <- map ((boardDescription &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
-  ignoredBoards <- getLiveBoards
+  ignoredBoards <- getRecentBoards
   (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating
 
   nameOfTheBoard  <- extraSiteName <$> getExtra

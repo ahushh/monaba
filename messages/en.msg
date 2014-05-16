@@ -64,7 +64,7 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
 #### Page
 ######################################################################################
 News: News
-LatestPosts: Latest posts
+RecentPosts: Recent posts
 ## thread
 OpenThread: Open thread
 PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted.
@@ -229,7 +229,7 @@ CaptchaLength: Captcha length
 ACaptchaGuards: Guards of adaptive captcha
 CaptchaTimeout: Captcha timeout
 ShowNews: How many news show
-ShowLatestPosts: How many latest posts show
+ShowRecentPosts: How many recent posts show
 MaxEditings: How many times you can edit your post
 NewsBoard: Board for news
 UpdateConfig: Update config
@@ -381,7 +381,7 @@ YoutubeLoadTitles: Load titles
 YoutubeLoadThumbs: Load thumbnails
 YoutubeWidth: Width
 YoutubeHeight: Height
-LiveIgnoredBoards: /~/ ignored boards
+RecentIgnoredBoards: /~/ ignored boards
 
 ######################################################################################
 #### Modlogs

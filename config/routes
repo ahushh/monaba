@@ -5,7 +5,7 @@
 /robots.txt RobotsR GET
 
 /                    HomeR         GET
-/~                   LiveR         GET
+/~                   RecentR       GET
 /board/#Text         BoardNoPageR  GET POST
 /board/#Text/#Int    BoardR        GET POST
 /thread/#Text/#Int   ThreadR       GET POST

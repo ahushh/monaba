@@ -43,9 +43,9 @@
       ^{fvInput showNewsView}
   <div .row>
     <div .columns .large-6 .small-12>
-      _{MsgShowLatestPosts}
+      _{MsgShowRecentPosts}
     <div .columns .large-6 .small-12>
-      ^{fvInput showLatestPostsView}
+      ^{fvInput showRecentPostsView}
   <div .row>
     <div .columns .large-6 .small-12>
       _{MsgMaxEditings}

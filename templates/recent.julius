@@ -3,15 +3,15 @@ if (isEventSourceSupported()) {
     console.log("Eventsource initialization...");
     var src = getEventSource();
     // post autoload
-    src.addEventListener("live-"+#{toJSON posterId}, function(msg) {
+    src.addEventListener("recent-"+#{toJSON posterId}, function(msg) {
         $('.post-list > .columns').prepend("<div class='row'><div class='columns large-12 small-12'>"+ decodeBase64(msg.data) +"</div></div>");
         initPosts();
         updateTitle();
     });
     // remove deleted posts
-    src.addEventListener("live-deleted-"+#{toJSON posterId}, deletedPostsHandler);
+    src.addEventListener("recent-deleted-"+#{toJSON posterId}, deletedPostsHandler);
     // dynamic updating of edited posts
-    src.addEventListener("live-edited-"+#{toJSON posterId}, editedPostsHandler);
+    src.addEventListener("recent-edited-"+#{toJSON posterId}, editedPostsHandler);
 } else {
     console.log("Eventsource isn't supported.");
 }

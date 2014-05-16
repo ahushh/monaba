@@ -24,7 +24,7 @@ getAdminSearchIPR ip page = do
   muser                <- maybeAuth
   (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
   -------------------------------------------------------------------------------------------------------------------
-  showPosts <- getConfig configShowLatestPosts
+  showPosts <- getConfig configShowRecentPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. False, PostIp ==. ip]
   let boards'     = mapMaybe (ignoreBoards group) boards
@@ -54,7 +54,7 @@ helperUID onlyHellbanned posterId page = do
   muser                <- maybeAuth
   (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
   -------------------------------------------------------------------------------------------------------------------
-  showPosts <- getConfig configShowLatestPosts
+  showPosts <- getConfig configShowRecentPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count ([PostDeleted ==. False, PostPosterId ==. posterId] ++
                                  [PostHellbanned ==. True | onlyHellbanned])

@@ -63,7 +63,7 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #
 #### Page
 ######################################################################################
 News: Новости
-LatestPosts: Последние посты
+RecentPosts: Последние посты
 ## thread
 OpenThread: Открыть тред
 PostsOmitted n@Int: #{show n} #{omittedRus n}.
@@ -229,7 +229,7 @@ CaptchaLength: Длина капчи
 ACaptchaGuards: Капч нужно ввести для постинга без капчи
 CaptchaTimeout: Таймаут капчи
 ShowNews: Сколько показывать новостей
-ShowLatestPosts: Сколько показывать последних постов
+ShowRecentPosts: Сколько показывать последних постов
 MaxEditings: Сколько раз можно редактировать пост
 NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки
@@ -381,7 +381,7 @@ YoutubeLoadTitles: Загружать названия
 YoutubeLoadThumbs: Загружать превью
 YoutubeWidth: Ширина
 YoutubeHeight: Высота
-LiveIgnoredBoards: /~/ игнорируемые борды
+RecentIgnoredBoards: /~/ игнорируемые борды
 
 ######################################################################################
 #### Modlogs

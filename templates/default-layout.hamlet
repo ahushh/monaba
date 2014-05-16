@@ -12,7 +12,7 @@ $maybe msg <- mmsg
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
   <div #board-list>
-    [ <a title="_{MsgLatestPosts}" href=@{LiveR}>/~/</a> ] 
+    [ <a title="_{MsgRecentPosts}" href=@{RecentR}>/~/</a> ] 
     $forall Entity _ b <- widgetHelperFilterBoards boards "" group
       [ <a .board-link #board-#{boardName b} title="#{boardDescription b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categories
@@ -41,7 +41,7 @@ $maybe msg <- mmsg
             <a>_{MsgBoards}
           <ul .dropdown>
             <li>
-              <a href=@{LiveR}>/~/ - _{MsgLatestPosts}
+              <a href=@{RecentR}>/~/ - _{MsgRecentPosts}
             $forall Entity _ b <- widgetHelperFilterBoards boards "" group
               <li>
                 <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
@@ -75,7 +75,7 @@ $maybe msg <- mmsg
 <aside .hide id="sidebar">
   <ul>
     <li>
-      <a href=@{LiveR}>/~/ - _{MsgLatestPosts}
+      <a href=@{RecentR}>/~/ - _{MsgRecentPosts}
     $forall Entity _ b <- widgetHelperFilterBoards boards "" group
       <li>
         <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}

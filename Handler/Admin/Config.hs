@@ -28,7 +28,7 @@ configForm config extra = do
   let f g = Just $ Just $ g config
       f :: forall a. (Config -> a) -> Maybe (Maybe a)
   msgrender <- getMessageRender
-  let showLatestPostsField = checkBool (>0) (msgrender $ MsgMustBeGreaterThan (msgrender MsgShowLatestPosts) 0) intField
+  let showRecentPostsField = checkBool (>0) (msgrender $ MsgMustBeGreaterThan (msgrender MsgShowRecentPosts) 0) intField
       bigInput lbl         = lbl { fsAttrs = [("size","55")] }
   (captchaLengthRes   , captchaLengthView  ) <- mopt intField  "" (f configCaptchaLength  )
   (acaptchaGuardsRes  , acaptchaGuardsView ) <- mopt intField  "" (f configACaptchaGuards )
@@ -39,7 +39,7 @@ configForm config extra = do
   (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
-  (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
+  (showRecentPostsRes , showRecentPostsView) <- mopt showRecentPostsField "" (f configShowRecentPosts)
   (displaySageRes     , displaySageView    ) <- mopt checkBoxField "" (f configDisplaySage)
   (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
   (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
@@ -48,7 +48,7 @@ configForm config extra = do
                captchaLengthRes   <*> acaptchaGuardsRes <*> captchaTimeoutRes   <*>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes  <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes      <*>
-               showLatestPostsRes <*> displaySageRes    <*> modlogMaxEntriesRes <*>
+               showRecentPostsRes <*> displaySageRes    <*> modlogMaxEntriesRes <*>
                modlogEntriesPerPageRes <*> aboutRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
@@ -79,7 +79,7 @@ postConfigR = do
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (captchaLength, aCaptchaGuards, captchaTimeout, replyDelay     , threadDelay, boardCategories,
-                 newsBoard    , showNews      , maxEditings   , showLatestPosts, displaySage, modlogMaxEntries,
+                 newsBoard    , showNews      , maxEditings   , showRecentPosts, displaySage, modlogMaxEntries,
                  modlogEntriesPerPage, about
                 ) -> do
       let newConfig = Config { configCaptchaLength   = fromMaybe (configCaptchaLength   oldConfigVal) captchaLength
@@ -91,7 +91,7 @@ postConfigR = do
                              , configNewsBoard       = fromMaybe (configNewsBoard       oldConfigVal) newsBoard
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
-                             , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
+                             , configShowRecentPosts = fromMaybe (configShowRecentPosts oldConfigVal) showRecentPosts
                              , configDisplaySage     = fromMaybe (configDisplaySage     oldConfigVal) displaySage
                              , configModlogMaxEntries     = fromMaybe (configModlogMaxEntries     oldConfigVal) modlogMaxEntries
                              , configModlogEntriesPerPage = fromMaybe (configModlogEntriesPerPage oldConfigVal) modlogEntriesPerPage

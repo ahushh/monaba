@@ -26,7 +26,7 @@
       
 <div .row>
   <div .columns .large-6 .small-5>
-    _{MsgLiveIgnoredBoards}
+    _{MsgRecentIgnoredBoards}
   <div .columns .large-6 .small-7>
     ^{fvInput boardViews}
 

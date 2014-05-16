@@ -346,12 +346,12 @@ getAllHiddenThreads = do
     Just xs -> return $ readText xs
     Nothing -> setSession "hidden-threads" "[]" >> return []
 
-getLiveBoards :: Handler [Text]
-getLiveBoards = do
-  bs <- lookupSession "live-ignore-boards"
+getRecentBoards :: Handler [Text]
+getRecentBoards = do
+  bs <- lookupSession "recent-ignore-boards"
   case bs of
     Just xs -> return $ readText xs
-    Nothing -> setSession "live-ignore-boards" "[]" >> return []
+    Nothing -> setSession "recent-ignore-boards" "[]" >> return []
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

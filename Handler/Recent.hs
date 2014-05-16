@@ -1,20 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Handler.Live where
+module Handler.Recent where
 
 import           Import
 import           Yesod.Auth
 -------------------------------------------------------------------------------------------------------------
-getLiveR :: Handler Html
-getLiveR = do
+getRecentR :: Handler Html
+getRecentR = do
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   -------------------------------------------------------------------------------------------------------------------      
   posterId  <- getPosterId
-  showPosts <- getConfig configShowLatestPosts
+  showPosts <- getConfig configShowRecentPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  selectedBoards <- getLiveBoards
+  selectedBoards <- getRecentBoards
   hiddenThreads <- (concatMap snd) <$> getAllHiddenThreads
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boardsWhereShowHistory = map boardName $ filter boardShowEditHistory $ map entityVal boards
@@ -42,7 +42,7 @@ getLiveR = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgLatestPosts
+    setTitle $ toHtml $ nameOfTheBoard <> titleDelimiter <> msgrender MsgRecentPosts
     addScript (StaticR js_eventsource_js)
-    $(widgetFile "live")
+    $(widgetFile "recent")
   

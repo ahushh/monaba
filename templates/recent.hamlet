@@ -1,4 +1,4 @@
-<h2 .text-center> _{MsgLatestPosts}
+<h2 .text-center> _{MsgRecentPosts}
 <div .post-list .row>
   <div .columns .large-12 .small-12>
     $forall (ePost, eFiles) <- postsAndFiles

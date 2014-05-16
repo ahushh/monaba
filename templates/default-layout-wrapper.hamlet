@@ -50,11 +50,10 @@ $newline never
         <div #wrap>
             ^{pageBody pc}
         <footer>
-            <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5
-            <br />
-            Powered by #
+            <a href=https://github.com/ahushh/Monaba>Monaba 1.1.5 
+            / 
             <a href=http://www.haskell.org/>Haskell 
-            and 
+            / 
             <a href=http://www.yesodweb.com/>Yesod
             <br />
             #{preEscapedToHtml $ extraCopyright $ appExtra $ settings master}

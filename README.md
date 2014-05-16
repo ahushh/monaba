@@ -18,7 +18,7 @@ Features
 * Internationalization
 * Country flag support
 * Antigate-resistant CAPTCHA
-* Adaptive design
+* Responsive design
 * Switchable stylesheets
 * YouTube and pleer.com embedding
 * Works fine with JavaScript disabled

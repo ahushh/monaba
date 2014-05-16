@@ -33,8 +33,8 @@ object {
 #sidebar {
     background: none repeat scroll 0 0 #333333;
     box-shadow: -2px 0 8px -1px #111111 inset;
-    padding: 10px 0 0 5px;
-    position: absolute;
+    padding: 7px;
+    position: fixed;
     z-index: 999999;
 }
 /* ********************************* */
@@ -255,6 +255,14 @@ form.custom .custom.checkbox:before {
 /* *************************************** */
 /* **************** Header *************** */
 /* *************************************** */
+.scroll-top:before {
+    content: "⇈";
+}
+
+.scroll-bottom:before {
+    content: "⇊";
+}
+
 .js #control-panel, .js #board-list, .no-js .top-bar {
     display: none
 }

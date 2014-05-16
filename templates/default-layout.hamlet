@@ -31,8 +31,6 @@ $maybe msg <- mmsg
             #{nameOfTheBoard}
           <a onclick="$('#sidebar').toggle();" .show-for-small>
             #{nameOfTheBoard}
-      <li .toggle-topbar>
-        <a>
     <section .top-bar-section .hide-for-small>
       <ul .left>
         <li .divider>
@@ -54,6 +52,10 @@ $maybe msg <- mmsg
                     <li>
                       <a .board-link #board-#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardDescription b}
                   <li .divider>
+        <li>
+          <a onclick="window.scrollTo(0,0);" .scroll-top>
+        <li>
+          <a onclick="window.scrollTo(0, document.body.scrollHeight);" .scroll-bottom>
       <ul .right>
         <li>
           <a href=@{HelpR}>_{MsgHelp}
@@ -104,6 +106,9 @@ $maybe msg <- mmsg
     $nothing         
         <li>
           <a href=@{AuthR LoginR}>_{MsgManage}
+    <li>
+      <a onclick="window.scrollTo(0,0);" .scroll-top>
+      <a onclick="window.scrollTo(0, document.body.scrollHeight);" .scroll-bottom>
 
 <section id="main" role="main">
   ^{widget}

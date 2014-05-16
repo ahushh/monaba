@@ -206,7 +206,8 @@
 *** TODO docs
 ** TODO FIX: image deformation while scaling with centred expanding
 ** TODO FIX: max file size limit is hard coded
-** TODO FIX: boards without a category are shown two times
+** DONE FIX: boards without a category are shown two times
+   CLOSED: [2014-05-16 Пт 17:35]
 ** TODO Get rid of enormous tuples in Handler/Admin/*
 ** TODO Statistics
 ** TODO Showing last 50/100 posts from a thread

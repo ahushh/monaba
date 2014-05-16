@@ -27,6 +27,8 @@ configForm :: Config ->
 configForm config extra = do
   let f g = Just $ Just $ g config
       f :: forall a. (Config -> a) -> Maybe (Maybe a)
+      categories' | null (configBoardCategories config) = Nothing
+                  | otherwise                           = Just $ Just $ T.intercalate "," $ configBoardCategories config
   msgrender <- getMessageRender
   let showRecentPostsField = checkBool (>0) (msgrender $ MsgMustBeGreaterThan (msgrender MsgShowRecentPosts) 0) intField
       bigInput lbl         = lbl { fsAttrs = [("size","55")] }
@@ -35,7 +37,7 @@ configForm config extra = do
   (captchaTimeoutRes  , captchaTimeoutView ) <- mopt intField  "" (f configCaptchaTimeout )
   (replyDelayRes      , replyDelayView     ) <- mopt intField  "" (f configReplyDelay     )
   (threadDelayRes     , threadDelayView    ) <- mopt intField  "" (f configThreadDelay    )
-  (boardCategoriesRes , boardCategoriesView) <- mopt textField (bigInput "") (Just $ Just $ T.intercalate "," $ configBoardCategories config)
+  (boardCategoriesRes , boardCategoriesView) <- mopt textField (bigInput "") categories'
   (newsBoardRes       , newsBoardView      ) <- mopt textField "" (f configNewsBoard      )
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
@@ -87,7 +89,7 @@ postConfigR = do
                              , configCaptchaTimeout  = fromMaybe (configCaptchaTimeout  oldConfigVal) captchaTimeout
                              , configReplyDelay      = fromMaybe (configReplyDelay      oldConfigVal) replyDelay
                              , configThreadDelay     = fromMaybe (configThreadDelay     oldConfigVal) threadDelay
-                             , configBoardCategories = maybe     (configBoardCategories oldConfigVal) (T.splitOn ",") boardCategories
+                             , configBoardCategories = maybe     [] (T.splitOn ",") boardCategories
                              , configNewsBoard       = fromMaybe (configNewsBoard       oldConfigVal) newsBoard
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings

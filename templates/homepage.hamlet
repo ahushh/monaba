@@ -6,13 +6,17 @@
   <div .columns .large-10 .large-centered>
     <ul .large-block-grid-2>
       <li .panel>
+        $with bs <- widgetHelperFilterBoards boards "" group
+          $forall Entity _ b <- bs
+            <p>
+              <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ — #{boardDescription b}
         $forall c <- boardCategories
           $with bs <- widgetHelperFilterBoards boards c group
-            $if not (null bs)
               <div .text-center .board-category>
                 <h6>#{c}
               $forall Entity _ b <- bs
-                <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
+                <p>
+                  <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ — #{boardDescription b}
       <li>
         <img alt="Main" src=#{staticDir ++ "/home.jpg"}>
 

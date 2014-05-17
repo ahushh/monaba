@@ -1,9 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE RecordWildCards   #-}
 module Model where
 
 import Prelude
 import Yesod
+import Control.Monad (mzero)
 import Data.Text     (Text)
 import Database.Persist.Quasi
 import Data.Typeable (Typeable)
@@ -26,40 +28,9 @@ instance HashDBUser User where
                                      , userPassword = h
                                      }
                                    
-------------------------------------------------------------------------------
--- API    
-------------------------------------------------------------------------------
 instance ToJSON Textarea where
   toJSON Textarea {..} = String unTextarea
 
-instance ToJSON Post where
-    toJSON Post {..} = object
-        [ "board"       .= postBoard
-        , "id"          .= postLocalId
-        , "parent"      .= postParent
-        , "date"        .= postDate
-        , "bumped"      .= postBumped
-        , "sage"        .= postSage
-        , "sticked"     .= postSticked
-        , "locked"      .= postLocked
-        , "autosage"    .= postAutosage
-        , "message"     .= postMessage
-        , "rawMessage"  .= postRawMessage
-        , "title"       .= postTitle
-        , "name"        .= postName
-        , "deletedByOp" .= postDeletedByOp
-        ]
-
-instance ToJSON Attachedfile where
-    toJSON Attachedfile {..} = object
-        [ "md5"         .= attachedfileMd5
-        , "name"        .= attachedfileName
-        , "origName"    .= attachedfileOrigName
-        , "type"        .= attachedfileType
-        , "thumbSize"   .= attachedfileThumbSize
-        , "thumbWidth"  .= attachedfileThumbWidth
-        , "thumbHeight" .= attachedfileThumbHeight
-        , "width"       .= attachedfileWidth
-        , "height"      .= attachedfileHeight
-        , "size"        .= attachedfileSize
-        ]
+instance FromJSON Textarea where
+  parseJSON (String x) = return $ Textarea x
+  parseJSON _          = mzero

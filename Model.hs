@@ -34,3 +34,4 @@ instance ToJSON Textarea where
 instance FromJSON Textarea where
   parseJSON (String x) = return $ Textarea x
   parseJSON _          = mzero
+

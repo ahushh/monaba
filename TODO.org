@@ -202,8 +202,10 @@
 *** DONE language switcher
     CLOSED: [2013-09-12 Чт 14:32]
 ** API
-*** TODO GeoIP
+*** DONE GeoIP
+    CLOSED: [2014-05-17 Сб 15:03]
 *** TODO docs
+*** TODO Add client side post renderer
 ** TODO FIX: image deformation while scaling with centred expanding
 ** TODO FIX: max file size limit is hard coded
 ** DONE FIX: boards without a category are shown two times

@@ -24,6 +24,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
     files <- selectFiles p
     return (p, files))
+  let postsAndFiles' = map (\((Entity k p), fs) -> (Entity k (stripFields p permissions), fs)) postsAndFiles
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
   geoIps      <- getCountries (if geoIpEnabled then postsAndFiles else [])
   timeZone    <- getTimeZone
@@ -42,7 +43,20 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
                                $forall (post, files) <- postsAndFiles
                                    ^{postWidget post files rating displaySage True True False  permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory}
                                |]
-          provideJson $ map (entityVal *** map entityVal) postsAndFiles
+          provideJson $ object [ "posts"  .= postsAndFiles'
+                               , "config" .= object [ "rating"       .= rating
+                                                    , "sage"         .= displaySage
+                                                    , "in_thread"    .= True
+                                                    , "can_post"     .= True
+                                                    , "show_parent"  .= False
+                                                    , "permissions"  .= permissions
+                                                    , "geo"          .= geoIps
+                                                    , "time_zone"    .= timeZone
+                                                    , "max_file_len" .= maxLenOfFileName
+                                                    , "show_date"    .= showPostDate
+                                                    , "show_history" .= showEditHistory
+                                                    ]
+                               ]
 
 getApiDeletedPostsR :: Text -> Int -> Handler TypedContent
 getApiDeletedPostsR board thread = do
@@ -99,6 +113,10 @@ getApiLastPostsR board thread postCount = do
   getPostsHelper selectPostsAll selectPostsHB board thread errorString
 
 ---------------------------------------------------------------------------------------------------------
+stripFields post permissions
+  | ViewIPAndIDP `elem` permissions = post { postPassword = "", postOwner = Nothing }
+  | otherwise                       = post { postPassword = "", postIp = "", postPosterId = "", postOwner = Nothing }
+
 getApiPostR :: Text -> Int -> Handler TypedContent
 getApiPostR board postId = do
   muser    <- maybeAuth
@@ -114,23 +132,37 @@ getApiPostR board postId = do
       selectPostsAll = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False]
       selectPostsHB  = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. False] ||.
                        [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
-  maybePost <- runDB $ selectFirst selectPosts []
-  when (isNothing maybePost) notFound
-  let post    = fromJust maybePost
-      postKey = entityKey $ fromJust maybePost
+  mePost <- runDB $ selectFirst selectPosts []
+  when (isNothing mePost) notFound
+  let ePost = fromJust mePost
+      post  = entityVal ePost
+      post' = stripFields post permissions
+      postKey = entityKey $ fromJust mePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps      <- getCountries [(post, files) | geoIpEnabled]
+  geoIps      <- getCountries [(ePost, files) | geoIpEnabled]
   timeZone    <- getTimeZone
   rating      <- getCensorshipRating
   displaySage <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
-  let postAndFiles = (entityVal post, map entityVal files)
-      widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
-                       else postWidget post files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
+  let widget = if postParent post == 0
+               then postWidget ePost files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
+               else postWidget ePost files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
   selectRep $ do
     provideRep $ bareLayout widget
-    provideJson postAndFiles
+    provideJson $ object [ "post"   .= (post', files)
+                         , "config" .= object [ "rating"       .= rating
+                                              , "sage"         .= displaySage
+                                              , "in_thread"    .= True
+                                              , "can_post"     .= True
+                                              , "show_parent"  .= False
+                                              , "permissions"  .= permissions
+                                              , "geo"          .= geoIps
+                                              , "time_zone"    .= timeZone
+                                              , "max_file_len" .= maxLenOfFileName
+                                              , "show_date"    .= showPostDate
+                                              , "show_history" .= showEditHistory
+                                              ]
+                         ]
 ---------------------------------------------------------------------------------------------------------
 getApiHideThreadR :: Text -> Int -> Handler TypedContent
 getApiHideThreadR board threadId

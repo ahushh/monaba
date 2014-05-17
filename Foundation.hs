@@ -23,14 +23,14 @@ import Text.Jasmine (minifym)
 import Text.Hamlet (hamletFile)
 import Yesod.Core.Types (Logger)
 
-import Data.Text (Text)
+import Data.Text (Text, pack, unpack)
 import qualified Data.Text as T
 
 import GHC.Word (Word64)
 
 import Network.HTTP.Types  (mkStatus)
 import Network.Wai         (Request(..))
-import Control.Monad       (when, mplus)
+import Control.Monad       (when, mplus, mzero)
 import Control.Applicative ((<$>))
 import Data.Maybe          (fromJust, isNothing, isJust)
 
@@ -74,10 +74,17 @@ data App = App
 instance HasHttpManager App where
     getHttpManager = httpManager
 ---------------------------------------------------------------------------------------------------------
--- Data types appear in models
+-- Utility data types
 ---------------------------------------------------------------------------------------------------------
 data Censorship = SFW | R15 | R18 | R18G
     deriving (Show, Read, Eq, Enum, Bounded, Ord)
+
+instance ToJSON Censorship where
+  toJSON x = String $ pack $ show x
+
+instance FromJSON Censorship where
+  parseJSON (String x) = return $ read $ unpack x
+  parseJSON _          = mzero
 
 data ManageBoardAction = NewBoard | AllBoards | UpdateBoard
                        deriving (Show, Read, Eq)

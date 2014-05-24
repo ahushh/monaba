@@ -836,7 +836,7 @@ function showEditForm(postId, realId) {
 
     var pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
-        var raw = json[0].rawMessage;
+        var raw = json.post[0].rawMessage;
         if (raw) {
             $('#edit-form textarea').val(raw).trigger('autosize.resize');
         } else { // for old posts only

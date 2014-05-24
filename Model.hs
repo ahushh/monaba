@@ -27,11 +27,3 @@ instance HashDBUser User where
     setSaltAndPasswordHash s h p = p { userSalt     = s
                                      , userPassword = h
                                      }
-                                   
-instance ToJSON Textarea where
-  toJSON Textarea {..} = String unTextarea
-
-instance FromJSON Textarea where
-  parseJSON (String x) = return $ Textarea x
-  parseJSON _          = mzero
-

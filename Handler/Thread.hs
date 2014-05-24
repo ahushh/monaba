@@ -128,7 +128,7 @@ postThreadR board thread = do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         ip        <- pack <$> getIp
-        -- check ban
+        -- check if the poster is banned
         msgrender <- getMessageRender
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $
@@ -146,7 +146,7 @@ postThreadR board thread = do
         ------------------------------------------------------------------------------------------------------           
         now      <- liftIO getCurrentTime
         -- check too fast posting
-        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent !=. 0] [Desc PostDate] -- last reply by IP
+        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent !=. 0] [Desc PostDate]
         when (isJust lastPost) $ do
           let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
@@ -157,7 +157,7 @@ postThreadR board thread = do
         hellbanned       <- (>0) <$> runDB (count [HellbanUserId ==. posterId])
         messageFormatted <- doYobaMarkup message board thread
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        when (isNothing lastPost') $  -- reply to non-existent thread
+        when (isNothing lastPost') $  -- reply to a nonexistent thread
           trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
         maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
         maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
@@ -188,10 +188,10 @@ postThreadR board thread = do
         insertedFiles <- insertFiles files ratings thumbSize postKey
         sendPost boardVal thread (Entity postKey newPost) insertedFiles hellbanned posterId
         -------------------------------------------------------------------------------------------------------
-        -- bump thread if it's necessary
+        -- bump the thread if it is below the bump limit
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
         unless (nobump || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
-        -- remember poster name
+        -- remember the poster name
         case name of
           Just n  -> setSession "name" n
           Nothing -> deleteSession "name"

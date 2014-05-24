@@ -41,7 +41,7 @@ getEventR = do
   when (Map.size clients > maxConnections) $
     liftIO $ atomically $ modifyTVar' clientsRef (Map.fromList . take (maxConnections-1) .
                                                   sortBy (comparing $ sseClientConnected . snd) . Map.toList)
-  -- add new client to the connection pool
+  -- add a new client to the connection pool
   when (isNothing client) $ do
     muser       <- maybeAuth
     permissions <- getPermissions <$> getMaybeGroup muser

@@ -113,6 +113,7 @@ getApiLastPostsR board thread postCount = do
   getPostsHelper selectPostsAll selectPostsHB board thread errorString
 
 ---------------------------------------------------------------------------------------------------------
+stripFields :: Post -> [Permission] -> Post
 stripFields post permissions
   | ViewIPAndIDP `elem` permissions = post { postPassword = "", postOwner = Nothing }
   | otherwise                       = post { postPassword = "", postIp = "", postPosterId = "", postOwner = Nothing }

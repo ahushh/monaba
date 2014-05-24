@@ -48,7 +48,7 @@ import           Data.Text.Encoding      (decodeUtf8, encodeUtf8)
 
 import           System.Random           (randomIO)
 import           System.FilePath         ((</>))
-import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
+import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
 
 import           Data.Digest.OpenSSL.MD5 (md5sum)
@@ -103,7 +103,7 @@ myFormatTime :: Int     -> -- ^ Time offset in seconds
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 
--- | Truncate a file name if its length is greater than 47
+-- | Truncate a file name if its length is greater than maxLen
 truncateFileName :: Int -> String -> String
 truncateFileName maxLen s = if len > maxLen then result else s
   where len      = length s

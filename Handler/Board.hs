@@ -17,12 +17,12 @@ postBoardNoPageR :: Text -> Handler Html
 postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
 selectThreadsAndPreviews :: Text         -> -- ^ Board name
-                           Int          -> -- ^ Page
+                           Int          -> -- ^ Page number
                            Int          -> -- ^ Threads per page
                            Int          -> -- ^ Previews per thread
                            Text         -> -- ^ Poster ID
                            [Permission] -> -- ^ Permissions
-                           [Int]        -> -- ^ Hidden threads
+                           [Int]        -> -- ^ Locald IDs of hidden threads
                            Handler [(  (Entity Post, [Entity Attachedfile])
                                     , [(Entity Post, [Entity Attachedfile])]
                                     , Int
@@ -154,10 +154,10 @@ postBoardR board _ = do
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
       | not $ all (isFileAllowed allowedTypes) files  -> msgRedirect MsgTypeNotAllowed
       | otherwise                                   -> do
-        -- save form values in case something goes wrong
+        -- save the form values in case something goes wrong
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
-        -- check ban
+        -- check if the poster is banned
         msgrender <- getMessageRender
         ip  <- pack <$> getIp
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
@@ -176,7 +176,7 @@ postBoardR board _ = do
         -------------------------------------------------------------------------------------------------------
         now      <- liftIO getCurrentTime
         -- check too fast posting
-        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent ==. 0] [Desc PostDate] -- last thread by IP
+        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent ==. 0] [Desc PostDate]
         when (isJust lastPost) $ do
           let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
@@ -219,7 +219,7 @@ postBoardR board _ = do
           in when (tl >= 0) $
                flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
-        -- remember poster name
+        -- remember the poster name
         case name of
           Just n  -> setSession "name" n
           Nothing -> deleteSession "name"

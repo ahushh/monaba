@@ -123,90 +123,13 @@ label.inline {
 form.custom .custom.checkbox:before {
     line-height: 1.11;
 }
-/* ********************************* */
-/* ************* Icons ************* */
-/* ********************************* */
-[class^="icon-"], [class*=" icon-"] {
-    vertical-align: text-top;
-    background-repeat: no-repeat;
-    display: inline;
-    height: 14px;
-    line-height: 14px;
-    margin-top: 3px;
-    width: 14px;
-    cursor: pointer;
-}
 
-.icon-expand {
-    background-position: -581px -173px;
-}
-
-.icon-justify {
-    background-position: -365px -53px;
-}
-
-.icon-classic-hammer {
-    background-position: -773px -173px;
-}
-
-.icon-settings {
-    background-position: -845px -125px;
-}
-
-.icon-move-thread {
-    background-position: -365px -101px;
-}
-
-.icon-close-popup-all {
-    background-position: -1085px -77px;
-}
-
-.icon-close-popup-one {
-    background-position: -29px -101px;
-}
-
-.icon-thread-sticked {
-    background-position: -989px -149px;
-}
-
-.icon-thread-locked {
-    background-position: -173px -101px;
-}
-
-.icon-thread-autosage {
-    background-position: -389px -101px;
-}
-
-.icon-sage {
-    background-position: -389px -101px;
-    cursor: auto;
-}
-
-.icon-hide-thread {
-    background-position: -1061px -77px;
+.icon-hide-thread, .icon-hide-thread-completely {
+    margin: 1px;
     float: right;
 }
-
-.no-js .icon-hide-thread {
+.no-js .icon-hide-thread, .no-js .icon-hide-thread-completely {
     display: none;
-}
-
-.icon-show-thread {
-    float: right;
-    background-position: -1037px -77px;
-}
-
-.icon-hide-thread-completely {
-    float: right;
-    background-position: -77px -29px;
-}
-
-.no-js .icon-hide-thread-completely {
-    display: none;
-}
-
-.icon-reply {
-    background-position: -605px -173px;
 }
 
 .no-js .icon-reply {
@@ -218,39 +141,12 @@ form.custom .custom.checkbox:before {
     text-align: center;
 }
 
-.icon-thread-refresh {
-    background-position: -773px -29px;
-}
-
-.icon-edit-post {
-    background-position: -77px -77px;
-}
-
 .no-js .icon-edit-post {
     display: none;
 }
 
-.icon-close {
-    background-position: -269px -101px;
-}
-
-.icon-del-post {
-    background-position: -269px -101px;
-    opacity: 0.3;
-}
-
-.no-js .icon-del-post {
-    display: none;
-}
-
-.icon-eye-open {
-    background-position: -53px -29px;
-    cursor: auto;
-}
-
-.icon-play {
-    background-position: -629px -77px;
-    margin-right: 3px;
+.fa {
+    cursor: default;
 }
 /* *************************************** */
 /* **************** Header *************** */

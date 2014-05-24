@@ -281,7 +281,7 @@ function addEmbeddedPlayer(post) {
                 $(iframe).css('height', height);
 
                 $(link).attr('class', 'video-link');
-                $(link).html("<img alt=play src='@{StaticR img_blank_gif}' class='icon-play'>"+title+"</div>");
+                $(link).html("<i class='fa fa-youtube-play'></i>"+title+"");
                 var loadIframe = function () {
                     $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&&wmode=opaque&enablejsapi=1"+ 
                                            (getItem('youtubeHTML5') ? "&html5=1" : ""));
@@ -363,14 +363,14 @@ function hideThread(threadId, board) {
     if ($('#thread-'+threadId).has('.hidden-thread').length) {
         $('#thread-'+threadId).find('.hidden-thread').show()
     } else {
-        $('#thread-'+threadId+" > .columns").append('<div class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></div>');
+        $('#thread-'+threadId+" > .columns").append('<div class=hidden-thread> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <i class="fa fa-plus" onclick="unhideThread('+threadId+', \''+board+'\')" title="'+#{toJSON $ msgrender MsgShowThread}+'"></i></div>');
     }
 
     $(".post-list #post-"+threadId+"-0-"+board).hide();
     if ($(".post-list").has("#hidden-thread-"+threadId+"-0-"+board).length) {
         $('.post-list #hidden-thread-'+threadId+"-0-"+board).show();
     } else {
-        $('.post-list #post-'+threadId+"-0-"+board).after('<div id="hidden-thread-'+threadId+"-0-"+board+'" class="hidden-thread row"> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <img class=icon-show-thread src="@{StaticR img_blank_gif}" onclick="unhideThread('+threadId+', \''+board+'\')" alt="'+#{toJSON $ msgrender MsgShowThread}+'" title="'+#{toJSON $ msgrender MsgShowThread}+'"></div>');
+        $('.post-list #post-'+threadId+"-0-"+board).after('<div id="hidden-thread-'+threadId+"-0-"+board+'" class="hidden-thread row"> No. '+threadId+' '+#{toJSON $ msgrender MsgThreadIsHidden}+' <i class="fa fa-plus" onclick="unhideThread('+threadId+', \''+board+'\')" title="'+#{toJSON $ msgrender MsgShowThread}+'"></i></div>');
     }
 }
 
@@ -400,7 +400,7 @@ function popupAlert(text, delay, ajax, close) {
     $(msg).hide();
     $(msg).html("<div class='message'>"+text+"</div>");
     if (ajax)
-        $(msg).prepend("<img style='display:inline' alt=loading... src=@{StaticR img_ajax_loader_gif}> ");
+        $(msg).prepend("<i class='fa fa-spin fa-spinner'></i>");
     if (close)
         $(msg).prepend("<div class='close-popup-alert'><a onclick='$(this).parent().parent().fadeOut(400,function(){$(this).remove()});'>✖ </a></div>");
     $('#popup-alert-wrapper').prepend(msg);
@@ -579,8 +579,8 @@ function cachePopupPosts() {
         }
         // if (! Monaba.postCache[board][postId]) {
             var post = $(this).clone().removeClass().addClass("post").addClass("popup").attr('id', 'popup-'+$(this).attr('id'));
-            var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
+            var closeAllPopup = "<i title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
+            var closeOnePopup = "<i title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
             post.append(delPopup);

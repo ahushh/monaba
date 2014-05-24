@@ -133,10 +133,6 @@ textarea:focus {
     font-size: 0.7em;
 }
 /* *************************************** */
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-black.png");
-}
-/* *************************************** */
 /* *********** Post and threads ********** */
 /* *************************************** */
 .reply, .post-list .opening {

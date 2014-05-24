@@ -13,6 +13,10 @@ a:hover, a:active {
     color: #742307;
 }
 
+.fa {
+    color: grey;
+}
+
 img {
   /* for Webkit browsere, Chrome 19+, Safari 6+ ... */
   -webkit-filter: grayscale(1);
@@ -315,11 +319,6 @@ button.secondary:hover, .button.secondary:hover {
 
 .rules {
     font-size: 0.7em;
-}
-/* *************************************** */
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-white.png");
-    opacity: 0.5;
 }
 /* *************************************** */
 /* *********** Post and threads ********** */

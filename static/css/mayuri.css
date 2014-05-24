@@ -183,11 +183,6 @@ input::-moz-placeholder {
 
 }
 /* *************************************** */
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-white.png");
-    opacity: 0.5;
-}
-/* *************************************** */
 /* *********** Post and threads ********** */
 /* *************************************** */
 .reply, .post-list .opening, .popup {

@@ -30,7 +30,7 @@ $else
                         _{MsgPostsOmitted omitted}
                         <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>
                           _{MsgExpandThread}
-                        <img .hide .ajax-loading src=@{StaticR img_ajax_loader_gif}>
+                        <i .ajax-loading .fa .fa-spin .fa-spinner style="display:none">
                     <div .hide .truncate-thread .row>
                       <div .columns .large-12>
                         _{MsgThreadIsExpanded}

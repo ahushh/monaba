@@ -3,7 +3,7 @@
   <div .post-header .row>
     <div .columns .large-12>
       <input .mark-to-delete type=checkbox name=postdelete value=#{sPostKey}>
-      <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})" src=@{StaticR img_blank_gif} .icon-edit-post>
+      <i title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})"  .icon-edit-post .fa .fa-edit>
       $maybe (code, name) <- lookup (entityKey ePost) geoIps
           <img src=#{geoIconPath code} title=#{name}>
       <span .post-title>#{postTitle postVal}
@@ -12,15 +12,15 @@
           <span .time>#{myFormatTime tOffset $ postDate postVal}
       $if isThread
         $if not inThread
-           <img onclick="hideThread(#{sPostId},'#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThread} alt=_{MsgHideThread} .icon-hide-thread> 
-           <img onclick="hideThreadCompletely(#{sPostId},'#{board}')" src=@{StaticR img_blank_gif} title=_{MsgHideThreadCompletely} alt=_{MsgHideThreadCompletely} .icon-hide-thread-completely>
+           <i onclick="hideThread(#{sPostId},'#{board}')"  title=_{MsgHideThread} .icon-hide-thread .fa .fa-minus> 
+           <i onclick="hideThreadCompletely(#{sPostId},'#{board}')"  title=_{MsgHideThreadCompletely} .icon-hide-thread-completely .fa .fa-eye-slash>
       <span .thread-status>
           $if postSticked postVal
-              <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
+              <i title=_{MsgThreadIsSticked} .fa .fa-caret-down>
           $if postLocked postVal
-              <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
+              <i  title=_{MsgThreadIsLocked} .fa .fa-lock>
           $if postAutosage postVal
-              <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
+              <i  title=_{MsgThreadAutosage} .fa .fa-angle-double-down>
       <span .reflink>
           $if isThread
               <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sPostId)}##{sPostId}>No.
@@ -37,12 +37,12 @@
       <!-- Moderation -->
       $if elem ManageBanP permissions
         <a href=@{BanByIpR board (postIp postVal)}>
-          <img title="_{MsgBanPoster}" src=@{StaticR img_blank_gif} .icon-classic-hammer>
+          <i title="_{MsgBanPoster}"  .fa .fa-gavel>
 
       $if elem ManageThreadP permissions
         $if isThread
-          <img title="_{MsgMoveThread}" alt="_{MsgMoveThread}" onclick="moveThread('#{board}', #{sPostId})" src=@{StaticR img_blank_gif} .icon-move-thread> 
-          <img title="_{MsgManageThread}" alt="_{MsgManageThread}" data-dropdown="manage-thread-#{sPostId}" src=@{StaticR img_blank_gif} .icon-settings>
+          <i title="_{MsgMoveThread}" onclick="moveThread('#{board}', #{sPostId})"  .fa .fa-arrows> 
+          <i title="_{MsgManageThread}" data-dropdown="manage-thread-#{sPostId}"  .fa .fa-cog>
           <ul id="manage-thread-#{sPostId}" .f-dropdown>
             <li>
               <a href=@{StickR board (postLocalId postVal)}>_{MsgStickThread}
@@ -52,7 +52,7 @@
               <a href=@{AutoSageR board (postLocalId postVal)}>_{MsgAutosage}
 
       $if elem HellBanP permissions
-          <img title="_{MsgHellbanning}" alt="_{MsgHellbanning}" data-dropdown="manage-hellban-#{sPostId}" src=@{StaticR img_blank_gif} .icon-justify>
+          <i title="_{MsgHellbanning}" data-dropdown="manage-hellban-#{sPostId}" .fa .fa-shield>
           <ul id="manage-hellban-#{sPostId}" .f-dropdown>
             <li>
               <a  href=@{HellBanDoR (read sPostKey) "none" True}>_{MsgHellbanPoster}
@@ -69,15 +69,14 @@
             <li>
               <a href=@{HellBanUndoR (read sPostKey) "unban"}>_{MsgHellbanUnbanUser} 
           $if postHellbanned postVal
-              <img alt="_{MsgPostIsVisibleOnlyForAuthor}" title=_{MsgPostIsVisibleOnlyForAuthor} src=@{StaticR img_blank_gif} .icon-eye-open>
+              <i title=_{MsgPostIsVisibleOnlyForAuthor} .fa .fa-eye>
       <!-- End of moderation -->
       $if canPost
-          <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} .icon-reply>
+          <i title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" .icon-reply .fa .fa-toggle-right>
 
       $if isThread
         $if not inThread
-          <a href=@{ThreadR board $ postLocalId postVal}>
-            <img alt="_{MsgOpenThread}" title="_{MsgOpenThread}" src=@{StaticR img_blank_gif} .icon-expand>
+          <a href=@{ThreadR board $ postLocalId postVal}>_{MsgOpenThread}
     $if elem ViewIPAndIDP permissions
         <div .columns .large-12>
           <span .ip-and-id>

@@ -28,8 +28,8 @@ $if hasAccessToReply
     
     <div .row .thread-bottom>
       <div .columns .large-12 .small-12>
-        <img src=@{StaticR img_blank_gif} title=refresh alt=refresh .icon-thread-refresh>
-        <img alt=loading .ajax-loading .hide src=@{StaticR img_ajax_loader_gif}>
+        <i .icon-thread-refresh .fa .fa-refresh>
+        <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
         <a class=refresh-thread onclick="refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});">_{MsgGetNewPosts}
         <a href=@{BoardNoPageR board }> _{MsgBack}
 

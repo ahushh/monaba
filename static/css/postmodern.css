@@ -63,12 +63,6 @@ hr {
     box-shadow: none;
     color: #dedede!important;
 }
-
-/* *************************************** */
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-white.png");
-    opacity: 0.6;
-}
 /* *************************************** */
 /* *********** Post and threads ********** */
 /* *************************************** */

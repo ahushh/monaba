@@ -58,20 +58,26 @@ $maybe msg <- mmsg
           <a onclick="window.scrollTo(0, document.body.scrollHeight);" .scroll-bottom>
       <ul .right>
         <li>
-          <a href=@{HelpR}>_{MsgHelp}
+          <a href=@{HelpR}>
+            <i title=_{MsgHelp} .fa .fa-lg .fa-info>
         <li>
-          <a href=@{SettingsR}>_{MsgSettings}
+          <a href=@{SettingsR}>
+            <i title=_{MsgSettings} .fa .fa-lg .fa-wrench>
         $maybe Entity _ user <- muser
+            <li .divider>
             <li>
               <a>
                 #{userName user}
             <li>
-              <a href=@{AdminR}>_{MsgManage}
+              <a href=@{AdminR}>
+                <i title=_{MsgManage} .fa .fa-lg .fa-gears>
             <li>
-              <a href=@{AuthR LogoutR}>_{MsgLogout}
+              <a href=@{AuthR LogoutR}>
+                <i title=_{MsgLogout} .fa .fa-lg .fa-sign-out>
         $nothing         
             <li>
-              <a href=@{AuthR LoginR}>_{MsgManage}
+              <a href=@{AuthR LoginR}>
+                <i title=_{MsgManage} .fa .fa-lg .fa-sign-in>
 
 <!-- for small screens -->
 <aside .hide id="sidebar">
@@ -92,20 +98,30 @@ $maybe msg <- mmsg
           <li .divider>
     <li .divider>
     <li>
-      <a href=@{HelpR}>_{MsgHelp}
+      <a href=@{HelpR}>
+        <i .fa .fa-info>
+        _{MsgHelp}
     <li>
-      <a href=@{SettingsR}>_{MsgSettings}
+      <a href=@{SettingsR}>
+        <i .fa .fa-wrench>
+        _{MsgSettings}
     $maybe Entity _ user <- muser
         <li>
           <a>
             #{userName user}
         <li>
-          <a href=@{AdminR}>_{MsgManage}
+          <a href=@{AdminR}>
+            <i .fa .fa-gears>
+            _{MsgManage}
         <li>
-          <a href=@{AuthR LogoutR}>_{MsgLogout}
+          <a href=@{AuthR LogoutR}>
+            <i .fa .fa-sign-out>
+            _{MsgLogout}
     $nothing         
         <li>
-          <a href=@{AuthR LoginR}>_{MsgManage}
+          <a href=@{AuthR LoginR}>
+            <i title=_{MsgManage} .fa .fa-sign-in>
+            _{MsgManage}
     <li>
       <a onclick="window.scrollTo(0,0);" .scroll-top>
       <a onclick="window.scrollTo(0, document.body.scrollHeight);" .scroll-bottom>

@@ -91,7 +91,7 @@ You may also want to change meta tags such as `description` and `keywords` in te
 
 Create a database:
 
-    mysql -u mysqluser -pmysqlpassword -e 'create database Monaba_production;'
+    mysql -u mysqluser -pmysqlpassword -e 'create database Monaba_production default character set utf8;'
 
 Run the application to initialize database schema:
 

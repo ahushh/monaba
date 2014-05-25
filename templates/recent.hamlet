@@ -4,7 +4,8 @@
     $forall (ePost, eFiles) <- postsAndFiles
       $with showDate <- elem (postBoard (entityVal ePost)) boardsWhereShowDate
         $with showEditHistory <- elem (postBoard (entityVal ePost)) boardsWhereShowHistory
+          $with geoIpEnabled' <- elem (postBoard (entityVal ePost)) geoIpEnabled
             $if (postParent $ entityVal ePost) > 0
-              ^{postWidget ePost eFiles rating displaySage False False True permissions geoIps timeZone maxLenOfFileName showDate showEditHistory}
+              ^{postWidget ePost eFiles rating displaySage False False True geoIpEnabled' permissions timeZone maxLenOfFileName showDate showEditHistory}
             $else
-              ^{postWidget ePost eFiles rating False       False False True permissions geoIps timeZone maxLenOfFileName showDate showEditHistory}
+              ^{postWidget ePost eFiles rating False       False False True geoIpEnabled' permissions timeZone maxLenOfFileName showDate showEditHistory}

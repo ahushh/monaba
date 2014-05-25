@@ -66,8 +66,6 @@ getThreadR board thread = do
   posterId <- getPosterId
   unless (checkHellbanned eOpPost permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
-  geoIps <- getCountries (if geoIpEnabled then allPosts else [])
-  -------------------------------------------------------------------------------------------------------
   acaptcha <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ generateCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 
@@ -127,7 +125,8 @@ postThreadR board thread = do
         -- save form values in case something goes wrong
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
-        ip        <- pack <$> getIp
+        ip      <- pack <$> getIp
+        country <- getCountry ip
         -- check if the poster is banned
         msgrender <- getMessageRender
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
@@ -173,6 +172,7 @@ postThreadR board thread = do
                            , postPassword     = pswd
                            , postBumped       = Nothing
                            , postIp           = ip
+                           , postCountry      = (\(code,name') -> GeoCountry code name') <$> country
                            , postSage         = nobump
                            , postLocked       = False
                            , postSticked      = False

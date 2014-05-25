@@ -70,7 +70,7 @@ sendPost boardVal thread ePost files hellbanned posterId = do
   let board           = boardName boardVal
       showPostDate    = boardShowPostDate boardVal
       showEditHistory = boardShowEditHistory boardVal
-  geoIps           <- getCountries [(ePost, files) | boardEnableGeoIp boardVal]
+      geoIpEnabled = boardEnableGeoIp boardVal
   displaySage      <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
 
@@ -84,25 +84,25 @@ sendPost boardVal thread ePost files hellbanned posterId = do
                                                            , not (checkViewAccess' $ sseClientUser x)]
   forM_ filteredClients $ \(posterId', client) -> do
     when (thread /= 0) $ do
-      renderedPost  <- renderPost client ePost displaySage geoIps maxLenOfFileName showPostDate showEditHistory
+      renderedPost  <- renderPost client ePost displaySage geoIpEnabled maxLenOfFileName showPostDate showEditHistory
       let name        = board <> "-" <> showText thread <> "-" <> posterId'
           encodedPost = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ atomically $ writeTChan chan (name, encodedPost)
 
     when (board `notElem` sseClientRecentIgnoredBoards client) $ do
-      renderedPost' <- renderPostRecent client ePost geoIps maxLenOfFileName showPostDate showEditHistory
+      renderedPost' <- renderPostRecent client ePost geoIpEnabled maxLenOfFileName showPostDate showEditHistory
       let nameRecent     = "recent-" <> posterId'
           encodedPost' = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
       liftIO $ atomically $ writeTChan chan (nameRecent, encodedPost')
-  where renderPost client post displaySage geoIps maxLenOfFileName showPostDate showEditHistory =
+  where renderPost client post displaySage geoIpEnabled maxLenOfFileName showPostDate showEditHistory =
           bareLayout $ postWidget post
                        files (sseClientRating client) displaySage True True False
-                       (sseClientPermissions client) geoIps
+                       geoIpEnabled (sseClientPermissions client)
                        (sseClientTimeZone client) maxLenOfFileName showPostDate showEditHistory
-        renderPostRecent client post geoIps maxLenOfFileName showPostDate showEditHistory =
+        renderPostRecent client post geoIpEnabled maxLenOfFileName showPostDate showEditHistory =
           bareLayout $ postWidget  post
                        files (sseClientRating client) False True True True
-                       (sseClientPermissions client) geoIps
+                       geoIpEnabled (sseClientPermissions client)
                        (sseClientTimeZone client) maxLenOfFileName showPostDate showEditHistory
 
 sendDeletedPosts :: [Post] -> Handler ()

@@ -34,10 +34,6 @@ getAdminSearchIPR ip page = do
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
-  geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
-  let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
-  geoIps <- getCountries $ filter ((`elem`geoIpEnabled) . postBoard . entityVal . fst) postsAndFiles
-  -------------------------------------------------------------------------------------------------------------------
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   timeZone        <- getTimeZone
@@ -68,7 +64,6 @@ helperUID onlyHellbanned posterId page = do
   -------------------------------------------------------------------------------------------------------------------
   geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
-  geoIps <- getCountries $ filter ((`elem`geoIpEnabled) . postBoard . entityVal . fst) postsAndFiles
   -------------------------------------------------------------------------------------------------------------------
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

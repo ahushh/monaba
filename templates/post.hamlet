@@ -4,7 +4,8 @@
     <div .columns .large-12>
       <input .mark-to-delete type=checkbox name=postdelete value=#{sPostKey}>
       <i title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})"  .icon-edit-post .fa .fa-edit>
-      $maybe (code, name) <- lookup (entityKey ePost) geoIps
+      $if geoIp
+        $maybe GeoCountry code name <- postCountry postVal
           <img src=#{geoIconPath code} title=#{name}>
       <span .post-title>#{postTitle postVal}
       <span .poster-name>#{postName postVal}

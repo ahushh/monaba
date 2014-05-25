@@ -53,6 +53,7 @@ Post json
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text
+    country      GeoCountry Maybe
     sage         Bool
     sticked      Bool -- used for threads only
     locked       Bool -- used for threads only

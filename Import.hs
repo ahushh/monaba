@@ -124,15 +124,15 @@ postWidget :: Entity Post              ->
              Bool                     -> -- ^ Are we in a thread
              Bool                     -> -- ^ Have access to post
              Bool                     -> -- ^ Show parent board/thread in the upper right corner
+             Bool                     -> -- ^ If geo ip enabled
              [Permission]             -> -- ^ List of the all permissions
-             [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
              Int                      -> -- ^ Time offset in seconds
              Int                      -> -- ^ Max file name length
              Bool                     -> -- ^ Show date
              Bool                     -> -- ^ Show editing history
              Widget
 postWidget ePost eFiles rating sage inThread canPost
-  showParent permissions geoIps tOffset maxLenOfFileName showPostDate showEditHistory = 
+  showParent geoIp permissions tOffset maxLenOfFileName showPostDate showEditHistory = 
   let postVal   = entityVal ePost
       sPostId   = show $ postLocalId $ entityVal ePost
       sThreadId = show $ postParent  $ entityVal ePost
@@ -389,12 +389,6 @@ getCountry ip = do
   dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
   geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= flip geoLocateByIPAddress (encodeUtf8 ip)
   return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
-
-getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity post, files) tuples
-               Handler [(Key Post, (Text, Text))] -- ^ [(Post key, (country code, country name))]
-getCountries posts = fmap catMaybes $ forM posts $ \(Entity pId p,_) -> f . (pId,) <$> getCountry (postIp p)
-  where f (a, Just b ) = Just (a,b)
-        f (_, Nothing) = Nothing
 -------------------------------------------------------------------------------------------------------------------
 -- Board stats
 -------------------------------------------------------------------------------------------------------------------

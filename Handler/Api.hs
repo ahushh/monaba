@@ -26,7 +26,6 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
     return (p, files))
   let postsAndFiles' = map (\((Entity k p), fs) -> (Entity k (stripFields p permissions), fs)) postsAndFiles
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
-  geoIps      <- getCountries (if geoIpEnabled then postsAndFiles else [])
   timeZone    <- getTimeZone
   rating      <- getCensorshipRating
   displaySage <- getConfig configDisplaySage
@@ -41,7 +40,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget post files rating displaySage True True False  permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory}
+                                   ^{postWidget post files rating displaySage True True False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory}
                                |]
           provideJson $ object [ "posts"  .= postsAndFiles'
                                , "config" .= object [ "rating"       .= rating
@@ -50,7 +49,6 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
                                                     , "can_post"     .= True
                                                     , "show_parent"  .= False
                                                     , "permissions"  .= permissions
-                                                    , "geo"          .= geoIps
                                                     , "time_zone"    .= timeZone
                                                     , "max_file_len" .= maxLenOfFileName
                                                     , "show_date"    .= showPostDate
@@ -116,7 +114,7 @@ getApiLastPostsR board thread postCount = do
 stripFields :: Post -> [Permission] -> Post
 stripFields post permissions
   | ViewIPAndIDP `elem` permissions = post { postPassword = "", postOwner = Nothing }
-  | otherwise                       = post { postPassword = "", postIp = "", postPosterId = "", postOwner = Nothing }
+  | otherwise                       = post { postPassword = "", postIp = "", postCountry = Nothing, postPosterId = "", postOwner = Nothing }
 
 getApiPostR :: Text -> Int -> Handler TypedContent
 getApiPostR board postId = do
@@ -140,14 +138,13 @@ getApiPostR board postId = do
       post' = stripFields post permissions
       postKey = entityKey $ fromJust mePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps      <- getCountries [(ePost, files) | geoIpEnabled]
   timeZone    <- getTimeZone
   rating      <- getCensorshipRating
   displaySage <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let widget = if postParent post == 0
-               then postWidget ePost files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
-               else postWidget ePost files rating displaySage True True False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory
+               then postWidget ePost files rating displaySage True True False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory
+               else postWidget ePost files rating displaySage True True False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson $ object [ "post"   .= (post', files)
@@ -157,7 +154,6 @@ getApiPostR board postId = do
                                               , "can_post"     .= True
                                               , "show_parent"  .= False
                                               , "permissions"  .= permissions
-                                              , "geo"          .= geoIps
                                               , "time_zone"    .= timeZone
                                               , "max_file_len" .= maxLenOfFileName
                                               , "show_date"    .= showPostDate

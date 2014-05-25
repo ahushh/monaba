@@ -20,11 +20,11 @@ $if hasAccessToReply
 <form .custom .delete-form method=get action=@{DeleteR}>
     <div .thread .row id="thread-#{show $ postLocalId $ entityVal eOpPost }">
       <div .columns .large-12 .small-12>
-        ^{postWidget eOpPost opPostFiles rating False True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory}
+        ^{postWidget eOpPost opPostFiles rating False True hasAccessToReply False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory}
       
         $forall (eReply, files) <- repliesAndFiles
           $if checkHellbanned eReply permissions posterId
-            ^{postWidget eReply (reverse files) rating displaySage True hasAccessToReply False permissions geoIps timeZone maxLenOfFileName showPostDate showEditHistory}
+            ^{postWidget eReply (reverse files) rating displaySage True hasAccessToReply False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory}
     
     <div .row .thread-bottom>
       <div .columns .large-12 .small-12>

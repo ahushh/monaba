@@ -98,12 +98,6 @@ getBoardR board page = do
       showEditHistory   = boardShowEditHistory   boardVal
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
-  ------------------------------------------------------------------------------------------------------- 
-  geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
-    xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))
-    c  <- getCountry $ postIp t
-    return $ (tId, c):xs
-  let geoIps = map (second fromJust) $ filter (isJust . snd) $ concat geoIps'
   -------------------------------------------------------------------------------------------------------
   now       <- liftIO getCurrentTime
   acaptcha  <- lookupSession "acaptcha"
@@ -159,7 +153,8 @@ postBoardR board _ = do
         setSession "post-title" (fromMaybe "" title)
         -- check if the poster is banned
         msgrender <- getMessageRender
-        ip  <- pack <$> getIp
+        ip      <- pack <$> getIp
+        country <- getCountry ip
         ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
         when (isJust ban) $ 
           unlessM (isBanExpired $ fromJust ban) $ do
@@ -200,6 +195,7 @@ postBoardR board _ = do
                            , postPassword     = pswd
                            , postBumped       = Just now
                            , postIp           = ip
+                           , postCountry      = (\(code,name') -> GeoCountry code name') <$> country
                            , postSage         = False
                            , postLocked       = False
                            , postSticked      = False

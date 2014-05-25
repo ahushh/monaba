@@ -624,8 +624,8 @@ function showPopupPost(event, elem, board, postId) {
         $.get("/api/post/"+board+"/"+postId, function(data) {
             var post = $(data).removeClass().addClass('post').addClass("popup").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-            var closeAllPopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img  alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='@{StaticR img_blank_gif}' class='icon-close-popup-one'>";
+            var closeAllPopup = "<i title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
+            var closeOnePopup = "<i title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+post.attr('id')+"\")'>"+closeOnePopup+"</a></span> ";
             post.click(function() { $(this).css('z-index', Monaba.zindex + 1); Monaba.zindex += 1; });
             post.append(delPopup);

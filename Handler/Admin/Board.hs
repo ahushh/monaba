@@ -141,7 +141,7 @@ postNewBoardsR = do
                 , bExtraRules      , bEnableGeoIp     , bOpEditing   , bPostEditing    , bShowEditHistory
                 , bEnableForcedAnon, bLongDescription , bShowPostDate
                 ) -> do
-      when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
+      when (any isNothing [bName, bDesc, bAllowedTypes, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
            setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR NewBoard "")
       let onoff (Just "Enable" ) = True
@@ -153,7 +153,7 @@ postNewBoardsR = do
                            , boardBumpLimit         = fromJust bBumpLimit
                            , boardNumberFiles       = fromJust bNumberFiles
                            , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
-                           , boardDefaultName       = fromJust bDefaultName
+                           , boardDefaultName       = fromMaybe "" bDefaultName
                            , boardMaxMsgLength      = fromJust bMaxMsgLen
                            , boardThumbSize         = fromJust bThumbSize
                            , boardThreadsPerPage    = fromJust bThreadsPerPage
@@ -260,11 +260,11 @@ postUpdateBoardsR board = do
           onoff _                f = f oldBoard
           newBoard = Board { boardName              = fromMaybe (boardName oldBoard) bName
                            , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
-                           , boardLongDescription   = fromMaybe (boardLongDescription   oldBoard) bLongDescription
+                           , boardLongDescription   = fromMaybe "" bLongDescription
                            , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                            , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
                            , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
-                           , boardDefaultName       = fromMaybe (boardDefaultName       oldBoard) bDefaultName
+                           , boardDefaultName       = fromMaybe "" bDefaultName
                            , boardMaxMsgLength      = fromMaybe (boardMaxMsgLength      oldBoard) bMaxMsgLen
                            , boardThumbSize         = fromMaybe (boardThumbSize         oldBoard) bThumbSize
                            , boardThreadsPerPage    = fromMaybe (boardThreadsPerPage    oldBoard) bThreadsPerPage

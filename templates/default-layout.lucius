@@ -137,8 +137,19 @@ form.custom .custom.checkbox:before {
 }
 
 .show-plain-form {
-    display:none;
     text-align: center;
+}
+
+.no-js .show-plain-form {
+    display:none;
+}
+
+.no-js .plain-post-form {
+    display: block;
+}
+
+.js .plain-post-form {
+    display: none;
 }
 
 .no-js .icon-edit-post {

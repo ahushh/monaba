@@ -10,7 +10,7 @@ $if hasAccessToNewThread
         <legend>_{MsgNewThread}
         ^{formWidget boardVal False acaptcha enableCaptcha muser}
 $else
-    <form .custom .hide .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+    <form .custom .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
       <fieldset>
         <legend>_{MsgNewThread}
         ^{formWidget boardVal False acaptcha enableCaptcha muser}

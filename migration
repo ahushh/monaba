@@ -1,1 +1,0 @@
- alter table post add column country text;

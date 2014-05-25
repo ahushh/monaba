@@ -29,21 +29,21 @@ Board
     previewsPerThread Int
     hidden            Bool
     enableCaptcha     Bool
-    threadLimit       Int      default=-1
+    threadLimit       Int
     opFile            Text     -- Enabled/Disabled/Required
     replyFile         Text     -- Enabled/Disabled/Required
     viewAccess        [Text]   Maybe -- list of group names
     replyAccess       [Text]   Maybe -- list of group names
     threadAccess      [Text]   Maybe -- list of group names
     category          Text     Maybe
-    opModeration      Bool     default=0
-    extraRules        [Text]   
-    enableGeoIp       Bool     default=0
-    opEditing         Bool     default=0
-    postEditing       Bool     default=0
-    showEditHistory   Bool     default=0
-    enableForcedAnon  Bool     default=0
-    showPostDate      Bool     default=0
+    opModeration      Bool
+    extraRules        [Text]
+    enableGeoIp       Bool
+    opEditing         Bool
+    postEditing       Bool
+    showEditHistory   Bool
+    enableForcedAnon  Bool
+    showPostDate      Bool
     deriving          Typeable
 Post json
     board        Text
@@ -58,11 +58,11 @@ Post json
     sticked      Bool -- used for threads only
     locked       Bool -- used for threads only
     autosage     Bool -- used for threads only
-    deleted      Bool default=0
-    deletedByOp  Bool default=0
-    posterId     Text 
-    lastModified UTCTime Maybe default=null
-    hellbanned   Bool default=0 -- visible only to post author
+    deleted      Bool
+    deletedByOp  Bool
+    posterId     Text
+    lastModified UTCTime Maybe
+    hellbanned   Bool -- visible only to post author
     -- form's values
     message      Textarea
     rawMessage   Text
@@ -81,16 +81,16 @@ History
 Attachedfile json
     parentId     PostId
     md5          Text
-    name         FilePath              -- name of the saved file
-    origName     FilePath              -- original file name
-    type         String                -- file extension
-    thumbSize    Int                   -- just thumbSize from Board table
-    thumbWidth   Int      default=-1   -- real thumb width
-    thumbHeight  Int      default=-1   -- real thumb height
-    width        Int      default=-1   -- real image width
-    height       Int      default=-1   -- real image height
-    size         Text                  -- formatted file size
-    rating       Text                  -- censorship rating
+    name         FilePath    -- name of the saved file
+    origName     FilePath    -- original file name
+    type         String      -- file extension
+    thumbSize    Int         -- just thumbSize from Board table
+    thumbWidth   Int         -- real thumb width
+    thumbHeight  Int         -- real thumb height
+    width        Int         -- real image width
+    height       Int         -- real image height
+    size         Text        -- formatted file size
+    rating       Text        -- censorship rating
     deriving     Typeable
 Ban
     ip           Text
@@ -113,15 +113,15 @@ Config
     threadDelay     Int  -- delay before createing a thread
     boardCategories [Text]
     newsBoard       Text -- a board news are show from
-    showNews        Int  default=2  -- number of news shown on the home page
-    maxEditings     Int  default=10 
-    showRecentPosts Int  default=15 -- number of posts shown at /~/
-    displaySage     Bool default=0
-    modlogMaxEntries     Int default=3000
-    modlogEntriesPerPage Int default=30
+    showNews        Int    -- number of news shown on the home page
+    maxEditings     Int
+    showRecentPosts Int   -- number of posts shown at /~/
+    displaySage     Bool
+    modlogMaxEntries     Int
+    modlogEntriesPerPage Int
     about           Textarea
 Hellban
-    userId          Text 
+    userId          Text
     userIp          Text -- is not used yet
 Modlog
     user            Text

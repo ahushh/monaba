@@ -75,7 +75,7 @@ library
                  , bytestring                    >= 0.9        && < 0.11
                  , text                          >= 0.11       && < 2.0
                  , persistent                    >= 1.3        && < 1.4
-                 , persistent-mysql              >= 1.3        && < 1.4
+                 , persistent-postgresql         >= 1.3        && < 1.4
                  , persistent-template           >= 1.3        && < 1.4
                  , template-haskell
                  , shakespeare                   >= 2.0        && < 2.1
@@ -152,7 +152,7 @@ test-suite test
                  , yesod-core
                  , yesod
                  , persistent
-                 , persistent-mysql
+                 , persistent-postgresql
                  , resourcet
                  , monad-logger
                  , transformers

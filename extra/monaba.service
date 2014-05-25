@@ -1,6 +1,6 @@
 [Unit]
 Description=Monaba
-After=local-fs.target network.target mysql.service
+After=local-fs.target network.target postgresql.service
     
 [Service]
 WorkingDirectory=/your/path/to/Monaba/

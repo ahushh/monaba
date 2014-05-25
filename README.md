@@ -37,7 +37,7 @@ Dependencies
 * GHC >= 7.6
 * PHP 5
 * Imagemagick library
-* MySQL 5
+* PostgreSQL >= 9.1
 
 Installation
 ------
@@ -67,8 +67,8 @@ Set your path to GeSHi in `highlight.php`
 
 **Install all required packages (apt based distros):**
 
-    apt-get install ghc php5 imagemagick libmagickwand-dev libmagickcore-dev mysql-server
-    apt-get install cabal-install zlibc libpcre++-dev libpcre3 libpcre3-dev libgeoip-dev libcrypto++-dev libssl-dev libmysqlclient-dev
+    apt-get install ghc php5 imagemagick libmagickwand-dev libmagickcore-dev postgresql
+    apt-get install cabal-install zlibc libpcre++-dev libpcre3 libpcre3-dev libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1
 
 **Using already compiled binary:**
 
@@ -91,7 +91,7 @@ You may also want to change meta tags such as `description` and `keywords` in te
 
 Create a database:
 
-    mysql -u mysqluser -pmysqlpassword -e 'create database Monaba_production default character set utf8;'
+    psql -U postgres -c 'create database Monaba_production';
 
 Run the application to initialize database schema:
 
@@ -99,7 +99,7 @@ Run the application to initialize database schema:
 
 Open another terminal and fill database with default values:
 
-    mysql -u mysqluser -pmysqlpassword -e 'use Monaba_production; source init-db.sql;'
+     psql -U postgres monaba_production < init-db.sql
 
 You are done. Open [http://localhost:3000](http://localhost:3000) and navigate to manage page and use "admin" both for username and for password to log in.
 

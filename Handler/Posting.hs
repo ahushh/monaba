@@ -196,4 +196,4 @@ trickyRedirect status msg url = do
   t <- isAjaxRequest
   if t
     then redirect (JsonFromMsgR status)
-    else redirect url
+    else redirectUltDest url

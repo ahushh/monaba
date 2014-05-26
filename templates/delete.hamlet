@@ -9,7 +9,7 @@
         <div .columns .large-offset-10 .large-2 .small-offset-5 .small-5>
           <span .hide>
             <input type=password value="" size=15 name=postpassword>
-          <input .button .tiny type=submit value=_{MsgDeleteBtn}>
+          <input .button .tiny .delete-input type=submit value=_{MsgDeleteBtn}>
       $else
           <div .columns .large-offset-8 .large-1 .small-3>
             <label .prefix for=postpassword>
@@ -17,4 +17,4 @@
           <div .columns .large-2 .small-6>
             <input type=password value="" size=15 name=postpassword>
           <div .columns .large-1 .small-3>
-            <input .button .postfix type=submit value=_{MsgDeleteBtn}>
+            <input .button .postfix .delete-input type=submit value=_{MsgDeleteBtn}>

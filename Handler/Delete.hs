@@ -9,6 +9,7 @@ import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
 import           System.Directory   (removeFile)
 import           Handler.EventSource (sendDeletedPosts)
+import           Handler.Posting     (trickyRedirect)
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -50,11 +51,10 @@ getDeleteR = do
   query  <- reqGetParams <$> getRequest
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
-  let errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
-      nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
+  let nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
       helper x          = toKey ((read $ unpack $ snd x) :: Int )
   case reverse query of
-    ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
+    ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> trickyRedirect "error" MsgDeleteNoPosts HomeR
                                                        | otherwise -> do
       let xs = if fst (P.head zs) == "onlyfiles" then P.tail zs else zs
       thread   <- runDB $ get ((toKey ((read $ unpack threadId) :: Int)) :: Key Post)
@@ -67,17 +67,17 @@ getDeleteR = do
       posterId <- getPosterId
       when (postPosterId (fromJust thread) /= posterId &&
             postPassword (fromJust thread) /= pswd
-           ) $ errorRedirect MsgYouAreNotOp
+           ) $ trickyRedirect "error" MsgYouAreNotOp HomeR
       let requestIds = map helper xs
           myFilterPr (Entity _ p) = postBoard       p == board &&
                                     postParent      p == postLocalId (fromJust thread) &&
                                     postDeletedByOp p == False
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
-        [] -> errorRedirect MsgDeleteNoPosts
-        _  -> sendDeletedPosts (map entityVal posts) >> deletePostsByOp posts >> redirectUltDest HomeR
+        [] -> trickyRedirect "error" MsgDeleteNoPosts HomeR
+        _  -> sendDeletedPosts (map entityVal posts) >> deletePostsByOp posts >> trickyRedirect "ok" MsgPostsDeleted HomeR
 
-    ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
+    ("postpassword",pswd):zs | null zs   -> trickyRedirect "error" MsgDeleteNoPosts HomeR
                              | otherwise -> do
       let onlyfiles    = fst (P.head zs) == "onlyfiles"
           xs           = if onlyfiles then P.tail zs else zs
@@ -85,9 +85,9 @@ getDeleteR = do
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
-        [] -> errorRedirect MsgDeleteWrongPassword
-        _  -> unless onlyfiles (sendDeletedPosts $ map entityVal posts) >> deletePosts posts onlyfiles >> redirectUltDest HomeR
-    _                           -> errorRedirect MsgUnknownError
+        [] -> trickyRedirect "error" MsgDeleteWrongPassword HomeR
+        _  -> unless onlyfiles (sendDeletedPosts $ map entityVal posts) >> deletePosts posts onlyfiles >> trickyRedirect "ok" MsgPostsDeleted HomeR
+    _                           -> trickyRedirect "error" MsgUnknownError HomeR
 
 ---------------------------------------------------------------------------------------------
 deleteFiles :: [Key Post] -> Handler ()

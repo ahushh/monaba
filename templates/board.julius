@@ -12,7 +12,8 @@ if (isEventSourceSupported()) {
         });
     });
     // remove deleted posts
-    $(".thread").each(function() {
+    src.addEventListener(#{toJSON board}+"-0-deleted-"+#{toJSON posterId}, deletedPostsHandler); // the threads
+    $(".thread").each(function() {  // thread's replies
         var id = $(this).attr("id").split("-")[1];
         src.addEventListener(#{toJSON board}+"-"+id+"-deleted-"+#{toJSON posterId}, deletedPostsHandler);
     });

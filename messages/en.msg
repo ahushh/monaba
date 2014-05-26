@@ -108,6 +108,7 @@ UnknownError: Unknown error
 BadFormData: Bad input
 NoFormData: No input
 TooLongMessage n@Int: Your message is too long. Max length is #{show n}
+PostsDeleted: Posts were successfully deleted
 DeleteNoPosts: Didn't you forget to mark the posts you want to delete?
 DeleteWrongPassword: Wrong password
 YouAreNotOp: Wrong OP password or session. You can't moderate this thread.

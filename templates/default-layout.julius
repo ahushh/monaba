@@ -31,6 +31,13 @@ function initPosts() {
         doRefMap();
     cachePopupPosts();
 }
+
+function reinitPosts() {
+    Monaba.refMap = {};
+    Monaba.postCache = {};
+    initPosts();
+}
+
 function initialization() {
     // load default settings
     for (var i in defaultSettings) {
@@ -75,6 +82,27 @@ function initialization() {
             else
                 popupAlert(x.responseText+" ("+x.status+")", 0, false, true);
         }
+    });
+    // AJAX post deletion
+    $('.delete-form').submit(function(e) {
+        $.ajax({ type: $(this).attr('method')
+               , url: $(this).attr('action')
+               , data: $('.delete-form').serialize()
+               , success: function(data) {
+                   if (data.error) 
+                       popupAlert(data.error, undefined, undefined, 1);
+                   else
+                       popupAlert(data.ok, undefined, undefined, 1);
+                   if (! isEventSourceSupported() && data.ok) {
+                       $("input:checked").closest(".post").remove();
+                       reinitPosts();
+                   }
+               }
+               , fail: function(data) {
+                       popupAlert(data, undefined, undefined, 1);
+               }
+               });
+        return false;
     });
 }
 //-----------------------------------------------------------------
@@ -166,11 +194,11 @@ function editedPostsHandler(msg) {
 
 function deletedPostsHandler(msg) {
     var ids = eval(msg.data);
-    for (var i = 0; i < ids.length; i++)
+    for (var i = 0; i < ids.length; i++) {
+        console.log(ids[i]);
         $("#"+ids[i]).remove();
-    Monaba.refMap = {};
-    Monaba.postCache = {};
-    initPosts();
+    }
+    reinitPosts();
 }
 //-----------------------------------------------------------------
 // New post counter

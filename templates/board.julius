@@ -1,19 +1,25 @@
 if (isEventSourceSupported()) {
     console.log("Eventsource initialization...");
     var src = getEventSource();
+    // post autoload
+    $(".thread").each(function() {
+        var id = $(this).attr("id").split("-")[1];
+        var thread = $(this);
+        src.addEventListener(#{toJSON board}+'-'+id+'-'+#{toJSON posterId}, function(msg) {
+            thread.children().append(decodeBase64(msg.data));
+            initPosts();
+            Foundation.libs.forms.assemble();
+        });
+    });
     // remove deleted posts
-    var board   = /\/board\/([\w_]+)/.exec(document.URL);
-    //     var threads = $(".thread").each(function() {
-    //         src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1]) +"-deleted", function(msg) {
-    //             var ids = eval(msg.data);
-    //             for (var i = 0; i < ids.length; i++)
-    //                 $("#"+ids[i]).remove();
-    //         });
-    //     });
-
+    $(".thread").each(function() {
+        var id = $(this).attr("id").split("-")[1];
+        src.addEventListener(#{toJSON board}+"-"+id+"-deleted-"+#{toJSON posterId}, deletedPostsHandler);
+    });
     // dynamic updating of edited posts
     $(".thread").each(function() {
-        src.addEventListener(board[1]+"-"+($(this).attr("id").split("-")[1])+"-edited-"+#{toJSON posterId}, editedPostsHandler);
+        var id = $(this).attr("id").split("-")[1];
+        src.addEventListener(#{toJSON board}+"-"+id+"-edited-"+#{toJSON posterId}, editedPostsHandler);
     });
 } else {
     console.log("Eventsource isn't supported.");

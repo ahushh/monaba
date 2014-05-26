@@ -168,6 +168,9 @@ function deletedPostsHandler(msg) {
     var ids = eval(msg.data);
     for (var i = 0; i < ids.length; i++)
         $("#"+ids[i]).remove();
+    Monaba.refMap = {};
+    Monaba.postCache = {};
+    initPosts();
 }
 //-----------------------------------------------------------------
 // New post counter
@@ -676,8 +679,8 @@ function showQuickPostForm(postId) {
                     popupAlert(data.ok,2000);
                     closePostForm();
                     var board = /\/board\/([\w_-]+)/.exec(document.URL)[1];
-                    // if (!isEventSourceSupported)
-                    refreshThread(board, thread)
+                    if (!isEventSourceSupported())
+                        refreshThread(board, thread)
                 } else {
                     popupAlert(data.error,0,false,true);
                 }

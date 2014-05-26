@@ -6,7 +6,7 @@ var Monaba = {
 };
 
 var defaultSettings = {
-    'useEventsource': false,
+    'useEventsource': true,
     'expandImage': 'center',
     'youtubeHTML5': true,
     'youtubeLoadTitles': true,

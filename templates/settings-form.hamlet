@@ -45,7 +45,6 @@
   <div .columns .large-6 .small-7>
     <label for=useEventsource>
       <input #useEventsource .js-settings type=checkbox>
-      (experimental)
 
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>

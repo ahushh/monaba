@@ -45,7 +45,7 @@ Installation
     git clone https://github.com/ahushh/Monaba
     cd Monaba
 
-Setup MySQL `user` and `password` in config/mysql.yml
+Setup PostgreSQL `user` and `password` in config/postgresql.yml
 
 Application root, port, site name and other settings you can change in `config/settings.yml`
 
@@ -85,13 +85,13 @@ Be aware that it might be quite old.
     cabal install --only-dependencies
     cabal clean && cabal configure && cabal build
 
-You may also want to change meta tags such as `description` and `keywords` in templates/default-layout-wrapper.hamlet. Do it before building.
+You may also want to change meta tags such as `description` and `keywords` in `templates/default-layout-wrapper.hamlet`. Do it before building.
 
 **Run:**
 
 Create a database:
 
-    psql -U postgres -c 'create database Monaba_production';
+    psql -U postgres -c 'create database monaba_production';
 
 Run the application to initialize database schema:
 

@@ -373,6 +373,7 @@ StickyTopbar: Закрепить верхнюю панель
 PlainTopbar: Простая верхняя панель
 PpleerEmbedByClick: Загружать pleer.com по клику
 WidePosts: Широкие посты
+CenteredPosts: Посты по центру
 UseEventSource: Автозагрузка постов (EventSource)
 ExpandImage: Разворачивать изображения
 ExpandImageCenter: по центру

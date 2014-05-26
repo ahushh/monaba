@@ -373,6 +373,7 @@ StickyTopbar: Sticky topbar
 PlainTopbar: Plain topbar
 PpleerEmbedByClick: Embed pleer.com by click
 WidePosts: Wide posts
+CenteredPosts: Centered posts
 UseEventSource: Post autoload (EventSource)
 ExpandImage: Expand image
 ExpandImageCenter: in the center

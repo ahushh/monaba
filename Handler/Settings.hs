@@ -14,18 +14,20 @@ settingsForm :: [(Text,Text)] -> -- ^ All boards
                Text          -> -- ^ Default stylesheet 
                Censorship    -> -- ^ Default rating
                Html          -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, Maybe [Text], Bool), Widget)
+               MForm Handler (FormResult (Int, Text, Censorship, Maybe Text, Maybe [Text], Bool, Bool), Widget)
 settingsForm allBoards ignoredBoards defaultZone defaultStyle oldRating extra = do
   oldTimeZone  <- lookupSession "timezone"
   oldStyle     <- lookupSession "stylesheet"
   oldWidePosts <- lookupSession "wide-posts"
+  oldCenteredPosts <- lookupSession "centered-posts"
   (timezoneRes , timezoneView ) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView    ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
   (ratingRes   , ratingView   ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
   (langRes     , langView     ) <- mopt (selectFieldList langs      ) "" Nothing
   (widePostsRes, widePostsView) <- mreq checkBoxField                 "" (readText <$> oldWidePosts)
+  (centeredPostsRes, centeredPostsView) <- mreq checkBoxField         "" (readText <$> oldCenteredPosts)
   (boardResults, boardViews   ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
-  let result = (,,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults <*> widePostsRes
+  let result = (,,,,,,) <$> timezoneRes <*> styleRes <*> ratingRes <*> langRes <*> boardResults <*> widePostsRes <*> centeredPostsRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -41,12 +43,13 @@ postSettingsR = do
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, rating, lang, boards, widePosts) -> do
+    FormSuccess (timezone, stylesheet, rating, lang, boards, widePosts, centeredPosts) -> do
       setSession "timezone"             $ showText timezone
       setSession "stylesheet"             stylesheet
       setSession "censorship-rating"    $ showText rating
       setSession "recent-ignore-boards" $ showText $ fromMaybe [] boards
       setSession "wide-posts"           $ showText widePosts
+      setSession "centered-posts"       $ showText centeredPosts
       Foldable.forM_ lang setLanguage
       deleteClient =<< getPosterId
       trickyRedirect "ok" MsgApplied SettingsR

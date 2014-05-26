@@ -117,14 +117,6 @@ table tr.even, table tr.alt, table tr:nth-of-type(2n) {
     color: white;
 }
 
-/* Get rid of centered posts */
-.post-list, .delete-form > .row.post, .post-list > .row.post,
-.delete-form > .row.thread, .post-list > .row.thread  {
-    margin: 0 1%;
-    max-width: 97%;
-    width: none;
-}
-
 /* *************************************** */
 /* ************* Navigation ************** */
 /* *************************************** */

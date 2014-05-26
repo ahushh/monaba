@@ -41,6 +41,14 @@ $newline never
               .reply {display: table;}
           $nothing 
             .reply {display: table;}
+          $maybe b <- centeredPosts
+            $if not (b == "True")
+              .post-list, .delete-form > .row.post, .post-list > .row.post,
+              .delete-form > .row.thread, .post-list > .row.thread  {
+                  margin: 0 1%;
+                  max-width: 97%;
+                  width: none;
+              }
         \<!--[if lt IE 9]>
         \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         \<![endif]-->

@@ -63,6 +63,14 @@
     <label for=#{fvId widePostsView}>
       ^{fvInput widePostsView}
 
+<div .row>
+  <div .columns .large-6 .small-5>
+    <label for=#{fvId centeredPostsView}>
+      _{MsgCenteredPosts}
+  <div .columns .large-6 .small-7>
+    <label for=#{fvId centeredPostsView}>
+      ^{fvInput centeredPostsView}
+
 <div .row .js-settings-row>
   <div .columns .large-6 .small-5>
     <label for=stickyTopbar>

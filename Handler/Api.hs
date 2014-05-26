@@ -135,7 +135,7 @@ getApiPostR board postId = do
   when (isNothing mePost) notFound
   let ePost = fromJust mePost
       post  = entityVal ePost
-      post' = stripFields post permissions
+      post' = Entity (entityKey ePost) (stripFields post permissions)
       postKey = entityKey $ fromJust mePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   timeZone    <- getTimeZone

@@ -4,11 +4,17 @@ module Handler.Api where
 import           Import
 import           Yesod.Auth
 --------------------------------------------------------------------------------------------------------- 
+data APIError = NoSuchThread | NoSuchPosts | EmptyThread | NoNewPosts | BadThreadID
+               deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
+instance ToJSON APIError where
+  toJSON x = String $ pack $ show x
+
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
-                 Text -> -- ^ Board name
-                 Int  -> -- ^ Thread internal ID
-                 Text -> -- ^ Error string
+                 Text      -> -- ^ Board name
+                 Int       -> -- ^ Thread internal ID
+                 APIError  -> -- ^ Error message
                  Handler TypedContent
 getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   muser    <- maybeAuth
@@ -19,6 +25,8 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       geoIpEnabled = boardEnableGeoIp boardVal
       showPostDate = boardShowPostDate boardVal
       showEditHistory = boardShowEditHistory boardVal
+      hasAccessToReply     = checkAccessToReply mgroup boardVal
+      hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       selectPosts  = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
@@ -32,22 +40,22 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   case () of
     _ | t == 0              -> selectRep $ do
-          provideRep  $ bareLayout [whamlet|No such thread|]
-          provideJson $ object [("error", toJSON ("No such thread"::Text))]
+          provideRep  $ bareLayout [whamlet|Error: #{show NoSuchThread}|]
+          provideJson $ object ["success" .= False, "error" .= NoSuchThread]
       | null postsAndFiles -> selectRep $ do
-          provideRep  $ bareLayout [whamlet|#{errorString}|]
-          provideJson $ object [("error", toJSON errorString)]
+          provideRep  $ bareLayout [whamlet|Error: #{show errorString}|]
+          provideJson $ object ["success" .= False, "error" .= errorString]
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
                                    ^{postWidget post files rating displaySage True True False geoIpEnabled permissions timeZone maxLenOfFileName showPostDate showEditHistory}
                                |]
           provideJson $ object [ "posts"  .= postsAndFiles'
+                               , "success" .= True
                                , "config" .= object [ "rating"       .= rating
                                                     , "sage"         .= displaySage
-                                                    , "in_thread"    .= True
-                                                    , "can_post"     .= True
-                                                    , "show_parent"  .= False
+                                                    , "can_reply"    .= hasAccessToReply
+                                                    , "can_make_thread" .= hasAccessToNewThread
                                                     , "permissions"  .= permissions
                                                     , "time_zone"    .= timeZone
                                                     , "max_file_len" .= maxLenOfFileName
@@ -65,8 +73,7 @@ getApiDeletedPostsR board thread = do
                                     [PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread
                                     ,PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-      errorString = "No such posts"
-  getPostsHelper selectPostsAll selectPostsHB board thread errorString
+  getPostsHelper selectPostsAll selectPostsHB board thread NoSuchPosts
 
 
 getApiAllPostsR :: Text -> Int -> Handler TypedContent
@@ -80,8 +87,7 @@ getApiAllPostsR board thread = do
                                      PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True,
                                      PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-      errorString = "No posts in this thread"
-  getPostsHelper selectPostsAll selectPostsHB board thread errorString
+  getPostsHelper selectPostsAll selectPostsHB board thread EmptyThread
 
 getApiNewPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiNewPostsR board thread postId = do
@@ -94,8 +100,7 @@ getApiNewPostsR board thread postId = do
                                     ,PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False, PostHellbanned ==. True
                                     ,PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-      errorString = "No new posts"
-  getPostsHelper selectPostsAll selectPostsHB board thread errorString
+  getPostsHelper selectPostsAll selectPostsHB board thread NoNewPosts
 
 getApiLastPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiLastPostsR board thread postCount = do
@@ -107,8 +112,7 @@ getApiLastPostsR board thread postCount = do
                                     [PostDeletedByOp ==. False, PostBoard ==. board
                                     ,PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
                                   ) [Desc PostDate, LimitTo postCount]
-      errorString = "No such posts"
-  getPostsHelper selectPostsAll selectPostsHB board thread errorString
+  getPostsHelper selectPostsAll selectPostsHB board thread NoSuchPosts
 
 ---------------------------------------------------------------------------------------------------------
 stripFields :: Post -> [Permission] -> Post
@@ -127,6 +131,8 @@ getApiPostR board postId = do
       geoIpEnabled = boardEnableGeoIp boardVal
       showPostDate = boardShowPostDate boardVal
       showEditHistory = boardShowEditHistory boardVal
+      hasAccessToReply     = checkAccessToReply mgroup boardVal
+      hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       selectPosts    = if HellBanP `elem` permissions then selectPostsAll else selectPostsHB
       selectPostsAll = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False]
       selectPostsHB  = [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False, PostHellbanned ==. False] ||.
@@ -148,11 +154,11 @@ getApiPostR board postId = do
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson $ object [ "post"   .= (post', files)
+                         , "success" .= True
                          , "config" .= object [ "rating"       .= rating
                                               , "sage"         .= displaySage
-                                              , "in_thread"    .= True
-                                              , "can_post"     .= True
-                                              , "show_parent"  .= False
+                                              , "can_reply"    .= hasAccessToReply
+                                              , "can_make_thread" .= hasAccessToNewThread
                                               , "permissions"  .= permissions
                                               , "time_zone"    .= timeZone
                                               , "max_file_len" .= maxLenOfFileName
@@ -164,8 +170,8 @@ getApiPostR board postId = do
 getApiHideThreadR :: Text -> Int -> Handler TypedContent
 getApiHideThreadR board threadId
   | threadId <= 0 = selectRep $ do
-      provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
-      provideJson $ object [("error", "bad thread ID")]
+      provideRep  $ bareLayout [whamlet|Error: #{show BadThreadID}|]
+      provideJson $ object ["success" .= False, "error" .= BadThreadID]
   | otherwise = do  
       ht <- lookupSession "hidden-threads"
       case ht of
@@ -177,14 +183,14 @@ getApiHideThreadR board threadId
           in setSession "hidden-threads" new
         Nothing -> setSession "hidden-threads" $ "[("<>board<>",["<>showText threadId<>"])]"
       selectRep $ do
-        provideRep  $ bareLayout [whamlet|ok: hidden|]
-        provideJson $ object [("ok", "hidden")]
+        provideRep  $ bareLayout [whamlet|Success: True|]
+        provideJson $ object ["success" .= True]
 
 getApiUnhideThreadR :: Text -> Int -> Handler TypedContent
 getApiUnhideThreadR board threadId
   | threadId <= 0 = selectRep $ do
-      provideRep  $ bareLayout [whamlet|Error: bad thread ID|]
-      provideJson $ object [("error", "bad thread ID")]
+      provideRep  $ bareLayout [whamlet|Error: #{show BadThreadID}|]
+      provideJson $ object ["success" .= False, "error" .= BadThreadID]
   | otherwise = do
       ht <- lookupSession "hidden-threads"
       case ht of
@@ -197,8 +203,8 @@ getApiUnhideThreadR board threadId
           in setSession "hidden-threads" new
         Nothing -> setSession "hidden-threads" "[]"
       selectRep $ do
-        provideRep  $ bareLayout [whamlet|ok: showed|]
-        provideJson $ object [("ok", "showed")]
+        provideRep  $ bareLayout [whamlet|Success: True|]
+        provideJson $ object ["success" .= True]
 ---------------------------------------------------------------------------------------------------------
 getApiBoardStatsR :: Handler TypedContent
 getApiBoardStatsR = do
@@ -211,4 +217,4 @@ getApiBoardStatsR = do
     return (board, lastId, newPosts)
   saveBoardStats newDiff
   selectRep $ 
-    provideJson $ object $ map (\(b,_,n) -> (b, toJSON n)) newDiff
+    provideJson $ object $ map (\(b,_,n) -> b .= n) newDiff

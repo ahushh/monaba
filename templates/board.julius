@@ -37,15 +37,7 @@ function expandThread(board, thread) {
     } else {
         $("#thread-"+thread+" .omitted .ajax-loading").toggle();
         $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
-            if (data == "No such thread ") {
-                popupAlert(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-                delete Monaba['expThreads'][thread];
-                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-            } else if (data == "No posts in this thread ") {
-                popupAlert(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
-                delete Monaba['expThreads'][thread];
-                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-            } else {
+            if (/reply/.test(data)) {
                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
                 $("#thread-"+thread+" .omitted").toggle();
                 $("#thread-"+thread+" .reply").remove();
@@ -54,6 +46,14 @@ function expandThread(board, thread) {
                 if (getItem("useMathjax")) {
                     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                 }
+            } else if (/NoSuchThread/.test(data)) {
+                popupAlert(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+                delete Monaba['expThreads'][thread];
+                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+            } else if (/EmptyThread/.test(data)) {
+                popupAlert(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
+                delete Monaba['expThreads'][thread];
+                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
             }
         });
     }

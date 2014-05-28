@@ -806,9 +806,9 @@ function refreshThread(board, threadId) {
             if (getItem("useMathjax")) {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             }
-        } else if (data == "No such thread ") {
+        } else if (/NoSuchThread/.test(data)) {
             popupAlert(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-        } else if (data == "No new posts ") {
+        } else if (/NoNewPosts/.test(data)) {
             popupAlert( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
         }
         Foundation.libs.forms.assemble();
@@ -870,7 +870,7 @@ function showEditForm(postId, realId) {
         var raw = json.post[0].value.rawMessage;
         if (raw) {
             $('#edit-form textarea').val(raw).trigger('autosize.resize');
-        } else { // for old posts only
+        } else { // old posts which don't have raw_message field
             var msg = $('#'+postId+' .message').clone();
             msg.find("br").replaceWith('\n');
             $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ).trigger('autosize.resize');

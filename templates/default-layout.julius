@@ -195,8 +195,11 @@ function editedPostsHandler(msg) {
 function deletedPostsHandler(msg) {
     var ids = eval(msg.data);
     for (var i = 0; i < ids.length; i++) {
-        console.log(ids[i]);
-        $("#"+ids[i]).remove();
+        if (extractThread(ids[i]) == 0) {
+            $("#thread-"+extractPost(ids[i])).remove();
+        } else {
+            $("#"+ids[i]).remove();
+        }
     }
     reinitPosts();
 }

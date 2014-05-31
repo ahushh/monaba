@@ -3,6 +3,8 @@ Monaba
 
 Anonymouse imageboard engine written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
 
+**It is experimental software and hardly ready for use in the real world.**
+
 Features
 ------
 * Multiple file attachment

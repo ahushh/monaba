@@ -67,6 +67,15 @@ import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Ta
 
 import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
+-- API
+-------------------------------------------------------------------------------------------------------------------
+data APIError = ApiNoSuchThread | ApiNoDeletedPosts | ApiNoLastPosts | ApiEmptyThread | ApiNoNewPosts | ApiBadThreadID | ApiNoCaptchaInDB
+               deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
+instance ToJSON APIError where
+  toJSON x = String $ pack $ show x
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
 titleDelimiter :: Text
 titleDelimiter = " :: "
 -------------------------------------------------------------------------------------------------------------------

@@ -309,6 +309,10 @@ ApiBoardName: Название борды (e.g., b, d, rm)
 ApiThreadId: Видимый ID треда
 ApiPostId: Видимый ID поста
 ApiCount: Количество постов
+ApiNoDeletedPosts: Нет удаленных постов
+ApiNoLastPosts: Нет последних постов
+ApiEmptyThread: В треде нет постов
+ApiBadThreadID: Треда с таким ID не существует
 
 ######################################################################################
 #### Captcha

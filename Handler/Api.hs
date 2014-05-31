@@ -4,19 +4,14 @@ module Handler.Api where
 import           Import
 import           Yesod.Auth
 --------------------------------------------------------------------------------------------------------- 
-data APIError = NoSuchThread | NoSuchPosts | EmptyThread | NoNewPosts | BadThreadID
-               deriving (Show, Ord, Read, Eq, Bounded, Enum)
-
-instance ToJSON APIError where
-  toJSON x = String $ pack $ show x
-
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  Text      -> -- ^ Board name
                  Int       -> -- ^ Thread internal ID
-                 APIError  -> -- ^ Error message
+                 APIError  -> -- ^ Error code
+                 AppMessage -> -- ^ Error message
                  Handler TypedContent
-getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
+getPostsHelper selectPostsAll selectPostsHB board thread errorCode errorMessage = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
@@ -38,13 +33,14 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   rating      <- getCensorshipRating
   displaySage <- getConfig configDisplaySage
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  msgrender   <- getMessageRender
   case () of
     _ | t == 0              -> selectRep $ do
-          provideRep  $ bareLayout [whamlet|Error: #{show NoSuchThread}|]
-          provideJson $ object ["success" .= False, "error" .= NoSuchThread]
+          provideRep  $ bareLayout [whamlet|Error: #{show ApiNoSuchThread} (#{msgrender MsgNoSuchThread})|]
+          provideJson $ object ["success" .= False, "error" .= ApiNoSuchThread, "error_message" .= msgrender MsgNoSuchThread]
       | null postsAndFiles -> selectRep $ do
-          provideRep  $ bareLayout [whamlet|Error: #{show errorString}|]
-          provideJson $ object ["success" .= False, "error" .= errorString]
+          provideRep  $ bareLayout [whamlet|Error: #{show errorCode} (#{msgrender errorMessage})|]
+          provideJson $ object ["success" .= False, "error" .= errorCode, "error_message" .= msgrender errorMessage]
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
@@ -73,7 +69,7 @@ getApiDeletedPostsR board thread = do
                                     [PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread
                                     ,PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-  getPostsHelper selectPostsAll selectPostsHB board thread NoSuchPosts
+  getPostsHelper selectPostsAll selectPostsHB board thread ApiNoDeletedPosts MsgApiNoDeletedPosts
 
 
 getApiAllPostsR :: Text -> Int -> Handler TypedContent
@@ -87,7 +83,7 @@ getApiAllPostsR board thread = do
                                      PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True,
                                      PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-  getPostsHelper selectPostsAll selectPostsHB board thread EmptyThread
+  getPostsHelper selectPostsAll selectPostsHB board thread ApiEmptyThread MsgApiEmptyThread
 
 getApiNewPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiNewPostsR board thread postId = do
@@ -100,7 +96,7 @@ getApiNewPostsR board thread postId = do
                                     ,PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False, PostHellbanned ==. True
                                     ,PostPosterId ==. posterId]
                                   ) [Desc PostDate]
-  getPostsHelper selectPostsAll selectPostsHB board thread NoNewPosts
+  getPostsHelper selectPostsAll selectPostsHB board thread ApiNoNewPosts MsgNoNewPosts
 
 getApiLastPostsR :: Text -> Int -> Int -> Handler TypedContent
 getApiLastPostsR board thread postCount = do
@@ -112,7 +108,7 @@ getApiLastPostsR board thread postCount = do
                                     [PostDeletedByOp ==. False, PostBoard ==. board
                                     ,PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
                                   ) [Desc PostDate, LimitTo postCount]
-  getPostsHelper selectPostsAll selectPostsHB board thread NoSuchPosts
+  getPostsHelper selectPostsAll selectPostsHB board thread ApiNoLastPosts MsgApiNoLastPosts
 
 ---------------------------------------------------------------------------------------------------------
 stripFields :: Post -> [Permission] -> Post
@@ -169,9 +165,11 @@ getApiPostR board postId = do
 ---------------------------------------------------------------------------------------------------------
 getApiHideThreadR :: Text -> Int -> Handler TypedContent
 getApiHideThreadR board threadId
-  | threadId <= 0 = selectRep $ do
-      provideRep  $ bareLayout [whamlet|Error: #{show BadThreadID}|]
-      provideJson $ object ["success" .= False, "error" .= BadThreadID]
+  | threadId <= 0 = do
+      msgrender   <- getMessageRender
+      selectRep $ do
+        provideRep  $ bareLayout [whamlet|Error: #{show ApiBadThreadID} (#{msgrender MsgApiBadThreadID})|]
+        provideJson $ object ["success" .= False, "error" .= ApiBadThreadID, "error_message" .= msgrender MsgApiBadThreadID]
   | otherwise = do  
       ht <- lookupSession "hidden-threads"
       case ht of
@@ -188,9 +186,11 @@ getApiHideThreadR board threadId
 
 getApiUnhideThreadR :: Text -> Int -> Handler TypedContent
 getApiUnhideThreadR board threadId
-  | threadId <= 0 = selectRep $ do
-      provideRep  $ bareLayout [whamlet|Error: #{show BadThreadID}|]
-      provideJson $ object ["success" .= False, "error" .= BadThreadID]
+  | threadId <= 0 = do
+      msgrender   <- getMessageRender
+      selectRep $ do
+        provideRep  $ bareLayout [whamlet|Error: #{show ApiBadThreadID} (#{msgrender MsgApiBadThreadID})|]
+        provideJson $ object ["success" .= False, "error" .= ApiBadThreadID, "error_message" .= msgrender MsgApiBadThreadID]
   | otherwise = do
       ht <- lookupSession "hidden-threads"
       case ht of

@@ -309,6 +309,10 @@ ApiBoardName: Board name (e.g., b, d, rm)
 ApiThreadId: Displayed thread ID
 ApiPostId: Displayed post ID
 ApiCount: Number of posts
+ApiNoDeletedPosts: No deleted posts
+ApiNoLastPosts: No last posts
+ApiEmptyThread: Thread is empty
+ApiBadThreadID: Bad thread ID
 
 ######################################################################################
 #### Captcha

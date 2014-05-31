@@ -29,7 +29,7 @@ getCaptchaInfoR = do
     _ | isJust acaptcha         -> selectRep $ provideJson $ object ["acaptcha" .= msgrender MsgYouDontNeedCaptcha, "success" .= True]
       | isJust maybeCaptchaInfo -> selectRep $ provideJson $ object
                                   ["info" .= (msgrender MsgTypeOnly <> " " <> msgrender (chooseMsg $ fromJust maybeCaptchaInfo)), "success" .= True ]
-      | otherwise               -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
+      | otherwise               -> selectRep $ provideJson $ object ["error" .= ApiNoCaptchaInDB, "success" .= False, "error_message" .= msgrender MsgNoCaptchaInDB  ]
   where chooseMsg "Bold"    = MsgBoldChars
         chooseMsg "Italic"  = MsgItalicChars
         chooseMsg "Regular" = MsgRegularChars
@@ -97,8 +97,8 @@ getCaptchaCheckR enteredCaptcha = do
       meCaptcha <- runDB $ getBy (CaptchaUniqueLocalId (read $ unpack cID))
       case meCaptcha of
         Just (Entity _ captcha) -> selectRep $ provideJson $ object ["result" .= (T.map toLower enteredCaptcha == captchaValue captcha), "success" .= True ]
-        _                       -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
-    _        -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
+        _                       -> selectRep $ provideJson $ object ["error" .= ApiNoCaptchaInDB, "success" .= False, "error_message" .= msgrender MsgNoCaptchaInDB ]
+    _        -> selectRep $ provideJson $ object ["error" .= ApiNoCaptchaInDB, "success" .= False, "error_message" .= msgrender MsgNoCaptchaInDB ]
 
 checkCaptcha :: Text -> Handler () -> Handler ()
 checkCaptcha captcha wrongCaptchaRedirect = do

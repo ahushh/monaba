@@ -69,8 +69,15 @@ import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
 -- API
 -------------------------------------------------------------------------------------------------------------------
-data APIError = ApiNoSuchThread | ApiNoDeletedPosts | ApiNoLastPosts | ApiEmptyThread | ApiNoNewPosts | ApiBadThreadID | ApiNoCaptchaInDB
-               deriving (Show, Ord, Read, Eq, Bounded, Enum)
+data APIError = ApiNoSuchThread
+              | ApiNoDeletedPosts
+              | ApiNoLastPosts
+              | ApiEmptyThread
+              | ApiNoNewPosts
+              | ApiBadThreadID
+              | ApiNoCaptchaInDB
+              | ApiBadBoardName
+              deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
 instance ToJSON APIError where
   toJSON x = String $ pack $ show x
@@ -246,6 +253,14 @@ checkAccessToNewThread mgroup boardVal =
       access = boardThreadAccess boardVal
   in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
+-- FIXME: rename to checkViewAccess
+bcheckViewAccess :: Maybe (Entity Group) -> Board -> Bool
+bcheckViewAccess mgroup boardVal =
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess boardVal
+  in not (isJust access && isNothing group) || (isJust access && notElem (fromJust group) (fromJust access))
+
+-- FIXME: rename to checkViewAccess404
 checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
 checkViewAccess mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup

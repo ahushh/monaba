@@ -14,7 +14,7 @@ User
     salt             Text
     deriving         Typeable
     deriving         Show
-Board
+Board json
     name              Text
     BoardUniqName     name
     description       Text

@@ -27,7 +27,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorCode errorMessage 
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
     files <- selectFiles p
     return (p, files))
-  let postsAndFiles' = map (\((Entity k p), fs) -> (Entity k (stripFields p permissions), fs)) postsAndFiles
+  let postsAndFiles' = map (\((Entity k p), fs) -> (Entity k (stripPostFields p permissions), fs)) postsAndFiles
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
   timeZone    <- getTimeZone
   rating      <- getCensorshipRating
@@ -111,8 +111,8 @@ getApiLastPostsR board thread postCount = do
   getPostsHelper selectPostsAll selectPostsHB board thread ApiNoLastPosts MsgApiNoLastPosts
 
 ---------------------------------------------------------------------------------------------------------
-stripFields :: Post -> [Permission] -> Post
-stripFields post permissions
+stripPostFields :: Post -> [Permission] -> Post
+stripPostFields post permissions
   | ViewIPAndIDP `elem` permissions = post { postPassword = "", postOwner = Nothing }
   | otherwise                       = post { postPassword = "", postIp = "", postCountry = Nothing, postPosterId = "", postOwner = Nothing }
 
@@ -137,7 +137,7 @@ getApiPostR board postId = do
   when (isNothing mePost) notFound
   let ePost = fromJust mePost
       post  = entityVal ePost
-      post' = Entity (entityKey ePost) (stripFields post permissions)
+      post' = Entity (entityKey ePost) (stripPostFields post permissions)
       postKey = entityKey $ fromJust mePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   timeZone    <- getTimeZone
@@ -218,3 +218,20 @@ getApiBoardStatsR = do
   saveBoardStats newDiff
   selectRep $ 
     provideJson $ object $ map (\(b,_,n) -> b .= n) newDiff
+---------------------------------------------------------------------------------------------------------
+getApiBoardConfigR :: Text -> Handler TypedContent
+getApiBoardConfigR board = do
+  muser     <- maybeAuth
+  mgroup    <- getMaybeGroup muser
+  msgrender <- getMessageRender
+  meBoard   <- runDB (getBy $ BoardUniqName board)
+  let permissions  = getPermissions   mgroup
+      myError      = selectRep $ provideJson $ object ["success" .= False, "error" .= ApiBadBoardName, "error_message" .= msgrender MsgApiBadBoardName]
+  case meBoard of
+    Just (Entity _ b) -> if bcheckViewAccess mgroup b
+                         then selectRep $ provideJson $ object ["success" .= True, "board" .= (stripBoardFields b permissions)]
+                         else myError
+    Nothing           -> myError
+  where stripBoardFields boardVal permissions
+          | ManageBoardP `elem` permissions = boardVal
+          | otherwise                       = boardVal { boardViewAccess = Nothing, boardReplyAccess = Nothing, boardThreadAccess = Nothing}

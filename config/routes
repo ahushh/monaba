@@ -24,6 +24,7 @@
 /api/captcha/!info       CaptchaInfoR  GET
 /api/captcha/check/#Text CaptchaCheckR GET
 
+/api/board/#Text/config          ApiBoardConfigR  GET
 /api/thread/#Text/#Int/new/#Int  ApiNewPostsR     GET
 /api/thread/#Text/#Int/last/#Int ApiLastPostsR    GET
 /api/thread/#Text/#Int/all       ApiAllPostsR     GET

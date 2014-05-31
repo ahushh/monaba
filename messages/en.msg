@@ -313,6 +313,7 @@ ApiNoDeletedPosts: No deleted posts
 ApiNoLastPosts: No last posts
 ApiEmptyThread: Thread is empty
 ApiBadThreadID: Bad thread ID
+ApiBadBoardName: No board with this name
 
 ######################################################################################
 #### Captcha

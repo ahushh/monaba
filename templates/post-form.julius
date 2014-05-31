@@ -258,3 +258,31 @@ $(".file-input").each(function(){
     handleFiles(this);
     $(this).parent().show();
 });
+
+// thx stackoverflow
+var delay = (function(){
+    var timer = 0;
+    return function(callback, ms){
+        clearTimeout (timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
+$("#captcha-wrapper input[type=text]").keyup(function() {
+    var input = $(this);
+    delay(function() {
+        if (/^\s*$/.test( $(input).val() ) ) return true;
+        $.getJSON("/api/captcha/check/"+$(input).val(), function(data) {
+            if (!data.success) {
+                pupupAlert(data.error, 5, false, true);
+                return true;
+            }
+            if (data.result) {
+                $(input).removeClass("bad");
+                $(input).addClass("good");
+            } else {
+                $(input).removeClass("good");
+                $(input).addClass("bad");
+            }
+        });
+    }, 500);
+});

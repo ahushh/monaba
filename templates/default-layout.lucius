@@ -40,6 +40,16 @@ object {
 /* ********************************* */
 /* ************* Forms ************* */
 /* ********************************* */
+.bad {
+  border-color: #c60f13 !important;;
+  background-color: rgba(198, 15, 19, 0.1) !important;;
+}
+
+.good {
+  border-color: #04c613 !important;
+  background-color: rgba(15, 198, 19, 0.1) !important;
+}
+
 .f-dropdown {
     left: -9999px;
 }

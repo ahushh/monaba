@@ -88,6 +88,18 @@ generateCaptcha' captchaLength ip = do
                                 , captchaExpires = addUTCTime' captchaTimeout now
                                 }
 ---------------------------------------------------------------------------------------------------------------------------
+getCaptchaCheckR :: Text -> Handler TypedContent
+getCaptchaCheckR enteredCaptcha = do
+  msgrender <- getMessageRender
+  maybeCaptchaId <- lookupSession "captchaId"
+  case maybeCaptchaId of
+    Just cID -> do
+      meCaptcha <- runDB $ getBy (CaptchaUniqueLocalId (read $ unpack cID))
+      case meCaptcha of
+        Just (Entity _ captcha) -> selectRep $ provideJson $ object ["result" .= (T.map toLower enteredCaptcha == captchaValue captcha), "success" .= True ]
+        _                       -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
+    _        -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
+
 checkCaptcha :: Text -> Handler () -> Handler ()
 checkCaptcha captcha wrongCaptchaRedirect = do
   maybeCaptchaId <- lookupSession "captchaId"

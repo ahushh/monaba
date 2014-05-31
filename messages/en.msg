@@ -314,7 +314,7 @@ ApiCount: Number of posts
 #### Captcha
 ######################################################################################
 Captcha: Captcha
-ReloadPage: Error. Reload page.
+NoCaptchaInDB: There is no captcha in the DB for this user
 TypeOnly: Type only 
 ItalicChars: italic characters
 BoldChars: bolded characters

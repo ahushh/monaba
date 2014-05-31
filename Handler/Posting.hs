@@ -63,7 +63,7 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal maybeCaptchaInfo extra = do
   let captchaHelper "Bold"    = msgrender MsgBoldChars
       captchaHelper "Italic"  = msgrender MsgItalicChars
       captchaHelper "Regular" = msgrender MsgRegularChars
-      captchaHelper _         = msgrender MsgReloadPage
+      captchaHelper _         = msgrender MsgUnknownError
       urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
       ratings :: [(Text, Censorship)]

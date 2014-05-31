@@ -26,16 +26,14 @@ getCaptchaInfoR = do
     generateCaptcha =<< getConfig configCaptchaLength
   maybeCaptchaInfo <- getCaptchaInfo
   case () of
-    _ | isJust acaptcha         -> selectRep $ provideJson $ object [("acaptcha", toJSON $ msgrender MsgYouDontNeedCaptcha)]
+    _ | isJust acaptcha         -> selectRep $ provideJson $ object ["acaptcha" .= msgrender MsgYouDontNeedCaptcha, "success" .= True]
       | isJust maybeCaptchaInfo -> selectRep $ provideJson $ object
-                                  [("info", toJSON $ T.concat [msgrender MsgTypeOnly
-                                                              , " "
-                                                              , msgrender (chooseMsg $ fromJust maybeCaptchaInfo) ])]
-      | otherwise               -> selectRep $ provideJson $ object [("error",toJSON $ msgrender MsgReloadPage)]
+                                  ["info" .= (msgrender MsgTypeOnly <> " " <> msgrender (chooseMsg $ fromJust maybeCaptchaInfo)), "success" .= True ]
+      | otherwise               -> selectRep $ provideJson $ object ["error" .= msgrender MsgNoCaptchaInDB, "success" .= False ]
   where chooseMsg "Bold"    = MsgBoldChars
         chooseMsg "Italic"  = MsgItalicChars
         chooseMsg "Regular" = MsgRegularChars
-        chooseMsg _         = MsgReloadPage
+        chooseMsg _         = MsgUnknownError
 
 getCaptchaInfo :: Handler (Maybe Text)
 getCaptchaInfo = do
@@ -46,6 +44,7 @@ getCaptchaInfo = do
       ip           <- getIp
       maybeCaptcha <- runDB $ selectFirst [CaptchaIp ==. pack ip] []
       return $ (captchaInfo . entityVal) <$> maybeCaptcha
+
 ---------------------------------------------------------------------------------------------------------------------------
 captchaExt :: String
 captchaExt = ".png"

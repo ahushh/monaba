@@ -1,4 +1,3 @@
-<span .hide id=maxMessageLength>#{maxMessageLength}
 <h2 .text-center #board-title>#{boardDesc}
 $if not $ T.null boardLongDesc
     <h3 .subheader .text-center #board-long-title>#{boardLongDesc}

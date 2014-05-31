@@ -225,6 +225,26 @@ function handleFiles(elem) {
             reader.readAsDataURL(file);
         }
     }
+    validateFiles( $(elem).parent().parent() );
+}
+
+function validateFiles(elem) {
+    var totalSize = 0;
+    $('.file-input').each(function() {
+        if (this.files.length > 0) 
+            totalSize += this.files[0].size;
+    });
+    if (totalSize > (#{toJSON maxFileSize}*Math.pow(1024,2))) {
+        if (elem) {
+            $(elem).find(".file-select").addClass('bad');
+            $(elem).find(".file-input-size .postfix").addClass('bad');
+        } else {
+            $(".file-select, .file-input-size .postfix").addClass('bad');
+        }
+    }
+    else {
+        $(".file-select, .file-input-size .postfix").removeClass('bad');
+    }
 }
 
 function clearFile(fileId) {
@@ -235,6 +255,7 @@ function clearFile(fileId) {
     $('#'+fileId).parent().parent().find('.file-input-size span').text('');
     $('#'+fileId).parent().find('.file-input-thumb').remove();
     $(".file-container > div:not(:first-child)").has('#'+fileId).hide();
+    validateFiles( $('#'+fileId).parent().parent() );
 }
 
 function clearAllFiles() {
@@ -244,6 +265,7 @@ function clearAllFiles() {
     $('.file-input').parent().parent().find('.file-input-size').hide();
     $('.file-input').parent().parent().find('.file-input-size span').text('');
     $('.file-input').parent().find('.file-input-thumb').remove();
+    validateFiles();
 }
 
 function addFileAfter() {

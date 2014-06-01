@@ -258,7 +258,7 @@ bcheckViewAccess :: Maybe (Entity Group) -> Board -> Bool
 bcheckViewAccess mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup
       access = boardViewAccess boardVal
-  in not (isJust access && isNothing group) || (isJust access && notElem (fromJust group) (fromJust access))
+  in not ((isJust access && isNothing group) || (isJust access && notElem (fromJust group) (fromJust access)))
 
 -- FIXME: rename to checkViewAccess404
 checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 

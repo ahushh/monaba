@@ -119,6 +119,7 @@ function isEventSourceSupported() {
 }
 
 function getEventSource() {
+    var ping = new EventSource("@{PingR}");
     var src = new EventSource("@{EventR}");
     src.onopen  = function()      { console.log("Eventsource opened."); };
     src.onclose = function()      { console.log("Eventsource closed."); };

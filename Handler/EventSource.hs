@@ -15,7 +15,8 @@ import qualified Data.ByteString.Base64 as Base64
 import           Data.Text.Encoding     (encodeUtf8, decodeUtf8)
 import           Data.Text.Lazy         (toStrict)
 
-import           Data.Conduit (yield)
+import           Data.Conduit (yield, bracketP)
+import           Control.Concurrent (threadDelay)
 import           Control.Monad (forever)
 import           Control.Concurrent.STM.TChan
 import           Control.Concurrent.STM.TVar
@@ -29,6 +30,16 @@ maxConnections = 500
 
 deleteClient :: Text -> Handler ()
 deleteClient posterId = (\clientsRef -> liftIO $ atomically $ modifyTVar' clientsRef (Map.delete posterId)) =<< sseClients <$> getYesod
+
+getPingR :: Handler TypedContent
+getPingR = do
+  posterId   <- getPosterId
+  clientsRef <- sseClients <$> getYesod
+  repEventSource $ \_ -> bracketP (return ())
+    (const $ liftIO $ atomically $ modifyTVar' clientsRef (Map.delete posterId))
+    $ \_ -> forever $ do
+        liftIO $ threadDelay $ 10*000000 -- 10 seconds
+        yield $ ServerEvent Nothing Nothing [fromText "ping"]
 
 getEventR :: Handler TypedContent
 getEventR = do

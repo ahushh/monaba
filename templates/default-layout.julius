@@ -118,9 +118,9 @@ function isEventSourceSupported() {
     // return typeof(EventSource) !== "undefined";
 }
 
-function getEventSource() {
+function getEventSource(listener) {
     var ping = new EventSource("@{PingR}");
-    var src = new EventSource("@{EventR}");
+    var src = new EventSource("/event/"+listener);
     src.onopen  = function()      { console.log("Eventsource opened."); };
     src.onclose = function()      { console.log("Eventsource closed."); };
     src.onmessage = function(msg) {console.log(msg.data);};

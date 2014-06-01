@@ -1,6 +1,6 @@
 if (isEventSourceSupported()) {
     console.log("Eventsource initialization...");
-    var src = getEventSource();
+    var src = getEventSource("b-"+#{toJSON board});
     // post autoload
     $(".thread").each(function() {
         var id = $(this).attr("id").split("-")[1];

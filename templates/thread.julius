@@ -1,7 +1,7 @@
 if (isEventSourceSupported()) {
     var updateTitle = getUpdateTitle();
     console.log("Eventsource initialization...");
-    var src = getEventSource();
+    var src = getEventSource("t-"+#{toJSON board}+"-"+#{toJSON thread});
     // post autoload
     src.addEventListener(#{toJSON sourceEventName}+'-'+#{toJSON posterId}, function(msg) {
         $('.thread > .columns').append(decodeBase64(msg.data));

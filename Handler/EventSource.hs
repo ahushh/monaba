@@ -41,8 +41,8 @@ getPingR = do
         liftIO $ threadDelay $ 10*000000 -- 10 seconds
         yield $ ServerEvent Nothing Nothing [fromText "ping"]
 
-getEventR :: Handler TypedContent
-getEventR = do
+getEventR :: SSEListener -> Handler TypedContent
+getEventR listener = do
   posterId   <- getPosterId
   clientsRef <- sseClients <$> getYesod
   chan       <- sseChan    <$> getYesod
@@ -66,6 +66,7 @@ getEventR = do
                               , sseClientTimeZone    = timeZone
                               , sseClientConnected   = now
                               , sseClientRecentIgnoredBoards = ignoredBoards
+                              , sseClientListener   = listener
                               }
     liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId newClient)
   chan' <- liftIO $ atomically $ dupTChan chan
@@ -93,14 +94,19 @@ sendPost boardVal thread ePost files hellbanned posterId = do
                            (isJust access && notElem (fromJust ((userGroup . entityVal) <$> u)) (fromJust access))
       filteredClients = [(k,x) | (k,x) <- Map.toList clients, not hellbanned || k==posterId || elem HellBanP (sseClientPermissions x)
                                                            , not (checkViewAccess' $ sseClientUser x)]
+      checkListener client = case sseClientListener client of
+        RecentL     -> False
+        BoardL  b   -> board == b
+        ThreadL b t -> board == b && thread == t
+
   forM_ filteredClients $ \(posterId', client) -> do
-    when (thread /= 0) $ do
+    when (thread /= 0 && checkListener client) $ do
       renderedPost  <- renderPost client ePost displaySage geoIpEnabled maxLenOfFileName showPostDate showEditHistory
       let name        = board <> "-" <> showText thread <> "-" <> posterId'
           encodedPost = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost
       liftIO $ atomically $ writeTChan chan (name, encodedPost)
 
-    when (board `notElem` sseClientRecentIgnoredBoards client) $ do
+    when ( (board `notElem` sseClientRecentIgnoredBoards client) && (sseClientListener client == RecentL) ) $ do
       renderedPost' <- renderPostRecent client ePost geoIpEnabled maxLenOfFileName showPostDate showEditHistory
       let nameRecent     = "recent-" <> posterId'
           encodedPost' = decodeUtf8 $ Base64.encode $ encodeUtf8 $ toStrict $ RHT.renderHtml renderedPost'
@@ -137,7 +143,11 @@ sendEditedPost msg board thread post time = do
   clientsRef <- sseClients <$> getYesod
   chan       <- sseChan    <$> getYesod
   clients    <- liftIO $ readTVarIO clientsRef
-  forM_ (Map.toList clients) $ \(posterId,client) -> do
+  let filterClients c = flip filter (Map.toList c) $ \(_,v) -> case sseClientListener v of
+        RecentL     -> True
+        BoardL  b   -> board == b
+        ThreadL b t -> board == b && thread == t
+  forM_  (filterClients clients) $ \(posterId,client) -> do
       let thread'         = if thread == 0 then post else thread
           name            = board <> "-" <> showText thread' <> "-edited-" <> posterId
           nameRecent        = "recent-edited-" <> posterId

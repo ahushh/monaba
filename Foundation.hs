@@ -31,6 +31,7 @@ import GHC.Word (Word64)
 import Network.HTTP.Types  (mkStatus)
 import Network.Wai         (Request(..))
 import Control.Monad       (when, mplus, mzero)
+import Data.Monoid         ((<>))
 import Control.Applicative ((<$>))
 import Data.Maybe          (fromJust, isNothing, isJust)
 
@@ -39,6 +40,7 @@ import           Control.Concurrent.STM.TVar
 import           Control.Concurrent.STM (atomically)
 import           Data.Map   (Map)
 import qualified Data.Map as Map
+import           Data.List.Split (splitOn)
 
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
@@ -47,12 +49,33 @@ import           Control.Applicative     (liftA2)
 import           Data.Time               (getCurrentTime, UTCTime)
 import           Text.Blaze.Html as Import (preEscapedToHtml)
 ---------------------------------------------------------------------------------------------------------
+data SSEListener = RecentL
+                 | ThreadL Text Int
+                 | BoardL  Text
+                   deriving (Show, Read, Eq)
+
+instance PathPiece SSEListener where
+  toPathPiece RecentL       = "recent"
+  toPathPiece (ThreadL b n) = "t-" <> b <> "-" <> pack (show n)
+  toPathPiece (BoardL  b)   = "b-" <> b
+  fromPathPiece s | s == "recent" = Just RecentL
+                  | otherwise    = let s' = splitOn "-" (unpack s)
+                                     in case () of
+                                          () | length s' == 2 -> Just (BoardL (pack $ s' !! 1))
+                                            | length s' == 3 -> let s'' = reads (s'!!2) :: [(Int,String)]
+                                                                in case s'' of
+                                                                  (i,""):_ -> Just (ThreadL (pack $ s'!!1) i)
+                                                                  _        -> Nothing  
+                                            | otherwise -> Nothing
+
+---------------------------------------------------------------------------------------------------------
 data SSEClient = SSEClient { sseClientUser :: Maybe (Entity User)
                            , sseClientPermissions :: [Permission]
                            , sseClientRecentIgnoredBoards :: [Text]
                            , sseClientRating :: Censorship
                            , sseClientTimeZone :: Int
                            , sseClientConnected :: UTCTime
+                           , sseClientListener :: SSEListener
                            }
                  deriving Show
 

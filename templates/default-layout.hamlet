@@ -56,6 +56,8 @@ $maybe msg <- mmsg
           <a onclick="window.scrollTo(0,0);" .scroll-top>
         <li>
           <a onclick="window.scrollTo(0, document.body.scrollHeight);" .scroll-bottom>
+        <li>
+          <a .online-counter title="Online">
       <ul .right>
         <li>
           <a href=@{HelpR}>

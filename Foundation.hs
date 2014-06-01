@@ -92,6 +92,7 @@ data App = App
     , appLogger :: Logger
     , sseClients :: TVar (Map Text SSEClient)
     , sseChan :: TChan (Text, Text)
+    , onlineCounter :: TVar Int
     }
 
 instance HasHttpManager App where

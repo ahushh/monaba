@@ -10,10 +10,12 @@ import           Blaze.ByteString.Builder.Char.Utf8 (fromText)
 
 import qualified Text.Blaze.Html.Renderer.Text   as RHT
 
+import           Data.Aeson
 import           Data.Ord               (comparing)
 import qualified Data.ByteString.Base64 as Base64
-import           Data.Text.Encoding     (encodeUtf8, decodeUtf8)
-import           Data.Text.Lazy         (toStrict)
+import           Data.Text.Encoding      (encodeUtf8, decodeUtf8)
+import qualified Data.Text.Lazy.Encoding as L (decodeUtf8)
+import           Data.Text.Lazy          (toStrict)
 
 import           Data.Conduit (yield, bracketP)
 import           Control.Concurrent (threadDelay)
@@ -34,12 +36,17 @@ deleteClient posterId = (\clientsRef -> liftIO $ atomically $ modifyTVar' client
 getPingR :: Handler TypedContent
 getPingR = do
   posterId   <- getPosterId
-  clientsRef <- sseClients <$> getYesod
-  repEventSource $ \_ -> bracketP (return ())
-    (const $ liftIO $ atomically $ modifyTVar' clientsRef (Map.delete posterId))
+  clientsRef <- sseClients    <$> getYesod
+  onlineRef  <- onlineCounter <$> getYesod
+  repEventSource $ \_ -> bracketP
+    (liftIO $ atomically $ modifyTVar' onlineRef (+1))
+    (const $ liftIO $ do
+        atomically $ modifyTVar' onlineRef (\x -> x -1)
+        atomically $ modifyTVar' clientsRef (Map.delete posterId))
     $ \_ -> forever $ do
-        liftIO $ threadDelay $ 10*000000 -- 10 seconds
-        yield $ ServerEvent Nothing Nothing [fromText "ping"]
+        online <- liftIO $ atomically $ readTVar onlineRef
+        yield $ ServerEvent Nothing Nothing [fromText $ toStrict $ L.decodeUtf8 $ encode $ toJSON $ object ["online" .= online]]
+        liftIO $ threadDelay 500000 -- 0.5 second
 
 getEventR :: SSEListener -> Handler TypedContent
 getEventR listener = do

@@ -106,10 +106,11 @@ makeFoundation conf = do
     _ <- forkIO updateLoop
 
     clients <- newTVarIO Map.empty
+    online  <- newTVarIO 0
     chan    <- atomically newBroadcastTChan
 
     let logger = Yesod.Core.Types.Logger loggerSet' getter
-        foundation = App conf s p manager dbconf logger clients chan
+        foundation = App conf s p manager dbconf logger clients chan online
 
     -- Perform database migration using our application's logging settings.
     runLoggingT

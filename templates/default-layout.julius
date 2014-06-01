@@ -39,6 +39,12 @@ function reinitPosts() {
 }
 
 function initialization() {
+    var ping = new EventSource("@{PingR}");
+    ping.onmessage = function(msg) {
+        var m = JSON.parse(msg.data);
+        console.log(m.online);
+        $('.online-counter').html(m.online);
+    };
     // load default settings
     for (var i in defaultSettings) {
         if (getItem(i) == null)
@@ -119,7 +125,6 @@ function isEventSourceSupported() {
 }
 
 function getEventSource(listener) {
-    var ping = new EventSource("@{PingR}");
     var src = new EventSource("/event/"+listener);
     src.onopen  = function()      { console.log("Eventsource opened."); };
     src.onclose = function()      { console.log("Eventsource closed."); };

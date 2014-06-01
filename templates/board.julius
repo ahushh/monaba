@@ -1,12 +1,3 @@
-$(document).ready(function() {
-    $.getJSON("/api/board/"+#{toJSON board}+"/config", function(data) {
-            if (data.success)
-                initSymbolCounter(#{toJSON board}, data.board.maxMsgLength);
-            else
-                popupAlert(data.error,5,false,true);
-        });
-});
-
 if (isEventSourceSupported()) {
     console.log("Eventsource initialization...");
     var src = getEventSource();

@@ -225,32 +225,6 @@ function deletedPostsHandler(msg) {
 })();
 
 //-----------------------------------------------------------------
-// Forms
-//-----------------------------------------------------------------
-function countSymbols(formId, maxLen) {
-    var len;
-    if ($('#'+formId+' textarea').get(0))
-        len = $('#'+formId+' textarea').val().length;
-    else
-        return false;
-    if (len > maxLen) {
-        $('#'+formId+' .symbol-counter').html(len+'/'+maxLen);
-        $('#'+formId+' .symbol-counter').css('color','red');
-        $('#'+formId+' textarea').addClass('bad');
-    } else {
-        $('#'+formId+' textarea').removeClass('bad');
-        $('#'+formId+' .symbol-counter').html(len);
-        $('#'+formId+' .symbol-counter').css('color','green');
-    }
-}
-
-function initSymbolCounter(board, maxLen) {
-    countSymbols('post-form', maxLen);
-    $.each(['edit-form', 'post-form'], function(i,f) {
-        $('#'+f+' textarea').on('change cut paste keyup', function() { countSymbols(f, maxLen); });
-    });
-}
-//-----------------------------------------------------------------
 // Pleer.com
 //-----------------------------------------------------------------
 function addProstopleer(post) {

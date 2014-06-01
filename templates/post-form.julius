@@ -1,3 +1,40 @@
+var boardCfg = null;
+
+$(document).ready(function() {
+    $.getJSON("/api/board/"+#{toJSON $ boardName boardW }+"/config", function(data) {
+        if (data.success) {
+            boardCfg = data.board;
+            initSymbolCounter();
+        } else
+            popupAlert(data.error,5000,false,true);
+    });
+});
+
+function countSymbols(formId, maxLen) {
+    var len;
+    if ($('#'+formId+' textarea').get(0))
+        len = $('#'+formId+' textarea').val().length;
+    else
+        return false;
+    if (len > maxLen) {
+        $('#'+formId+' .symbol-counter').html(len+'/'+maxLen);
+        $('#'+formId+' .symbol-counter').css('color','red');
+        $('#'+formId+' textarea').addClass('bad');
+    } else {
+        $('#'+formId+' textarea').removeClass('bad');
+        $('#'+formId+' .symbol-counter').html(len);
+        $('#'+formId+' .symbol-counter').css('color','green');
+    }
+}
+
+function initSymbolCounter() {
+    var maxLen = boardCfg.maxMsgLength;
+    countSymbols('post-form', maxLen);
+    $.each(['edit-form', 'post-form'], function(i,f) {
+        $('#'+f+' textarea').on('change cut paste keyup', function() { countSymbols(f, maxLen); });
+    });
+}
+
 var codeLangs = {
     text: #{toJSON $ msgrender MsgPlainText},
     actionscript: "ActionScript",

@@ -38,7 +38,7 @@ getPingR = do
   repEventSource $ \_ -> bracketP (return ())
     (const $ liftIO $ atomically $ modifyTVar' clientsRef (Map.delete posterId))
     $ \_ -> forever $ do
-        liftIO $ threadDelay $ 10*000000 -- 10 seconds
+        liftIO $ threadDelay 10000000 -- 10 seconds
         yield $ ServerEvent Nothing Nothing [fromText "ping"]
 
 getEventR :: Handler TypedContent

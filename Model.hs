@@ -17,7 +17,7 @@ import ModelTypes
 -- at:
 -- http://www.yesodweb.com/book/persistent/
 
-share [mkPersist sqlOnlySettings, mkMigrate "migrateAll"]
+share [mkPersist sqlSettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
 instance HashDBUser User where

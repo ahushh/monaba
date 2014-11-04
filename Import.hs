@@ -66,6 +66,9 @@ import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
 
 import           Yesod.Auth              (maybeAuth)
+
+import           Database.Persist
+import           Database.Persist.Sql
 -------------------------------------------------------------------------------------------------------------------
 -- API
 -------------------------------------------------------------------------------------------------------------------
@@ -162,7 +165,7 @@ postWidget ePost eFiles rating sage inThread canPost
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
 adminNavbarWidget muser permissions = $(widgetFile "admin/navbar")
 
-pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> Widget
+-- pageSwitcherWidget :: Int -> [Int] -> (Int -> Route App) -> Widget
 pageSwitcherWidget page pages route = $(widgetFile "page-switcher")
 
 deleteWidget :: [Permission] -> Widget
@@ -391,11 +394,9 @@ getIp = do
 -------------------------------------------------------------------------------------------------------------------
 -- Keys
 -------------------------------------------------------------------------------------------------------------------
-fromKey :: forall backend entity. KeyBackend backend entity -> Int64
-fromKey = (\(PersistInt64 n) -> n) . unKey
+fromKey = fromSqlKey
 
-toKey :: forall backend entity a. Integral a => a -> KeyBackend backend entity
-toKey i = Key $ PersistInt64 $ fromIntegral i
+toKey i = toSqlKey $ Int64 $ fromIntegral i
 -------------------------------------------------------------------------------------------------------------------
 -- Monadic when and unless
 -------------------------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ import Network.HTTP.Client.Conduit (Manager, HasHttpManager (getHttpManager))
 import qualified Settings
 import Settings.Development (development)
 import qualified Database.Persist
-import Database.Persist.Sql (SqlPersistT, SqlBackend)
+import Database.Persist.Sql (SqlBackend)
 import Settings.StaticFiles
 import Settings (widgetFile, Extra (..))
 import Model
@@ -206,7 +206,7 @@ instance Yesod App where
             --     -- , css_bootstrap_css
             --     ])
             $(widgetFile "default-layout")
-        giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
+        withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticRoot setting in Settings.hs
@@ -294,14 +294,6 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
-isAuthorized' :: forall master.
-                 (YesodPersist master,
-                  PersistUnique (YesodPersistBackend master (HandlerT master IO)),
-                  YesodAuth master, AuthId master ~ KeyBackend SqlBackend User,
-                  PersistMonadBackend
-                  (YesodPersistBackend master (HandlerT master IO))
-                  ~ SqlBackend) =>
-                 [Permission] -> HandlerT master IO AuthResult
 isAuthorized' permissions = do
   mauth <- maybeAuth
   case mauth of
@@ -311,19 +303,14 @@ isAuthorized' permissions = do
       if all (`elem` groupPermissions (entityVal $ fromJust group)) permissions
         then return Authorized
         else return $ Unauthorized "Not permitted"
+
+instance YesodAuthPersist App
+
 ---------------------------------------------------------------------------------------------------------
 -- Path pieces
 ---------------------------------------------------------------------------------------------------------
 instance PathPiece ManageBoardAction where
   toPathPiece = T.pack . show
-  fromPathPiece s =
-    case reads $ T.unpack s of
-      (i,""):_ -> Just i
-      _        -> Nothing
-
-instance PathPiece Bool where
-  toPathPiece True  = "True"
-  toPathPiece False = "False"
   fromPathPiece s =
     case reads $ T.unpack s of
       (i,""):_ -> Just i
@@ -338,7 +325,7 @@ instance PathPiece Censorship where
 ---------------------------------------------------------------------------------------------------------
 -- How to run database actions.
 instance YesodPersist App where
-    type YesodPersistBackend App = SqlPersistT
+    type YesodPersistBackend App = SqlBackend
     runDB = defaultRunDB persistConfig connPool
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool

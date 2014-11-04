@@ -184,13 +184,13 @@ isBanExpired (Entity banId ban) =
 -------------------------------------------------------------------------------------------------------------------      
 -- | If an ajax request, redirects to page that makes JSON from message and status string.
 --   If a regular request, redirects to given URL.
-trickyRedirect :: forall (m :: * -> *) b msg url.
-                  (RedirectUrl
-                   (HandlerSite m)
-                   (Route App),
-                   RedirectUrl (HandlerSite m) url, MonadHandler m,
-                   RenderMessage (HandlerSite m) msg) =>
-                  Text -> msg -> url -> m b
+-- trickyRedirect :: forall (m :: * -> *) b msg url.
+--                   (RedirectUrl
+--                    (HandlerSite m)
+--                    (Route App),
+--                    RedirectUrl (HandlerSite m) url, MonadHandler m,
+--                    RenderMessage (HandlerSite m) msg) =>
+--                   Text -> msg -> url -> m b
 trickyRedirect status msg url = do
   setMessageI msg
   t <- isAjaxRequest

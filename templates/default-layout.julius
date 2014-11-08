@@ -6,7 +6,7 @@ var Monaba = {
 };
 
 var defaultSettings = {
-    'useEventsource': true,
+    'useEventsource': false,
     'expandImage': 'center',
     'youtubeHTML5': true,
     'youtubeLoadTitles': true,
@@ -844,7 +844,7 @@ function showEditForm(postId, realId) {
 
     var pMsg = popupAlert(#{toJSON $ msgrender MsgLoading}, null, true);
     $.getJSON('/api/post/'+board+'/'+pId, function(json) {
-        var raw = json.post[0].value.rawMessage;
+        var raw = json.post[0].rawMessage;
         if (raw) {
             $('#edit-form textarea').val(raw).trigger('autosize.resize');
         } else { // old posts which don't have raw_message field

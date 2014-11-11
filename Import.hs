@@ -29,6 +29,8 @@ infixr 5 <>
 (<>) :: Monoid m => m -> m -> m
 (<>) = mappend
 #endif
+import Database.Persist
+import Database.Persist.Sql
 -------------------------------------------------------------------------------------------------------------------
 import Text.Blaze.Html as Import (preEscapedToHtml)
 import Data.Time       as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
@@ -44,7 +46,6 @@ import           System.Posix            (getFileStatus, fileSize, FileOffset())
 import           Data.Ratio
 import           Network.Wai
 import           Text.Printf
-import qualified Graphics.GD             as GD
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
 import           GHC.Int                 (Int64)
@@ -63,8 +64,6 @@ import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
--------------------------------------------------------------------------------------------------------------------
-type ImageResolution = (Int, Int)
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -196,70 +195,6 @@ writeToServer file md5 = do
 -------------------------------------------------------------------------------------------------------------------
 isImageFile :: String -> Bool
 isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
-
-loadImage :: FilePath -> String -> IO GD.Image
-loadImage p t | t == "jpeg" || t == "jpg" = GD.loadJpegFile p
-              | t == "png"              = GD.loadPngFile  p
-              | t == "gif"              = GD.loadGifFile  p
-loadImage _ t = error $ "error: unknown image type '"++t++"' at loadImage"
-
-saveImage :: FilePath -> GD.Image -> [Char] -> IO ()
-saveImage path img t | t == "jpeg" || t == "jpg" = GD.saveJpegFile (-1) path img
-                     | t == "png"              = GD.savePngFile  path img
-                     | t == "gif"              = GD.saveGifFile  path img
-saveImage _    _   t = error $ "error: unknown image type '"++t++"' at saveImage"
-
-getImageResolution :: FilePath -> -- ^ File path
-                     String   -> -- ^ File extension
-                     IO ImageResolution
-getImageResolution filepath filetype = GD.imageSize =<< loadImage filepath filetype
-
-calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
-calcResolution (inW,inH) (outW,outH)
-    | inAspect >  outAspect = (outW, round (fromIntegral outW / inAspect))
-    | inAspect <  outAspect = (round (fromIntegral outH * inAspect), outH)
-    | otherwise             = (outW, outH)
-    where inAspect  = inW  % inH
-          outAspect = outW % outH
-
--- | Resizes an image file and saves the result to a new file.
-resizeImage :: FilePath           -- ^ Source image file
-            -> FilePath           -- ^ Destination image file
-            -> ImageResolution    -- ^ The maximum dimensions of the output file
-            -> String             -- ^ File extension without dot
-            -> IO ImageResolution -- ^ The size of the output file
-resizeImage from to maxSz ext = 
-    do img  <- loadImage from ext
-       inSz <- GD.imageSize img
-       let outSz@(w,h) = calcResolution inSz maxSz
-       img' <- GD.resizeImage w h img
-       saveImage to img' ext
-       return outSz
-
--- | Make a thumbnail for an image file
-makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
-               FilePath        ->  -- ^ Source image file
-               FilePath        ->  -- ^ Destination image _name_
-               String          ->  -- ^ Destination file extension
-               ImageResolution ->  -- ^ Width and height of the source file
-               IO ImageResolution -- ^ Width and height of the destination file
-makeThumbImg thumbSize filepath filename filetype (width, height) = do
-  unlessM (doesDirectoryExist (thumbDirectory </> filetype)) $
-    createDirectory (thumbDirectory </> filetype)
-  if (height > thumbSize || width > thumbSize)
-    then resizeImage filepath thumbpath (thumbSize,thumbSize) filetype
-    else copyFile filepath thumbpath >> return (width, height)
-    where thumbpath = thumbFilePath thumbSize filetype filename
-
--- | Make a thumbnail for a non-image file
-makeThumbNonImg :: FilePath -> -- ^ Destination file name
-                  String   -> -- ^ Destination file extension
-                  IO ()
-makeThumbNonImg filename filetype = do
-  unlessM (doesFileExist $ thumbFilePath 0 filetype filename) $ do
-    let defaultIconPath = staticDir </> "icons" </> "default" ++ "." ++ thumbIconExt
-        newIconPath     = staticDir </> "icons" </> filetype  ++ "." ++ thumbIconExt
-    copyFile defaultIconPath newIconPath
 -------------------------------------------------------------------------------------------------------------------
 -- Access checkers
 -------------------------------------------------------------------------------------------------------------------
@@ -357,11 +292,9 @@ getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiReque
 -------------------------------------------------------------------------------------------------------------------
 -- Keys
 -------------------------------------------------------------------------------------------------------------------
-fromKey :: forall backend entity. KeyBackend backend entity -> Int64
-fromKey = (\(PersistInt64 n) -> n) . unKey 
+fromKey = fromSqlKey
 
-toKey :: forall backend entity a. Integral a => a -> KeyBackend backend entity
-toKey i = Key $ PersistInt64 $ fromIntegral i
+toKey i = toSqlKey $ fromIntegral i
 -------------------------------------------------------------------------------------------------------------------
 -- Monadic when and unless
 -------------------------------------------------------------------------------------------------------------------

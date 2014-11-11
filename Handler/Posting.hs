@@ -8,6 +8,7 @@ import           Data.Conduit            (($$))
 import qualified Data.Text               as T
 import qualified Data.ByteString         as BS
 import qualified Data.Conduit.List       as CL
+import Utils.Image
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
                                                               }
       if isImageFile filetype
         then do
-          (imgW  , imgH  ) <- liftIO $ getImageResolution filepath filetype
+          (imgW  , imgH  ) <- liftIO $ getImageResolution filepath
           (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
           void $ runDB $ insert $ newFile { attachedfileWidth       = imgW
                                           , attachedfileHeight      = imgH
@@ -158,13 +159,6 @@ isBanExpired (Entity banId ban) = do
 -------------------------------------------------------------------------------------------------------------------      
 -- | If ajax request, redirects to page that makes JSON from message and status string.
 --   If regular request, redirects to given URL.
-trickyRedirect :: forall (m :: * -> *) b msg url.
-                  (RedirectUrl
-                   (HandlerSite m)
-                   (Route App),
-                   RedirectUrl (HandlerSite m) url, MonadHandler m,
-                   RenderMessage (HandlerSite m) msg) =>
-                  Text -> msg -> url -> m b
 trickyRedirect status msg url = do
   setMessageI msg
   t <- isAjaxRequest

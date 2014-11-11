@@ -6,18 +6,23 @@ module Application
     ) where
 
 import Import
-import Settings
 import Yesod.Auth
 import Yesod.Default.Config
 import Yesod.Default.Main
 import Yesod.Default.Handlers
 import Network.Wai.Middleware.RequestLogger
+    ( mkRequestLogger, outputFormat, OutputFormat (..), IPAddrSource (..), destination
+    )
+import qualified Network.Wai.Middleware.RequestLogger as RequestLogger
 import qualified Database.Persist
-import Database.Persist.Sql (runMigration, runMigrationUnsafe)
-import Network.HTTP.Conduit (newManager, def)
+import Database.Persist.Sql (runMigration)
+import Database.Persist.Postgresql (createPostgresqlPool, pgConnStr, pgPoolSize)
+import Network.HTTP.Client.Conduit (newManager)
 import Control.Monad.Logger (runLoggingT)
-import System.IO (stdout)
-import System.Log.FastLogger (mkLogger)
+import System.Log.FastLogger (newStdoutLoggerSet, defaultBufSize)
+import Network.Wai.Logger (clockDateCacher)
+import Data.Default (def)
+import Yesod.Core.Types (loggerSet, Logger (Logger))
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -47,7 +52,7 @@ mkYesodDispatch "App" resourcesApp
 -- performs initialization and creates a WAI application. This is also the
 -- place to put your migrate statements to have automatic database
 -- migrations handled by Yesod.
-makeApplication :: AppConfig DefaultEnv Extra -> IO Application
+makeApplication :: AppConfig DefaultEnv Extra -> IO (Application, LogFunc)
 makeApplication conf = do
     foundation <- makeFoundation conf
 
@@ -57,38 +62,53 @@ makeApplication conf = do
             if development
                 then Detailed True
                 else Apache FromSocket
-        , destination = Logger $ appLogger foundation
+        , destination = RequestLogger.Logger $ loggerSet $ appLogger foundation
         }
 
     -- Create the WAI application and apply middlewares
     app <- toWaiAppPlain foundation
-    return $ logWare app
+    let logFunc = messageLoggerSource foundation (appLogger foundation)
+    return (logWare $ defaultMiddlewaresNoLogging app, logFunc)
 
 -- | Loads up any necessary settings, creates your foundation datatype, and
 -- performs some initialization.
 makeFoundation :: AppConfig DefaultEnv Extra -> IO App
 makeFoundation conf = do
-    manager <- newManager def
+    manager <- newManager
     s <- staticSite
-    dbconf <- withYamlEnvironment "config/mysql.yml" (appEnv conf)
+    dbconf <- withYamlEnvironment "config/postgresql.yml" (appEnv conf)
               Database.Persist.loadConfig >>=
               Database.Persist.applyEnv
-    p <- Database.Persist.createPoolConfig (dbconf :: Settings.PersistConf)
-    logger <- mkLogger True stdout
-    let foundation = App conf s p manager dbconf logger
+
+    loggerSet' <- newStdoutLoggerSet defaultBufSize
+    (getter, _) <- clockDateCacher
+
+    let logger = Yesod.Core.Types.Logger loggerSet' getter
+        mkFoundation p = App
+            { settings = conf
+            , getStatic = s
+            , connPool = p
+            , httpManager = manager
+            , persistConfig = dbconf
+            , appLogger = logger
+            }
+        tempFoundation = mkFoundation $ error "connPool forced in tempFoundation"
+        logFunc = messageLoggerSource tempFoundation logger
+
+    p <- flip runLoggingT logFunc
+       $ createPostgresqlPool (pgConnStr dbconf) (pgPoolSize dbconf)
+    let foundation = mkFoundation p
 
     -- Perform database migration using our application's logging settings.
-    runLoggingT
-        -- (Database.Persist.runPool dbconf (runMigration migrateAll) p)
-        (Database.Persist.runPool dbconf (runMigrationUnsafe migrateAll) p)
-        (messageLoggerSource foundation logger)
+    flip runLoggingT logFunc
+        (Database.Persist.runPool dbconf (runMigration migrateAll) p)
 
     return foundation
 
 -- for yesod devel
 getApplicationDev :: IO (Int, Application)
 getApplicationDev =
-    defaultDevelApp loader makeApplication
+    defaultDevelApp loader (fmap fst . makeApplication)
   where
     loader = Yesod.Default.Config.loadConfig (configSettings Development)
         { csParseExtra = parseExtra

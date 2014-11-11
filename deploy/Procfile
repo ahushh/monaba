@@ -11,7 +11,7 @@
 #     mv deploy/Procfile ./
 #
 # * Create an empty package.json
-#     echo '{ "name": "Monaba", "version": "0.0.1", "dependencies": {} }' >> package.json
+#     echo '{ "name": "yoba", "version": "0.0.1", "dependencies": {} }' >> package.json
 #
 # Postgresql Yesod setup:
 #
@@ -78,7 +78,7 @@
 # * add your web executable binary (referenced below) to the git repository
 #
 #     git checkout deploy
-#     git add ./dist/build/Monaba/Monaba
+#     git add ./dist/build/yoba/yoba
 #     git commit -m deploy
 #
 # * push to Heroku
@@ -87,4 +87,4 @@
 
 
 # Heroku configuration that runs your app
-web: ./dist/build/Monaba/Monaba production -p $PORT
+web: ./dist/build/yoba/yoba production -p $PORT

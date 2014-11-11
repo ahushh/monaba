@@ -8,18 +8,18 @@ import Yesod.Auth
 import Yesod.Auth.HashDB (authHashDB, getAuthIdHashDB)
 import Yesod.Default.Config
 import Yesod.Default.Util (addStaticContentExternal)
-import Network.HTTP.Conduit (Manager)
+import Network.HTTP.Client.Conduit (Manager, HasHttpManager (getHttpManager))
 import qualified Settings
 import Settings.Development (development)
 import qualified Database.Persist
-import Database.Persist.Sql (SqlPersistT, SqlBackend)
+import Database.Persist.Sql (SqlBackend)
 import Settings.StaticFiles
 import Settings (widgetFile, Extra (..))
 import Model
 import ModelTypes
 import Text.Jasmine (minifym)
 import Text.Hamlet (hamletFile)
-import System.Log.FastLogger (Logger)
+import Yesod.Core.Types (Logger)
 
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -45,6 +45,8 @@ data App = App
     , appLogger :: Logger
     }
 
+instance HasHttpManager App where
+    getHttpManager = httpManager
 ---------------------------------------------------------------------------------------------------------
 widgetHelperFilterBoards :: [Entity Board] -> Text -> Maybe Text -> [Entity Board]
 widgetHelperFilterBoards boards category group = filter p boards
@@ -89,26 +91,16 @@ maxFileSize = 15 -- in MB
 -- Set up i18n messages. See the message folder.
 mkMessage "App" "messages" "en"
 
--- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
--- http://www.yesodweb.com/book/handler
+-- http://www.yesodweb.com/book/routing-and-handlers
 --
--- This function does three things:
---
--- * Creates the route datatype AppRoute. Every valid URL in your
---   application can be represented as a value of this type.
--- * Creates the associated type:
---       type instance Route App = AppRoute
--- * Creates the value resourcesApp which contains information on the
---   resources declared below. This is used in Handler.hs by the call to
---   mkYesodDispatch
---
--- What this function does *not* do is create a YesodSite instance for
--- App. Creating that instance requires all of the handler functions
--- for our application to be in scope. However, the handler functions
--- usually require access to the AppRoute datatype. Therefore, we
--- split these actions into two functions and place them in separate files.
---
+-- Note that this is really half the story; in Application.hs, mkYesodDispatch
+-- generates the rest of the code. Please see the linked documentation for an
+-- explanation for this split.
+-- Note that this is really half the story; in Application.hs, mkYesodDispatch
+-- generates the rest of the code. Please see the linked documentation for an
+-- explanation for this split.
+
 mkYesodData "App" $(parseRoutesFile "config/routes")
 
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
@@ -155,7 +147,7 @@ instance Yesod App where
             --     -- , css_bootstrap_css
             --     ])
             $(widgetFile "default-layout")
-        giveUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
+        withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- This is done to provide an optimization for serving static files from
     -- a separate domain. Please see the staticRoot setting in Settings.hs
@@ -239,14 +231,8 @@ instance Yesod App where
                 $ RepPlain $ toContent $ T.append "Error: " full
         defaultErrorHandler errorResponse
 
-isAuthorized' :: forall master.
-                 (YesodPersist master,
-                  PersistUnique (YesodPersistBackend master (HandlerT master IO)),
-                  YesodAuth master, AuthId master ~ KeyBackend SqlBackend User,
-                  PersistMonadBackend
-                  (YesodPersistBackend master (HandlerT master IO))
-                  ~ SqlBackend) =>
-                 Permission -> HandlerT master IO AuthResult
+instance YesodAuthPersist App
+
 isAuthorized' permission = do
   mauth <- maybeAuth
   case mauth of
@@ -259,7 +245,7 @@ isAuthorized' permission = do
 
 -- How to run database actions.
 instance YesodPersist App where
-    type YesodPersistBackend App = SqlPersistT
+    type YesodPersistBackend App = SqlBackend
     runDB = defaultRunDB persistConfig connPool
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner connPool

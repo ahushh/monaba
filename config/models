@@ -28,19 +28,19 @@ Board
     previewsPerThread Int
     hidden            Bool
     enableCaptcha     Bool
-    threadLimit       Int      default=-1
+    threadLimit       Int      
     opFile            Text     
     replyFile         Text     
     viewAccess        [Text]   Maybe -- group names
     replyAccess       [Text]   Maybe -- group names
     threadAccess      [Text]   Maybe -- group names
     category          Text     Maybe
-    opModeration      Bool     default=0
+    opModeration      Bool     
     extraRules        [Text]   
-    enableGeoIp       Bool     default=0
-    opEditing         Bool     default=0
-    postEditing       Bool     default=0
-    showEditHistory   Bool     default=0
+    enableGeoIp       Bool     
+    opEditing         Bool     
+    postEditing       Bool     
+    showEditHistory   Bool     
     deriving          Typeable
 Post
     board        Text
@@ -53,10 +53,10 @@ Post
     sticked      Bool
     locked       Bool
     autosage     Bool
-    deleted      Bool default=0
-    deletedByOp  Bool default=0
+    deleted      Bool 
+    deletedByOp  Bool 
     posterId     Text 
-    lastModified UTCTime Maybe default=null
+    lastModified UTCTime Maybe 
     -- form's values
     message      Textarea
     rawMessage   Text
@@ -79,10 +79,10 @@ Attachedfile
     origName     FilePath              -- original file name
     type         String                -- extension
     thumbSize    Int                   -- just thumbSize from Board table
-    thumbWidth   Int      default=-1   -- real thumb width
-    thumbHeight  Int      default=-1   -- real thumb height
-    width        Int      default=-1   -- real image width
-    height       Int      default=-1   -- real image height
+    thumbWidth   Int      
+    thumbHeight  Int      
+    width        Int      
+    height       Int      
     size         Text                  -- formatted file size
     deriving     Typeable
 Ban
@@ -106,6 +106,6 @@ Config
     threadDelay     Int 
     boardCategories [Text]
     newsBoard       Text
-    showNews        Int  default=2
-    maxEditings     Int  default=10
-    showLatestPosts Int  default=15
+    showNews        Int  
+    maxEditings     Int  
+    showLatestPosts Int  

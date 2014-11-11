@@ -19,7 +19,7 @@ homeSpecs =
                 setMethod "POST"
                 setUrl HomeR
                 addNonce
-                fileByLabel "Choose a file" "tests/main.hs" "text/plain" -- talk about self-reference
+                fileByLabel "Choose a file" "test/main.hs" "text/plain" -- talk about self-reference
                 byLabel "What's on the file?" "Some Content"
 
             statusIs 200

@@ -15,7 +15,7 @@ import ModelTypes
 -- at:
 -- http://www.yesodweb.com/book/persistent/
 
-share [mkPersist sqlOnlySettings, mkMigrate "migrateAll"]
+share [mkPersist sqlSettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
 instance HashDBUser User where
@@ -28,9 +28,6 @@ instance HashDBUser User where
 ------------------------------------------------------------------------------
 -- API    
 ------------------------------------------------------------------------------
-instance ToJSON Textarea where
-  toJSON Textarea {..} = String unTextarea
-
 instance ToJSON Post where
     toJSON Post {..} = object
         [ "board"       .= postBoard

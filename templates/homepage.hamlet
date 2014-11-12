@@ -8,7 +8,7 @@
             $if not (null bs)
               <div .board-category>#{c}
               $forall Entity _ b <- bs
-                <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardDescription b}
+                <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardTitle b}
     <div #main-image>
         <img #main-image src=#{staticDir ++ "/home.jpg"}>
     $if not $ null latestNews

@@ -16,8 +16,8 @@ User
 Board
     name              Text
     BoardUniqName     name
-    description       Text
-    longDescription   Text
+    title             Text
+    summary           Text
     bumpLimit         Int
     numberFiles       Int
     allowedTypes      [String]

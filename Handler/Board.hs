@@ -25,13 +25,12 @@ getBoardR board page = do
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
-  let numberFiles       = boardNumberFiles       boardVal
-      maxMessageLength  = boardMaxMsgLength      boardVal
+  let maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
       enableCaptcha     = boardEnableCaptcha     boardVal
-      boardDesc         = boardDescription       boardVal
-      boardLongDesc     = boardLongDescription   boardVal
+      boardDesc         = boardTitle             boardVal
+      boardLongDesc     = boardSummary           boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
       ---------------------------------------------------------------------------------
       pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
@@ -62,7 +61,6 @@ getBoardR board page = do
     return $ (tId, c):xs
   let geoIps = map (second fromJust) $ filter (isJust . snd) $ concat geoIps'
   -------------------------------------------------------------------------------------------------------
-  now       <- liftIO getCurrentTime
   acaptcha  <- lookupSession "acaptcha"
   when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
   ------------------------------------------------------------------------------------------------------- 

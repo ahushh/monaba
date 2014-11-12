@@ -2,7 +2,6 @@
 module Handler.Posting where
 
 import           Import
-import           Yesod.Routes.Class      (Route)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Conduit            (($$))
 import qualified Data.Text               as T
@@ -45,13 +44,7 @@ postForm boardVal extra = do
   msgrender   <- getMessageRender
 
   let maxMessageLength = boardMaxMsgLength  boardVal
-      defaultName      = boardDefaultName   boardVal
-      allowedTypes     = boardAllowedTypes  boardVal
-      thumbSize        = boardThumbSize     boardVal
       numberFiles      = boardNumberFiles   boardVal
-      bumpLimit        = boardBumpLimit     boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
-      replyFile        = boardReplyFile     boardVal
 
       myMessageField = checkBool (not . tooLongMessage maxMessageLength)
                                  (MsgTooLongMessage maxMessageLength )
@@ -70,7 +63,7 @@ postForm boardVal extra = do
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
                FormSuccess fileresults <*> gobackRes  <*> nobumpRes
-      widget boardW isthreadW maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
+      widget boardW _ maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
 editForm :: Html -> MForm Handler (FormResult (Textarea, Text, Int), Widget)

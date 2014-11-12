@@ -10,7 +10,7 @@
     $forall Entity bId b <- bans
         <tr>
             <td>
-                <a href=@{BanDeleteR $ fromIntegral $ fromKey bId}>_{MsgDeleteBtn}
+                <a href=@{BanDeleteR $ fromIntegral $ fromSqlKey bId}>_{MsgDeleteBtn}
             <td>#{banIp b}
             <td>#{banReason b}
             $if isJust $ banExpires b

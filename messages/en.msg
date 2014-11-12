@@ -112,11 +112,11 @@ Boards: Boards
 Bans: Bans
 
 ### Boards
-BoardName: Name
-BoardDescription : Short description
-BoardDescriptionEG: e.g. random, music
-BoardLongDescription: Long description
-BoardLongDescriptionEG: 
+BoardName: Board name
+BoardTitle: Board title
+BoardTitleEG: e.g. random, music
+BoardSummary: Board description
+BoardSummaryEG: 
 BoardBumpLimit: Bump limit
 BoardNumberFiles : Max number of files
 BoardAllowedTypes: Allowed file types

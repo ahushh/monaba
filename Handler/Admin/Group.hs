@@ -56,7 +56,7 @@ getManageGroupsR = do
   let permissions          = getPermissions mgroup
 
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])
-  (formWidget, formEnctype) <- generateFormPost groupsForm
+  (formWidget, _) <- generateFormPost groupsForm
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

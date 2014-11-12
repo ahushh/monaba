@@ -13,13 +13,12 @@ getManageBoardsR board = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   let permissions = getPermissions mgroup
-      group       = (groupName . entityVal) <$> mgroup
 
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
 
-  (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard board bCategories groups
+  (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard board bCategories groups
 
   boards          <- runDB $ selectList ([]::[Filter Board]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
@@ -80,8 +79,8 @@ updateBoardForm board bname' bCategories groups extra = do
       helper'' g = (g . entityVal) <$> board
       
   (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
-  (descriptionRes      , descriptionView      ) <- mopt textField     "" (helper boardDescription)
-  (longDescriptionRes  , longDescriptionView  ) <- mopt textField     "" (helper boardLongDescription)
+  (titleRes            , titleView            ) <- mopt textField     "" (helper boardTitle)
+  (summaryRes          , summaryView          ) <- mopt textField     "" (helper boardSummary)
   (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit)
   (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles)
   (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes))
@@ -106,15 +105,15 @@ updateBoardForm board bname' bCategories groups extra = do
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
   let result = (,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
-               nameRes              <*> descriptionRes     <*> bumpLimitRes      <*>
-               numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
-               maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
-               previewsPerThreadRes <*> threadLimitRes     <*> opFileRes         <*>
-               replyFileRes         <*> isHiddenRes        <*> enableCaptchaRes  <*>
-               categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
-               threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
-               enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
-               showEditHistoryRes   <*> longDescriptionRes
+               nameRes              <*> titleRes        <*> bumpLimitRes      <*>
+               numberFilesRes       <*> allowedTypesRes <*> defaultNameRes    <*>
+               maxMsgLengthRes      <*> thumbSizeRes    <*> threadsPerPageRes <*>
+               previewsPerThreadRes <*> threadLimitRes  <*> opFileRes         <*>
+               replyFileRes         <*> isHiddenRes     <*> enableCaptchaRes  <*>
+               categoryRes          <*> viewAccessRes   <*> replyAccessRes    <*>
+               threadAccessRes      <*> opModerationRes <*> extraRulesRes     <*>
+               enableGeoIpRes       <*> opEditingRes    <*> postEditingRes    <*>
+               showEditHistoryRes   <*> summaryRes
       bname  = maybe bname' (boardName . entityVal) board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -130,24 +129,24 @@ postManageBoardsR board = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bDesc        , bBumpLimit   , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bLongDescription
+    FormSuccess ( bName        , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
+                , bDefaultName , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
+                , bCategory    , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
+                , bExtraRules  , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
+                , bSummary
                 ) ->
       case board of
         "new-f89d7fb43ef7" -> do
-          when (any isNothing [bName, bDesc, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
+          when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
                 any isNothing [bThreadLimit, bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
             setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR board)            
           let onoff (Just "Enable" ) = True
               onoff (Just "Disable") = False
               onoff _                = False
           let newBoard = Board { boardName              = fromJust bName
-                               , boardDescription       = fromJust bDesc
-                               , boardLongDescription   = fromMaybe "" bLongDescription
+                               , boardTitle             = fromJust bTitle
+                               , boardSummary           = fromMaybe "" bSummary
                                , boardBumpLimit         = fromJust bBumpLimit
                                , boardNumberFiles       = fromJust bNumberFiles
                                , boardAllowedTypes      = words $ unpack $ fromJust bAllowedTypes
@@ -181,8 +180,8 @@ postManageBoardsR board = do
                   onoff (Just "Disable") = False
                   onoff _                = boardHidden oldBoard
                   newBoard = Board { boardName              = boardName oldBoard
-                                   , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
-                                   , boardLongDescription   = fromMaybe (boardLongDescription   oldBoard) bLongDescription
+                                   , boardTitle             = fromMaybe (boardTitle       oldBoard) bTitle
+                                   , boardSummary           = fromMaybe (boardSummary   oldBoard) bSummary
                                    , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                                    , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
                                    , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes
@@ -216,8 +215,8 @@ postManageBoardsR board = do
               onoff (Just "Disable") = False
               onoff _                = boardHidden oldBoard
               newBoard = Board { boardName              = fromMaybe (boardName oldBoard) bName
-                               , boardDescription       = fromMaybe (boardDescription       oldBoard) bDesc
-                               , boardLongDescription   = fromMaybe (boardLongDescription   oldBoard) bLongDescription
+                               , boardTitle             = fromMaybe (boardTitle       oldBoard) bTitle
+                               , boardSummary           = fromMaybe (boardSummary     oldBoard) bSummary
                                , boardBumpLimit         = fromMaybe (boardBumpLimit         oldBoard) bBumpLimit
                                , boardNumberFiles       = fromMaybe (boardNumberFiles       oldBoard) bNumberFiles
                                , boardAllowedTypes      = maybe     (boardAllowedTypes      oldBoard) (words . unpack) bAllowedTypes

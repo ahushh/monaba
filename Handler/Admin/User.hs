@@ -30,7 +30,7 @@ getUsersR = do
   let permissions = getPermissions mgroup
 
   groups <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
-  (formWidget, formEnctype) <- generateFormPost $ usersForm groups
+  (formWidget, _) <- generateFormPost $ usersForm groups
 
   users           <- runDB $ selectList ([]::[Filter User ]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
@@ -69,7 +69,7 @@ getUsersDeleteR userId = do
 
   let gs = map groupName $ filter ((ManageUsersP `elem`) . groupPermissions) $ map entityVal groups
   when ((>1) $ length $ filter (`elem` gs) $ map (userGroup . entityVal) users) $ do
-     runDB $ delete (toKey userId :: Key User)
+     runDB $ delete ((toSqlKey . fromIntegral) userId :: Key User)
      msgRedirect MsgUsersDeleted
   msgRedirect MsgYouAreTheOnlyWhoCanManageUsers
 -------------------------------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ getAccountR = do
   mgroup   <- getMaybeGroup muser
   let permissions = getPermissions mgroup
 
-  (formWidget, formEnctype) <- generateFormPost newPasswordForm
+  (formWidget, _) <- generateFormPost newPasswordForm
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

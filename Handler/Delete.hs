@@ -18,8 +18,8 @@ getDeletedByOpR board thread = do
   checkViewAccess mgroup boardVal
   let permissions   = getPermissions       mgroup
       geoIpEnabled  = boardEnableGeoIp     boardVal
-      boardDesc     = boardDescription     boardVal
-      boardLongDesc = boardLongDescription boardVal
+      boardDesc     = boardTitle     boardVal
+      boardLongDesc = boardSummary boardVal
   when (boardOpModeration boardVal == False) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -48,12 +48,12 @@ getDeleteR = do
   mgroup <- getMaybeGroup muser
   let errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
       nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
-      helper x          = toKey ((read $ unpack $ snd x) :: Int )
+      helper x          = (toSqlKey . fromIntegral) ((read $ unpack $ snd x) :: Int )
   case reverse query of
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
       let xs = if fst (P.head zs) == "onlyfile" then P.tail zs else zs
-      thread   <- runDB $ get ((toKey $ ((read $ unpack threadId) :: Int)) :: Key Post)
+      thread   <- runDB $ get ((toSqlKey . fromIntegral $ ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
       let board = postBoard $ fromJust thread

@@ -28,16 +28,12 @@ getThreadR board thread = do
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   let permissions      = getPermissions mgroup
-  let hasAccessToReply = checkAccessToReply mgroup boardVal
-
-  boards      <- runDB $ selectList ([]::[Filter Board]) []
-  -------------------------------------------------------------------------------------------------------  
-  let numberFiles      = boardNumberFiles     boardVal
+      hasAccessToReply = checkAccessToReply mgroup boardVal
       maxMessageLength = boardMaxMsgLength    boardVal
       enableCaptcha    = boardEnableCaptcha   boardVal
       opModeration     = boardOpModeration    boardVal
-      boardDesc        = boardDescription     boardVal
-      boardLongDesc    = boardLongDescription boardVal
+      boardDesc        = boardTitle     boardVal
+      boardLongDesc    = boardSummary boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -72,7 +68,6 @@ getThreadR board thread = do
   msgrender        <- getMessageRender
   timeZone        <- getTimeZone
 
-  posterId         <- getPosterId  
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent

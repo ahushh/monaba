@@ -29,7 +29,7 @@ getBanByIpR board ip = do
   permissions <- getPermissions <$> getMaybeGroup muser
   timeZone   <- getTimeZone
 
-  (formWidget, formEnctype) <- generateFormPost $ banByIpForm ip board
+  (formWidget, _) <- generateFormPost $ banByIpForm ip board
   
   bans            <- runDB $ selectList ([]::[Filter Ban]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
@@ -57,4 +57,4 @@ postBanByIpR _ _ = do
       msgRedirect MsgBanAdded
 
 getBanDeleteR :: Int -> Handler Html
-getBanDeleteR bId = runDB (delete (toKey bId :: Key Ban)) >> setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")
+getBanDeleteR bId = runDB (delete ((toSqlKey . fromIntegral) bId :: Key Ban)) >> setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")

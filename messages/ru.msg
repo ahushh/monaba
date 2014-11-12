@@ -111,11 +111,11 @@ Boards: Борды
 Bans: Баны
 
 ### Boards
-BoardName: Имя
-BoardDescription : Короткое описание
-BoardDescriptionEG: e.g. бред, музыка
-BoardLongDescription: Длинное описание
-BoardLongDescriptionEG: e.g. "Доска обо всем"
+BoardName: Имя борды
+BoardTitle: Название борды
+BoardTitleEG: e.g. бред, музыка
+BoardSummary: Описание борды
+BoardSummaryEG: e.g. "Доска обо всем"
 BoardBumpLimit: Бамп-лимит
 BoardNumberFiles : Макс. число файлов
 BoardAllowedTypes: Типы файлов

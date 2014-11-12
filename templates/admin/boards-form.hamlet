@@ -11,13 +11,13 @@
                     <td>_{MsgBoardName}
                     <td> ^{fvInput nameView}
             <tr>
-                <td>_{MsgBoardDescription }
-                <td>^{fvInput descriptionView}
-                <td>_{MsgBoardDescriptionEG}
+                <td>_{MsgBoardTitle }
+                <td>^{fvInput titleView}
+                <td>_{MsgBoardTitleEG}
             <tr>
-                <td>_{MsgBoardLongDescription }
-                <td>^{fvInput longDescriptionView}
-                <td>_{MsgBoardLongDescriptionEG}
+                <td>_{MsgBoardSummary }
+                <td>^{fvInput summaryView}
+                <td>_{MsgBoardSummaryEG}
             <tr>
                 <td>_{MsgBoardBumpLimit}
                 <td>^{fvInput bumpLimitView}

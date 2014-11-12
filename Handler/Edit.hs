@@ -18,7 +18,7 @@ postPostEditR = do
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) HomeR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  HomeR
     FormSuccess (newMessage, pswd, postId) -> do
-      let postKey = toKey postId :: Key Post
+      let postKey = (toSqlKey . fromIntegral) postId :: Key Post
       post     <- runDB (get404 postKey)
       posterId <- getPosterId
       boardVal <- getBoardVal404 (postBoard post)
@@ -61,7 +61,7 @@ postPostEditR = do
   
 getEditHistoryR :: Int -> Handler Html
 getEditHistoryR postId = do
-  let postKey = toKey postId :: Key Post
+  let postKey = (toSqlKey . fromIntegral) postId :: Key Post
   h     <- runDB $ getBy404 $ HistoryUniqPostId postKey
   post  <- runDB $ get404 postKey
   board <- getBoardVal404 (postBoard post)

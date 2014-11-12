@@ -8,6 +8,6 @@
     $forall Entity userId user <- users
         <tr>
             <td>
-                <a href=@{UsersDeleteR $ fromIntegral $ fromKey $ userId}>_{MsgDeleteBtn}
+                <a href=@{UsersDeleteR $ fromIntegral $ fromSqlKey $ userId}>_{MsgDeleteBtn}
             <td>#{userName user}
             <td>#{show $ userGroup user}

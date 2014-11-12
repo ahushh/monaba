@@ -3,7 +3,6 @@ module Handler.Settings where
  
 import           Import
 import qualified Data.Text  as T
-import           Yesod.Auth
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
 settingsForm :: Int  -> -- ^ Default time offset
@@ -35,9 +34,6 @@ postSettingsR = do
 
 getSettingsR :: Handler Html
 getSettingsR = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra
   (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle

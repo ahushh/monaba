@@ -11,7 +11,6 @@ getHomeR = do
     mgroup  <- case muser of
       Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
       _                 -> return Nothing
-    let permissions = maybe [] (groupPermissions . entityVal) mgroup
     let group  = (groupName . entityVal) <$> mgroup
     
     boards <- runDB $ selectList ([]::[Filter Board]) []

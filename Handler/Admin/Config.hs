@@ -51,7 +51,7 @@ getConfigR = do
   let permissions = getPermissions mgroup
 
   configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
-  (formWidget, formEnctype) <- generateFormPost $ configForm configVal
+  (formWidget, _) <- generateFormPost $ configForm configVal
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

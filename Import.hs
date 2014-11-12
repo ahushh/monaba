@@ -29,8 +29,6 @@ infixr 5 <>
 (<>) :: Monoid m => m -> m -> m
 (<>) = mappend
 #endif
-import Database.Persist
-import Database.Persist.Sql
 -------------------------------------------------------------------------------------------------------------------
 import Text.Blaze.Html as Import (preEscapedToHtml)
 import Data.Time       as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
@@ -39,30 +37,24 @@ import Data.List       as Import (nub, intercalate)
 import Control.Monad   as Import (unless, when, forM, forM_, void, join)
 import Control.Arrow   as Import (second, first, (&&&), (***))
 import ModelTypes      as Import 
+import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
 -------------------------------------------------------------------------------------------------------------------
 import           System.FilePath         ((</>))
-import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory, copyFile)
+import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory)
 import           System.Posix            (getFileStatus, fileSize, FileOffset())
-import           Data.Ratio
 import           Network.Wai
 import           Text.Printf
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
-import           GHC.Int                 (Int64)
 import           Data.Char               (toLower)
 import           Data.Time               (addUTCTime, secondsToDiffTime)
 import qualified Data.Map.Strict          as Map
-
 import qualified Data.ByteString.UTF8     as B
-
 import           Control.Applicative     (liftA2)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           System.Random           (randomIO)
-
 import qualified Data.Text               as T (concat, toLower, append, length)
-
 import           Data.Geolocation.GeoIP
-
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
@@ -108,7 +100,7 @@ opPostWidget :: Maybe (Entity User)      ->
                [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                Int                      -> -- ^ Time offset in seconds
                WidgetT App IO () 
-opPostWidget muserW eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+opPostWidget _ eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)      ->
                   Entity Post              ->
@@ -120,15 +112,15 @@ replyPostWidget :: Maybe (Entity User)      ->
                   [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                   Int                      -> -- ^ Time offset in seconds
                   WidgetT App IO ()
-replyPostWidget muserW eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+replyPostWidget _ eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
-adminNavbarWidget muserW permissionsW = $(widgetFile "admin/navbar")
+adminNavbarWidget _ permissionsW = $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
 bareLayout widget = do
     pc <- widgetToPageContent widget
-    giveUrlRenderer [hamlet| ^{pageBody pc} |]
+    withUrlRenderer [hamlet| ^{pageBody pc} |]
 -------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
@@ -289,12 +281,6 @@ getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
 
 getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
 getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
--------------------------------------------------------------------------------------------------------------------
--- Keys
--------------------------------------------------------------------------------------------------------------------
-fromKey = fromSqlKey
-
-toKey i = toSqlKey $ fromIntegral i
 -------------------------------------------------------------------------------------------------------------------
 -- Monadic when and unless
 -------------------------------------------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ import           Import
 import qualified Data.Text       as T
 import           Yesod.Auth
 import           Handler.Posting
-import           YobaMarkup        (doYobaMarkup)
+import           Utils.YobaMarkup        (doYobaMarkup)
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do

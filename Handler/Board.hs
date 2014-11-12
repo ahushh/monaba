@@ -7,7 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
-import           YobaMarkup      (doYobaMarkup)
+import           Utils.YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0

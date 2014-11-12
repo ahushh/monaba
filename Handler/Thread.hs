@@ -7,7 +7,7 @@ import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           YobaMarkup        (doYobaMarkup)
+import           Utils.YobaMarkup        (doYobaMarkup)
 import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 

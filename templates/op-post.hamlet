@@ -39,11 +39,12 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                       \<a title='_{MsgLockThread}' href=@{LockR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>L</a> |
                       \<a title='_{MsgAutosage}' href=@{AutoSageR (postBoard $ entityVal eOpPostW) $ postLocalId $ entityVal $ eOpPostW}>A</a>]
       
-          $forall Entity _ file <- opPostFilesW
-              $if length opPostFilesW == 1
-                  <div .file >
+          $forall Entity _ file <- eFiles
+             $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+                $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)
+                  <div class=#{c}>
                       <span .file-name>
-                          <a title=#{attachedfileName file} target=_blank href=#{imageUrlPath (attachedfileHashsum file) (attachedfileName file)}>#{truncateFileName $ attachedfileName file}
+                          <a title=#{attachedfileName file} target=_blank href=#{uploadUrlPath (attachedfileName file) (attachedfileHashsum file) }>#{truncateFileName $ attachedfileName file}
                       <br>
                       $if attachedfileType file == FileImage
                           <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
@@ -51,27 +52,13 @@ $with thread <- show $ postLocalId $ entityVal eOpPostW
                           <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
                       <br>
                       $if attachedfileThumbWidth file == -1
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
+                          <img src="#{tp}" .thumb>
+                      $elseif attachedfileType file == FileVideo
+                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video>
                       $elseif attachedfileType file == FileImage
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
+                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb>
                       $else
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
-              $else
-                  <div .multi-file >
-                      <span .file-name>
-                          <a title=#{attachedfileName file} target=_blank href=#{imageUrlPath (attachedfileHashsum file) (attachedfileName file)}>#{truncateFileName $ attachedfileName file}
-                      <br>
-                      $if attachedfileType file == FileImage
-                          <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
-                      $else
-                          <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
-                      <br>
-                      $if attachedfileThumbWidth file == -1
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
-                      $elseif attachedfileType file == FileImage
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
-                      $else
-                          <img src="#{thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)}" .thumb>
+                          <img src="#{tp}" .thumb>
 
           $with m <- preEscapedToHtml $ unTextarea $ postMessage $ entityVal eOpPostW
               <div .message>#{m}

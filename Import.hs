@@ -54,6 +54,10 @@ import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 
+
+-------------------------------------------------------------------------------------------------------------------
+ifelse :: Bool -> Text -> Text -> Text
+ifelse x y z = if x then y else z
 -------------------------------------------------------------------------------------------------------------------
 -- Files
 -------------------------------------------------------------------------------------------------------------------
@@ -77,11 +81,11 @@ geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
 uploadDirectory :: FilePath
 uploadDirectory = staticDir </> "files"
 
-imageFilePath :: String -> String -> FilePath
-imageFilePath filename hashsum = uploadDirectory </> hashsum </> filename
+uploadFilePath :: String -> String -> FilePath
+uploadFilePath filename hashsum = uploadDirectory </> hashsum </> filename
 
-imageUrlPath :: String -> String -> FilePath
-imageUrlPath filename hashsum = ("/" </>) $ imageFilePath hashsum filename
+uploadUrlPath :: String -> String -> FilePath
+uploadUrlPath filename hashsum = ("/" </>) $ uploadFilePath filename hashsum
 
 captchaFilePath :: String -> String
 captchaFilePath file = staticDir </> "captcha" </> file
@@ -101,14 +105,16 @@ thumbDirectory :: FilePath
 thumbDirectory = staticDir </> "thumb"
 
 thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
-thumbUrlPath size filetype filename hashsum = case filetype of
-  FileImage -> "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  _         -> "/" </> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
+thumbUrlPath size filetype filename hashsum
+  | filetype == FileVideo           = "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename ++ ".png")
+  | filetype `elem` thumbFileTypes = "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
+  | otherwise                      = "/" </> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
 
 thumbFilePath :: Int -> FileType -> String -> String -> FilePath
-thumbFilePath size filetype filename hashsum = case filetype of
-  FileImage -> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  _         -> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
+thumbFilePath size filetype filename hashsum
+  | filetype == FileVideo           = thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename ++ ".png")
+  | filetype `elem` thumbFileTypes = thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
+  | otherwise                      = staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
 
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
@@ -154,7 +160,7 @@ opPostWidget :: Maybe (Entity User)      ->
                [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                Int                      -> -- ^ Time offset in seconds
                WidgetT App IO () 
-opPostWidget _ eOpPostW opPostFilesW isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+opPostWidget _ eOpPostW eFiles isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
 
 replyPostWidget :: Maybe (Entity User)      ->
                   Entity Post              ->
@@ -166,7 +172,7 @@ replyPostWidget :: Maybe (Entity User)      ->
                   [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
                   Int                      -> -- ^ Time offset in seconds
                   WidgetT App IO ()
-replyPostWidget _ eReplyW replyFilesW isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+replyPostWidget _ eReplyW eFiles isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
 adminNavbarWidget _ permissionsW = $(widgetFile "admin/navbar")

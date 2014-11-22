@@ -121,7 +121,7 @@ deletePosts posts onlyfile = do
             void $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
             whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
       _  -> do
-        liftIO $ removeFile $ imageFilePath fn hs 
+        liftIO $ removeFile $ uploadFilePath fn hs 
         when (ft `elem` thumbFileTypes) $ do
           liftIO $ removeFile $ thumbFilePath ts ft fn hs
           whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)

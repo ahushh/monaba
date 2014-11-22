@@ -14,6 +14,7 @@ import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
 import qualified Graphics.ImageMagick.MagickWand as IM
 import           System.FilePath                 ((</>))
+import           System.Process                  (readProcess)
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
@@ -48,6 +49,21 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
                                           , attachedfileThumbWidth  = thumbW
                                           , attachedfileThumbHeight = thumbH
                                           }
+        FileVideo -> do
+          liftIO $ unlessM (doesDirectoryExist (thumbDirectory </> hashsum)) $ createDirectory (thumbDirectory </> hashsum)
+          -- make thumbnail
+          let thumbpath = thumbDirectory </> hashsum </> (show thumbSize ++ "thumb-" ++ filename++".png")
+          void $ liftIO $ readProcess "/usr/bin/ffmpeg" ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
+          (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize)
+          -- get video info
+          info <- liftIO $ readProcess "/usr/bin/ffprobe" ["-v","quiet","-show_streams",uploadPath] []
+          -- DANGEROUS! FIX THIS
+          let width  = drop 1 $ dropWhile ((/=)'=') (lines info !! 9)
+              height = drop 1 $ dropWhile ((/=)'=') (lines info !! 10)
+          void $ runDB $ insert $ newFile { attachedfileInfo        = (show width)++"x"++(show height)
+                                          , attachedfileThumbWidth  = thumbW
+                                          , attachedfileThumbHeight = thumbH
+                                          }
         _         -> void $ runDB $ insert newFile
     _                    -> return ())
 
@@ -58,9 +74,9 @@ saveFile file hashsum = do
   if dirExists
     then do
       fn':_ <- (\x -> if length x == 0 then ["ooops.404"] else x) . filter (`notElem`[".",".."]) <$> getDirectoryContents (uploadDirectory </> hashsum)
-      return $ imageFilePath fn' hashsum
+      return $ uploadFilePath fn' hashsum
     else do
-      let path = imageFilePath fn hashsum
+      let path = uploadFilePath fn hashsum
       createDirectory (uploadDirectory </> hashsum)
       unlessM (doesFileExist path) $ fileMove file path 
       return path
@@ -148,4 +164,5 @@ makeThumbImg thumbSize filepath filename hashsum (width, height) = do
     then resizeImage filepath thumbpath (thumbSize,thumbSize)
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = thumbDirectory </> hashsum </> (show thumbSize ++ "thumb-" ++ filename)
+
 

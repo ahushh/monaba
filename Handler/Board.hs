@@ -7,6 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
+import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html

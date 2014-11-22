@@ -42,7 +42,7 @@ Board
     postEditing       Bool     
     showEditHistory   Bool     
     deriving          Typeable
-Post
+Post json
     board        Text
     localId      Int
     parent       Int
@@ -72,18 +72,17 @@ History
     HistoryUniqPostId postId
     messages     [Textarea]
     dates        [UTCTime]
-Attachedfile
+Attachedfile json
     parentId     PostId
-    md5          Text
-    name         FilePath
-    origName     FilePath              -- original file name
-    type         String                -- extension
-    thumbSize    Int                   -- just thumbSize from Board table
+    hashsum      String
+    name         String
+    extension    String
+    type         FileType
+    size         String
+    thumbSize    Int   -- just thumbSize from Board table
     thumbWidth   Int      
     thumbHeight  Int      
-    width        Int      
-    height       Int      
-    size         Text                  -- formatted file size
+    info         String
     deriving     Typeable
 Ban
     ip           Text

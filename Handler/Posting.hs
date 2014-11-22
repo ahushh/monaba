@@ -2,12 +2,7 @@
 module Handler.Posting where
 
 import           Import
-import           Data.Digest.OpenSSL.MD5 (md5sum)
-import           Data.Conduit            (($$))
-import qualified Data.Text               as T
-import qualified Data.ByteString         as BS
-import qualified Data.Conduit.List       as CL
-import Utils.Image
+import qualified Data.Text as T
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -78,7 +73,7 @@ editForm extra = do
 -- Helpers
 -------------------------------------------------------------------------------------------------------------------
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
-isFileAllowed allowedTypes (FormSuccess (Just x)) = typeOfFile x `elem` allowedTypes
+isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes
 isFileAllowed _            _                      = True
 
 noMessage :: Maybe Textarea -> Bool
@@ -89,45 +84,6 @@ noFiles files = all (\(FormSuccess f) -> isNothing f) files
 
 tooLongMessage :: Int -> Textarea -> Bool
 tooLongMessage maxLen message = maxLen <= T.length (unTextarea message)
--------------------------------------------------------------------------------------------------------------------
-insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
-               Int      -> -- ^ Thumbnail height and width
-               Key Post -> -- ^ Post key
-               HandlerT App IO ()
-insertFiles []    _           _      = return ()
-insertFiles files thumbSize postId = forM_ files (\formfile ->
-  case formfile of
-    FormSuccess (Just f) -> do
-      md5                              <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
-      (origfilename, uploadedfilename) <- liftIO $ writeToServer  f md5
-      filepath                         <- return $ imageFilePath  filetype uploadedfilename
-      filesize                         <- liftIO $ formatFileSize <$> getFileSize filepath
-      newFile                          <- return  Attachedfile { attachedfileParentId    = postId
-                                                              , attachedfileMd5         = pack md5
-                                                              , attachedfileName        = uploadedfilename
-                                                              , attachedfileOrigName    = origfilename
-                                                              , attachedfileType        = filetype
-                                                              , attachedfileThumbSize   = thumbSize
-                                                              , attachedfileSize        = pack filesize
-                                                              , attachedfileThumbWidth  = 0
-                                                              , attachedfileThumbHeight = 0
-                                                              , attachedfileWidth       = 0
-                                                              , attachedfileHeight      = 0
-                                                              }
-      if isImageFile filetype
-        then do
-          (imgW  , imgH  ) <- liftIO $ getImageResolution filepath
-          (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize filepath uploadedfilename filetype (imgW, imgH)
-          void $ runDB $ insert $ newFile { attachedfileWidth       = imgW
-                                          , attachedfileHeight      = imgH
-                                          , attachedfileThumbWidth  = thumbW
-                                          , attachedfileThumbHeight = thumbH
-                                          }
-        else do
-          liftIO $ makeThumbNonImg uploadedfilename filetype
-          void $ runDB $ insert newFile
-        where filetype = typeOfFile f
-    _                    -> return ())
 -------------------------------------------------------------------------------------------------------------------
 bumpThread :: Text    -> -- ^ Board name
              Int     -> -- ^ Thread internal ID

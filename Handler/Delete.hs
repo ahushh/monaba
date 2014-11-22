@@ -7,7 +7,8 @@ import           Yesod.Auth
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
-import           System.Directory   (removeFile)
+import           System.Directory   (removeFile, removeDirectory, getDirectoryContents)
+import           System.FilePath    ((</>))
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -106,16 +107,22 @@ deletePosts posts onlyfile = do
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   
   forM_ files $ \(Entity fId f) -> do
-    sameFilesCount <- runDB $ count [AttachedfileMd5 ==. attachedfileMd5 f, AttachedfileId !=. fId]
+    sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
+    let ft = attachedfileType f
+        fn = attachedfileName f
+        hs = attachedfileHashsum f
+        ts = attachedfileThumbSize f
+        td = thumbDirectory </> hs
     case sameFilesCount `compare` 0 of
       GT -> do -- this file belongs to several posts so don't delete it from disk
-        filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. attachedfileThumbSize f, AttachedfileId !=. fId]
+        filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
-          when (isImageFile $ attachedfileType f) $
-            void $ liftIO $ removeFile $ thumbFilePath (attachedfileThumbSize f) (attachedfileType f) (attachedfileName f)
+          when (ft `elem` thumbFileTypes) $ do
+            void $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
+            whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
       _  -> do
-        let t = attachedfileType f
-        liftIO $ removeFile $ imageFilePath t $ attachedfileName f
-        when (isImageFile t) $ 
-          liftIO $ removeFile $ thumbFilePath (attachedfileThumbSize f) t $ attachedfileName f
+        liftIO $ removeFile $ imageFilePath fn hs 
+        when (ft `elem` thumbFileTypes) $ do
+          liftIO $ removeFile $ thumbFilePath ts ft fn hs
+          whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
   runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]

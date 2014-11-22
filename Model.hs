@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE RecordWildCards   #-}
 module Model where
 
@@ -24,37 +26,3 @@ instance HashDBUser User where
     setSaltAndPasswordHash s h p = p { userSalt     = s
                                      , userPassword = h
                                      }
-                                   
-------------------------------------------------------------------------------
--- API    
-------------------------------------------------------------------------------
-instance ToJSON Post where
-    toJSON Post {..} = object
-        [ "board"       .= postBoard
-        , "id"          .= postLocalId
-        , "parent"      .= postParent
-        , "date"        .= postDate
-        , "bumped"      .= postBumped
-        , "sticked"     .= postSticked
-        , "locked"      .= postLocked
-        , "autosage"    .= postAutosage
-        , "message"     .= postMessage
-        , "rawMessage"  .= postRawMessage
-        , "title"       .= postTitle
-        , "name"        .= postName
-        , "deletedByOp" .= postDeletedByOp
-        ]
-
-instance ToJSON Attachedfile where
-    toJSON Attachedfile {..} = object
-        [ "md5"         .= attachedfileMd5
-        , "name"        .= attachedfileName
-        , "origName"    .= attachedfileOrigName
-        , "type"        .= attachedfileType
-        , "thumbSize"   .= attachedfileThumbSize
-        , "thumbWidth"  .= attachedfileThumbWidth
-        , "thumbHeight" .= attachedfileThumbHeight
-        , "width"       .= attachedfileWidth
-        , "height"      .= attachedfileHeight
-        , "size"        .= attachedfileSize
-        ]

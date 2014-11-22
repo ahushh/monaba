@@ -36,7 +36,7 @@ library
                      Handler.Api
                      Handler.Captcha
                      Handler.Settings
-                     Utils.Image
+                     Utils.File
                      Utils.YobaMarkup
                      ModelTypes
                      SillyCaptcha

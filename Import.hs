@@ -40,13 +40,10 @@ import ModelTypes      as Import
 import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
 -------------------------------------------------------------------------------------------------------------------
 import           System.FilePath         ((</>))
-import           System.Directory        (doesFileExist, doesDirectoryExist, createDirectory)
-import           System.Posix            (getFileStatus, fileSize, FileOffset())
 import           Network.Wai
-import           Text.Printf
 import           Data.Time.Format        (formatTime)
 import           System.Locale           (defaultTimeLocale)
-import           Data.Char               (toLower)
+import           Data.Char               (toLower, isPrint)
 import           Data.Time               (addUTCTime, secondsToDiffTime)
 import qualified Data.Map.Strict          as Map
 import qualified Data.ByteString.UTF8     as B
@@ -56,6 +53,55 @@ import           System.Random           (randomIO)
 import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
+
+-------------------------------------------------------------------------------------------------------------------
+-- Files
+-------------------------------------------------------------------------------------------------------------------
+thumbFileTypes :: [FileType]
+thumbFileTypes = [FileVideo, FileImage, FileSource, FileDoc]
+
+sanitizeFileName :: String -> String
+sanitizeFileName = filter (\x -> x `notElem` "\\/" && isPrint x)
+
+fileExt :: FileInfo -> String
+fileExt = map toLower . reverse . takeWhile (/='.') . reverse . sanitizeFileName . unpack . fileName
+
+extractFileExt :: String -> String
+extractFileExt = map toLower . reverse . takeWhile (/='.') . reverse
+-------------------------------------------------------------------------------------------------------------------
+-- Paths
+-------------------------------------------------------------------------------------------------------------------
+geoIconPath :: Text -> Text
+geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
+
+uploadDirectory :: FilePath
+uploadDirectory = staticDir </> "files"
+
+imageFilePath :: String -> String -> FilePath
+imageFilePath filename hashsum = uploadDirectory </> hashsum </> filename
+
+imageUrlPath :: String -> String -> FilePath
+imageUrlPath filename hashsum = ("/" </>) $ imageFilePath hashsum filename
+
+captchaFilePath :: String -> String
+captchaFilePath file = staticDir </> "captcha" </> file
+-- Thumbnails
+thumbIconExt :: String
+thumbIconExt = "png"
+
+thumbDirectory :: FilePath
+thumbDirectory = staticDir </> "thumb"
+
+thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
+thumbUrlPath size filetype filename hashsum = case filetype of
+  FileImage -> "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
+  _         -> staticDir </> "fileicons" </> "default" ++ "." ++ thumbIconExt
+
+thumbFilePath :: Int -> FileType -> String -> String -> FilePath
+thumbFilePath size filetype filename hashsum = case filetype of
+  FileImage -> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
+  _         -> staticDir </> "fileicons" </> "default" ++ "." ++ thumbIconExt
+
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -121,72 +167,6 @@ bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
 bareLayout widget = do
     pc <- widgetToPageContent widget
     withUrlRenderer [hamlet| ^{pageBody pc} |]
--------------------------------------------------------------------------------------------------------------------
--- Paths
--------------------------------------------------------------------------------------------------------------------
-geoIconPath :: Text -> Text
-geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
-
-uploadDirectory :: FilePath
-uploadDirectory = staticDir </> "files"
-
-imageFilePath :: String -> String -> FilePath
-imageFilePath filetype filename = uploadDirectory </> filetype </> filename
-
-imageUrlPath :: String -> String -> FilePath
-imageUrlPath filetype filename = ("/" </>) $ imageFilePath filetype filename
-
-captchaFilePath :: String -> String
-captchaFilePath file = staticDir </> "captcha" </> file
--------------------------------------------------------------------------------------------------------------------
-thumbIconExt :: String
-thumbIconExt = "png"
-
-thumbDirectory :: FilePath
-thumbDirectory = staticDir </> "thumb"
-
-thumbFilePath :: Int -> String -> String -> FilePath
-thumbFilePath size filetype filename
-  | isImageFile filetype = thumbDirectory </> filetype </> (show size ++ "-" ++ filename)
-  | otherwise            = staticDir </> "icons" </> filetype ++ "." ++ thumbIconExt
-
-thumbUrlPath :: Int -> String -> String -> FilePath
-thumbUrlPath size filetype filename = ("/" </>) $ thumbFilePath size filetype filename
--------------------------------------------------------------------------------------------------------------------
--- File processing
--------------------------------------------------------------------------------------------------------------------
-typeOfFile :: FileInfo -> String
-typeOfFile = map toLower . reverse . takeWhile (/='.') . reverse . unpack . fileName
-
-getFileSize :: FilePath -> IO FileOffset
-getFileSize path = fileSize <$> getFileStatus path
-
-formatFileSize :: FileOffset -> String
-formatFileSize size | b > kb    = (printf "%.2f" $ b/kb) ++ " KB"
-                    | b > mb    = (printf "%.2f" $ b/mb) ++ " MB"
-                    | otherwise = (printf "%.2f" $ b   ) ++ " B"
-  where kb  = 1024     :: Double
-        mb  = 1024^two :: Double
-        two = 2 :: Int
-        b   = fromIntegral size :: Double
--------------------------------------------------------------------------------------------------------------------
-writeToServer :: FileInfo -> String -> IO (FilePath, FilePath)
-writeToServer file md5 = do
-    let filetype = typeOfFile file
-        filename = md5 ++ "." ++ filetype
-        path     = imageFilePath filetype filename
-    
-    unlessM (doesDirectoryExist (uploadDirectory </> filetype)) $
-      createDirectory (uploadDirectory </> filetype)
-      
-    unlessM (liftIO $ doesFileExist path) $
-      fileMove file path 
-    return (unpack $ fileName file, filename)
--------------------------------------------------------------------------------------------------------------------
--- Images
--------------------------------------------------------------------------------------------------------------------
-isImageFile :: String -> Bool
-isImageFile filetype = filetype `elem` ["jpeg", "jpg", "gif", "png"]
 -------------------------------------------------------------------------------------------------------------------
 -- Access checkers
 -------------------------------------------------------------------------------------------------------------------

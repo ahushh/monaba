@@ -86,6 +86,14 @@ imageUrlPath filename hashsum = ("/" </>) $ imageFilePath hashsum filename
 captchaFilePath :: String -> String
 captchaFilePath file = staticDir </> "captcha" </> file
 -- Thumbnails
+choseFileIcon :: FileType -> String
+choseFileIcon ft = case ft of
+    FileAudio      -> "audio"
+    FileFlash      -> "flash"
+    FileArchive    -> "archive"
+    FileUndetected -> "default"
+    _              -> "default"
+
 thumbIconExt :: String
 thumbIconExt = "png"
 
@@ -95,12 +103,12 @@ thumbDirectory = staticDir </> "thumb"
 thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
 thumbUrlPath size filetype filename hashsum = case filetype of
   FileImage -> "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  _         -> staticDir </> "fileicons" </> "default" ++ "." ++ thumbIconExt
+  _         -> "/" </> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
 
 thumbFilePath :: Int -> FileType -> String -> String -> FilePath
 thumbFilePath size filetype filename hashsum = case filetype of
   FileImage -> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  _         -> staticDir </> "fileicons" </> "default" ++ "." ++ thumbIconExt
+  _         -> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
 
 -------------------------------------------------------------------------------------------------------------------
 -- Templates helpers

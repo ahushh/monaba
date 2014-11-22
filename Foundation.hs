@@ -31,6 +31,7 @@ import Network.Wai (Request(..))
 import Control.Monad (when)
 import Control.Applicative ((<$>))
 import Data.Maybe (fromJust, isNothing, isJust)
+import Text.Blaze.Html as Import (preEscapedToHtml)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application

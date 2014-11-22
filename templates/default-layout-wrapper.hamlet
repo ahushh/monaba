@@ -36,11 +36,13 @@ $newline never
             <div id="main" role="main">
               ^{pageBody pc}
             <footer>
-                <a href=https://github.com/ahushh/Monaba>Monaba 0.0.1</a>
-                <br>
-                Powered by <a href=http://www.yesodweb.com/>Yesod</a>
-                <br>
-                #{extraCopyright $ appExtra $ settings master}
+                <a href=https://github.com/ahushh/Monaba>Monaba 2.0.0 
+                / 
+                <a href=http://www.haskell.org/>Haskell 
+                / 
+                <a href=http://www.yesodweb.com/>Yesod
+                <br />
+                #{preEscapedToHtml $ extraCopyright $ appExtra $ settings master}
 
         $maybe analytics <- extraAnalytics $ appExtra $ settings master
             <script>

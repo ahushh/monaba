@@ -79,7 +79,6 @@ ShowDeletedPosts: Show deleted posts
 ######################################################################################
 #### Posting messages
 ######################################################################################
-WrongCaptcha: Wrong captcha
 NoFileOrText: File or message is required
 NoFile: File required
 OpFileIsDisabled: OP file attachment is disabled on this board
@@ -198,9 +197,6 @@ YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 
 ### Config management
 Config: Config
-CaptchaLength: Captcha length
-ACaptchaGuards: Guards of adaptive captcha
-CaptchaTimeout: Captcha timeout
 ShowNews: How many news show
 ShowLatestPosts: How many latest posts show
 MaxEditings: How many times you can edit your post
@@ -248,18 +244,6 @@ ApiBoardName: Board name (e.g., b, d, rm)
 ApiThreadId: Displayed thread ID
 ApiPostId: Displayed post ID
 ApiCount: Number of posts
-
-######################################################################################
-#### Captcha
-######################################################################################
-Captcha: Captcha
-ReloadPage: Error. Reload page.
-TypeOnly: Type only 
-ItalicChars: italic characters
-UnderlineChars: underlined characters
-BoldChars: bolded characters
-RegularChars: regular (not bolded, not italic, not underlined) characters
-YouDontNeedCaptcha: You don't have to enter captcha
 
 ######################################################################################
 #### Ajax, popups, refmap, ...

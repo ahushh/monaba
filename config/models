@@ -90,17 +90,7 @@ Ban
     expires      UTCTime Maybe
     board        Text Maybe
     deriving     Typeable
-Captcha
-    ip           Text
-    localId      Int
-    CaptchaUniqueLocalId localId
-    info         Text 
-    value        Text
-    expires      UTCTime
 Config
-    captchaLength   Int
-    aCaptchaGuards  Int
-    captchaTimeout  Int -- in seconds
     replyDelay      Int
     threadDelay     Int 
     boardCategories [Text]

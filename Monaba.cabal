@@ -34,12 +34,10 @@ library
                      Handler.Admin.Group
                      Handler.Admin.User
                      Handler.Api
-                     Handler.Captcha
                      Handler.Settings
                      Utils.File
                      Utils.YobaMarkup
                      ModelTypes
-                     SillyCaptcha
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

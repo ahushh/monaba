@@ -17,16 +17,12 @@ postForm :: Board -> -- ^ Board value
                                      , Maybe Text     -- ^ Thread subject
                                      , Maybe Textarea -- ^ Message
                                      , Text           -- ^ Password
-                                     , Maybe Text     -- ^ Captcha value
                                      , [FormResult (Maybe FileInfo)] -- ^ Files
                                      , GoBackTo       -- ^ Go back to
                                      , Maybe Bool     -- ^ No bump
                                      )
                          , Board        -> -- ^ boardW
                            Bool         -> -- ^ isthreadW
-                           Maybe Text   -> -- ^ maybeCaptchaInfoW
-                           Maybe Text   -> -- ^ acaptchaW
-                           Bool         -> -- ^ enableCaptchaW
                            Maybe (Entity User) -> -- ^ muserW
                            Widget)
 postForm boardVal extra = do
@@ -52,13 +48,12 @@ postForm boardVal extra = do
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
-  (captchaRes  , captchaView ) <- mopt textField              "" Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
-  let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*> captchaRes <*>
+  let result = (,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*>
                FormSuccess fileresults <*> gobackRes  <*> nobumpRes
-      widget boardW _ maybeCaptchaInfoW acaptchaW enableCaptchaW muserW = $(widgetFile "post-form")
+      widget boardW _ muserW = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
 editForm :: Html -> MForm Handler (FormResult (Textarea, Text, Int), Widget)

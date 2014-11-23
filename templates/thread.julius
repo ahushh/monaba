@@ -15,6 +15,5 @@ $('#post-form').ajaxForm({
         } else {
             popupMessage(data.error,2000);
         }
-        refreshCaptcha();
     }
 }); 

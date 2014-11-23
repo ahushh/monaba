@@ -394,7 +394,6 @@ function showQuickPostForm(postId) {
                 } else {
                     popupMessage(data.error,2000);
                 }
-                refreshCaptcha();
             }
         }); 
 
@@ -448,15 +447,6 @@ function extractBoard(postId) {
     return postId.split('-')[3];
 }
 //-----------------------------------------------------------------
-function refreshCaptcha() {
-    if ( $("#captcha") ) {
-        $.get('@{CaptchaInfoR}', function(data) {
-            $("#captcha-info").html(data);
-            $("#captcha").attr('src', "@{CaptchaR}"+"?"+Math.random());
-        });
-    }
-}
-
 function refreshThread(board, threadId) {
     var lastPost = $("#thread-"+threadId+" .reply-post:last");
     if (lastPost.length == 0) {

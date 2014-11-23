@@ -5,7 +5,6 @@ import           Import
 import           Yesod.Auth
 import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
-import           Handler.Captcha (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
@@ -29,7 +28,6 @@ getBoardR board page = do
   let maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
-      enableCaptcha     = boardEnableCaptcha     boardVal
       boardDesc         = boardTitle             boardVal
       boardLongDesc     = boardSummary           boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
@@ -62,13 +60,9 @@ getBoardR board page = do
     return $ (tId, c):xs
   let geoIps = map (second fromJust) $ filter (isJust . snd) $ concat geoIps'
   -------------------------------------------------------------------------------------------------------
-  acaptcha  <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
-  ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
-  maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
 
@@ -88,7 +82,6 @@ postBoardR board _ = do
       defaultName      = boardDefaultName   boardVal
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
       opFile           = boardOpFile        boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm boardVal
@@ -96,7 +89,7 @@ postBoardR board _ = do
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (name, title, message, pswd, captcha, files, goback, Just _)
+    FormSuccess (name, title, message, pswd, files, goback, Just _)
       | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
       | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
@@ -113,13 +106,6 @@ postBoardR board _ = do
             setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
                                           (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             redirect (BoardNoPageR board)
-        -- check captcha
-        acaptcha <- lookupSession "acaptcha"
-        when (enableCaptcha && isNothing muser) $ do
-          when (isNothing acaptcha) $ do
-            void $ when (isNothing captcha) (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
-            checkCaptcha (fromJust captcha) (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
-          updateAdaptiveCaptcha acaptcha
         -------------------------------------------------------------------------------------------------------
         now      <- liftIO getCurrentTime
         -- check too fast posting
@@ -127,7 +113,6 @@ postBoardR board _ = do
         when (isJust lastPost) $ do
           let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
-            deleteSession "acaptcha" >>
             setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
         posterId <- getPosterId

@@ -8,7 +8,7 @@ $if hasAccessToNewThread
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
-    ^{formWidget boardVal False maybeCaptchaInfo acaptcha enableCaptcha muser}
+    ^{formWidget boardVal False muser}
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}
 $else

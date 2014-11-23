@@ -3,15 +3,6 @@
     <input type=submit value=_{MsgUpdateConfig}>
     <table>
         <tr>
-            <td>_{MsgCaptchaLength}
-            <td>^{fvInput captchaLengthView}
-        <tr>
-            <td>_{MsgACaptchaGuards}
-            <td>^{fvInput acaptchaGuardsView}
-        <tr>
-            <td>_{MsgCaptchaTimeout}
-            <td>^{fvInput captchaTimeoutView}
-        <tr>
             <td>_{MsgReplyDelay}
             <td>^{fvInput replyDelayView}
         <tr>

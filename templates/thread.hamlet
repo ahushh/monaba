@@ -16,7 +16,7 @@ $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread}>
-        ^{formWidget boardVal True maybeCaptchaInfo acaptcha enableCaptcha muser}
+        ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
         ^{opPostWidget muser eOpPost opPostFiles True True permissions geoIps timeZone}

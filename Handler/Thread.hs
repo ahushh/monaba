@@ -9,7 +9,6 @@ import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
 import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
-import           Handler.Captcha    (checkCaptcha, recordCaptcha, getCaptchaInfo, updateAdaptiveCaptcha)
 import           Handler.Posting
 
 import           Text.Blaze.Html.Renderer.String
@@ -31,7 +30,6 @@ getThreadR board thread = do
   let permissions      = getPermissions mgroup
       hasAccessToReply = checkAccessToReply mgroup boardVal
       maxMessageLength = boardMaxMsgLength    boardVal
-      enableCaptcha    = boardEnableCaptcha   boardVal
       opModeration     = boardOpModeration    boardVal
       boardDesc        = boardTitle     boardVal
       boardLongDesc    = boardSummary boardVal
@@ -59,13 +57,9 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
-  acaptcha  <- lookupSession "acaptcha"
-  when (isNothing acaptcha && enableCaptcha && isNothing muser) $ recordCaptcha =<< getConfig configCaptchaLength
-  ------------------------------------------------------------------------------------------------------- 
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
-  maybeCaptchaInfo <- getCaptchaInfo
   msgrender        <- getMessageRender
   timeZone        <- getTimeZone
 
@@ -89,7 +83,6 @@ postThreadR board thread = do
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
       bumpLimit        = boardBumpLimit     boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
       replyFile        = boardReplyFile     boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
@@ -98,7 +91,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
-    FormSuccess (name, title, message, pswd, captcha, files, goback, Just nobump)
+    FormSuccess (name, title, message, pswd, files, goback, Just nobump)
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
       | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
@@ -116,13 +109,6 @@ postThreadR board thread = do
             let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
                                      (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             trickyRedirect "error" m threadUrl
-        -- check captcha
-        when (enableCaptcha && isNothing muser) $ do
-          acaptcha  <- lookupSession "acaptcha"
-          when (isNothing acaptcha) $ do
-            void $ when (isNothing captcha) (trickyRedirect "error" MsgWrongCaptcha threadUrl)
-            checkCaptcha (fromJust captcha) (trickyRedirect "error" MsgWrongCaptcha threadUrl)
-          updateAdaptiveCaptcha acaptcha
         ------------------------------------------------------------------------------------------------------           
         now      <- liftIO getCurrentTime
         -- check too fast posting
@@ -130,7 +116,6 @@ postThreadR board thread = do
         when (isJust lastPost) $ do
           let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
           whenM ((>diff) <$> getConfig configReplyDelay) $ 
-            deleteSession "acaptcha" >>
             trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
         posterId         <- getPosterId

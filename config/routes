@@ -11,8 +11,6 @@
 /thread/#Text/#Int   ThreadR       GET POST
 /delete              DeleteR       GET 
 /deleted/#Text/#Int  DeletedByOpR  GET
-/captcha             CaptchaR      GET
-/captcha/!info       CaptchaInfoR  GET
 /edit                PostEditR     POST
 /history/#Int        EditHistoryR  GET
 /settings            SettingsR     GET POST

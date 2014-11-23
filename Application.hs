@@ -40,7 +40,6 @@ import Handler.Admin.Config
 import Handler.Admin.Group
 import Handler.Admin.User
 import Handler.Api
-import Handler.Captcha
 import Handler.Settings
 
 -- This line actually creates our YesodDispatch instance. It is the second half

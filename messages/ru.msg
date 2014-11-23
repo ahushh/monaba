@@ -44,7 +44,8 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #
 #### Page
 ######################################################################################
 News: Новости
-LatestPosts: Последние посты
+Feed: Лента постов
+Iwantmore: Хочу еще
 ## thread
 Open: Открыть
 PostsOmitted n@Int: #{show n} #{omittedRus n}.
@@ -197,7 +198,7 @@ YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может
 ### Config management
 Config: Настройки
 ShowNews: Сколько показывать новостей
-ShowLatestPosts: Сколько показывать последних постов
+ShowLatestPosts: Сколько показывать последних постов в /feed
 MaxEditings: Сколько раз можно редактировать пост
 NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки

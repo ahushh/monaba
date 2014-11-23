@@ -46,7 +46,8 @@ MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
 #### Page
 ######################################################################################
 News: News
-LatestPosts: Latest posts
+Feed: Feed
+Iwantmore: I wanna moar
 ## thread
 Open: Open
 PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted.
@@ -198,7 +199,7 @@ YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
 ### Config management
 Config: Config
 ShowNews: How many news show
-ShowLatestPosts: How many latest posts show
+ShowLatestPosts: How many latest posts show on /feed
 MaxEditings: How many times you can edit your post
 NewsBoard: Board for news
 UpdateConfig: Update config

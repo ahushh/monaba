@@ -1,0 +1,11 @@
+function loadPosts(baseOffset) {
+    var offset = $("#post-bound").data('offset');
+    $(".ajax-loading").toggle();
+    $.get("/api/feed/"+offset, function(data) {
+        $(".ajax-loading").toggle();
+        $("#post-bound").before(data);
+        baseInit();
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        $("#post-bound").data('offset', offset+baseOffset);
+    });
+};

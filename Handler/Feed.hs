@@ -1,13 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Handler.Live where
+module Handler.Feed where
 
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
 import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
-getLiveR :: Handler Html
-getLiveR = do
+getFeedR :: Handler Html
+getFeedR = getApiFeedOffsetR 0
+
+getApiFeedOffsetR :: Int -> Handler Html
+getApiFeedOffsetR offset = do
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
   let permissions = getPermissions mgroup
@@ -21,7 +24,7 @@ getLiveR = do
                        ) = Just $ boardName b
                      | otherwise = Nothing
       boards'  = mapMaybe f boards
-  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts]
+  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts, OffsetBy offset]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
@@ -32,8 +35,10 @@ getLiveR = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   timeZone       <- getTimeZone  
-  defaultLayout $ do
-    setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgLatestPosts]
-    $(widgetFile "live")
+  if offset == 0
+     then defaultLayout $ do
+            setUltDestCurrent
+            setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgFeed]
+            $(widgetFile "feed")
+    else bareLayout $(widgetFile "feed")
   

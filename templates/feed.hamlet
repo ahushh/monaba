@@ -1,0 +1,15 @@
+$if offset == 0
+    <br>
+    <h2 style=text-align:center> _{MsgFeed}
+$forall (e, files) <- postsAndFiles
+    $if (postParent $ entityVal e) > 0
+        ^{replyPostWidget muser e files False False True permissions geoIps timeZone}
+    $else
+        ^{opPostWidget muser e files False False permissions geoIps timeZone}
+$if offset == 0
+    <div #post-bound style=text-align:center data-offset=#{showPosts} onclick="loadPosts(#{showPosts})">
+        [ 
+        <a #i-want-more>
+          _{MsgIwantmore}
+          <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}> 
+        ]

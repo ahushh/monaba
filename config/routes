@@ -5,7 +5,7 @@
 /robots.txt RobotsR GET
 
 /                    HomeR         GET
-/~                   LiveR         GET
+/feed                FeedR         GET
 /board/#Text         BoardNoPageR  GET POST
 /board/#Text/#Int    BoardR        GET POST
 /thread/#Text/#Int   ThreadR       GET POST
@@ -25,6 +25,7 @@
 /api/thread/#Text/#Int/all       ApiAllPostsR     GET
 /api/thread/#Text/#Int/deleted   ApiDeletedPostsR GET
 /api/post/#Text/#Int             ApiPostR         GET
+/api/feed/#Int                   ApiFeedOffsetR   GET
 /jsonfrommsg/#Text               JsonFromMsgR     GET
 
 

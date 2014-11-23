@@ -31,7 +31,7 @@ import Handler.Help
 import Handler.Thread
 import Handler.Board
 import Handler.Edit
-import Handler.Live
+import Handler.Feed
 import Handler.Delete
 import Handler.Admin
 import Handler.Admin.Ban

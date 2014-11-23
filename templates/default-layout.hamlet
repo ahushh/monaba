@@ -8,7 +8,7 @@ $maybe msg <- mmsg
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
-    [ <a title="_{MsgLatestPosts}" href=@{LiveR}>/~/</a> ] 
+    [ <a title="_{MsgFeed}" href=@{FeedR}>/feed/</a> ] 
     $forall Entity _ b <- widgetHelperFilterBoards boards "" group
       [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- categories

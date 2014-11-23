@@ -24,7 +24,7 @@ library
                      Handler.Thread
                      Handler.Board
                      Handler.Edit
-                     Handler.Live
+                     Handler.Feed
                      Handler.Posting
                      Handler.Delete
                      Handler.Admin

@@ -48,7 +48,7 @@ postForm boardVal extra = do
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
-  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> read $ unpack x :: GoBackTo) lastGoback)
+  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*>
@@ -83,7 +83,7 @@ tooLongMessage maxLen message = maxLen <= T.length (unTextarea message)
 bumpThread :: Text    -> -- ^ Board name
              Int     -> -- ^ Thread internal ID
              UTCTime -> -- ^ Up the thread to this time
-             HandlerT App IO ()
+             Handler ()
 bumpThread board thread now = do
   maybeThread <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybeThread of

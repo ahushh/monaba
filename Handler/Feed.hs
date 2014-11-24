@@ -4,7 +4,6 @@ module Handler.Feed where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
-import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getApiFeedOffsetR 0

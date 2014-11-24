@@ -82,7 +82,7 @@ getBoardR board page = do
 
   defaultLayout $ do
     setUltDestCurrent
-    let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
+    let p = if page > 0 then T.concat [" (", showText page, ")"] else ""
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, title, p]
     $(widgetFile "board")
     
@@ -152,7 +152,7 @@ postBoardR board _ = do
                            , postAutosage     = False
                            , postDeleted      = False
                            , postDeletedByOp  = False
-                           , postOwner        = pack . show . userGroup . entityVal <$> muser
+                           , postOwner        = showText . userGroup . entityVal <$> muser
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }

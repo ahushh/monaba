@@ -113,10 +113,10 @@ deleteFiles idsToRemove = do
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board
 ---------------------------------------------------------------------------------------------
-deletePostsByOp :: [Entity Post] -> HandlerT App IO ()
+deletePostsByOp :: [Entity Post] -> Handler ()
 deletePostsByOp = runDB . mapM_ (\(Entity pId _) -> update pId [PostDeletedByOp =. True])
 
-deletePosts :: [Entity Post] -> Bool -> HandlerT App IO ()
+deletePosts :: [Entity Post] -> Bool -> Handler ()
 deletePosts posts onlyfiles = do
   let boards         = nub $ map (postBoard . entityVal) posts
       boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards

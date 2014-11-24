@@ -1,4 +1,4 @@
-{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE ExistentialQuantification, TupleSections #-}
 
 module Import
     ( module Import
@@ -30,38 +30,44 @@ infixr 5 <>
 (<>) = mappend
 #endif
 -------------------------------------------------------------------------------------------------------------------
-import Text.Blaze.Html as Import (preEscapedToHtml)
-import Data.Time       as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
-import Data.Maybe      as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes)
-import Data.List       as Import (nub, intercalate)
-import Control.Monad   as Import (unless, when, forM, forM_, void, join)
-import Control.Arrow   as Import (second, first, (&&&), (***))
-import ModelTypes      as Import 
+import Control.Arrow        as Import (second, first, (&&&), (***))
+import Control.Monad        as Import (unless, when, forM, forM_, void, join)
+import Data.List            as Import (nub, intercalate)
+import Data.Maybe           as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes, mapMaybe)
+import Data.Time            as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
 import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
+import Text.Blaze.Html      as Import (preEscapedToHtml)
+import ModelTypes           as Import 
 -------------------------------------------------------------------------------------------------------------------
-import           System.FilePath         ((</>))
-import           Network.Wai
-import           Data.Time.Format        (formatTime)
-import           System.Locale           (defaultTimeLocale)
-import           Data.Char               (toLower, isPrint)
-import           Data.Time               (addUTCTime, secondsToDiffTime)
-import qualified Data.Map.Strict          as Map
-import qualified Data.ByteString.UTF8     as B
 import           Control.Applicative     (liftA2)
+import           Data.Char               (toLower, isPrint)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
-import           System.Random           (randomIO)
-import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
+import           Data.Text.Encoding      (decodeUtf8, encodeUtf8)
+import           Data.Time               (addUTCTime, secondsToDiffTime)
+import           Data.Time.Format        (formatTime)
+import           Network.Wai
+import           System.FilePath         ((</>))
+import           System.Locale           (defaultTimeLocale)
+import           System.Random           (randomIO)
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
+import qualified Data.ByteString.UTF8    as B
+import qualified Data.Map.Strict         as MapS
+import qualified Data.Text               as T (concat, toLower, append, length)
 -------------------------------------------------------------------------------------------------------------------
 -- Constants
 -------------------------------------------------------------------------------------------------------------------
 titleDelimiter :: Text
 titleDelimiter = " / "
-
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
+whenM :: Monad m => m Bool -> m () -> m ()
+whenM = (. flip when) . (>>=)
+
+unlessM :: Monad m => m Bool -> m () -> m ()
+unlessM = (. flip unless) . (>>=)
+
 showText :: Show a => a -> Text
 showText = pack . show
 
@@ -70,6 +76,13 @@ readText = read . unpack
 
 pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
 pair f g x = (f x, g x)
+
+keyValuesToMap :: (Ord k) => [(k, a)] -> MapS.Map k [a]  
+keyValuesToMap = MapS.fromListWith (++) . map (\(k,v) -> (k,[v]))
+
+-- | Add UTCTime with Integer seconds
+addUTCTime' :: Int -> UTCTime -> UTCTime
+addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 -------------------------------------------------------------------------------------------------------------------
 -- Files
 -------------------------------------------------------------------------------------------------------------------
@@ -145,6 +158,18 @@ ignoreBoards group (Entity _ b)
       (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
     ) = Just $ boardName b
   | otherwise = Nothing
+
+-- | Remove all HTML tags
+stripTags :: Text -> Text
+stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
+  where textOnly (TagText t) = t
+        textOnly           _ = ""
+
+-- | Check if request has X-Requested-With header
+isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
+isAjaxRequest = do
+  maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
+  return $ maybe False (=="XMLHttpRequest") maybeHeader
 -------------------------------------------------------------------------------------------------------------------
 -- Template helpers
 -------------------------------------------------------------------------------------------------------------------
@@ -174,8 +199,8 @@ truncateFileName s = if len > maxLen then result else s
   where maxLen   = 47
         len      = length s
         excess   = len - maxLen
-        halfLen  = round $ (fromIntegral len)    / (2 :: Double)
-        halfExc  = round $ (fromIntegral excess) / (2 :: Double)
+        halfLen  = round $ fromIntegral len    / (2 :: Double)
+        halfExc  = round $ fromIntegral excess / (2 :: Double)
         splitted = splitAt halfLen s
         left     = reverse $ drop (halfExc + 2) $ reverse $ fst splitted
         right    = drop (halfExc + 2) $ snd splitted
@@ -239,27 +264,6 @@ checkViewAccess mgroup boardVal =
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)
 -------------------------------------------------------------------------------------------------------------------
--- Misc stuff
--------------------------------------------------------------------------------------------------------------------
--- | Check if request has X-Requested-With header
-isAjaxRequest :: forall (m :: * -> *). MonadHandler m => m Bool
-isAjaxRequest = do
-  maybeHeader <- lookup "X-Requested-With" . requestHeaders <$> waiRequest
-  return $ maybe False (=="XMLHttpRequest") maybeHeader
-
-keyValuesToMap :: (Ord k) => [(k, a)] -> Map.Map k [a]  
-keyValuesToMap = Map.fromListWith (++) . map (\(k,v) -> (k,[v]))
-
--- | Add UTCTime with Integer seconds
-addUTCTime' :: Int -> UTCTime -> UTCTime
-addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
-
--- | Remove all HTML tags
-stripTags :: Text -> Text
-stripTags = foldr (T.append . textOnly) "" . parseTagsOptions parseOptionsFast
-  where textOnly (TagText t) = t
-        textOnly           _ = ""
--------------------------------------------------------------------------------------------------------------------
 -- Some getters
 -------------------------------------------------------------------------------------------------------------------
 getMaybeGroup :: Maybe (Entity User) -> Handler (Maybe (Entity Group))
@@ -268,16 +272,13 @@ getMaybeGroup muser = case muser of
     _                 -> return Nothing
     
 getBoardVal404 :: Text -> Handler Board
-getBoardVal404 board = do
-  maybeBoard <- runDB $ getBy $ BoardUniqName board
-  when (isNothing maybeBoard) notFound
-  return $ entityVal $ fromJust maybeBoard
+getBoardVal404 board = runDB (getBy $ BoardUniqName board) >>= maybe notFound (return . entityVal)
 
 getTimeZone :: Handler Int
 getTimeZone = do
   defaultZone <- extraTimezone <$> getExtra
   timezone    <- lookupSession "timezone"
-  return $ maybe defaultZone (read . unpack) timezone
+  return $ maybe defaultZone readText timezone
 
 getPosterId :: Handler Text
 getPosterId = do
@@ -290,46 +291,31 @@ getPosterId = do
       return posterId
 
 getConfig :: forall b. (Config -> b) -> Handler b
-getConfig f = f . entityVal . fromJust <$> (runDB $ selectFirst ([]::[Filter Config]) [])
+getConfig f = f . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------
 -- | Gets IP from X-Real-IP or remote-host header
 getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
-  maybeIp <- getIpFromHeader 
+  maybeIp <- getIpFromHeader
   case maybeIp of
     Just ip -> return $ B.toString ip
     Nothing -> getIpFromHost
-       
-getIpFromHeader :: forall (f :: * -> *). MonadHandler f => f (Maybe B.ByteString)
-getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
-
-getIpFromHost :: forall (f :: * -> *). MonadHandler f => f [Char]
-getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
--------------------------------------------------------------------------------------------------------------------
--- Monadic when and unless
--------------------------------------------------------------------------------------------------------------------
-whenM :: Monad m => m Bool -> m () -> m ()
-whenM = (. flip when) . (>>=)
-
-unlessM :: Monad m => m Bool -> m () -> m ()
-unlessM = (. flip unless) . (>>=)
+  where getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
+        getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
 -------------------------------------------------------------------------------------------------------------------
 -- Geo IP
 -------------------------------------------------------------------------------------------------------------------  
 getCountry :: Text ->                      -- ^ IP adress
              Handler (Maybe (Text,Text)) -- ^ (country code, country name)
 getCountry ip = do
-  dbPath   <- unpack . extraGeoIPCityPath <$> getExtra
-  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= (flip geoLocateByIPAddress $ B.fromString $ unpack ip)
-  return $ ((p . geoCountryCode) &&& (p . geoCountryName)) <$> geoIpRes
-    where p = pack . B.toString
+  dbPath <- unpack . extraGeoIPCityPath <$> getExtra
+  geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= flip geoLocateByIPAddress (encodeUtf8 ip)
+  return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
 
 getCountries :: forall t. [(Entity Post, t)] ->          -- ^ List of (entity post, files) tuples
                Handler [(Key Post, (Text, Text))] -- ^ [(Post key, (country code, country name))]
-getCountries posts = do
-  geoIps' <- forM posts $ \((Entity pId p),_) -> do
-    c <- getCountry $ postIp p
-    return (pId, c)
-  return $ map (second fromJust) $ filter (isJust . snd) geoIps'
+getCountries posts = fmap catMaybes $ forM posts $ \(Entity pId p,_) -> f . (pId,) <$> getCountry (postIp p)
+  where f (a, Just b ) = Just (a,b)
+        f (_, Nothing) = Nothing

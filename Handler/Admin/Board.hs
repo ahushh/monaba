@@ -18,7 +18,7 @@ getManageBoardsR action board = do
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
 
-  (formWidget, formEnctype) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups
+  (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups -- oops, ignored formEnctype
 
   boards          <- runDB $ selectList ([]::[Filter Board]) []
   nameOfTheBoard  <- extraSiteName <$> getExtra
@@ -114,7 +114,7 @@ updateBoardForm board action bCategories groups extra = do
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> summaryRes
-      bname  = maybe Nothing (Just . boardName . entityVal) board
+      bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ postAllBoardsR = do
                 , bSummary
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
-      forM_ boards $ (\(Entity oldBoardId oldBoard) ->
+      forM_ boards (\(Entity oldBoardId oldBoard) ->
         let onoff (Just "Enable" ) _ = True
             onoff (Just "Disable") _ = False
             onoff _                f = f oldBoard

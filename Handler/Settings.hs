@@ -3,6 +3,7 @@ module Handler.Settings where
  
 import           Import
 import qualified Data.Text  as T
+import           Data.Foldable as Foldable (forM_)
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
 settingsForm :: Int  -> -- ^ Default time offset
@@ -29,9 +30,9 @@ postSettingsR = do
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
     FormSuccess (timezone, stylesheet, lang) -> do
-      setSession "timezone"   $ pack $ show timezone
+      setSession "timezone"   $ showText timezone
       setSession "stylesheet" stylesheet
-      when (isJust lang) $ setLanguage $ fromJust lang
+      Foldable.forM_ lang setLanguage
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html

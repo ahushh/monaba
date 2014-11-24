@@ -131,14 +131,16 @@ postBoardR board _ = do
         ------------------------------------------------------------------------------------------------------
         posterId <- getPosterId
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        messageFormatted <- doYobaMarkup message board 0
+        messageFormatted  <- doYobaMarkup message board 0
+        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 60) title
-                           , postName         = maybe defaultName (T.take 20) name
+                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
+                           , postName         = maybe defaultName (T.take maxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now

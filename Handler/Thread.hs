@@ -123,14 +123,17 @@ postThreadR board thread = do
         lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         when (isNothing lastPost') $  -- reply to non-existent thread
           trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
+
+        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+        maxLenOfPostName  <- extraMaxLenOfPostName <$> getExtra
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost')
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = thread
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take 60) title
-                           , postName         = maybe defaultName (T.take 20) name
+                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
+                           , postName         = maybe defaultName (T.take maxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

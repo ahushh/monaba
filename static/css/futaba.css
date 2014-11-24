@@ -197,3 +197,8 @@ pre {
     font-size: 1.1em;
     font-weight: bold;
 }
+
+#pages-list {
+    border: 1px solid grey;
+    padding: 0 3px;
+}

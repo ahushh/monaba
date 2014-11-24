@@ -20,6 +20,7 @@ ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thu
 OpModerationIsEnabled: OP moderation is enabled on this board.
 PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}
 ### misc
+ThreadHeaderNumber t@Int: Thread №#{show t}
 ThreadHeaderReplyTo t@Int: Reply to #{show t} thread
 NewThread: New thread
 ClosePostForm: Close form

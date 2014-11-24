@@ -8,7 +8,11 @@ $else
     $if not $ T.null boardLongDesc
         <div id="board-long-desc">#{boardLongDesc}
     <div id="board-subtitle">#{pagetitle}
-<div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+$if hasAccessToReply
+    <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+$else
+    <div #thread-header> _{MsgThreadHeaderNumber thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+
 $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
@@ -16,10 +20,10 @@ $if hasAccessToReply
         ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-        ^{opPostWidget muser eOpPost opPostFiles True True permissions geoIps timeZone}
+        ^{opPostWidget muser eOpPost opPostFiles True hasAccessToReply permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{replyPostWidget muser eReply files True True False permissions geoIps timeZone}
+            ^{replyPostWidget muser eReply files True hasAccessToReply False permissions geoIps timeZone}
     <br clear=both>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>

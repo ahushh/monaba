@@ -52,6 +52,7 @@ getBoardR board page = do
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
+      hasAccessToReply     = checkAccessToReply mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
@@ -91,6 +92,7 @@ postBoardR board _ = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
+  unless (checkAccessToNewThread mgroup boardVal) notFound
   -------------------------------------------------------------------------------------------------------   
   let msgRedirect msg  = setMessageI msg >> redirect (BoardNoPageR board)
       defaultName      = boardDefaultName   boardVal

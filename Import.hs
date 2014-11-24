@@ -53,9 +53,10 @@ import           System.Random           (randomIO)
 import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
-
-
 -------------------------------------------------------------------------------------------------------------------
+titleDelimiter :: Text
+titleDelimiter = " / "
+
 ifelse :: Bool -> Text -> Text -> Text
 ifelse x y z = if x then y else z
 -------------------------------------------------------------------------------------------------------------------

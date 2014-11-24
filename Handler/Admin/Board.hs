@@ -24,7 +24,7 @@ getManageBoardsR board = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgBoardManagement]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgBoardManagement]
     $(widgetFile "admin/boards")
     
 updateBoardForm :: Maybe (Entity Board) -> 

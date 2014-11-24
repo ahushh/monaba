@@ -39,7 +39,7 @@ getDeletedByOpR board thread = do
   timeZone      <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgDeletedPosts]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgDeletedPosts]
     $(widgetFile "deleted")
 
 getDeleteR :: Handler Html

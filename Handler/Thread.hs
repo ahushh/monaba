@@ -66,7 +66,7 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", boardDesc, if T.null pagetitle then "" else " — ", pagetitle]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, if T.null pagetitle then "" else titleDelimiter, pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html

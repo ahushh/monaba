@@ -38,7 +38,7 @@ getApiFeedOffsetR offset = do
   if offset == 0
      then defaultLayout $ do
             setUltDestCurrent
-            setTitle $ toHtml $ T.concat [nameOfTheBoard, " — ", msgrender MsgFeed]
+            setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgFeed]
             $(widgetFile "feed")
     else bareLayout $(widgetFile "feed")
   

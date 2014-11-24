@@ -47,7 +47,7 @@
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET
 /admin/users               UsersR        GET POST
-/admin/users/delete/#Int   UsersDeleteR  GET
+/admin/users/delete/#Text  UsersDeleteR  GET
 
 /admin/account             AccountR      GET
 /admin/account/password    NewPasswordR  POST

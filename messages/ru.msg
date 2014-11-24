@@ -181,6 +181,7 @@ Group: Группа
 Groups: Группы
 GroupAddOrUpdate: Добавить/обновить
 GroupAddedOrUpdated: Группа добавлена/обновлена
+GroupDoesNotExist: Группа не существует
 GroupDeleted: Группа удалена
 
 ### Account
@@ -194,6 +195,7 @@ Users: Пользователи
 AddNewUserOrUpdate: Новый аккаунт/обновить
 ## Messages
 UsersAddedOrUpdated: Аккаунт добавлен/обновлен
+UserDoesNotExist: Пользователь не существует
 UsersDeleted: Аккаунт удален
 YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
 

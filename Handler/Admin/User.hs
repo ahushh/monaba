@@ -25,9 +25,8 @@ usersForm groups extra = do
 
 getUsersR :: Handler Html
 getUsersR = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
 
   groups <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   (formWidget, _) <- generateFormPost $ usersForm groups
@@ -88,9 +87,8 @@ newPasswordForm extra = do
 
 getAccountR :: Handler Html
 getAccountR = do
-  muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
 
   (formWidget, _) <- generateFormPost newPasswordForm
 

@@ -51,9 +51,8 @@ showPermission p = fromJust $ lookup p xs
 
 getManageGroupsR :: Handler Html
 getManageGroupsR = do
-  muser  <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  let permissions          = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
 
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])
   (formWidget, _) <- generateFormPost groupsForm

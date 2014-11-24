@@ -61,7 +61,7 @@ Back: Back
 Next: Next
 Previous: Previous
 DeleteBtn: Delete
-OnlyFile: Only file
+OnlyFiles: Only files
 ## panel
 Manage: Manage
 Login: Login

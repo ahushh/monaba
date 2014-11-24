@@ -31,14 +31,12 @@ $with post <- show $ postLocalId $ entityVal eReplyW
               $with c <- ifelse (length eFiles == 1) "file" "multi-file"
                 $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)
                    <div class=#{c}>
-                      <span .file-name>
+                      <div .file-name>
                           <a title=#{attachedfileName file} target=_blank href=#{uploadUrlPath (attachedfileName file) (attachedfileHashsum file) }>#{truncateFileName $ attachedfileName file}
-                      <br>
                       $if attachedfileType file == FileImage
-                          <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
+                          <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
                       $else
-                          <span .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
-                      <br>
+                          <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
                       $if attachedfileThumbWidth file == -1
                           <img src="#{tp}" .thumb>
                       $elseif attachedfileType file == FileVideo
@@ -54,13 +52,10 @@ $with post <- show $ postLocalId $ entityVal eReplyW
                     <div .expand-post>
                         _{MsgPostMessageIsTooLong}
                         <a onclick="expandPost('post-#{post}-#{thread}-#{board}');">_{MsgExpandPost}
-                        <br>
                     <div style=display:none .shrink-post>
                         <a onclick="shrinkPost('post-#{post}-#{thread}-#{board}');">_{MsgShrinkPost}
-                        <br>
                 $else
                     <div .message>#{preEscapedToHtml m}
          $maybe lm <- postLastModified $ entityVal eReplyW
                 <span .last-modified>
                     <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey eReplyW}>_{MsgLastModified} #{myFormatTime tOffsetW lm}
-                    <br>

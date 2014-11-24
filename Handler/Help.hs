@@ -15,21 +15,20 @@ getHelpR = do
 
 getHelpMarkupR :: Handler Html
 getHelpMarkupR = do
-    muser    <- maybeAuth
-    mgroup   <- getMaybeGroup muser
-    let permissions = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
   
-    nameOfTheBoard   <- extraSiteName <$> getExtra
-    msgrender        <- getMessageRender
-    defaultLayout $ do
-        setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgMarkup]
-        $(widgetFile "help/markup")
+  nameOfTheBoard   <- extraSiteName <$> getExtra
+  msgrender        <- getMessageRender
+  defaultLayout $ do
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgMarkup]
+    $(widgetFile "help/markup")
 
 getHelpApiR :: Handler Html
 getHelpApiR = do
-    nameOfTheBoard   <- extraSiteName <$> getExtra
-    msgrender        <- getMessageRender
-    defaultLayout $ do
-        setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgApi]
-        $(widgetFile "help/api")
+  nameOfTheBoard   <- extraSiteName <$> getExtra
+  msgrender        <- getMessageRender
+  defaultLayout $ do
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, " - ", msgrender MsgApi]
+    $(widgetFile "help/api")
   

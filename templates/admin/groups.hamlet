@@ -1,6 +1,5 @@
 ^{adminNavbarWidget muser permissions}
 ^{formWidget}
-<br>
 $forall g <- groups
     <table .admin-table style=display:inline >
         <tr>

@@ -21,7 +21,7 @@ getDeletedByOpR board thread = do
       geoIpEnabled  = boardEnableGeoIp     boardVal
       boardDesc     = boardTitle     boardVal
       boardLongDesc = boardSummary boardVal
-  when (boardOpModeration boardVal == False) notFound  
+  unless (boardOpModeration boardVal) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -53,13 +53,13 @@ getDeleteR = do
   case reverse query of
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
-      let xs = if fst (P.head zs) == "onlyfile" then P.tail zs else zs
+      let xs = if fst (P.head zs) == "onlyfiles" then P.tail zs else zs
       thread   <- runDB $ get ((toSqlKey . fromIntegral $ ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
       let board = postBoard $ fromJust thread
       boardVal    <- getBoardVal404 board
-      when (boardOpModeration boardVal == False) notFound
+      unless (boardOpModeration boardVal) notFound
 
       posterId <- getPosterId
       when (postPosterId (fromJust thread) /= posterId &&
@@ -76,36 +76,20 @@ getDeleteR = do
 
     ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
-      let onlyfile     = fst (P.head zs) == "onlyfile"
-          xs           = if onlyfile then P.tail zs else zs
+      let onlyfiles    = fst (P.head zs) == "onlyfiles"
+          xs           = if onlyfiles then P.tail zs else zs
           requestIds   = map helper xs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
-        _  -> deletePosts posts onlyfile >> redirectUltDest HomeR
+        _  -> deletePosts posts onlyfiles >> redirectUltDest HomeR
     _                           -> errorRedirect MsgUnknownError
 
----------------------------------------------------------------------------------------------
--- used by Handler/Admin and Handler/Board
----------------------------------------------------------------------------------------------
-deletePostsByOp :: [Entity Post] -> HandlerT App IO ()
-deletePostsByOp = runDB . mapM_ (\(Entity pId _) -> update pId [PostDeletedByOp =. True])
 
-deletePosts :: [Entity Post] -> Bool -> HandlerT App IO ()
-deletePosts posts onlyfile = do
-  let boards         = nub $ map (postBoard . entityVal) posts
-      boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards
-      boardsAndPosts :: [(Text,[Entity Post])]
-
-  childs <- runDB $ forM boardsAndPosts $ \(b,ps) ->
-    selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
-
-  let idsToRemove = concat (map (map entityKey . snd) boardsAndPosts) ++ map entityKey (concat childs)
-  unless onlyfile $
-    runDB (updateWhere [PostId <-. idsToRemove] [PostDeleted =. True])
+deleteFiles :: [Key Post] -> Handler ()
+deleteFiles idsToRemove = do  
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
-  
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
     let ft = attachedfileType f
@@ -126,3 +110,22 @@ deletePosts posts onlyfile = do
           liftIO $ removeFile $ thumbFilePath ts ft fn hs
           whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
   runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
+---------------------------------------------------------------------------------------------
+-- used by Handler/Admin and Handler/Board
+---------------------------------------------------------------------------------------------
+deletePostsByOp :: [Entity Post] -> HandlerT App IO ()
+deletePostsByOp = runDB . mapM_ (\(Entity pId _) -> update pId [PostDeletedByOp =. True])
+
+deletePosts :: [Entity Post] -> Bool -> HandlerT App IO ()
+deletePosts posts onlyfiles = do
+  let boards         = nub $ map (postBoard . entityVal) posts
+      boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards
+      boardsAndPosts :: [(Text,[Entity Post])]
+
+  childs <- runDB $ forM boardsAndPosts $ \(b,ps) ->
+    selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
+
+  let idsToRemove = concat (map (map entityKey . snd) boardsAndPosts) ++ map entityKey (concat childs)
+  unless onlyfiles $
+    runDB (updateWhere [PostId <-. idsToRemove] [PostDeleted =. True])
+  deleteFiles idsToRemove

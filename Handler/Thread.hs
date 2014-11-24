@@ -20,6 +20,19 @@ getJsonFromMsgR status = do
   selectRep $
     provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
 -------------------------------------------------------------------------------------------------------------------
+selectThread :: Text -> Int -> Handler [(Entity Post, [Entity Attachedfile])]
+selectThread board thread = do
+  allPosts <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
+    E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
+    E.where_ ((post E.^. PostBoard       ) E.==. (E.val board ) E.&&.
+              (post E.^. PostDeletedByOp ) E.==. (E.val False ) E.&&.
+              (post E.^. PostDeleted     ) E.==. (E.val False ) E.&&.
+             ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
+             ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
+    E.orderBy [E.asc (post E.^. PostId)]
+    return (post, file)
+  return $ map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+
 getThreadR :: Text -> Int -> Handler Html
 getThreadR board thread = do
   when (thread == 0) notFound
@@ -35,33 +48,20 @@ getThreadR board thread = do
       boardLongDesc    = boardSummary boardVal
       geoIpEnabled     = boardEnableGeoIp     boardVal
   -------------------------------------------------------------------------------------------------------
-  allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
-    E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
-    E.where_ ((post E.^. PostBoard       ) E.==. (E.val board ) E.&&.
-              (post E.^. PostDeletedByOp ) E.==. (E.val False ) E.&&.
-              (post E.^. PostDeleted     ) E.==. (E.val False ) E.&&.
-             ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
-             ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
-    E.orderBy [E.asc (post E.^. PostId)]
-    return (post, file)
-  when (null allPosts') notFound
-  let allPosts        = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
-      repliesAndFiles = drop 1 allPosts
+  allPosts <- selectThread board thread
+  when (null allPosts) notFound
+  let repliesAndFiles = drop 1 allPosts
       eOpPost         = fst $ head allPosts
       opPostFiles     = snd $ head allPosts
-      pt              = postTitle  $ entityVal eOpPost
-      pm              = stripTags $ unTextarea $ postMessage $ entityVal eOpPost
-      pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > 60 then flip T.append "…" $ T.take 60 pm else pm
-                | otherwise                                     = ""
+      pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
   -------------------------------------------------------------------------------------------------------
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  timeZone        <- getTimeZone
+  nameOfTheBoard            <- extraSiteName <$> getExtra
+  msgrender                 <- getMessageRender
+  timeZone                  <- getTimeZone
 
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
@@ -158,3 +158,15 @@ postThreadR board thread = do
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
     _  -> trickyRedirect "error" MsgUnknownError threadUrl
+-------------------------------------------------------------------------------------------------------------------
+makeThreadtitle :: Entity Post -> Text
+makeThreadtitle ePost =
+  let maxLen = 60
+      pt     = postTitle $ entityVal ePost
+      pm     = stripTags $ unTextarea $ postMessage $ entityVal ePost
+      pagetitle | not $ T.null pt                                 = pt
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > maxLen
+                                                                    then flip T.append "…" $ T.take maxLen pm
+                                                                    else pm
+                | otherwise                                     = ""
+  in pagetitle

@@ -57,6 +57,7 @@ hr {
 .thumb {
     margin: 6px;
     cursor: pointer;
+   display: block;
 }
 
 #message {
@@ -71,6 +72,7 @@ hr {
 
 .board-list {
     text-align: left;
+   margin-bottom: 20px;
 }
 
 .poster-name {
@@ -248,6 +250,7 @@ hr {
 .hist-date {
     text-align: center;
     font-weight: bold;
+   margin: 10px;
 }
 
 .hist-msg {
@@ -260,8 +263,13 @@ hr {
     text-align: center;
 }
 
+.file-name {
+   margin: 2px;
+}
+
 .file-info {
    font-style: italic;
+   margin: 2px;
 }
 
 .quote {

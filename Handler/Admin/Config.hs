@@ -39,9 +39,8 @@ configForm config extra = do
   
 getConfigR :: Handler Html
 getConfigR = do
-  muser  <- maybeAuth
-  mgroup <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
 
   configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
   (formWidget, _) <- generateFormPost $ configForm configVal

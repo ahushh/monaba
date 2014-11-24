@@ -18,12 +18,7 @@ getApiFeedOffsetR offset = do
   -------------------------------------------------------------------------------------------------------------------      
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  let f (Entity _ b) | boardHidden b ||
-                       ( (isJust (boardViewAccess b) && isNothing group) ||
-                         (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-                       ) = Just $ boardName b
-                     | otherwise = Nothing
-      boards'  = mapMaybe f boards
+  let boards' = mapMaybe (ignoreBoards group) boards
   posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts, OffsetBy offset]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles

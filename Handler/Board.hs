@@ -15,6 +15,36 @@ getBoardNoPageR board = getBoardR board 0
 postBoardNoPageR :: Text -> Handler Html
 postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
+selectThreadsAndPreviews :: Text ->
+                           Int  ->
+                           Int  ->
+                           Int  ->
+                           Text ->
+                           [Permission] ->
+                           Handler [(  (Entity Post, [Entity Attachedfile])
+                                    , [(Entity Post, [Entity Attachedfile])]
+                                    , Int
+                                    )]
+selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions =
+  let selectThreads = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+                      [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      --------------------------------------------------------------------------------------------------
+      selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
+      --------------------------------------------------------------------------------------------------
+      selectPreviews t
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False
+                                             ,PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
+        | otherwise             = return []
+      --------------------------------------------------------------------------------------------------
+      countPosts t = count [PostDeletedByOp ==. False, PostDeleted ==. False, PostBoard ==. board, PostParent ==. postLocalId t]
+  in runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
+       threadFiles      <- selectFiles tId
+       previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
+         previewFiles <- selectFiles $ entityKey pr
+         return (pr, previewFiles))
+       postsInThread <- countPosts t
+       return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
+--------------------------------------------------------------------------------------------------------- 
 getBoardR :: Text -> Int -> Handler Html
 getBoardR board page = do
   muser    <- maybeAuth
@@ -24,35 +54,18 @@ getBoardR board page = do
   let hasAccessToNewThread = checkAccessToNewThread mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0]
-  let maxMessageLength  = boardMaxMsgLength      boardVal
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+  posterId        <- getPosterId
+  let numberFiles       = boardNumberFiles       boardVal
+      maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
-      boardDesc         = boardTitle             boardVal
-      boardLongDesc     = boardSummary           boardVal
+      enableCaptcha     = boardEnableCaptcha     boardVal
+      title             = boardTitle             boardVal
+      summary           = boardSummary           boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
-      ---------------------------------------------------------------------------------
-      pages             = [0..pagesFix $ floor $ (fromIntegral numberOfThreads :: Double) / (fromIntegral threadsPerPage :: Double)]
-      pagesFix x
-        | numberOfThreads > 0 && numberOfThreads `mod` threadsPerPage == 0 = x - 1
-        | otherwise                                                      = x
-      ---------------------------------------------------------------------------------
-      selectThreads    = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
-                         [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
-      selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
-      selectPreviews t
-        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False,
-                                              PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
-        | otherwise             = return []
-  -------------------------------------------------------------------------------------------------------
-  threadsAndPreviews <- runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
-                           threadFiles      <- selectFiles tId
-                           previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
-                             previewFiles <- selectFiles $ entityKey pr
-                             return (pr, previewFiles))
-                           postsInThread <- count [PostDeletedByOp ==. False, PostDeleted ==. False,
-                                                  PostBoard ==. board, PostParent ==. postLocalId t]
-                           return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
+      pages             = listPages threadsPerPage numberOfThreads
+  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
   ------------------------------------------------------------------------------------------------------- 
   geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
     xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))
@@ -69,7 +82,7 @@ getBoardR board page = do
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", pack (show page), ")"] else ""
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, boardDesc, p]
+    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, title, p]
     $(widgetFile "board")
     
 postBoardR :: Text -> Int -> Handler Html

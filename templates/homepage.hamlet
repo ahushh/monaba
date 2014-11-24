@@ -1,4 +1,3 @@
-<br>
 <div #main-title>
     <h1>#{nameOfTheBoard}
 <div #home-container>

@@ -54,17 +54,22 @@ import qualified Data.Text               as T (concat, toLower, append, length)
 import           Data.Geolocation.GeoIP
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 -------------------------------------------------------------------------------------------------------------------
+-- Constants
+-------------------------------------------------------------------------------------------------------------------
 titleDelimiter :: Text
 titleDelimiter = " / "
 
-ifelse :: Bool -> Text -> Text -> Text
-ifelse x y z = if x then y else z
-
+-------------------------------------------------------------------------------------------------------------------
+-- Handful functions
+-------------------------------------------------------------------------------------------------------------------
 showText :: Show a => a -> Text
 showText = pack . show
 
 readText :: Read a => Text -> a
 readText = read . unpack
+
+pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
+pair f g x = (f x, g x)
 -------------------------------------------------------------------------------------------------------------------
 -- Files
 -------------------------------------------------------------------------------------------------------------------
@@ -124,7 +129,24 @@ thumbFilePath size filetype filename hashsum
   | otherwise                      = staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
 
 -------------------------------------------------------------------------------------------------------------------
--- Templates helpers
+-- Handler helpers
+-------------------------------------------------------------------------------------------------------------------
+listPages :: Int -> Int -> [Int]
+listPages elemsPerPage numberOfElems =
+  [0..pagesFix $ floor $ (fromIntegral numberOfElems :: Double) / (fromIntegral elemsPerPage :: Double)]
+  where pagesFix x
+          | numberOfElems > 0 && numberOfElems `mod` elemsPerPage == 0 = x - 1
+          | otherwise                                                = x
+
+ignoreBoards :: Maybe Text -> Entity Board -> Maybe Text
+ignoreBoards group (Entity _ b)
+  | boardHidden b ||
+    ( (isJust (boardViewAccess b) && isNothing group) ||
+      (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+    ) = Just $ boardName b
+  | otherwise = Nothing
+-------------------------------------------------------------------------------------------------------------------
+-- Template helpers
 -------------------------------------------------------------------------------------------------------------------
 checkAbbr :: Int  -> -- ^ Message length
             Bool -> -- ^ Show full message
@@ -137,12 +159,15 @@ postAbbrLength = 1500
 
 enumerate :: forall b. [b] -> [(Int, b)]
 enumerate = zip [0..]
--------------------------------------------------------------------------------------------------------------------
+
+ifelse :: Bool -> Text -> Text -> Text
+ifelse x y z = if x then y else z
+
 myFormatTime :: Int     -> -- ^ Time offset in seconds
                UTCTime -> -- ^ UTCTime
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
--------------------------------------------------------------------------------------------------------------------
+
 -- | Truncate file name if it's length greater than 47
 truncateFileName :: String -> String
 truncateFileName s = if len > maxLen then result else s

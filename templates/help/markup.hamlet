@@ -34,11 +34,13 @@
       <tr>
         <td>[spoiler]spoiler[/spoiler]
         <td>&nbsp;→&nbsp;
-        <td><span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span>
+        <td>
+           <span .spoiler>spoiler
       <tr>
         <td>%%spoiler%%
         <td>&nbsp;→&nbsp;
-        <td><span onmouseout="this.style.color='black'" onmouseover="this.style.color='white';" style="color:black; background-color:black">spoiler</span
+        <td>
+           <span .spoiler>spoiler
       <tr>
         <td>[s]strike[/s]
         <td>&nbsp;→&nbsp;
@@ -47,6 +49,11 @@
         <td>[u]underline[/u]
         <td>&nbsp;→&nbsp;
         <td><u>underline</u>
+      <tr>
+        <td>[Арктогея](http://arcto.ru/)
+        <td>&nbsp;→&nbsp;
+        <td><a href="http://arcto.ru/">Арктогея</a>
+        <tr>
       <tr>
         <td>http://yesodweb.com
         <td>&nbsp;→&nbsp;

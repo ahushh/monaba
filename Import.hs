@@ -59,6 +59,12 @@ titleDelimiter = " / "
 
 ifelse :: Bool -> Text -> Text -> Text
 ifelse x y z = if x then y else z
+
+showText :: Show a => a -> Text
+showText = pack . show
+
+readText :: Read a => Text -> a
+readText = read . unpack
 -------------------------------------------------------------------------------------------------------------------
 -- Files
 -------------------------------------------------------------------------------------------------------------------

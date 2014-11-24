@@ -2,9 +2,11 @@
 module Utils.YobaMarkup
        (
          doYobaMarkup
+       , fixReferences
        ) where
 
 import           Import
+import           Prelude
 import           Yesod.Auth
 import           Text.HTML.TagSoup  (escapeHTML)
 import           Text.Parsec hiding (newline)
@@ -12,6 +14,7 @@ import           Text.Parsec.Text
 import           System.Process
 import           Control.Monad      (foldM)
 import qualified Data.Text     as T (concat, append)
+import           Text.Shakespeare.Text
 -------------------------------------------------------------------------------------------------------------------
 type CodeLang = Text
 data Expr = Bold          [Expr] -- [b]bold[/b]
@@ -25,11 +28,13 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | InnerRef      Int    -- >>1308
           | ExternalRef Text Int -- >>/b/1632
           | ProofLabel    Int    -- ##1717
+          | ExternalProofLabel Text Int -- ##/b/1717
           | ProofLabelOP         -- ##OP
           | Color  Text   [Expr] -- [color=red]blah-blah[/color]
           | GroupProof           -- #group
           | UserProof            -- #user
-          | Link          Text   -- http://russia3.ru
+          | Link          Text   -- http://rossia3.ru
+          | NamedLink Text Text  -- [Портал сетевой войны](http://rossia3.ru)
           | List        [[Expr]] -- * one\n * two\n * three\n
           | Plain         Text   -- any text 
           | Newline              -- \n
@@ -39,6 +44,54 @@ geshi :: String
 geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
+-------------------------------------------------------------------------------------------------------------------
+-- Fix post referencies after thread moving
+-------------------------------------------------------------------------------------------------------------------
+plain' :: Parser Expr
+plain' = Plain . pack <$> many1 (myCheck >> anyChar)
+  where myCheck = foldr (\f acc -> acc >> notFollowedBy (try f)) (notFollowedBy $ try proof) [innerref]
+
+onlyRefs :: Parsec Text () Expr
+onlyRefs = try proof
+       <|> try innerref
+       <|> try plain'
+
+parseOnlyRefs :: Text -> Either ParseError [Expr]
+parseOnlyRefs = parse (many onlyRefs) "yoa markup"
+
+processFixRefs :: [Expr] -> Text -> [(Int,Int)] -> IO Textarea
+processFixRefs xs oldBoard ids = Textarea <$> foldM f "" xs
+  where
+    oldIds = map fst ids
+    ----------------------------------------------------------------------------------------------------------
+    f acc (Plain         x) = return $ acc <> x -- remain unchanged
+    ----------------------------------------------------------------------------------------------------------
+    f acc (InnerRef postId) = do
+      if postId `elem` oldIds
+        then return $ acc <> ">>"  <> (showText $ fromJust $ lookup postId ids)
+        else return $ acc <> ">>/" <> oldBoard <> "/" <> (showText postId)
+    ----------------------------------------------------------------------------------------------------------
+    -- Don't think there is a need to implement the following
+    ----------------------------------------------------------------------------------------------------------
+    -- f acc (ExternalRef board postId) = do
+    ----------------------------------------------------------------------------------------------------------
+    -- f acc (ExternalProofLabel board' postId) = do
+    ----------------------------------------------------------------------------------------------------------
+    f acc (ProofLabel postId) = do
+      if postId `elem` oldIds
+        then return $ acc <> "##"  <> (showText $ fromJust $ lookup postId ids)
+        else return $ acc <> "##/" <> oldBoard <> "/" <> (showText postId)
+    f acc _ = return acc
+
+fixReferences :: Text -> [(Int,Int)] -> Textarea -> IO Textarea
+fixReferences oldBoard ids s = do
+  let parsed = parseOnlyRefs $ unTextarea s
+  case parsed of
+    Right xs -> processFixRefs xs oldBoard ids
+    Left err -> return $ Textarea $ pack $ show err
+
+-------------------------------------------------------------------------------------------------------------------
+-- Yoba markup
 -------------------------------------------------------------------------------------------------------------------
 doYobaMarkup :: Maybe Textarea -> Text -> Int -> Handler Textarea
 doYobaMarkup Nothing  _     _      = return $ Textarea ""
@@ -60,44 +113,47 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     -- Just helpers
     ----------------------------------------------------------------------------------------------------------
-    openSpoiler = "<span class='spoiler' onmouseout=\"this.style.color='black'\" onmouseover=\"this.style.color='white';\">"
-    refHtml acc brd thr p ref = T.concat [acc , "<a onmouseover='timeout(this, function(){showPopupPost(event, this,\""
-                                         ,brd , "\",", p   , ")},700)' onclick='highlightPost(\"post-", p, "-"
-                                         ,thr , "-"  , brd , "\")' href='/thread/", brd, "/"
-                                         ,thr , "#"  , p   , "'>", ref            , "</a>"
-                                         ]
+    openSpoiler = "<span class='spoiler'>"
+    openStrike  = "<span style='text-decoration:line-through'>"
+    refHtml :: Text -> Text -> Text -> Text -> Text -> Text
+    refHtml acc brd "0" p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
+                                           onclick='highlightPost("post-#{p}-0-#{brd}") href='/thread/#{brd}/#{p}'>#{ref}</a>
+                                |]
+    refHtml acc brd thr p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
+                                           onclick='highlightPost("post-#{p}-#{p}-#{brd}") href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a>
+                                |]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
-    li         g = T.concat ["<li>", g, "</li>"]
+    li         g = "<li>" <> g <> "</li>"
     ----------------------------------------------------------------------------------------------------------
-    boldHandler      acc x = (\g -> T.concat [acc, "<strong>" , g, "</strong>"]) <$> foldM f "" x
-    italicHandler    acc x = (\g -> T.concat [acc, "<em>"     , g, "</em>"    ]) <$> foldM f "" x
-    spoilerHandler   acc x = (\g -> T.concat [acc, openSpoiler, g, "</span>"  ]) <$> foldM f "" x
-    strikeHandler    acc x = (\g -> T.concat [acc, "<s>"      , g, "</s>"     ]) <$> foldM f "" x
-    underlineHandler acc x = (\g -> T.concat [acc, "<u>"      , g, "</u>"     ]) <$> foldM f "" x
-    quoteHandler     acc x = (\g -> T.concat [acc, "<span class=quote>>", g ,"</span><br>"]) <$> foldM f "" x
-    listHandler      acc x = (\g -> T.concat [acc, "<ul>"     , g, "</ul>"    ]) <$> T.concat <$> (mapM ((li <$>) . foldM f "") x)
+    boldHandler      acc x = (\g -> acc <> "<strong>" <> g <> "</strong>") <$> foldM f "" x
+    italicHandler    acc x = (\g -> acc <> "<em>"     <> g <> "</em>"    ) <$> foldM f "" x
+    spoilerHandler   acc x = (\g -> acc <> openSpoiler<> g <> "</span>"  ) <$> foldM f "" x
+    strikeHandler    acc x = (\g -> acc <> openStrike <> g <> "</span>"  ) <$> foldM f "" x
+    underlineHandler acc x = (\g -> acc <> "<u>"      <> g <> "</u>"     ) <$> foldM f "" x
+    quoteHandler     acc x = (\g -> acc <> "<span class=quote>>" <> g <>"</span><br>") <$> foldM f "" x
+    listHandler      acc x = (\g -> acc <> "<ul>"     <> g <> "</ul>"    ) <$> T.concat <$> (mapM ((li <$>) . foldM f "") x)
     ----------------------------------------------------------------------------------------------------------
     colorHandler acc color' msg = do
       muser  <- maybeAuth
       mgroup <- getMaybeGroup muser
       if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` getPermissions mgroup)
-        then (\g -> T.concat [acc, "[color=            ", color', "]" , g ,"[/color]"]) <$> foldM f "" msg
-        else (\g -> T.concat [acc, "<span style='color:", color', "'>", g ,"</span>" ]) <$> foldM f "" msg
+        then (\g -> [st|#{acc}[color=#{color'}]#{g}[/color]|]) <$> foldM f "" msg
+        else (\g -> [st|#{acc}<span style='color:#{color'}'>#{g}</span>|]) <$> foldM f "" msg
     ----------------------------------------------------------------------------------------------------------
     userproofHandler acc = do
       muser  <- maybeAuth
       mgroup <- getMaybeGroup muser
       if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` getPermissions mgroup)
-        then return $ T.append acc "#user"
-        else return $ T.concat [acc, "<span style='border-bottom: 1px red dashed'>#", getUserName muser , "</span>"]
+        then return $ acc <> "#user"
+        else return $ acc <> "<span style='border-bottom: 1px red dashed'>#" <> getUserName muser <> "</span>"
     ----------------------------------------------------------------------------------------------------------
     groupproofHandler acc = do
       muser  <- maybeAuth
       mgroup <- getMaybeGroup muser
       if isNothing muser || isNothing mgroup || (AdditionalMarkupP `notElem` getPermissions mgroup)
-        then return $ T.append acc "#group"
-        else return $ T.concat [acc, "<span style='border-bottom: 1px red dotted'>#", getGroupName mgroup, "</span>"]
+        then return $ acc <> "#group"
+        else return $ acc <> "<span style='border-bottom: 1px red dotted'>#" <> getGroupName mgroup <> "</span>"
     ----------------------------------------------------------------------------------------------------------
     -- Function that process each Expr
     ----------------------------------------------------------------------------------------------------------
@@ -114,8 +170,9 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     f acc GroupProof         = groupproofHandler acc
     f acc UserProof          = userproofHandler  acc
     f acc (List           x) = listHandler       acc x
-    f acc (Link           x) = return $ T.concat [acc, "<a href='", x, "'>", x, "</a>"]
-    f acc Newline            = return $ T.append acc "<br>"
+    f acc (Link           x) = return $ [st|#{acc}<a href='#{x}'>#{x}</a>|]
+    f acc (NamedLink    n x) = return $ [st|#{acc}<a href='#{x}'>#{n}</a>|]
+    f acc Newline            = return $ acc <> "<br>"
     ----------------------------------------------------------------------------------------------------------
     f acc (InnerRef postId) = do
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board] []
@@ -123,8 +180,8 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       case maybePost of
         Just (Entity _ pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board parent p (T.append ">>" p)
-        Nothing              -> return $ T.concat [acc, ">>", p]
+          return $ refHtml acc board parent p (">>" <> p)
+        Nothing              -> return $ acc <> ">>" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ExternalRef board' postId) = do
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
@@ -132,8 +189,8 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       case maybePost of
         Just (Entity _ pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board' parent p (T.concat [">>/", board', "/", p])
-        Nothing              -> return $ T.concat [acc, ">>", p]
+          return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p)
+        Nothing              -> return $ acc <> ">>/" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel    postId) = do
       posterId  <- getPosterId
@@ -144,9 +201,22 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board parent p (T.append "##" p)
-          return $ T.concat [acc, "<span class='", spanClass, "'>", link', "</span>"]
-        Nothing              -> return $ T.concat [acc, "##", p]
+              link'     = refHtml "" board parent p ("##" <> p)
+          return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
+        Nothing              -> return $ acc <> "##" <> p
+    ----------------------------------------------------------------------------------------------------------
+    f acc (ExternalProofLabel board' postId) = do
+      posterId  <- getPosterId
+      maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
+      let p = pack $ show postId
+      case maybePost of
+        Just (Entity _ pVal) -> do
+          let posterId' = postPosterId pVal
+              parent    = pack $ show (postParent pVal)
+              spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
+              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p)
+          return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
+        Nothing              -> return $ acc <> "##" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc ProofLabelOP = do
       posterId  <- getPosterId
@@ -158,8 +228,8 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
               link'     = refHtml "" board parent t "##OP"
-          return $ T.concat [acc, "<span class='", spanClass, "'>", link', "</span>"]
-        Nothing              -> return $ T.concat [acc, "##OP"]
+          return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
+        Nothing              -> return $ acc <> "##OP"
     ----------------------------------------------------------------------------------------------------------
     -- f acc z               = return $ T.concat [acc, "==", pack (show z), "=="]
 -------------------------------------------------------------------------------------------------------------------
@@ -174,8 +244,8 @@ plain = Plain . pack <$> many1 (myCheck >> myCheck' >> anyChar)
         myCheck'  = foldr (\f acc -> acc >> notFollowedBy (try f))
                           (notFollowedBy $ try quote)
                           wholeTags
-        wholeTags = [ spoilerwakaba, newline, link, bold, italic, underline, strike, spoiler,
-                      color, code, extref, innerref, proof, proofop, userproof, groupproof]
+        wholeTags = [ spoilerwakaba, newline, namedLink, link, bold, italic, underline, strike, spoiler,
+                      color, code, extref, innerref, proof, extproof, proofop, userproof, groupproof]
 --------------------------------------------------------------
 -- Kusaba-like tags
 --------------------------------------------------------------
@@ -254,6 +324,17 @@ urlScheme = try (string "https" )
         <|> try (string "ftp"   )
         <|> try (string "gopher")
 
+namedLink :: Parser Expr
+namedLink = do
+  void $ char '['
+  name <- many1 $ noneOf "]"
+  void $ string "]("
+  scheme <- urlScheme
+  void $ string "://"
+  rest   <- many1 $ noneOf " \n\t\r[)"
+  void $ char ')'
+  return $ NamedLink (pack name) (T.concat [pack scheme, "://", escapeHTML (pack rest)])
+
 link :: Parser Expr
 link = do
   scheme <- urlScheme
@@ -273,8 +354,17 @@ extref = do
   void $ optional $ char '/'
   board <- many1 $ noneOf "/\n\t\r "
   void $ char '/'
-  post <- many1 digit  
+  post <- many1 digit
   return $ ExternalRef (escapeHTML $ pack board) $ read post
+
+extproof :: Parser Expr
+extproof = do
+  void $ string "##"
+  void $ optional $ char '/'
+  board <- many1 $ noneOf "/\n\t\r "  
+  void $ char '/'
+  post <- many1 digit
+  return $ ExternalProofLabel (escapeHTML $ pack board) $ read post
 
 proof :: Parser Expr
 proof = string "##" >> ((\postId -> ProofLabel $ read postId) <$> many1 digit)
@@ -305,6 +395,7 @@ onelineExpr = try bold
           <|> try spoiler
           <|> try color
           <|> tryWakabaTags
+          <|> try namedLink
           <|> try link
           <|> try extref
           <|> try innerref
@@ -312,12 +403,14 @@ onelineExpr = try bold
           <|> try groupproof
           <|> try proofop
           <|> try proof
+          <|> try extproof
           <|> try plain
 
 expr :: Parsec Text () Expr
 expr = try quote
    <|> tryTags
    <|> tryWakabaTags
+   <|> try namedLink
    <|> try link
    <|> try extref
    <|> try innerref
@@ -325,6 +418,7 @@ expr = try quote
    <|> try groupproof
    <|> try proofop
    <|> try proof
+   <|> try extproof
    <|> try list
    <|> try newline
    <|> try plain

@@ -279,3 +279,4 @@ Apply: Apply
 Applied: Settings applied
 TimeZone: Time zone
 Style: Style
+Language: Language

@@ -8,13 +8,14 @@ import           Handler.Posting (trickyRedirect)
 settingsForm :: Int  -> -- ^ Default time offset
                Text -> -- ^ Default stylesheet 
                Html -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text), Widget)
+               MForm Handler (FormResult (Int, Text, Maybe Text), Widget)
 settingsForm defaultZone defaultStyle extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
-  let result = (,) <$> timezoneRes <*> styleRes
+  (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
+  let result = (,,) <$> timezoneRes <*> styleRes <*> langRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -27,9 +28,10 @@ postSettingsR = do
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet) -> do
+    FormSuccess (timezone, stylesheet, lang) -> do
       setSession "timezone"   $ pack $ show timezone
       setSession "stylesheet" stylesheet
+      when (isJust lang) $ setLanguage $ fromJust lang
       trickyRedirect "ok" MsgApplied SettingsR
 
 getSettingsR :: Handler Html
@@ -45,6 +47,9 @@ getSettingsR = do
     $(widgetFile "settings")
 
 -------------------------------------------------------------------------------------------------------------------
+langs :: [(Text, Text)]
+langs = [("English", "en"), ("Русский","ru")]
+
 stylesheets :: [(Text, Text)]
 stylesheets = map (\x -> (x,x)) ["Ash","Futaba"]
 

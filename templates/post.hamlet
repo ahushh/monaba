@@ -1,0 +1,72 @@
+<div class=#{pClass} id=#{pId}>
+    <div .post-header>
+        <span .mark-to-delete onclick="markToDelete(this)">
+            <input type=checkbox name=postdelete value=#{sPostKey}>
+            <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
+        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+        $maybe (code, name) <- lookup (entityKey ePost) geoIps
+            <img src=#{geoIconPath code} title=#{name}>
+        <span .reply-title>#{postTitle $ postVal}
+        <span .poster-name>#{postName $ postVal}
+        <span .time>#{myFormatTime tOffset $ postDate postVal}
+        $if isThread
+            <div .thread-status>
+                $if postSticked postVal
+                    <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
+                $if postLocked postVal
+                    <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
+                $if postAutosage postVal
+                    <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
+        <span .reflink>
+            $if isThread
+                <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sPostId)}##{sPostId}>#
+            $else
+                <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sThreadId)}##{sPostId}>#
+            <a onclick="insert('>>#{sPostId}#{pack "\\n"}')" name=#{sThreadId}>#{sPostId}
+        $if canPost
+            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+        &nbsp;&nbsp;
+        <span .cpanel>
+           $if isThread
+                $if not inThread
+                    [ <a href=@{ThreadR board $ postLocalId postVal}>_{MsgOpen}</a> ]
+                    &nbsp;&nbsp;
+           $if elem ManageThreadP permissions
+               [ #{postIp postVal} ]
+               <a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp postVal)}>
+                   B
+               <a title='_{MsgStickThread}' href=@{StickR board (postLocalId postVal)}>
+                   S                
+               <a title='_{MsgLockThread}' href=@{LockR board (postLocalId postVal)}>
+                   L
+               <a title='_{MsgAutosage}' href=@{AutoSageR board (postLocalId postVal)}>
+                   A
+           $if showParent
+             $if isThread
+                 <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
+             $else
+                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{sThreadId});},700)" onclick="highlightPost('#{pId}')" href=@{ThreadR board (read sThreadId)}>>>/#{board}/#{sThreadId}
+
+    $forall Entity _ file <- eFiles
+       $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+          $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)
+            <div class=#{c}>
+                <div .file-name>
+                    <a title=#{attachedfileName file} target=_blank href=#{uploadUrlPath (attachedfileName file) (attachedfileHashsum file) }>#{truncateFileName $ attachedfileName file}
+                $if attachedfileType file == FileImage
+                    <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
+                $else
+                    <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
+                $if attachedfileThumbWidth file == -1
+                    <img src="#{tp}" .thumb>
+                $elseif attachedfileType file == FileVideo
+                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video>
+                $elseif attachedfileType file == FileImage
+                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb>
+                $else
+                    <img src="#{tp}" .thumb>
+    $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
+        <div .message>#{m}
+    $maybe lm <- postLastModified postVal
+        <span .last-modified>
+            <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime tOffset lm}

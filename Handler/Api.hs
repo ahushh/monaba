@@ -33,7 +33,7 @@ getPostsHelper selectPosts board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{replyPostWidget muser post files True True False permissions geoIps timeZone}
+                                   ^{postWidget muser post files True True False permissions geoIps timeZone}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -78,8 +78,8 @@ getApiPostR board postId = do
   timeZone <- getTimeZone
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then opPostWidget muser post files False True permissions geoIps timeZone
-                       else replyPostWidget muser post files False True False permissions geoIps timeZone
+                       then postWidget muser post files False True False permissions geoIps timeZone
+                       else postWidget muser post files False True False permissions geoIps timeZone
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

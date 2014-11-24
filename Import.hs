@@ -208,30 +208,31 @@ truncateFileName s = if len > maxLen then result else s
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-opPostWidget :: Maybe (Entity User)      ->
-               Entity Post              -> 
-               [Entity Attachedfile]    -> 
-               Bool                     -> -- ^ Show or not "[ Open ]" link
-               Bool                     -> -- ^ Show or not the extra buttons such as "[>]"
-               [Permission]             -> -- ^ List of the all permissions
-               [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
-               Int                      -> -- ^ Time offset in seconds
-               WidgetT App IO () 
-opPostWidget _ eOpPostW eFiles isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+postWidget :: Maybe (Entity User)      ->
+             Entity Post              -> 
+             [Entity Attachedfile]    -> 
+             Bool                     -> -- ^ Are we in a thread
+             Bool                     -> -- ^ Have access to post
+             Bool                     -> -- ^ Show parent board/thread in the upper right corner
+             [Permission]             -> -- ^ List of the all permissions
+             [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
+             Int                      -> -- ^ Time offset in seconds
+             Widget
+postWidget muser ePost eFiles inThread canPost showParent permissions geoIps tOffset = 
+  let postVal   = entityVal ePost
+      sPostId   = show $ postLocalId $ entityVal ePost
+      sThreadId = show $ postParent  $ entityVal ePost
+      sPostKey  = show $ fromSqlKey  $ entityKey ePost
+      board     = postBoard $ entityVal ePost
+      isThread  = sThreadId == "0"
+      pClass    = (if isThread then "op-post" else "reply-post") :: Text
+      pId       = if isThread then "post-"++sPostId++"-0-"++ unpack board else "post-"++sPostId++"-"++sThreadId++"-"++ unpack board
+  in $(widgetFile "post")
 
-replyPostWidget :: Maybe (Entity User)      ->
-                  Entity Post              ->
-                  [Entity Attachedfile]    ->
-                  Bool                     -> -- ^ Show full (True) or abbreviated (False) messagees
-                  Bool                     -> -- ^ Show or not the extra buttons such as [>]
-                  Bool                     -> -- ^ Show or not parent thread in the upper right corner
-                  [Permission]             -> -- ^ List of the all permissions
-                  [(Key Post,(Text,Text))] -> -- ^ (Post key, (country code, country name))
-                  Int                      -> -- ^ Time offset in seconds
-                  WidgetT App IO ()
-replyPostWidget _ eReplyW eFiles isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+-- opPostWidget _ eOpPostW eFiles isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
+-- replyPostWidget _ eReplyW eFiles isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
 
-adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> WidgetT App IO ()
+adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
 adminNavbarWidget _ permissionsW = $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html

@@ -20,10 +20,10 @@ $if hasAccessToReply
         ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-        ^{opPostWidget muser eOpPost opPostFiles True hasAccessToReply permissions geoIps timeZone}
+        ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{replyPostWidget muser eReply files True hasAccessToReply False permissions geoIps timeZone}
+            ^{postWidget muser eReply files True hasAccessToReply False permissions geoIps timeZone}
     <br clear=both>
     <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>

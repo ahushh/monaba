@@ -2,10 +2,7 @@ $if offset == 0
     <br>
     <h2 style=text-align:center> _{MsgFeed}
 $forall (e, files) <- postsAndFiles
-    $if (postParent $ entityVal e) > 0
-        ^{replyPostWidget muser e files False False True permissions geoIps timeZone}
-    $else
-        ^{opPostWidget muser e files False False permissions geoIps timeZone}
+    ^{postWidget muser e files False True True permissions geoIps timeZone}
 $if offset == 0
     <div #post-bound style=text-align:center data-offset=#{showPosts} onclick="loadPosts(#{showPosts})">
         [ 

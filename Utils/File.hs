@@ -70,14 +70,15 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
 saveFile :: FileInfo -> String -> IO FilePath
 saveFile file hashsum = do
   let fn = sanitizeFileName $ unpack $ fileName file
-  dirExists <- doesDirectoryExist (uploadDirectory </> hashsum)
-  if dirExists
+  dirExists     <- doesDirectoryExist (uploadDirectory </> hashsum)
+  dirIsNotEmpty <- liftIO $ (/=0) . length . filter (`notElem`[".",".."]) <$> (if dirExists then getDirectoryContents (uploadDirectory </> hashsum) else return [])
+  if dirExists && dirIsNotEmpty
     then do
-      fn':_ <- (\x -> if length x == 0 then ["ooops.404"] else x) . filter (`notElem`[".",".."]) <$> getDirectoryContents (uploadDirectory </> hashsum)
+      fn':_ <- filter (`notElem`[".",".."]) <$> getDirectoryContents (uploadDirectory </> hashsum)
       return $ uploadFilePath fn' hashsum
     else do
       let path = uploadFilePath fn hashsum
-      createDirectory (uploadDirectory </> hashsum)
+      unless dirExists $ createDirectory (uploadDirectory </> hashsum)
       unlessM (doesFileExist path) $ fileMove file path 
       return path
 -------------------------------------------------------------------------------------------------------------------

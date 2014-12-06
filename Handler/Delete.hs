@@ -89,6 +89,7 @@ getDeleteR = do
 
 deleteFiles :: [Key Post] -> Handler ()
 deleteFiles idsToRemove = do  
+  let removeDirIfEmpty d = whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents d)) $ liftIO (removeDirectory d)
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
@@ -97,18 +98,18 @@ deleteFiles idsToRemove = do
         hs = attachedfileHashsum f
         ts = attachedfileThumbSize f
         td = thumbDirectory </> hs
+        ud = uploadDirectory </> hs
     case sameFilesCount `compare` 0 of
       GT -> do -- this file belongs to several posts so don't delete it from disk
         filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
           when (ft `elem` thumbFileTypes) $ do
             void $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
-            whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
+        removeDirIfEmpty td >> removeDirIfEmpty ud
       _  -> do
         liftIO $ removeFile $ uploadFilePath fn hs 
-        when (ft `elem` thumbFileTypes) $ do
-          liftIO $ removeFile $ thumbFilePath ts ft fn hs
-          whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents td)) $ liftIO (removeDirectory td)
+        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
+        removeDirIfEmpty td >> removeDirIfEmpty ud
   runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board

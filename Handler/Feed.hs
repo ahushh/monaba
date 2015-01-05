@@ -6,10 +6,10 @@ import           Yesod.Auth
 import qualified Data.Text  as T
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
-getFeedR = getApiFeedOffsetR 0
+getFeedR = getAjaxFeedOffsetR 0
 
-getApiFeedOffsetR :: Int -> Handler Html
-getApiFeedOffsetR offset = do
+getAjaxFeedOffsetR :: Int -> Handler Html
+getAjaxFeedOffsetR offset = do
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
   let permissions = getPermissions mgroup

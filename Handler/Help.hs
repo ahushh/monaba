@@ -23,12 +23,3 @@ getHelpMarkupR = do
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgMarkup]
     $(widgetFile "help/markup")
-
-getHelpApiR :: Handler Html
-getHelpApiR = do
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgApi]
-    $(widgetFile "help/api")
-  

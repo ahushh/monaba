@@ -237,18 +237,6 @@ ProofLabels: Proof labels
 Latex: LaTeX
 SourceCode: Source code
 SupportedLanguages: Supported languages for tag [code=<language>]
-### API
-Api: API
-ApiPostsAfter: All posts after {post id} in the thread
-ApiLastPosts: Last {count} posts in the thread
-ApiAllPosts: All posts in the thread
-ApiDeletedPosts: All posts deleted by OP in the thread
-ApiPost: One post
-ApiParameters: Parameters
-ApiBoardName: Board name (e.g., b, d, rm)
-ApiThreadId: Displayed thread ID
-ApiPostId: Displayed post ID
-ApiCount: Number of posts
 
 ######################################################################################
 #### Ajax, popups, refmap, ...

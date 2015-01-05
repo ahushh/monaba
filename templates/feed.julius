@@ -1,7 +1,7 @@
 function loadPosts(baseOffset) {
     var offset = $("#post-bound").data('offset');
     $(".ajax-loading").toggle();
-    $.get("/api/feed/"+offset, function(data) {
+    $.get("/ajax/feed/"+offset, function(data) {
         $(".ajax-loading").toggle();
         $("#post-bound").before(data);
         baseInit();

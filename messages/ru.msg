@@ -236,18 +236,6 @@ ProofLabels: Пруфметки
 Latex: LaTeX
 SourceCode: Программный код
 SupportedLanguages: Поддерживаемые языки для тега [code=<язык>]
-### API
-Api: API
-ApiPostsAfter: Все посты после {post id} в данном треде
-ApiLastPosts: Вернуть последние {count} постов в треде
-ApiAllPosts: Все посты в треде
-ApiDeletedPosts: Удаленные ОПом посты в треде
-ApiPost: Один пост
-ApiParameters: Параметры
-ApiBoardName: Название борды (e.g., b, d, rm)
-ApiThreadId: Видимый ID треда
-ApiPostId: Видимый ID поста
-ApiCount: Количество постов
 
 ######################################################################################
 #### Ajax, popups, refmap, ...

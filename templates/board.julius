@@ -10,7 +10,7 @@ function expandThread(board, thread) {
         $("#thread-"+thread+" .truncate-thread").after(replies);
     } else {
         $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-        $.get("/api/thread/"+board+"/"+thread+"/all", function(data) {
+        $.get("/ajax/thread/"+board+"/"+thread+"/all", function(data) {
             if (data == "No such thread ") {
                 popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
                 delete Monaba['expThreads'][thread];

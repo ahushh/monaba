@@ -1,5 +1,5 @@
 {-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
-module Handler.Api where
+module Handler.Ajax where
 
 import           Import
 import           Yesod.Auth
@@ -37,32 +37,32 @@ getPostsHelper selectPosts board thread errorString = do
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
-getApiDeletedPostsR :: Text -> Int -> Handler TypedContent
-getApiDeletedPostsR board thread = getPostsHelper selectPosts board thread errorString
+getAjaxDeletedPostsR :: Text -> Int -> Handler TypedContent
+getAjaxDeletedPostsR board thread = getPostsHelper selectPosts board thread errorString
   where selectPosts = selectList [PostDeletedByOp ==. True, PostBoard ==. board,
                                   PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
         errorString = "No such posts"
 
-getApiAllPostsR :: Text -> Int -> Handler TypedContent
-getApiAllPostsR board thread = getPostsHelper selectPosts board thread errorString
+getAjaxAllPostsR :: Text -> Int -> Handler TypedContent
+getAjaxAllPostsR board thread = getPostsHelper selectPosts board thread errorString
   where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
                                   PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
         errorString = "No posts in this thread"
 
-getApiNewPostsR :: Text -> Int -> Int -> Handler TypedContent
-getApiNewPostsR board thread postId = getPostsHelper selectPosts board thread errorString
+getAjaxNewPostsR :: Text -> Int -> Int -> Handler TypedContent
+getAjaxNewPostsR board thread postId = getPostsHelper selectPosts board thread errorString
   where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
                                   PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False] [Desc PostDate]
         errorString = "No new posts"
 
-getApiLastPostsR :: Text -> Int -> Int -> Handler TypedContent
-getApiLastPostsR board thread postCount = getPostsHelper selectPosts board thread errorString
+getAjaxLastPostsR :: Text -> Int -> Int -> Handler TypedContent
+getAjaxLastPostsR board thread postCount = getPostsHelper selectPosts board thread errorString
   where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
                                   PostParent ==. thread, PostDeleted ==. False] [Desc PostDate, LimitTo postCount]
         errorString = "No such posts"
 ---------------------------------------------------------------------------------------------------------
-getApiPostR :: Text -> Int -> Handler TypedContent
-getApiPostR board postId = do
+getAjaxPostR :: Text -> Int -> Handler TypedContent
+getAjaxPostR board postId = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board

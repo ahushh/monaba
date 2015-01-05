@@ -33,7 +33,7 @@ library
                      Handler.Admin.Config
                      Handler.Admin.Group
                      Handler.Admin.User
-                     Handler.Api
+                     Handler.Ajax
                      Handler.Settings
                      Utils.File
                      Utils.YobaMarkup

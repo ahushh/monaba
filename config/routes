@@ -17,15 +17,14 @@
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET
-/help/api            HelpApiR      GET
 
 
-/api/thread/#Text/#Int/new/#Int  ApiNewPostsR     GET
-/api/thread/#Text/#Int/last/#Int ApiLastPostsR    GET
-/api/thread/#Text/#Int/all       ApiAllPostsR     GET
-/api/thread/#Text/#Int/deleted   ApiDeletedPostsR GET
-/api/post/#Text/#Int             ApiPostR         GET
-/api/feed/#Int                   ApiFeedOffsetR   GET
+/ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET
+/ajax/thread/#Text/#Int/last/#Int AjaxLastPostsR    GET
+/ajax/thread/#Text/#Int/all       AjaxAllPostsR     GET
+/ajax/thread/#Text/#Int/deleted   AjaxDeletedPostsR GET
+/ajax/post/#Text/#Int             AjaxPostR         GET
+/ajax/feed/#Int                   AjaxFeedOffsetR   GET
 /jsonfrommsg/#Text               JsonFromMsgR     GET
 
 

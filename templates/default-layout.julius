@@ -336,7 +336,7 @@ function showPopupPost(event, elem, board, postId) {
         Monaba.postCache[board] = {};
     }
     if (!Monaba.postCache[board][postId]) {
-        $.get("/api/post/"+board+"/"+postId, function(data) {
+        $.get("/ajax/post/"+board+"/"+postId, function(data) {
             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+$(data).attr('id'));
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
             var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
@@ -455,7 +455,7 @@ function refreshThread(board, threadId) {
     var lastPostId = extractPost( lastPost.attr("id") );
     $(".delete-form .icon-thread-refresh").toggle();
     $(".delete-form .ajax-loading").toggle();
-    $.get("/api/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
+    $.get("/ajax/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
         $(".delete-form .icon-thread-refresh").toggle();
         $(".delete-form .ajax-loading").toggle();
         if (/reply/.test(data)) {
@@ -490,7 +490,7 @@ function showEditForm(postId, realId) {
                 function(response) {
                     closePopupMessage();
                     if (response.ok) {
-                        $.get("/api/post/"+board+"/"+pId, function(post) {
+                        $.get("/ajax/post/"+board+"/"+pId, function(post) {
                             hideEditForm();
                             $('#'+postId).replaceWith(post);
 
@@ -506,7 +506,7 @@ function showEditForm(postId, realId) {
     });
 
     popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-    $.getJSON('/api/post/'+board+'/'+pId, function(json) {
+    $.getJSON('/ajax/post/'+board+'/'+pId, function(json) {
         var raw = json[0].rawMessage;
         if (raw) {
             $('#edit-form textarea').val(raw).trigger('autosize.resize');

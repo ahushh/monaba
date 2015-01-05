@@ -2,4 +2,3 @@
 <div style="margin-left:30px">
 <ul>
     <li><a href=@{HelpMarkupR}>_{MsgMarkup}</a>
-    <li><a href=@{HelpApiR}>_{MsgApi}</a>

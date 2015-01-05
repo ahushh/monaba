@@ -94,7 +94,6 @@ library
                  , nano-md5                      
                  , process                       
                  , imagemagick
-                 , gd
                  , system-filepath
                  , blaze-markup                  
                  , old-locale                    

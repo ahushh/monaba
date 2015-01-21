@@ -53,10 +53,7 @@
             <div class=#{c}>
                 <div .file-name>
                     <a title=#{attachedfileName file} target=_blank href=#{uploadUrlPath (attachedfileName file) (attachedfileHashsum file) }>#{truncateFileName $ attachedfileName file}
-                $if attachedfileType file == FileImage
-                    <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
-                $else
-                    <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}
+                <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
                 $if attachedfileThumbWidth file == -1
                     <img src="#{tp}" .thumb>
                 $elseif attachedfileType file == FileVideo

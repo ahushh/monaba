@@ -60,7 +60,7 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
           -- DANGEROUS! FIX THIS
           let width  = drop 1 $ dropWhile ((/=)'=') (lines info !! 9)
               height = drop 1 $ dropWhile ((/=)'=') (lines info !! 10)
-          void $ runDB $ insert $ newFile { attachedfileInfo        = (show width)++"x"++(show height)
+          void $ runDB $ insert $ newFile { attachedfileInfo        = width++"x"++height
                                           , attachedfileThumbWidth  = thumbW
                                           , attachedfileThumbHeight = thumbH
                                           }

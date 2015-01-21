@@ -7,6 +7,7 @@ var Monaba = {
 function baseInit() {
     doImageExpanding();
     addEmbeddedPlayer();
+    addEmbeddedWebmPlayer();
     doRefMap();
     cachePopupPosts();
 }
@@ -78,6 +79,17 @@ function initSymbolCounter() {
     countSymbols('post-form');
     $.each(['edit-form', 'post-form'], function(i,f) {
         $('#'+f+' textarea').on('change cut paste keyup', function() { countSymbols(f); });
+    });
+}
+//-----------------------------------------------------------------
+// webm
+//-----------------------------------------------------------------
+function addEmbeddedWebmPlayer() {
+    $(".video").each(function(i,thumb){
+        $(thumb).click(function(){
+            $(this).hide();
+            $(this).after("<video controls width="+$(this).attr('width')*2+"><source src='"+$(this).data('url')+"'></video>");
+        });
     });
 }
 //-----------------------------------------------------------------

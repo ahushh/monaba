@@ -112,6 +112,7 @@ Boards: Борды
 Bans: Баны
 
 ### Boards
+BoardIndexNumber: Порядковый номер
 BoardName: Имя борды
 BoardTitle: Название борды
 BoardTitleEG: e.g. бред, музыка

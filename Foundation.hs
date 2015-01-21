@@ -33,6 +33,8 @@ import Control.Applicative ((<$>))
 import Data.Maybe (fromJust, isNothing, isJust)
 import Text.Blaze.Html as Import (preEscapedToHtml)
 
+import Data.List (sortBy)
+
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -64,6 +66,16 @@ widgetHelperFilterBoards boards category group = filter p boards
         checkCategory b | T.null category = isNothing $ boardCategory b
                         | otherwise       = Just category == boardCategory b
         checkAccess   b = isNothing (boardViewAccess b) || (isJust group && elem (fromJust group) (fromJust $ boardViewAccess b))
+
+sortBoards :: [Entity Board] -> [Entity Board]
+sortBoards bs = sortBy c bs
+  where c a b = let a' = entityVal a
+                    b' = entityVal b
+                    n1 = boardIndex a'
+                    n2 = boardIndex b'
+                in if n1 == n2
+                   then (boardName $ entityVal a) `compare` (boardName $ entityVal b)
+                   else n1 `compare` n2
 ---------------------------------------------------------------------------------------------------------
 -- i18n helpers
 ---------------------------------------------------------------------------------------------------------

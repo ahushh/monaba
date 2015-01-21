@@ -113,6 +113,7 @@ Boards: Boards
 Bans: Bans
 
 ### Boards
+BoardIndexNumber: Index number
 BoardName: Board name
 BoardTitle: Board title
 BoardTitleEG: e.g. random, music

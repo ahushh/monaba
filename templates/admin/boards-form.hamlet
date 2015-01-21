@@ -16,6 +16,9 @@
                 <td> ^{fvInput nameView}
                 <td>&nbsp;
         <tr>
+            <td>_{MsgBoardIndexNumber }
+            <td>^{fvInput indexView}
+        <tr>
             <td>_{MsgBoardTitle }
             <td>^{fvInput titleView}
             <td>_{MsgBoardTitleEG}

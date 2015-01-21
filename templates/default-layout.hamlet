@@ -9,10 +9,10 @@ $maybe msg <- mmsg
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
 <div .board-list>
     [ <a title="_{MsgFeed}" href=@{FeedR}>/feed/</a> ] 
-    $forall Entity _ b <- widgetHelperFilterBoards boards "" group
+    $forall Entity _ b <- sortBoards (widgetHelperFilterBoards boards "" group)
       [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
-    $forall c <- categories
-      $with bs <- widgetHelperFilterBoards boards c group
+    $forall c <- filter ((/=)"") categories
+      $with bs <- sortBoards (widgetHelperFilterBoards boards c group)
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs

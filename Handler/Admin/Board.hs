@@ -58,6 +58,7 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                                             , Maybe Text   -- ^ Enable post editing
                                             , Maybe Text   -- ^ Show or not editing history
                                             , Maybe Text   -- ^ Summary
+                                            , Maybe Int    -- ^ Index
                                             )
                                 , Widget)
 updateBoardForm board action bCategories groups extra = do
@@ -104,7 +105,8 @@ updateBoardForm board action bCategories groups extra = do
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+  (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex)
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
@@ -113,7 +115,7 @@ updateBoardForm board action bCategories groups extra = do
                categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
-               showEditHistoryRes   <*> summaryRes
+               showEditHistoryRes   <*> summaryRes         <*> indexRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -133,7 +135,7 @@ postNewBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary
+                , bSummary         , bIndex
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -167,6 +169,7 @@ postNewBoardsR = do
                            , boardOpEditing         = onoff bOpEditing
                            , boardPostEditing       = onoff bPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory
+                           , boardIndex             = fromMaybe 0 bIndex
                            }
       void $ runDB $ insert newBoard
       msgRedirect MsgBoardAdded
@@ -186,7 +189,7 @@ postAllBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary
+                , bSummary         , bIndex
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -219,6 +222,7 @@ postAllBoardsR = do
                              , boardOpEditing         = onoff bOpEditing       boardOpEditing
                              , boardPostEditing       = onoff bPostEditing     boardPostEditing
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                             , boardIndex             = fromMaybe 0 bIndex
                              }
           in runDB $ replace oldBoardId newBoard)
       msgRedirect MsgBoardsUpdated
@@ -239,7 +243,7 @@ postUpdateBoardsR board = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary
+                , bSummary         , bIndex
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -272,6 +276,7 @@ postUpdateBoardsR board = do
                            , boardOpEditing         = onoff bOpEditing       boardOpEditing
                            , boardPostEditing       = onoff bPostEditing     boardPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                           , boardIndex             = fromMaybe 0 bIndex
                            }
       runDB $ replace oldBoardId newBoard
       msgRedirect MsgBoardsUpdated

@@ -14,6 +14,7 @@ User
     salt             Text
     deriving         Typeable
 Board
+    index             Int default=0
     name              Text
     BoardUniqName     name
     title             Text

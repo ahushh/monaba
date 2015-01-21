@@ -6,7 +6,7 @@
           $with bs <- widgetHelperFilterBoards boards c group
             $if not (null bs)
               <div .board-category>#{c}
-              $forall Entity _ b <- bs
+              $forall Entity _ b <- sortBoards bs
                 <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardTitle b}
     <div #main-image>
         <img #main-image src=#{staticDir ++ "/home.jpg"}>

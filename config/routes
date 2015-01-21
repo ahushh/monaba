@@ -6,6 +6,9 @@
 
 /                    HomeR         GET
 /feed                FeedR         GET
+/board/#Text         BoardNoPageR  GET POST
+/board/#Text/#Int    BoardR        GET POST
+/thread/#Text/#Int   ThreadR       GET POST
 /delete              DeleteR       GET 
 /deleted/#Text/#Int  DeletedByOpR  GET
 /edit                PostEditR     POST
@@ -50,7 +53,3 @@
 /admin/account/password    NewPasswordR  POST
 
 /admin/config              ConfigR       GET POST
-
-!/#Text/#Int      ThreadR       GET POST
-!/#Text/page/#Int BoardR        GET POST
-!/#Text           BoardNoPageR  GET POST

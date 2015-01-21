@@ -88,7 +88,7 @@ function addEmbeddedWebmPlayer() {
     $(".video").each(function(i,thumb){
         $(thumb).click(function(){
             $(this).hide();
-            $(this).after("<video autoplay controls width="+$(this).attr('width')*2+"><source src='"+$(this).data('url')+"'></video>");
+            $(this).after("<video controls width="+$(this).attr('width')*2+"><source src='"+$(this).data('url')+"'></video>");
         });
     });
 }

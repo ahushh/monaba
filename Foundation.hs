@@ -165,7 +165,7 @@ instance Yesod App where
             addScript (StaticR js_jquery_min_js)
             addScript (StaticR js_jquery_form_js)
             addScript (StaticR js_jquery_autosize_js)            
-            addScriptRemote "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
+            addScriptRemote "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
             -- $(combineStylesheets 'StaticR
             --     [
             --     -- css_normalize_css

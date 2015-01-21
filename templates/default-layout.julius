@@ -114,11 +114,11 @@ function addEmbeddedPlayer(post) {
                 first1 = true;
             }
 
-            $.getJSON("http://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", function(data){
+            $.getJSON("https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", function(data){
                 var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
                 var height = 270; //data.entry.media$group.media$thumbnail[2].height;
                 var title  = data.entry.title.$t;
-                var thumb  = "http://i.ytimg.com/vi/"+videoId+"/0.jpg"
+                var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
                 var iframe =  document.createElement("iframe");
 
                 $(iframe).css('width', width);

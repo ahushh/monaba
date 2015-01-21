@@ -41,11 +41,14 @@
 }
 
 .news {
+    display: table;
+    overflow: hidden;
+    word-wrap: break-word;
     padding: 5px;
 }
 
 .title {
-    width: 50%;
-    margin: 5px auto -15px;
-    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    width: 100%;
 }

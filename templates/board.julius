@@ -47,3 +47,54 @@ function truncateThread(thread,scrollToThreadBottom) {
         location.href = "#"+n;
     }
 }
+
+function showQuickPostForm(postId) {
+    $("#post-form").removeClass().addClass("quick-post-form");
+    $("#p"+postId).after($("#post-form"));
+    $("#post-form").css("display","table");
+    $("#go-back-block").hide();
+    
+    var action = $("#post-form").attr('action');
+    var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
+    var board = $("#post-form").data('board');
+
+    $('#post-form').ajaxForm({
+        beforeSend: function() {
+            popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        },
+        success: function(data) {
+            closePopupMessage();
+            if (data.ok) {
+                $('#post-form input[type=text]').clearFields();
+                $('#post-form input[type=file]').clearFields();
+                $('#post-form textarea').clearFields();
+                popupMessage(data.ok,2000);
+                closePostForm();
+                refreshThread(board, thread)
+            } else {
+                popupMessage(data.error,2000);
+            }
+        }
+    }); 
+
+    $("#post-form").children().find('.reply-to').remove();
+    $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
+    $("#no-bump-block").css("display","");
+    var newUrl = "/"+board+"/"+thread;
+    $("#post-form").attr('action', newUrl);
+} 
+
+function showPlainPostForm() {
+    $("#post-form").removeClass().addClass("plain-post-form");
+    $("#post-form").children().find('.reply-to').remove();
+    $('.show-plain-form').after($("#post-form"));
+    $(".show-plain-form").hide();
+    $("#post-form").css("display","block");
+
+    $("#post-form").unbind();
+    $("#no-bump-block").hide();
+    $("#go-back-block").css("display","");
+
+    var board = $("#post-form").data('board');
+    $("#post-form").attr('action', '/'+board);
+}

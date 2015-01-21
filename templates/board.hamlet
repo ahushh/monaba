@@ -5,7 +5,7 @@ $if not $ T.null summary
 $if hasAccessToNewThread
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
+    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-board=#{board}>
         ^{formWidget boardVal False muser}
 $else
     <form style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>

@@ -9,11 +9,26 @@ $('#post-form').ajaxForm({
             $('#post-form textarea').clearFields();
             popupMessage(data.ok,2000);
             closePostForm();
-            var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
-            var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
+            var thread = /\/[\w_]+\/(\d+)/.exec(document.URL)[1];
+            var board = $("#post-form").data('board');
             refreshThread(board, thread)
         } else {
             popupMessage(data.error,2000);
         }
     }
 }); 
+
+function showQuickPostForm(postId) {
+    $("#post-form").removeClass().addClass("quick-post-form");
+    $("#p"+postId).after($("#post-form"));
+    $("#post-form").css("display","table");
+    $("#go-back-block").hide();
+} 
+
+function showPlainPostForm() {
+    $("#post-form").removeClass().addClass("plain-post-form");
+    $("#post-form").children().find('.reply-to').remove();
+    $('.show-plain-form').after($("#post-form"));
+    $(".show-plain-form").hide();
+    $("#post-form").css("display","block");
+}

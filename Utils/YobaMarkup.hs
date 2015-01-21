@@ -116,8 +116,8 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     openSpoiler = "<span class='spoiler'>"
     openStrike  = "<span style='text-decoration:line-through'>"
     refHtml :: Text -> Text -> Text -> Text -> Text -> Text -> Text
-    refHtml acc brd "0" p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=0 onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/thread/#{brd}/#{p}'>#{ref}</a> |]
-    refHtml acc brd thr p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=#{thr} onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a> |]
+    refHtml acc brd "0" p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=0 onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/#{brd}/#{p}'>#{ref}</a> |]
+    refHtml acc brd thr p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=#{thr} onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/#{brd}/#{thr}##{p}'>#{ref}</a> |]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
     li         g = "<li>" <> g <> "</li>"

@@ -6,10 +6,6 @@
     display: table    
 }
 
-.icon-edit-post {
-    display: none !important;
-}
-
 .mark-to-delete {
     /* visibility: hidden !important; */
     display: none !important;

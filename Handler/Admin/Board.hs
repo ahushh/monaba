@@ -6,7 +6,7 @@ import           Yesod.Auth
 import qualified Data.Text         as T
 import           Handler.Delete    (deletePosts)
 import           Control.Monad     (mplus)
-
+import           Utils.YobaMarkup  (doYobaMarkup)
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: ManageBoardAction -> Text -> Handler Html
 getManageBoardsR action board = do
@@ -304,6 +304,27 @@ getDeleteBoardR action board = do
     _         -> runDB $ deleteWhere [BoardName ==. board]
   setMessageI MsgBoardDeleted
   redirect (ManageBoardsR AllBoards "")
+
+getRebuildPostsMessagesOnBoardR :: ManageBoardAction -> Text -> Handler ()
+getRebuildPostsMessagesOnBoardR action board = case action of
+  UpdateBoard -> do
+    posts <- runDB $ selectList [PostBoard ==. board] []
+    void $ forM posts $ \(Entity pKey pVal) ->
+      when ((/="") $ postRawMessage pVal ) $ do
+        messageFormatted <- doYobaMarkup (Just $ Textarea $ postRawMessage pVal) (postBoard pVal) (postParent pVal)
+        runDB $ update pKey [PostMessage =. messageFormatted]
+    msgRedirect MsgBoardsUpdated
+  _           -> do
+    boards  <- runDB $ selectList ([]::[Filter Board ]) []
+    void $ forM boards $ \(Entity _ b) -> do
+      posts <- runDB $ selectList [PostBoard ==. boardName b] []
+      void $ forM posts $ \(Entity pKey pVal) -> 
+        when ((/="") $ postRawMessage pVal ) $ do
+          messageFormatted <- doYobaMarkup (Just $ Textarea $ postRawMessage pVal) (postBoard pVal) (postParent pVal)
+          runDB $ update pKey [PostMessage =. messageFormatted]
+    msgRedirect MsgBoardsUpdated
+  where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR AllBoards "")
+
 -------------------------------------------------------------------------------------------------------------
 chooseManageBoarUrl :: ManageBoardAction -> Maybe Text -> Route App
 chooseManageBoarUrl NewBoard    _     = NewBoardsR

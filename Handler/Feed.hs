@@ -4,6 +4,7 @@ module Handler.Feed where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
+import           Handler.Posting (editForm)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getAjaxFeedOffsetR 0
@@ -29,6 +30,7 @@ getAjaxFeedOffsetR offset = do
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender
   timeZone       <- getTimeZone  
+  (editFormWidget, _) <- generateFormPost editForm
   if offset == 0
      then defaultLayout $ do
             setUltDestCurrent

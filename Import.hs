@@ -219,14 +219,16 @@ postWidget :: Maybe (Entity User)      ->
              Int                      -> -- ^ Time offset in seconds
              Widget
 postWidget muser ePost eFiles inThread canPost showParent permissions geoIps tOffset = 
-  let postVal   = entityVal ePost
-      sPostId   = show $ postLocalId $ entityVal ePost
-      sThreadId = show $ postParent  $ entityVal ePost
-      sPostKey  = show $ fromSqlKey  $ entityKey ePost
-      board     = postBoard $ entityVal ePost
-      isThread  = sThreadId == "0"
-      pClass    = (if isThread then "op-post" else "reply-post") :: Text
-      pId       = if isThread then "post-"++sPostId++"-0-"++ unpack board else "post-"++sPostId++"-"++sThreadId++"-"++ unpack board
+  let postVal        = entityVal ePost
+      sPostLocalId   = show $ postLocalId $ entityVal ePost
+      postLocalId'   = postLocalId $ entityVal ePost
+      sPostId        = show $ fromSqlKey  $ entityKey ePost
+      postId         = fromSqlKey  $ entityKey ePost
+      sThreadLocalId = show $ postParent  $ entityVal ePost
+      threadLocalId  = postParent  $ entityVal ePost
+      board          = postBoard $ entityVal ePost
+      isThread       = sThreadLocalId == "0"
+      pClass         = (if isThread then "op-post" else "reply-post") :: Text
   in $(widgetFile "post")
 
 -- opPostWidget _ eOpPostW eFiles isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")

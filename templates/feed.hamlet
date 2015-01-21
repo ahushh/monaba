@@ -10,3 +10,5 @@ $if offset == 0
           _{MsgIwantmore}
           <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}> 
         ]
+<div #edit-form style=display:none>
+    ^{editFormWidget}

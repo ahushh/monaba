@@ -61,6 +61,33 @@ getAjaxLastPostsR board thread postCount = getPostsHelper selectPosts board thre
                                   PostParent ==. thread, PostDeleted ==. False] [Desc PostDate, LimitTo postCount]
         errorString = "No such posts"
 ---------------------------------------------------------------------------------------------------------
+getAjaxPostByIdR :: Int -> Handler TypedContent
+getAjaxPostByIdR postId = do
+  let postKey = toSqlKey $ fromIntegral postId
+  maybePost <- runDB $ get postKey
+  muser     <- maybeAuth
+  mgroup    <- getMaybeGroup muser
+  let permissions  = getPermissions   mgroup
+      post         = Entity postKey (fromJust maybePost)
+  when (isNothing maybePost) notFound
+
+  let board = postBoard $ entityVal post
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let geoIpEnabled = boardEnableGeoIp boardVal
+
+
+  files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
+  geoIps <- getCountries [(post, files) | geoIpEnabled]
+  timeZone <- getTimeZone
+  let postAndFiles = (entityVal post, map entityVal files)
+      widget       = if postParent (entityVal post) == 0
+                       then postWidget muser post files False True False permissions geoIps timeZone
+                       else postWidget muser post files False True False permissions geoIps timeZone
+  selectRep $ do
+    provideRep $ bareLayout widget
+    provideJson postAndFiles
+
 getAjaxPostR :: Text -> Int -> Handler TypedContent
 getAjaxPostR board postId = do
   muser    <- maybeAuth

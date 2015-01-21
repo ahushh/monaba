@@ -150,6 +150,7 @@ UpdateBoardsBtn: Обновить
 AddBoardBtn: Добавить
 DeleteAll: Удалить все
 CleanBoard: Очистить
+RebuildPostsMessagesOnBoard: Обновить HTML сообщений в постах
 ## info
 SeparateBy d@Text: Разделять с помощью '#{d}'
 SeparateBySpace: Разделять пробелом

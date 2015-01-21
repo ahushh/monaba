@@ -115,13 +115,9 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     openSpoiler = "<span class='spoiler'>"
     openStrike  = "<span style='text-decoration:line-through'>"
-    refHtml :: Text -> Text -> Text -> Text -> Text -> Text
-    refHtml acc brd "0" p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
-                                           onclick='highlightPost("post-#{p}-0-#{brd}") href='/thread/#{brd}/#{p}'>#{ref}</a>
-                                |]
-    refHtml acc brd thr p ref = [st|#{acc}<a onmouseover='timeout(this, function(){showPopupPost(event, this,"#{brd}", #{p})},700)'
-                                           onclick='highlightPost("post-#{p}-#{p}-#{brd}") href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a>
-                                |]
+    refHtml :: Text -> Text -> Text -> Text -> Text -> Text -> Text
+    refHtml acc brd "0" p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=0 onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/thread/#{brd}/#{p}'>#{ref}</a> |]
+    refHtml acc brd thr p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=#{thr} onmouseover="timeout(this, function(){showPopupPost(event,#{pId},#{p},'#{brd}')},700)" onclick='highlightPost(#{pId})' href='/thread/#{brd}/#{thr}##{p}'>#{ref}</a> |]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
     li         g = "<li>" <> g <> "</li>"
@@ -178,18 +174,18 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board] []
       let p = pack $ show postId
       case maybePost of
-        Just (Entity _ pVal) -> do
+        Just (Entity pKey pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board parent p (">>" <> p)
+          return $ refHtml acc board parent p (">>" <> p) (showText $ fromSqlKey pKey)
         Nothing              -> return $ acc <> ">>" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ExternalRef board' postId) = do
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
       let p = pack $ show postId
       case maybePost of
-        Just (Entity _ pVal) -> do
+        Just (Entity pKey pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p)
+          return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p) (showText $ fromSqlKey pKey)
         Nothing              -> return $ acc <> ">>/" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel    postId) = do
@@ -197,11 +193,11 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board] []
       let p = pack $ show postId
       case maybePost of
-        Just (Entity _ pVal) -> do
+        Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board parent p ("##" <> p)
+              link'     = refHtml "" board parent p ("##" <> p) (showText $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> p
     ----------------------------------------------------------------------------------------------------------
@@ -210,11 +206,11 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       maybePost <- runDB $ selectFirst [PostLocalId ==. postId, PostBoard ==. board'] []
       let p = pack $ show postId
       case maybePost of
-        Just (Entity _ pVal) -> do
+        Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p)
+              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p) (showText $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
@@ -223,11 +219,11 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       maybePost <- runDB $ selectFirst [PostLocalId ==. thread, PostBoard ==. board] []
       let t = pack $ show thread
       case maybePost of
-        Just (Entity _ pVal) -> do
+        Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board parent t "##OP"
+              link'     = refHtml "" board parent t "##OP" (showText $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##OP"
     ----------------------------------------------------------------------------------------------------------

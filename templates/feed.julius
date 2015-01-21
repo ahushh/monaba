@@ -5,6 +5,7 @@ function loadPosts(baseOffset) {
         $(".ajax-loading").toggle();
         $("#post-bound").before(data);
         baseInit();
+        doRefMap();
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         $("#post-bound").data('offset', offset+baseOffset);
     });

@@ -151,6 +151,7 @@ UpdateBoardsBtn: Update
 AddBoardBtn: Add board
 DeleteAll: Delete all
 CleanBoard: Clean
+RebuildPostsMessagesOnBoard: Rebuild HTML of posts messages
 ## info
 SeparateBy d@Text: Separate by '#{d}'
 SeparateBySpace: Separate by space

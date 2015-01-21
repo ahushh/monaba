@@ -1,9 +1,9 @@
-<div class=#{pClass} id=#{pId}>
+<div class=#{pClass} id=p#{sPostId} data-post-local-id=#{sPostLocalId} data-thread-local-id=#{sThreadLocalId} data-board=#{board}>
     <div .post-header>
         <span .mark-to-delete onclick="markToDelete(this)">
-            <input type=checkbox name=postdelete value=#{sPostKey}>
+            <input type=checkbox name=postdelete value=#{sPostId}>
             <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
-        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm('#{pId}',#{sPostKey})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
         $maybe (code, name) <- lookup (entityKey ePost) geoIps
             <img src=#{geoIconPath code} title=#{name}>
         <span .reply-title>#{postTitle $ postVal}
@@ -19,33 +19,33 @@
                     <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
         <span .reflink>
             $if isThread
-                <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sPostId)}##{sPostId}>#
+                <a onclick=highlightPost(#{postId}) href=@{ThreadR board postLocalId'}##{sPostLocalId}>#
             $else
-                <a onclick=highlightPost('#{pId}') href=@{ThreadR board (read sThreadId)}##{sPostId}>#
-            <a onclick="insert('>>#{sPostId}#{pack "\\n"}')" name=#{sThreadId}>#{sPostId}
+                <a onclick=highlightPost(#{postId}) href=@{ThreadR board threadLocalId}##{sPostLocalId}>#
+            <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')" name=#{sThreadLocalId}>#{sPostLocalId}
         $if canPost
-            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('#{pId}');insert('>>#{sPostId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
+            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm(#{sPostId});insert('>>#{sPostLocalId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
         &nbsp;&nbsp;
         <span .cpanel>
            $if isThread
                 $if not inThread
-                    [ <a href=@{ThreadR board $ postLocalId postVal}>_{MsgOpen}</a> ]
+                    [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
                     &nbsp;&nbsp;
            $if elem ManageThreadP permissions
                [ #{postIp postVal} ]
                <a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp postVal)}>
                    B
-               <a title='_{MsgStickThread}' href=@{StickR board (postLocalId postVal)}>
+               <a title='_{MsgStickThread}' href=@{StickR board postLocalId'}>
                    S                
-               <a title='_{MsgLockThread}' href=@{LockR board (postLocalId postVal)}>
+               <a title='_{MsgLockThread}' href=@{LockR board postLocalId'}>
                    L
-               <a title='_{MsgAutosage}' href=@{AutoSageR board (postLocalId postVal)}>
+               <a title='_{MsgAutosage}' href=@{AutoSageR board postLocalId'}>
                    A
            $if showParent
              $if isThread
                  <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
              $else
-                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,'#{board}',#{sThreadId});},700)" onclick="highlightPost('#{pId}')" href=@{ThreadR board (read sThreadId)}>>>/#{board}/#{sThreadId}
+                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,#{sPostId},#{sPostLocalId},#{board});},700)" onclick="highlightPost('#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"

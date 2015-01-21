@@ -2,6 +2,7 @@
 $if not (action == NewBoard)
     <a href=@{CleanBoardR  action board}>_{MsgCleanBoard}
     <a href=@{DeleteBoardR action board}>_{MsgDeleteBtn}
+    <a href=@{RebuildPostsMessagesOnBoardR action board}>_{MsgRebuildPostsMessagesOnBoard}
 ^{formWidget}
 <select onchange="location = '/admin/boards/list/'+this.options[this.selectedIndex].value;">
     $if action == AllBoards

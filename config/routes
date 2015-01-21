@@ -42,6 +42,7 @@
 /admin/boards/list/#ManageBoardAction/#Text   ManageBoardsR GET
 /admin/boards/delete/#ManageBoardAction/#Text DeleteBoardR  GET
 /admin/boards/clean/#ManageBoardAction/#Text  CleanBoardR   GET
+/admin/boards/rebuild/#ManageBoardAction/#Text  RebuildPostsMessagesOnBoardR   GET
 
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET

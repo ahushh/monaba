@@ -34,6 +34,7 @@ import Data.Maybe (fromJust, isNothing, isJust)
 import Text.Blaze.Html as Import (preEscapedToHtml)
 
 import Data.List (sortBy)
+import Control.Monad (mplus)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -146,11 +147,14 @@ instance Yesod App where
         msgrender  <- getMessageRender   
         boards     <- runDB $ selectList ([]::[Filter Board]) []
         categories <- configBoardCategories . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
+
+        defaultStylesheet <- extraStylesheet <$> getExtra
+        stylesheet        <- flip mplus (Just defaultStylesheet) <$> lookupSession "stylesheet"
+
         mgroup  <- case muser of
           Just (Entity _ u) -> runDB $ getBy $ GroupUniqName $ userGroup u
           _                 -> return Nothing
         let group  = (groupName . entityVal) <$> mgroup
-        stylesheet <- lookupSession "stylesheet"
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
         -- default-layout-wrapper is the entire page. Since the final

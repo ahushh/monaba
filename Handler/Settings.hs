@@ -52,7 +52,7 @@ langs :: [(Text, Text)]
 langs = [("English", "en"), ("Русский","ru")]
 
 stylesheets :: [(Text, Text)]
-stylesheets = map (\x -> (x,x)) ["Ash","Futaba"]
+stylesheets = map (\x -> (x,x)) ["Ash","Futaba","Chaos"]
 
 timezones :: [(Text, Int)]
 timezones = [("[UTC -11:00] Pacific/Midway",-39600)

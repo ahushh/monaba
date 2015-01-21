@@ -52,7 +52,7 @@ getThreadR board thread = do
   when (null allPosts) notFound
   let repliesAndFiles = drop 1 allPosts
       eOpPost         = fst $ head allPosts
-      opPostFiles     = snd $ head allPosts
+      opPostFiles     = reverse $ snd $ head allPosts
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
   geoIps    <- getCountries (if geoIpEnabled then allPosts else [])

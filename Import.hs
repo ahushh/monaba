@@ -231,8 +231,10 @@ postWidget muser ePost eFiles inThread canPost showParent permissions geoIps tOf
       pClass         = (if isThread then "op-post" else "reply-post") :: Text
   in $(widgetFile "post")
 
--- opPostWidget _ eOpPostW eFiles isInThreadW canPostW permissionsW geoIpsW tOffsetW = $(widgetFile "op-post")
--- replyPostWidget _ eReplyW eFiles isInThreadW canPostW showThreadW permissionsW geoIpsW tOffsetW = $(widgetFile "reply-post")
+paginationWidget page pages route = $(widgetFile "pagination")
+
+deleteWidget :: [Permission] -> Widget
+deleteWidget permissions = $(widgetFile "delete")
 
 adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
 adminNavbarWidget _ permissionsW = $(widgetFile "admin/navbar")

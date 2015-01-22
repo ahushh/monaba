@@ -29,17 +29,21 @@ $if hasAccessToReply
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
+
     <div #delete-container>
-        <input type=checkbox name=onlyfiles value=1>_{MsgOnlyFiles}
+        <label>
+          _{MsgOnlyFiles}
+          <input type=checkbox name=onlyfiles value=1>
         $if opModeration
-            <input type=checkbox name=opmoderation value=#{show $ fromSqlKey $ entityKey eOpPost}>_{MsgOpModeration}
+            <label>
+                <input type=checkbox name=opmoderation value=#{show $ fromSqlKey $ entityKey eOpPost}>_{MsgOpModeration}
             $if not noDeletedPosts
-                [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a> ]
-        $if elem DeletePostsP permissions
-            <span style=display:none>
+                [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a>
+                \ ]
+        $with nopas <- elem DeletePostsP permissions
+            <label :nopas:style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-        $else
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
+
 <div #edit-form style=display:none>
     ^{formWidget'}         

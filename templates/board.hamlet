@@ -28,27 +28,8 @@ $else
                     ^{postWidget muser ePreview previewFiles False hasAccessToReply False permissions geoIps timeZone}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
-        <div #delete-container>
-            <input type=checkbox name=onlyfiles value=1>_{MsgOnlyFiles}
-            $if elem DeletePostsP permissions
-                <span style=display:none>
-                    _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-            $else
-                _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
-            <input type=submit value=_{MsgDeleteBtn}>
+        ^{deleteWidget permissions}
     <div #edit-form style=display:none>
         ^{formWidget'}
 
-$if not $ page == 0
-    <a id=next-page href=@{BoardR board $ page - 1}>_{MsgPrevious}</a>&nbsp;
-<span #pages-list>
-  $forall (i,p) <- enumerate pages
-    $if p == page
-      <strong>#{ p }</strong>#
-    $else
-      <a href=@{BoardR board p}>#{ p }</a>#
-    $if not $ i == (length pages - 1)
-      &nbsp;
- 
-$if (page + 1) < length pages
-    &nbsp;<a id=prev-page href=@{BoardR board $ page + 1}>_{MsgNext}</a>
+^{paginationWidget page pages (BoardR board)}

@@ -71,6 +71,9 @@ BanPoster: Забанить!
 StickThread: Прикрепить/открепить
 LockThread: Заблокировать/разблокировать
 Autosage: Автосажа
+ThreadIsSticked: Тред закреплен
+ThreadIsLocked: Тред закрыт
+ThreadAutosage: Тред не бампается
 ### Deleted posts
 DeletedPosts: Удаленные посты
 DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}

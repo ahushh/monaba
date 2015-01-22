@@ -12,11 +12,11 @@
         $if isThread
             <div .thread-status>
                 $if postSticked postVal
-                    <img src=@{StaticR img_blank_gif} border=0 title=sticked alt=sticked .icon-thread-sticked>
+                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
                 $if postLocked postVal
-                    <img src=@{StaticR img_blank_gif} border=0 title=locked alt=locked .icon-thread-locked>
+                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
                 $if postAutosage postVal
-                    <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
+                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
         <span .reflink>
             $if isThread
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>#{pack "#"}#
@@ -33,13 +33,13 @@
                     &nbsp;&nbsp;
            $if elem ManageThreadP permissions
                [ #{postIp postVal} ]
-               <a title='_{MsgBanPoster}' href=@{BanByIpR board (postIp postVal)}>
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
                    B
-               <a title='_{MsgStickThread}' href=@{StickR board postLocalId'}>
+               <a title=_{MsgStickThread} href=@{StickR board postLocalId'}>
                    S                
-               <a title='_{MsgLockThread}' href=@{LockR board postLocalId'}>
+               <a title=_{MsgLockThread} href=@{LockR board postLocalId'}>
                    L
-               <a title='_{MsgAutosage}' href=@{AutoSageR board postLocalId'}>
+               <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
                    A
            $if showParent
              $if isThread

@@ -18,7 +18,7 @@ SupportedFileTypes: Supported file types are
 MaxFileSize: Max file size allowed is
 ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.
 OpModerationIsEnabled: OP moderation is enabled on this board.
-PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "unlimited"}
+PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "∞"}
 ### misc
 ThreadHeaderNumber t@Int: Thread №#{show t}
 ThreadHeaderReplyTo t@Int: Reply to #{show t} thread
@@ -30,7 +30,7 @@ ReplyToThread: Reply to thread №
 ### Editing
 Edit: Edit
 PostEdited: Post successfully edited
-PostNotYours: Wrong password or session. You can't modify this post.
+PostNotYours: Wrong password or session. You can't edit this post.
 PostEditingIsDisabled: Post editing is disabled on this board
 ThreadEditingIsDisabled: OP editing is disabled on this board
 LastModified: Last modified
@@ -73,6 +73,9 @@ BanPoster: Ban poster
 StickThread: Stick/unstick
 LockThread: Lock/unlock
 Autosage: Autosage
+ThreadIsSticked: Thread is sticked
+ThreadIsLocked: Thread is locked
+ThreadAutosage: Thread is on autosage
 ### Deleted posts
 DeletedPosts: Deleted posts
 DeletedPostsIn z@Int: Deleted posts in thread №#{show z}

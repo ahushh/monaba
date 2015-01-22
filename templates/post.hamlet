@@ -19,10 +19,10 @@
                     <img src=@{StaticR img_blank_gif} border=0 title=autosage alt=autosage .icon-thread-autosage>
         <span .reflink>
             $if isThread
-                <a onclick=highlightPost(#{postId}) href=@{ThreadR board postLocalId'}##{sPostLocalId}>#
+                <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>#{pack "#"}#
             $else
-                <a onclick=highlightPost(#{postId}) href=@{ThreadR board threadLocalId}##{sPostLocalId}>#
-            <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')" name=#{sThreadLocalId}>#{sPostLocalId}
+                <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>#{pack "#"}#
+            <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')">#{sPostLocalId}
         $if canPost
             <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm(#{sPostId});insert('>>#{sPostLocalId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
         &nbsp;&nbsp;
@@ -45,7 +45,7 @@
              $if isThread
                  <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
              $else
-                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,#{sPostId},#{sPostLocalId},#{board});},700)" onclick="highlightPost('#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
+                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,#{sPostId},#{sPostLocalId},#{board});},700)" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"

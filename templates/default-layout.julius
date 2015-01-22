@@ -238,20 +238,17 @@ function doImageExpanding(post) {
 //-----------------------------------------------------------------
 // post higlighting
 //-----------------------------------------------------------------
-// NEED TO FIX 
 function checkHighlighted() {
     var postId = window.location.hash.substr(1);
     if (postId) {
-        var thread = /\/thread\/[\w_]+\/(\d+)/.exec(document.URL)[1];
-        var board  = /\/thread\/([\w_]+)\/\d+/.exec(document.URL)[1];
-        highlightPost("post-"+postId+"-"+thread+"-"+board);
+        highlightPost(postId);
     }
 }
 
 function highlightPost(postId) {
     $(".highlighted-post").removeClass('highlighted-post');
-    if (! $("#p"+postId).hasClass('op-post')) {
-        $("#p"+postId).addClass('highlighted-post');
+    if (! $("#"+postId).hasClass('op-post')) {
+        $("#"+postId).addClass('highlighted-post');
     }
 }
 //-----------------------------------------------------------------

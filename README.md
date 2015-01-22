@@ -89,4 +89,6 @@ Deployment
 
 See `extra/nginx.conf` example if you want to use Nginx as reverse proxy. That's generally a good idea.
 
+init.d script for gentoo: `extra/monaba`
+
 For systemd users: `extra/monaba.service`

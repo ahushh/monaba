@@ -16,6 +16,10 @@ $newline never
               <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_futaba_css}>
           $elseif s == "Chaos"
               <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_chaos_css}>
+          $elseif s == "Mayuri"
+              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_mayuri_css}>
+          $elseif s == "Nox"
+              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_nox_css}>
         $nothing
           <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
         <meta name="description" content="Haskell imageboard">

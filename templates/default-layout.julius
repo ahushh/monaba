@@ -54,18 +54,46 @@ function markToDelete(t) {
 //-----------------------------------------------------------------
 // Forms
 //-----------------------------------------------------------------
+function generatePassword(n) {
+    if(!n) {
+        n = 8;
+    }
+    var password = '';
+    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < n; i++) {
+        password += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+    return password;
+}
+
+function fillPasswords() {
+    var password = get_cookie("password")
+    if (!password) {
+        password = generatePassword();
+        set_cookie('password', password);
+    }
+    $('input[type=password]').val(password);
+}
+
 function clearFile(fileId) {
     $('#'+fileId).val('');
 }
 
 function countSymbols(formId) {
-    var maxLen = $('#maxMessageLength').html();
+    var maxLen = $('#post-form').data('max-msg-length');
 
     var len;
     if ($('#'+formId+' textarea').get(0))
         len = $('#'+formId+' textarea').val().length;
     else
         return false;
+    
+    // FIX: feed page
+    if (maxLen == null) {
+        $('#'+formId+' .symbol-counter').html(len);
+        return;
+    }
+
     if (len > maxLen) {
         $('#'+formId+' .symbol-counter').html(len+'/'+maxLen);
         $('#'+formId+' .symbol-counter').css('color','red');
@@ -306,10 +334,10 @@ function cachePopupPosts() {
         var threadId = $(this).data('thread-local-id');
 
         var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+postId);
-        var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-        var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+        var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+        var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
         var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a></span> ";
-        post.find('.cpanel').after(delPopup);
+        post.append(delPopup);
         Monaba.postCache[postId] = post;
     });
 }
@@ -344,10 +372,10 @@ function showPopupPost(event, postId, localId, board) {
         $.get("/ajax/post/"+board+"/"+localId, function(data) {
             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+postId);
             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-            var closeAllPopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-            var closeOnePopup = "<img border='0' alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+            var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+            var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a></span> ";
-            post.find('.cpanel').after(delPopup);
+            post.append(delPopup);
 
             Monaba.postCache[postId] = post;
             reallyShowPopupPost(event, post);

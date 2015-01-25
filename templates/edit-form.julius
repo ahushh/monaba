@@ -57,7 +57,46 @@ var codeLangs = {
     xml: "XML",
 };
 
+
+function insertQuote(textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+    insert(">"+ window.getSelection().toString().replace(/\n/gm, "\n>")+"\n", textarea);
+}
+
+function insertTag(open, close, textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+    var start = textarea.selectionStart; 
+    var end = textarea.selectionEnd;
+    var len = textarea.value.length; 
+    var txt = open + textarea.value.substring(start, end) + close; 
+    textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
+    $(textarea).trigger('autosize.resize');
+} 
+
+
+function insert(text, textarea) {
+    if (!textarea)
+        textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)})[0];
+    if (textarea.createTextRange && textarea.caretPos) { // IE
+        var caretPos = textarea.caretPos;
+        caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == " " ? text + " " : text;
+    } else if(textarea.setSelectionRange) { // Firefox
+        var start = textarea.selectionStart;
+        var end   = textarea.selectionEnd;
+        textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
+        textarea.setSelectionRange(start + text.length, start + text.length);
+    } else {
+        textarea.value += text + " ";
+    }
+    textarea.focus();
+    $(textarea).trigger('autosize.resize');
+} 
+
+
 (function (textarea) {
+    fillPasswords();
     $('#button-bold-edit').click(function() {
         insertTag('[b]', '[/b]', textarea);
         countSymbols('edit-form');
@@ -95,7 +134,8 @@ var codeLangs = {
         countSymbols('edit-form');
     });
 
-    $('body').children().first().before('<div style="position: absolute; display: none; z-index:999999" id="code_markup_edit"></div>');
+    if ($("#code_markup_edit").length == 0)
+        $('body').children().first().before('<div style="position: absolute; display: none; z-index:999999" id="code_markup_edit"></div>');
     var code_markup_html = "<select size=\"8\" id=\"code_markup_select_edit\" multiple=\"multiple\">";
     for(var lang_id in codeLangs) {
        code_markup_html += '<option value="'+lang_id+'">'+codeLangs[lang_id]+'</option>';

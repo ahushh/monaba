@@ -2,8 +2,8 @@
     <div .post-header>
         <span .mark-to-delete onclick="markToDelete(this)">
             <input type=checkbox name=postdelete value=#{sPostId}>
-            <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} border=0 .icon-del-post>
-        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" src=@{StaticR img_blank_gif} border=0 .icon-edit-post>
+            <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} .icon-del-post>
+        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" src=@{StaticR img_blank_gif} .icon-edit-post>
         $maybe (code, name) <- lookup (entityKey ePost) geoIps
             <img src=#{geoIconPath code} title=#{name}>
         <span .reply-title>#{postTitle $ postVal}
@@ -24,13 +24,11 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>#{pack "#"}#
             <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')">#{sPostLocalId}
         $if canPost
-            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm(#{sPostId});insert('>>#{sPostLocalId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} border=0 .icon-reply>
-        &nbsp;&nbsp;
+            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm(#{sPostId});insert('>>#{sPostLocalId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} .icon-reply>
         <span .cpanel>
            $if isThread
                 $if not inThread
                     [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
-                    &nbsp;&nbsp;
            $if elem ManageThreadP permissions
                [ #{postIp postVal} ]
                <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
@@ -41,11 +39,11 @@
                    L
                <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
                    A
-           $if showParent
-             $if isThread
-                 <a .thread-link href=@{BoardNoPageR board}>>>/#{board}/
-             $else
-                 <a .thread-link onmouseover="timeout(this,function(){showPopupPost(event,this,#{sPostId},#{sPostLocalId},#{board});},700)" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
+       $if showParent
+         $if isThread
+             <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
+         $else
+             <a .thread-parent onmouseover="timeout(this,function(){showPopupPost(event,this,#{sPostId},#{sPostLocalId},#{board});},700)" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"

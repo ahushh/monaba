@@ -42,11 +42,11 @@ getThreadR board thread = do
   checkViewAccess mgroup boardVal
   let permissions      = getPermissions mgroup
       hasAccessToReply = checkAccessToReply mgroup boardVal
-      maxMessageLength = boardMaxMsgLength    boardVal
-      opModeration     = boardOpModeration    boardVal
-      boardDesc        = boardTitle     boardVal
-      boardLongDesc    = boardSummary boardVal
-      geoIpEnabled     = boardEnableGeoIp     boardVal
+      maxMessageLength = boardMaxMsgLength boardVal
+      opModeration     = boardOpModeration boardVal
+      boardTitleVal    = boardTitle        boardVal
+      boardSummaryVal  = boardSummary      boardVal
+      geoIpEnabled     = boardEnableGeoIp  boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread
   when (null allPosts) notFound
@@ -66,7 +66,7 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardDesc, if T.null pagetitle then "" else titleDelimiter, pagetitle]
+    setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardTitleVal, if T.null pagetitle then "" else titleDelimiter, pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html

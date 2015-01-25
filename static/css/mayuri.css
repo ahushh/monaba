@@ -70,8 +70,7 @@ hr {
     padding: 20px 2px;
 }
 
-.reply-post, .popup-post {
-	display: table;
+.reply-post, .feed .op-post {
     overflow: hidden;
     padding: 8px 15px;
     margin-bottom: 6px;

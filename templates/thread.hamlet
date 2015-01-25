@@ -1,12 +1,11 @@
-<span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
 $if T.null pagetitle
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
-    $if not $ T.null boardLongDesc
-        <div id="board-full-desc">#{boardLongDesc}
+    <div id="board-header"> #{nameOfTheBoard} — #{boardTitleVal}
+    $if not $ T.null boardSummaryVal
+        <div id="board-summary">#{boardSummaryVal}
 $else
-    <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
-    $if not $ T.null boardLongDesc
-        <div id="board-long-desc">#{boardLongDesc}
+    <div id="board-header"> #{nameOfTheBoard} — #{boardTitleVal}
+    $if not $ T.null boardSummaryVal
+        <div id="board-summary">#{boardSummaryVal}
     <div id="board-subtitle">#{pagetitle}
 $if hasAccessToReply
     <div #thread-header> _{MsgThreadHeaderReplyTo thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
@@ -16,16 +15,15 @@ $else
 $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board}>
+    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength}>
         ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
-    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }"}>
         ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles
             ^{postWidget muser eReply (reverse files) True hasAccessToReply False permissions geoIps timeZone}
-    <br clear=both>
-    <img src=@{StaticR img_blank_gif} border=0 title=refresh alt=refresh .icon-thread-refresh>
+    <img src=@{StaticR img_blank_gif} .icon-thread-refresh>
     <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}>
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]

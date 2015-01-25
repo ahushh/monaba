@@ -1,6 +1,4 @@
-<br>
 <h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
-<br>
 <div .markup-wrapper>
     $if elem AdditionalMarkupP permissions
         <p style=text-align:center><strong>_{MsgAdditionalMarkup}</strong>

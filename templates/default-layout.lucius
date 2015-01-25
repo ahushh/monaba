@@ -93,11 +93,11 @@ hr {
     word-wrap: break-word;
 }
 
-.reply-post {
-    display: table;
-    min-width: 40em;
-    overflow: hidden;
-    word-wrap: break-word;
+.reply-post, .feed .op-post {
+   display: table;
+   min-width: 40%;
+   overflow: hidden;
+   word-wrap: break-word;
 }
 
 .popup-post {
@@ -109,9 +109,14 @@ hr {
     word-wrap: break-word;
 }
 
+.popup-post .icon-edit-post, .popup-post .icon-reply {
+   display: none;
+}
+
 .close-popup-container {
-    margin-left: 2px;  
-    float: right;
+   margin-left: 2px;  
+   float:left;
+   clear: left;
 }
 
 .icon-close-popup-all {
@@ -127,7 +132,7 @@ hr {
     font-size: 2em;
 }
 
-#board-long-desc {
+#board-summary {
    text-align: center;
    font-size: 1.5em;
 }

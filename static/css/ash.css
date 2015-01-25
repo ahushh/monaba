@@ -76,7 +76,7 @@ footer {
     font-size: 0.8em;
 }
 
-.reply-post {
+.reply-post, .feed .op-post {
     background: none repeat scroll 0% 0% #CFCFCF;
     border-radius: 3px;
     border: 1px solid #EEEEEE;

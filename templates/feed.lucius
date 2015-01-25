@@ -1,17 +1,8 @@
-.op-post {
-    border: 1px solid #CCCCCC;
-    border-radius: 5px 5px 5px 5px;
-    margin: 3px;
-    padding: 5px;
-    display: table    
-}
-
-.mark-to-delete {
-    /* visibility: hidden !important; */
+.mark-to-delete, .icon-reply {
     display: none !important;
 }
 
-.thread-link {
+.thread-parent {
     float: right;
     font-size: 0.8em
 }

@@ -1,15 +1,12 @@
-<span style=display:none id=maxMessageLength>#{maxMessageLength}</span>
 <div id="board-header"> #{nameOfTheBoard} — #{title}
 $if not $ T.null summary
-    <div id="board-long-desc">#{summary}
+    <div id="board-summary">#{summary}
 $if hasAccessToNewThread
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-board=#{board}>
-        ^{formWidget boardVal False muser}
-$else
-    <form style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board}>
-        ^{formWidget boardVal False muser}
+$with na <- not hasAccessToNewThread 
+  <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength}>
+    ^{formWidget boardVal False muser}
             
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}

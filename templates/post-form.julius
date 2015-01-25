@@ -57,17 +57,6 @@ var codeLangs = {
     xml: "XML",
 };
 
-function generatePassword(n) {
-    if(!n) {
-        n = 8;
-    }
-    var password = '';
-    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < n; i++) {
-        password += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-    }
-    return password;
-}
 
 function insertQuote(textarea) {
     if (!textarea)
@@ -103,15 +92,12 @@ function insert(text, textarea) {
     textarea.focus();
     $(textarea).trigger('autosize.resize');
 } 
+
+
 // ----------------------------------------------------------------------------------------------------------
 $(document).ready(function() {
-    var password = get_cookie("password")
-    if (!password) {
-        password = generatePassword();
-        set_cookie('password', password);
-    }
+    fillPasswords();
     var textarea = $(#{toJSON $ "#" ++ (unpack $ fvId messageView)});
-    $('input[type=password]').val(password);
 
     $('#button-bold').click(function() {
         insertTag('[b]', '[/b]');

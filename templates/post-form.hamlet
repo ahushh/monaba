@@ -61,11 +61,11 @@
                             $if i == 0
                                 <div .file-input>
                                     ^{fvInput fv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
                             $else
                                 <div style=display:none .file-input>
                                     ^{fvInput fv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} border=0 .icon-close>
+                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

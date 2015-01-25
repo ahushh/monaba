@@ -41,4 +41,4 @@
         <span style=display:inline .symbol-counter>
     ^{fvInput passwordView}
     <input type=button id=edit-button value=_{MsgEdit}>
-    <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif} border=0 .icon-close #close-edit-form>
+    <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif} .icon-close #close-edit-form>

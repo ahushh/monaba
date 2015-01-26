@@ -18,7 +18,7 @@ $if hasAccessToReply
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength}>
         ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
-    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }"}>
+    <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
         ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False permissions geoIps timeZone}
     
         $forall (eReply, files) <- repliesAndFiles

@@ -1,3 +1,13 @@
+Array.prototype.contains = function(obj) {
+    var i = this.length;
+    while (i--) {
+        if (this[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+//-----------------------------------------------------------------
 var Monaba = {
     expThreads: {},
     refMap: {},
@@ -6,6 +16,7 @@ var Monaba = {
 
 fillPasswords();
 checkHighlighted();
+doRefMap();
 //-----------------------------------------------------------------
 // function baseInit() {
 //     doImageExpanding();
@@ -25,6 +36,7 @@ checkHighlighted();
 //         popupMessage(x.responseText+" ("+x.status+")", 2000);
 //     }
 // });
+
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
@@ -40,9 +52,9 @@ function markToDelete(container) {
     }
 }
 
-// //-----------------------------------------------------------------
-// // Forms
-// //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+// Forms
+//-----------------------------------------------------------------
 function generatePassword(n) {
     if(!n) {
         n = 8;
@@ -95,6 +107,148 @@ function initSymbolCounter(formId) {
         document.querySelector('#'+formId+' textarea')[ev] = h;
     });
     if (formId == 'post-form') countSymbols(formId);
+}
+
+
+function closePostForm() {
+    Array.prototype.forEach.call(document.querySelectorAll('.show-plain-form'), function(el, i) {
+        el.style.display = 'block';
+    });
+    document.getElementById('post-form').style.display = 'none';
+}
+
+// textarea
+function insert(text, parentId) {
+    var textarea = document.getElementById(parentId).querySelector('textarea');
+    if (textarea.createTextRange && textarea.caretPos) { // IE
+        var caretPos = textarea.caretPos;
+        caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == " " ? text + " " : text;
+    } else if(textarea.setSelectionRange) { // Firefox
+        var start = textarea.selectionStart;
+        var end   = textarea.selectionEnd;
+        textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
+        textarea.setSelectionRange(start + text.length, start + text.length);
+    } else {
+        textarea.value += text + " ";
+    }
+    textarea.focus();
+    // $(textarea).trigger('autosize.resize');
+} 
+
+function insertQuote(parentId) {
+    insert(">"+ window.getSelection().toString().replace(/\n/gm, "\n>")+"\n", parentId);
+}
+
+function insertTag(open, close, parentId) {
+    var textarea = document.getElementById(parentId).querySelector('textarea');
+    var start = textarea.selectionStart; 
+    var end = textarea.selectionEnd;
+    var len = textarea.value.length; 
+    var txt = open + textarea.value.substring(start, end) + close; 
+    textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
+    // $(textarea).trigger('autosize.resize');
+} 
+
+function initCodeButton(formId,plaintext) {
+    var codeLangs = {
+        text: plaintext,
+        actionscript: "ActionScript",
+        actionscript3: "ActionScript 3",
+        ada: "Ada",
+        applescript: "AppleScript",
+        asm: "ASM",
+        asp: "ASP",
+        avisynth: "AviSynth",
+        bash: "Bash",
+        bf: "Brainfuck",
+        blitzbasic: "BlitzBasic",
+        c: "C",
+        cobol: "COBOL",
+        cpp: "C++",
+        csharp: "C#",
+        css: "CSS",
+        d: "D",
+        delphi: "Delphi",
+        diff: "Diff",
+        dos: "DOS",
+        fortran: "Fortran",
+        haskell: "Haskell",
+        html4strict: "HTML",
+        ini: "INI",
+        java: "Java",
+        javascript: "Javascript",
+        latex: "LaTeX",
+        lisp: "Lisp",
+        lua: "Lua",
+        make: "GNU make",
+        matlab: "Matlab M",
+        mirc: "mIRC Scripting",
+        mpasm: "Microchip Assembler",
+        mxml: "MXML",
+        mysql: "MySQL",
+        objc: "Objective-C",
+        ocaml: "OCaml",
+        pascal: "Pascal",
+        perl: "Perl",
+        php: "PHP",
+        pic16: "PIC16",
+        powershell: "posh",
+        prolog: "Prolog",
+        python: "Python",
+        qbasic: "QBasic/QuickBASIC",
+        rails: "Rails",
+        ruby: "Ruby",
+        scala: "Scala",
+        smalltalk: "Smalltalk",
+        smarty: "Smarty",
+        sql: "SQL",
+        tcl: "TCL",
+        tsql: "T-SQL",
+        vb: "Visual Basic",
+        vbnet: "vb.net",
+        xml: "XML",
+    };
+    var cm = document.getElementById('code-markup-'+formId);
+    var cm_select = document.getElementById('code-markup-select-'+formId);
+
+    cm = document.createElement('div');
+    cm.id = "code-markup-"+formId;
+    cm.style.position = 'absolute';
+    cm.style.display = 'none';
+    cm.style['z-index'] = '9999999';
+
+    cm_select = document.createElement('select');
+    cm_select.size = 8;
+    cm_select.id = "code-markup-select-"+formId;
+    cm_select.multiple = "multiple";
+
+    for(var lang_id in codeLangs) {
+        var o = document.createElement('option');
+        o.value = lang_id;
+        o.innerHTML = codeLangs[lang_id];
+        cm_select.appendChild(o);
+    }
+    cm.appendChild(cm_select);
+    document.body.appendChild(cm);
+
+    document.querySelector('#'+formId+' .button-code').onclick = function(e) {
+        Array.prototype.forEach.call(document.querySelectorAll('#code-markup-select-'+formId+' option'), function(el,i) { el.removeAttribute('selected') });
+        cm.style.display = 'block';
+        cm.style.opacity = 0;
+        cm.style.top = e.pageY-3+"px";
+        cm.style.left = e.pageX-3+"px";
+        fadeIn(cm,300);
+    };
+
+    cm.onmouseleave = function() { fadeOut(cm,300); cm.style.display='none' };
+    cm_select.onchange = function() {
+        var lang = this.value.toString();
+        if (lang && lang != '') {
+            insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
+            countSymbols(formId);
+        }
+        fadeOut(cm,300); cm.style.display='none';
+    };
 }
 // //-----------------------------------------------------------------
 // // webm
@@ -274,264 +428,147 @@ function highlightPost(postId) {
         addClass(p, 'highlighted-post');
     }
 }
-// //-----------------------------------------------------------------
-// // refmap
-// //-----------------------------------------------------------------
-// function doRefMap(post) {
-//     var selector = post ? post : $(".reply-post, .op-post");
-//     selector.each(function() {
-//         var postId   = /p(\d+)/.exec( $(this).attr('id') )[1];
-//         var localId  = $(this).data('post-local-id');
-//         var board    = $(this).data('board');
-//         var threadId = $(this).data('thread-local-id');
-        
-//         var links  = $(this).find('.message a').get();
-//         for (var i = 0; i < links.length; i++) {
-//             var match = /(?:##|&gt;&gt;)(\d+)/.exec( $(links[i]).html() );
-//             if (match) {
-//                 var refId = $(links[i]).data('post-id');
-//                 if (! Monaba.refMap[refId]) {
-//                     Monaba.refMap[refId] = [];
-//                 }
-//                 var link = "/thread/"+board+"/"+threadId+"#"+localId;
-//                 var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"timeout(this, function(){showPopupPost(event,"+postId+","+localId+",'"+board+"');},700)\" onclick='highlightPost("+postId+")' href='"+link+"'>>>"+localId+"</a>";
-//                 if ($.inArray(postUrl, Monaba.refMap[refId]) == -1)
-//                     Monaba.refMap[refId].push(postUrl);
-//             }
-//         }
-//     });
-//     selector.each(function() {
-//         $(this).find('.refmap-list').remove();
-//         var postId = /p(\d+)/.exec( $(this).attr('id') )[1];
-//         var allLinks = Monaba.refMap[postId];
-//         if (!allLinks) return "";
-//         var result = "";
-//         for (var i = 0; i < allLinks.length; i++) {
-//             result += " " + allLinks[i];
-//             if (i != allLinks.length-1) {
-//                 result += ",";
-//             }
-//         }
-//         if (result) {
-//             var c = "<span class='refmap-list'>"+#{toJSON $ msgrender MsgReplies}+result+"</span>";
-//             $(this).append(c);
-//         }
-//     });
-// }
-// //-----------------------------------------------------------------
-// // popup posts
-// //-----------------------------------------------------------------
-// function cachePopupPosts() {
-//     $(".reply-post, .op-post").each(function() {
-//         var postId   = /p(\d+)/.exec( $(this).attr('id') )[1];
-//         var localId  = $(this).data('post-local-id');
-//         var board    = $(this).data('board');
-//         var threadId = $(this).data('thread-local-id');
-
-//         var post = $(this).clone().removeClass().addClass("popup-post").attr('id', 'popup-'+postId);
-//         var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-//         var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-//         var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a></span> ";
-//         post.append(delPopup);
-//         Monaba.postCache[postId] = post;
-//     });
-// }
-
-// function reallyShowPopupPost(event, post) {
-//     post = post.css('left', event.pageX).css('top', event.pageY);
-//     $('body').append(post);
-//     var wHeight = + $(window).height();
-//     var wWidth  = + $(window).width();
-//     var pHeight = + /(\d+)px/.exec( post.css('height') )[1];
-//     var pWidth  = + /(\d+)px/.exec( post.css('width') )[1];
-//     var cursorY = + event.pageY;
-//     var cursorX = + event.pageX;
-//     var diffH   = + $(window).scrollTop();
-//     if (cursorY + pHeight > wHeight + diffH) {
-//         post = post.css('top', cursorY - pHeight - 30);
-//     }
-//     if ((cursorX + pWidth + 30) > wWidth) {
-//         post = post.css('left', cursorX - pWidth - 40);
-//     }
-//     if (post.find('.refmap-list') == '') {
-//         doRefMap(post);
-//     }
-//     var postFullId = post.attr('id');
-//     addEmbeddedPlayer(postFullId);
-//     doImageExpanding(postFullId);
-//     MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-// }
-
-// function showPopupPost(event, postId, localId, board) {
-//     if (!Monaba.postCache[postId]) {
-//         $.get("/ajax/post/"+board+"/"+localId, function(data) {
-//             var post = $(data).removeClass().addClass("popup-post").attr('id', 'popup-'+postId);
-//             var match = /popup-post-\d+-(\d+)-/.exec(post.attr('id'));
-//             var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-//             var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-//             var delPopup = " <span class='close-popup-container'><a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a></span> ";
-//             post.append(delPopup);
-
-//             Monaba.postCache[postId] = post;
-//             reallyShowPopupPost(event, post);
-//         });
-//     } else {
-//         var post = Monaba.postCache[postId];
-//         reallyShowPopupPost(event, post);
-//     }
-// }
-
-// function delPopupPost(post) {
-//     if (post) {
-//         console.log(post);
-//         $('#popup-'+post).remove();
-//     } else {
-//         $('.popup-post').remove();
-//     }
-// }
-
 //-----------------------------------------------------------------
-// post form
+// Reference map
 //-----------------------------------------------------------------
-function insert(text, parentId) {
-    var textarea = document.getElementById(parentId).querySelector('textarea');
-    if (textarea.createTextRange && textarea.caretPos) { // IE
-        var caretPos = textarea.caretPos;
-        caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == " " ? text + " " : text;
-    } else if(textarea.setSelectionRange) { // Firefox
-        var start = textarea.selectionStart;
-        var end   = textarea.selectionEnd;
-        textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
-        textarea.setSelectionRange(start + text.length, start + text.length);
-    } else {
-        textarea.value += text + " ";
-    }
-    textarea.focus();
-    // $(textarea).trigger('autosize.resize');
-} 
-
-function insertQuote(parentId) {
-    insert(">"+ window.getSelection().toString().replace(/\n/gm, "\n>")+"\n", parentId);
-}
-
-function insertTag(open, close, parentId) {
-    var textarea = document.getElementById(parentId).querySelector('textarea');
-    var start = textarea.selectionStart; 
-    var end = textarea.selectionEnd;
-    var len = textarea.value.length; 
-    var txt = open + textarea.value.substring(start, end) + close; 
-    textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
-    // $(textarea).trigger('autosize.resize');
-} 
-
-function closePostForm() {
-    Array.prototype.forEach.call(document.querySelectorAll('.show-plain-form'), function(el, i) {
-        el.style.display = 'block';
-    });
-    document.getElementById('post-form').style.display = 'none';
-}
-function initCodeButton(formId,plaintext) {
-    var codeLangs = {
-        text: plaintext,
-        actionscript: "ActionScript",
-        actionscript3: "ActionScript 3",
-        ada: "Ada",
-        applescript: "AppleScript",
-        asm: "ASM",
-        asp: "ASP",
-        avisynth: "AviSynth",
-        bash: "Bash",
-        bf: "Brainfuck",
-        blitzbasic: "BlitzBasic",
-        c: "C",
-        cobol: "COBOL",
-        cpp: "C++",
-        csharp: "C#",
-        css: "CSS",
-        d: "D",
-        delphi: "Delphi",
-        diff: "Diff",
-        dos: "DOS",
-        fortran: "Fortran",
-        haskell: "Haskell",
-        html4strict: "HTML",
-        ini: "INI",
-        java: "Java",
-        javascript: "Javascript",
-        latex: "LaTeX",
-        lisp: "Lisp",
-        lua: "Lua",
-        make: "GNU make",
-        matlab: "Matlab M",
-        mirc: "mIRC Scripting",
-        mpasm: "Microchip Assembler",
-        mxml: "MXML",
-        mysql: "MySQL",
-        objc: "Objective-C",
-        ocaml: "OCaml",
-        pascal: "Pascal",
-        perl: "Perl",
-        php: "PHP",
-        pic16: "PIC16",
-        powershell: "posh",
-        prolog: "Prolog",
-        python: "Python",
-        qbasic: "QBasic/QuickBASIC",
-        rails: "Rails",
-        ruby: "Ruby",
-        scala: "Scala",
-        smalltalk: "Smalltalk",
-        smarty: "Smarty",
-        sql: "SQL",
-        tcl: "TCL",
-        tsql: "T-SQL",
-        vb: "Visual Basic",
-        vbnet: "vb.net",
-        xml: "XML",
-    };
-    var cm = document.getElementById('code-markup-'+formId);
-    var cm_select = document.getElementById('code-markup-select-'+formId);
-
-    cm = document.createElement('div');
-    cm.id = "code-markup-"+formId;
-    cm.style.position = 'absolute';
-    cm.style.display = 'none';
-    cm.style['z-index'] = '9999999';
-
-    cm_select = document.createElement('select');
-    cm_select.size = 8;
-    cm_select.id = "code-markup-select-"+formId;
-    cm_select.multiple = "multiple";
-
-    for(var lang_id in codeLangs) {
-        var o = document.createElement('option');
-        o.value = lang_id;
-        o.innerHTML = codeLangs[lang_id];
-        cm_select.appendChild(o);
-    }
-    cm.appendChild(cm_select);
-    document.body.appendChild(cm);
-
-    document.querySelector('#'+formId+' .button-code').onclick = function(e) {
-        Array.prototype.forEach.call(document.querySelectorAll('#code-markup-select-'+formId+' option'), function(el,i) { el.removeAttribute('selected') });
-        cm.style.display = 'block';
-        cm.style.opacity = 0;
-        cm.style.top = e.pageY-3+"px";
-        cm.style.left = e.pageX-3+"px";
-        fadeIn(cm,300);
-    };
-
-    cm.onmouseleave = function() { fadeOut(cm,300); cm.style.display='none' };
-    cm_select.onchange = function() {
-        var lang = this.value.toString();
-        if (lang && lang != '') {
-            insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
-            countSymbols(formId);
+function makeRefmap(postSelector) {
+    var selector = postSelector ? postSelector : ".reply-post, .op-post";
+    var posts = document.querySelectorAll(selector);
+    Array.prototype.forEach.call(posts, function(el, i) {
+        var postId   = /p(\d+)/.exec( el.id )[1];        
+        var localId  = el.dataset.postLocalId;
+        var board    = el.dataset.board;
+        var threadId = el.dataset.threadLocalId;
+        var links    = el.querySelectorAll('.message a');
+        for (var i = 0; i < links.length; i++) {
+            var match = /(?:##|&gt;&gt;)(\d+)/.exec( links[i].innerHTML );
+            if (match) {
+                var refId = links[i].dataset.postId;
+                if (! Monaba.refMap[refId]) {
+                    Monaba.refMap[refId] = [];
+                }
+                var link = "/thread/"+board+"/"+threadId+"#"+localId;
+                var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"timeout(this, function(){showPopupPost(event,"+postId+","+localId+",'"+board+"');},700)\" onclick='highlightPost("+postId+")' href='"+link+"'>>>"+localId+"</a>";
+                if (! Monaba.refMap[refId].contains(postUrl))
+                    Monaba.refMap[refId].push(postUrl);
+            }
         }
-        fadeOut(cm,300); cm.style.display='none';
-    };
+    });
+    Array.prototype.forEach.call(posts, function(el, i) {
+        Array.prototype.forEach.call(el.querySelectorAll(".refmap-list"), function(el2){ el.removeChild(el2) });
+
+        var postId = /p(\d+)/.exec( el.id )[1];
+        var allLinks = Monaba.refMap[postId];
+        if (!allLinks) return "";
+        var result = "";
+        for (var i = 0; i < allLinks.length; i++) {
+            result += " " + allLinks[i];
+            if (i != allLinks.length-1) {
+                result += ",";
+            }
+        }
+        if (result) {
+            var c = document.createElement("span");
+            c.className = 'refmap-list';
+            c.innerHTML = #{toJSON $ msgrender MsgReplies} + result;
+            el.appendChild(c);
+        }
+    });
 }
-// //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+// popup posts
+//-----------------------------------------------------------------
+function cachePopupPost(el) {
+    var postId   = /p(\d+)/.exec( el.id )[1];
+    var localId  = el.dataset.postLocalId;
+    var board    = el.dataset.board;
+    var threadId = el.dataset.threadLocalId;
+
+    var post = el.cloneNode(true);
+    post.className = 'popup-post';
+    post.id = 'popup-'+postId;
+    
+    var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
+    var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
+    var delPopup = "<a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a>";
+    var span = document.createElement('span');
+    span.className = 'close-popup-container';
+    span.innerHTML = delPopup;
+    post.appendChild(span);
+    return post;
+}
+
+function cachePopupPosts() {
+    Array.prototype.forEach.call(document.querySelectorAll('.reply-post, .op-post'), function(el, i) {
+        var postId = /p(\d+)/.exec( el.id )[1];        
+        var post = cachePopupPost(el);
+        Monaba.postCache[postId] = post;
+    });
+}
+
+function displayPopupPost(event, post) {
+    post.style.left = event.pageX;
+    post.style.top  = event.pageY;
+    document.body.appendChild(post);
+    var wHeight = + window.innerHeight;
+    var wWidth  = + window.innerWidth;
+    var pHeight = + post.offsetHeight;
+    var pWidth  = + post.offsetWidth;
+    var cursorY = + event.pageY;
+    var cursorX = + event.pageX;
+    var diffH   = + window.scrollY;
+    if (cursorY + pHeight > wHeight + diffH) {
+        post.style.top = cursorY - pHeight - 30;
+    }
+    if ((cursorX + pWidth + 30) > wWidth) {
+        post.style.left = cursorX - pWidth - 40;
+    }
+    if (post.querySelectorAll('.refmap-list').length == 0) {
+        makeRefmap(post.id);
+    }
+    // var postFullId = post.attr('id');
+    // addEmbeddedPlayer(postFullId);
+    // doImageExpanding(postFullId);
+    // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+}
+
+function showPopupPost(event, postId, localId, board) {
+    if (!Monaba.postCache[postId]) {
+        var request = new XMLHttpRequest();
+        request.open('GET',"/ajax/post/"+board+"/"+localId,true);
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var el = new DOMParser().parseFromString(request.responseText,"text/html").body.firstChild;
+                var postId = /p(\d+)/.exec( el.id )[1];        
+                var post = cachePopupPost(el);
+                Monaba.postCache[postId] = post;
+                displayPopupPost(event, post);
+            } else {
+                popupMessage(request.responseText+" ("+request.status+")", 2000);
+            }
+        };
+        request.onerror = function() {
+            popupMessage(request.responseText+" ("+request.status+")", 2000);
+        };
+        request.send();
+    } else {
+        var post = Monaba.postCache[postId];
+        displayPopupPost(event, post);
+    }
+}
+
+function delPopupPost(post) {
+    if (post) {
+        var p = document.getElementById('popup-'+post);
+        p.parentNode.removeChild(p);
+    } else {
+        var posts = document.getElementsByClassName('popup-post');
+        for (var i = 0; i < posts.length; i++) {
+            posts[i].parentNode.removeChild(posts[i]);
+        }
+    }
+}
+//-----------------------------------------------------------------
 // function refreshThread(board, threadId) {
 //     var lastPost = $("#thread-"+threadId+" .reply-post:last");
 //     if (lastPost.length == 0) {
@@ -554,15 +591,17 @@ function initCodeButton(formId,plaintext) {
 //         }
 //     });
 // }
-// //-----------------------------------------------------------------
-// // edit form
-// //-----------------------------------------------------------------
+//-----------------------------------------------------------------
+// edit form
+//-----------------------------------------------------------------
 // function showEditForm(postId) {
-//     var post = $('#p'+postId);
-//     var localId = post.data('post-local-id');
-//     var board = post.data('board');
-//     if (post.has('#edit-form').length)
+//     var post = document.getElementById('p'+postId);
+//     var localId = post.dataset.postLocalId;
+//     var board   = post.dataset.Board;
+//     if (post.querySelector('#edit-form').length)
 //         return false;
+//     var ef = document.getElementById('edit-form');
+    
 //     $('#edit-form').appendTo('#p'+postId);
 //     $('#edit-button').unbind();
 //     $('#edit-button').click(function() {
@@ -643,6 +682,7 @@ function set_cookie(name,value,days)
 // ---------------------------------------------------------
 //  end of wakaba3.js
 // ---------------------------------------------------------
+
 // ---------------------------------------------------------
 // Storage
 // ---------------------------------------------------------
@@ -659,6 +699,7 @@ function setItem(k,v) {
     return true;
 }
 // ---------------------------------------------------------
+// Misc
 // ---------------------------------------------------------
 function fadeIn(el,n) {
     el.style.opacity = 0;
@@ -692,6 +733,9 @@ function fadeOut(el,n) {
     tick();
 }
 
+// ---------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------
 function timeout(elem, f, time) {
     var t = setTimeout(f, time);
     elem.onmouseout = function(){ clearTimeout(t) };
@@ -728,4 +772,3 @@ function toggleInline(el) {
 function insertAfter(el, el2) {
     el2.parentNode.insertBefore( el, el2.nextSibling );
 }
-    

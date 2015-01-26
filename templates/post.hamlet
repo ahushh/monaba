@@ -24,7 +24,7 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>#{pack "#"}#
             <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')">#{sPostLocalId}
         $if canPost
-            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm(#{sPostId});insert('>>#{sPostLocalId}#{pack "\\n"}');" src=@{StaticR img_blank_gif} .icon-reply>
+            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" src=@{StaticR img_blank_gif} .icon-reply>
         <span .cpanel>
            $if isThread
                 $if not inThread

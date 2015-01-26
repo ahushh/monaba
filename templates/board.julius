@@ -1,100 +1,100 @@
-function expandThread(board, thread) {
-    var replies = Monaba['expThreads'][thread];
-    delete Monaba['expThreads'][thread];
-    Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
-    if (replies) {
-        $("#thread-"+thread+" .omitted").toggle();
-        $("#thread-"+thread+" .reply-post").remove();
-        $("#thread-"+thread+" .truncate-thread").toggle();
-        $("#thread-"+thread+" .truncate-thread-after").toggle();
-        $("#thread-"+thread+" .truncate-thread").after(replies);
-    } else {
-        $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-        $.get("/ajax/thread/"+board+"/"+thread+"/all", function(data) {
-            if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-                delete Monaba['expThreads'][thread];
-                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-            } else if (data == "No posts in this thread ") {
-                popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
-                delete Monaba['expThreads'][thread];
-                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-            } else {
-                $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-                $("#thread-"+thread+" .omitted").toggle();
-                $("#thread-"+thread+" .reply-post").remove();
-                $("#thread-"+thread+" .truncate-thread").toggle();
-                $("#thread-"+thread+" .truncate-thread-after").toggle();
-                $("#thread-"+thread+" .truncate-thread").after(data);
-                baseInit();
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-            }
-        });
-    }
-}
+// function expandThread(board, thread) {
+//     var replies = Monaba['expThreads'][thread];
+//     delete Monaba['expThreads'][thread];
+//     Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
+//     if (replies) {
+//         $("#thread-"+thread+" .omitted").toggle();
+//         $("#thread-"+thread+" .reply-post").remove();
+//         $("#thread-"+thread+" .truncate-thread").toggle();
+//         $("#thread-"+thread+" .truncate-thread-after").toggle();
+//         $("#thread-"+thread+" .truncate-thread").after(replies);
+//     } else {
+//         $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+//         $.get("/ajax/thread/"+board+"/"+thread+"/all", function(data) {
+//             if (data == "No such thread ") {
+//                 popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+//                 delete Monaba['expThreads'][thread];
+//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+//             } else if (data == "No posts in this thread ") {
+//                 popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
+//                 delete Monaba['expThreads'][thread];
+//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+//             } else {
+//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
+//                 $("#thread-"+thread+" .omitted").toggle();
+//                 $("#thread-"+thread+" .reply-post").remove();
+//                 $("#thread-"+thread+" .truncate-thread").toggle();
+//                 $("#thread-"+thread+" .truncate-thread-after").toggle();
+//                 $("#thread-"+thread+" .truncate-thread").after(data);
+//                 baseInit();
+//                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+//             }
+//         });
+//     }
+// }
 
-function truncateThread(thread,scrollToThreadBottom) {
-    var replies = Monaba['expThreads'][thread];
-    delete Monaba['expThreads'][thread];    
-    Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
-    $("#thread-"+thread+" .omitted").toggle();
-    $("#thread-"+thread+" .truncate-thread").toggle();
-    $("#thread-"+thread+" .truncate-thread-after").toggle();
-    $("#thread-"+thread+" .reply-post").remove();
-    $("#thread-"+thread+" .truncate-thread").after(replies);
-    if (scrollToThreadBottom) {
-        var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
-        location.href = "#"+n;
-    }
-}
+// function truncateThread(thread,scrollToThreadBottom) {
+//     var replies = Monaba['expThreads'][thread];
+//     delete Monaba['expThreads'][thread];    
+//     Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
+//     $("#thread-"+thread+" .omitted").toggle();
+//     $("#thread-"+thread+" .truncate-thread").toggle();
+//     $("#thread-"+thread+" .truncate-thread-after").toggle();
+//     $("#thread-"+thread+" .reply-post").remove();
+//     $("#thread-"+thread+" .truncate-thread").after(replies);
+//     if (scrollToThreadBottom) {
+//         var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
+//         location.href = "#"+n;
+//     }
+// }
 
-function showQuickPostForm(postId) {
-    $("#post-form").removeClass().addClass("quick-post-form");
-    $("#p"+postId).after($("#post-form"));
-    $("#post-form").css("display","table");
-    $("#go-back-block").hide();
+// function showQuickPostForm(postId) {
+//     $("#post-form").removeClass().addClass("quick-post-form");
+//     $("#p"+postId).after($("#post-form"));
+//     $("#post-form").css("display","table");
+//     $("#go-back-block").hide();
     
-    var action = $("#post-form").attr('action');
-    var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
-    var board = $("#post-form").data('board');
+//     var action = $("#post-form").attr('action');
+//     var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
+//     var board = $("#post-form").data('board');
 
-    $('#post-form').ajaxForm({
-        beforeSend: function() {
-            popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-        },
-        success: function(data) {
-            closePopupMessage();
-            if (data.ok) {
-                $('#post-form input[type=text]').clearFields();
-                $('#post-form input[type=file]').clearFields();
-                $('#post-form textarea').clearFields();
-                popupMessage(data.ok,2000);
-                closePostForm();
-                refreshThread(board, thread)
-            } else {
-                popupMessage(data.error,2000);
-            }
-        }
-    }); 
+//     $('#post-form').ajaxForm({
+//         beforeSend: function() {
+//             popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+//         },
+//         success: function(data) {
+//             closePopupMessage();
+//             if (data.ok) {
+//                 $('#post-form input[type=text]').clearFields();
+//                 $('#post-form input[type=file]').clearFields();
+//                 $('#post-form textarea').clearFields();
+//                 popupMessage(data.ok,2000);
+//                 closePostForm();
+//                 refreshThread(board, thread)
+//             } else {
+//                 popupMessage(data.error,2000);
+//             }
+//         }
+//     }); 
 
-    $("#post-form").children().find('.reply-to').remove();
-    $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
-    $("#no-bump-block").css("display","");
-    var newUrl = "/"+board+"/"+thread;
-    $("#post-form").attr('action', newUrl);
-} 
+//     $("#post-form").children().find('.reply-to').remove();
+//     $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
+//     $("#no-bump-block").css("display","");
+//     var newUrl = "/"+board+"/"+thread;
+//     $("#post-form").attr('action', newUrl);
+// } 
 
-function showPlainPostForm() {
-    $("#post-form").removeClass().addClass("plain-post-form");
-    $("#post-form").children().find('.reply-to').remove();
-    $('.show-plain-form').after($("#post-form"));
-    $(".show-plain-form").hide();
-    $("#post-form").css("display","block");
+// function showPlainPostForm() {
+//     $("#post-form").removeClass().addClass("plain-post-form");
+//     $("#post-form").children().find('.reply-to').remove();
+//     $('.show-plain-form').after($("#post-form"));
+//     $(".show-plain-form").hide();
+//     $("#post-form").css("display","block");
 
-    $("#post-form").unbind();
-    $("#no-bump-block").hide();
-    $("#go-back-block").css("display","");
+//     $("#post-form").unbind();
+//     $("#no-bump-block").hide();
+//     $("#go-back-block").css("display","");
 
-    var board = $("#post-form").data('board');
-    $("#post-form").attr('action', '/'+board);
-}
+//     var board = $("#post-form").data('board');
+//     $("#post-form").attr('action', '/'+board);
+// }

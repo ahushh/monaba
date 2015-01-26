@@ -1,34 +1,38 @@
-$('#post-form').ajaxForm({
-    beforeSend: function() {
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-    },
-    success: function(data) {
-        if (data.ok) {
-            $('#post-form input[type=text]').clearFields();
-            $('#post-form input[type=file]').clearFields();
-            $('#post-form textarea').clearFields();
-            popupMessage(data.ok,2000);
-            closePostForm();
-            var thread = /\/[\w_]+\/(\d+)/.exec(document.URL)[1];
-            var board = $("#post-form").data('board');
-            refreshThread(board, thread)
-        } else {
-            popupMessage(data.error,2000);
-        }
-    }
-}); 
+// $('#post-form').ajaxForm({
+//     beforeSend: function() {
+//         popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+//     },
+//     success: function(data) {
+//         if (data.ok) {
+//             $('#post-form input[type=text]').clearFields();
+//             $('#post-form input[type=file]').clearFields();
+//             $('#post-form textarea').clearFields();
+//             popupMessage(data.ok,2000);
+//             closePostForm();
+//             var thread = /\/[\w_]+\/(\d+)/.exec(document.URL)[1];
+//             var board = $("#post-form").data('board');
+//             refreshThread(board, thread)
+//         } else {
+//             popupMessage(data.error,2000);
+//         }
+//     }
+// }); 
 
 function showQuickPostForm(postId) {
-    $("#post-form").removeClass().addClass("quick-post-form");
-    $("#p"+postId).after($("#post-form"));
-    $("#post-form").css("display","table");
-    $("#go-back-block").hide();
+    var p = document.getElementById(postId);
+    var pf = document.getElementById('post-form');
+    p.className = "quick-post-form";
+    insertAfter(pf, p);
+    p.parentNode.insertBefore( pf, p.nextSibling );
+    pf.style.display = 'table';
+    document.getElementById("go-back-block").style.display = 'none';
 } 
 
 function showPlainPostForm() {
-    $("#post-form").removeClass().addClass("plain-post-form");
-    $("#post-form").children().find('.reply-to').remove();
-    $('.show-plain-form').after($("#post-form"));
-    $(".show-plain-form").hide();
-    $("#post-form").css("display","block");
+    var pf = document.getElementById('post-form');
+    pf.className = "plain-post-form";
+    var spf = document.getElementsByClassName('show-plain-form')[0];
+    insertAfter(pf, spf);
+    spf.style.display = 'none';
+    pf.style.display = 'block';
 }

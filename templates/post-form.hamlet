@@ -15,36 +15,36 @@
             <td>
                 ^{fvInput messageView}
                 <div .markup-buttons>
-                     <a id=button-bold>
+                     <a onclick="insertTag('[b]','[/b]','post-form');countSymbols('post-form')">
                         <strong>
                           _{MsgMarkupBold}
                      |
-                     <a id=button-italic>
+                     <a onclick="insertTag('[i]','[/i]','post-form');countSymbols('post-form')">
                         <em>
                           _{MsgMarkupItalic}
                      |
-                     <a id=button-underline>
+                     <a onclick="insertTag('[u]','[/u]','post-form');countSymbols('post-form')">
                         <u>
                           _{MsgMarkupUnderline}
                      |
-                     <a id=button-strike>
+                     <a onclick="insertTag('[s]','[/s]','post-form');countSymbols('post-form')">
                         <span style="text-decoration:line-through">
                           _{MsgMarkupStrike}
                      |
-                     <a id=button-spoiler>
+                     <a onclick="insertTag('[spoiler]','[/spoiler]','post-form');countSymbols('post-form')">
                         <span .spoiler>
                           _{MsgMarkupSpoiler}
                      |
-                     <a id=button-code>
+                     <a .button-code>
                         _{MsgMarkupCode}
                      |
-                     <a id=button-inline-latex>
+                     <a onclick="insertTag('[l]','[/l]','post-form');countSymbols('post-form')">
                         _{MsgMarkupInlineLatex}
                      |
-                     <a id=button-latex>
+                     <a onclick="insertTag('[latex]','[/latex]','post-form');countSymbols('post-form')">
                         _{MsgMarkupLatex}
                      |
-                     <a id=button-quote .quote>
+                     <a .quote onclick="insertQuote('post-form');countSymbols('post-form')">
                         _{MsgMarkupQuote}
                      ]                    
                      <span style=display:inline .symbol-counter>
@@ -58,14 +58,9 @@
                 <td>
                     <div .form-files>
                         $forall (i, fv) <- enumerate fileviews
-                            $if i == 0
-                                <div .file-input>
-                                    ^{fvInput fv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
-                            $else
-                                <div style=display:none .file-input>
-                                    ^{fvInput fv}
-                                    <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
+                            <div .file-input>
+                                ^{fvInput fv}
+                                <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

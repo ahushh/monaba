@@ -162,10 +162,10 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
-            addScript (StaticR js_jquery_min_js)
-            addScript (StaticR js_jquery_form_js)
-            addScript (StaticR js_jquery_autosize_js)            
-            addScriptRemote "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
+            -- addScript (StaticR js_jquery_min_js)
+            -- addScript (StaticR js_jquery_form_js)
+            -- addScript (StaticR js_jquery_autosize_js)            
+            -- addScriptRemote "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
             -- $(combineStylesheets 'StaticR
             --     [
             --     -- css_normalize_css
@@ -188,8 +188,8 @@ instance Yesod App where
     -- expiration dates to be set far in the future without worry of
     -- users receiving stale content.
     addStaticContent =
-        addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
-        -- addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
+        -- addStaticContentExternal minifym genFileName Settings.staticDir (StaticR . flip StaticRoute [])
+        addStaticContentExternal (\x -> Right x) genFileName Settings.staticDir (StaticR . flip StaticRoute []) -- debug
       where
         -- Generate a unique filename based on the content itself
         genFileName lbs

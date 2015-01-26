@@ -1,12 +1,27 @@
-function loadPosts(baseOffset) {
-    var offset = $("#post-bound").data('offset');
-    $(".ajax-loading").toggle();
-    $.get("/ajax/feed/"+offset, function(data) {
-        $(".ajax-loading").toggle();
-        $("#post-bound").before(data);
-        baseInit();
-        doRefMap();
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-        $("#post-bound").data('offset', offset+baseOffset);
-    });
-};
+function loadPreviousPosts(baseOffset) {
+    var offset = document.getElementById('load-previous-posts').dataset.offset;
+    Array.prototype.forEach.call(document.querySelectorAll('.ajax-loading'), function(el,i) { toggleInline(el); });
+    
+    var request = new XMLHttpRequest();
+    request.open('GET','/ajax/feed/'+offset, true);
+    request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+            Array.prototype.forEach.call(document.querySelectorAll('.ajax-loading'), function(el,i) { toggleInline(el); });
+            var lpp = document.getElementById('load-previous-posts');
+            var parent = document.getElementsByClassName("feed")[0];
+            // baseInit();
+            // doRefMap();
+            // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            var posts = (new DOMParser()).parseFromString(request.responseText,"text/xml");
+            parent.insertBefore( posts , parent.firstChild );
+            document.getElementById('load-previous-posts').dataset.offset = offset+baseOffset;
+        } else {
+            popupMessage(request.responseText+" ("+request.status+")", 2000);
+        }
+    };
+    request.onerror = function() {
+            popupMessage(request.responseText+" ("+request.status+")", 2000);
+    };
+    request.send();
+}
+ 

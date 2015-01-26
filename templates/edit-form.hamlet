@@ -6,39 +6,39 @@
     ^{fvInput messageView}
 <div style=padding:5px>
     <div style=display:inline .markup-buttons>
-        <a id=button-bold-edit>
-           <strong>
-             _{MsgMarkupBold}
-        |
-        <a id=button-italic-edit>
-           <em>
-             _{MsgMarkupItalic}
-        |
-        <a id=button-underline-edit>
-           <u>
-             _{MsgMarkupUnderline}
-        |
-        <a id=button-strike-edit>
-           <span style="text-decoration:line-through">
-             _{MsgMarkupStrike}
-        |
-        <a id=button-spoiler-edit>
-           <span .spoiler>
-             _{MsgMarkupSpoiler}
-        |
-        <a id=button-code-edit>
-           _{MsgMarkupCode}
-        |
-        <a id=button-inline-latex-edit>
-           _{MsgMarkupInlineLatex}
-        |
-        <a id=button-latex-edit>
-           _{MsgMarkupLatex}
-        |
-        <a id=button-quote-edit .quote>
-           _{MsgMarkupQuote}
-        ]
-        <span style=display:inline .symbol-counter>
+      <a onclick="insertTag('[b]','[/b]','edit-form');countSymbols('edit-form')">
+         <strong>
+           _{MsgMarkupBold}
+      |
+      <a onclick="insertTag('[i]','[/i]','edit-form');countSymbols('edit-form')">
+         <em>
+           _{MsgMarkupItalic}
+      |
+      <a onclick="insertTag('[u]','[/u]','edit-form');countSymbols('edit-form')">
+         <u>
+           _{MsgMarkupUnderline}
+      |
+      <a onclick="insertTag('[s]','[/s]','edit-form');countSymbols('edit-form')">
+         <span style="text-decoration:line-through">
+           _{MsgMarkupStrike}
+      |
+      <a onclick="insertTag('[spoiler]','[/spoiler]','edit-form');countSymbols('edit-form')">
+         <span .spoiler>
+           _{MsgMarkupSpoiler}
+      |
+      <a .button-code>
+         _{MsgMarkupCode}
+      |
+      <a onclick="insertTag('[l]','[/l]','edit-form');countSymbols('edit-form')">
+         _{MsgMarkupInlineLatex}
+      |
+      <a onclick="insertTag('[latex]','[/latex]','edit-form');countSymbols('edit-form')">
+         _{MsgMarkupLatex}
+      |
+      <a .quote onclick="insertQuote('edit-form');countSymbols('edit-form')">
+         _{MsgMarkupQuote}
+      ]                    
+      <span style=display:inline .symbol-counter>
     ^{fvInput passwordView}
     <input type=button id=edit-button value=_{MsgEdit}>
     <img alt=[close] title=_{MsgCloseIcon} onclick="hideEditForm()" src=@{StaticR img_blank_gif} .icon-close #close-edit-form>

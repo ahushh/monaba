@@ -1,14 +1,20 @@
 $if offset == 0
     <h2 style=text-align:center> _{MsgFeed}
-<div .feed>
-  $forall (e, files) <- postsAndFiles
-    ^{postWidget muser e files False True True permissions geoIps timeZone}
-  $if offset == 0
-    <div #post-bound style=text-align:center data-offset=#{showPosts} onclick="loadPosts(#{showPosts})">
-        [ 
-        <a #i-want-more>
-          _{MsgIwantmore}
-          <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}> 
+
+$if offset == 0
+  <div .feed>
+    $forall (e, files) <- postsAndFiles
+      ^{postWidget muser e files False True True permissions geoIps timeZone}
+$else
+    $forall (e, files) <- postsAndFiles
+      ^{postWidget muser e files False True True permissions geoIps timeZone}
+
+$if offset == 0
+  <div #load-previous-posts style=text-align:center data-offset=#{showPosts} onclick="loadPreviousPosts(#{showPosts})">
+      [ 
+      <a .i-want-more>
+        _{MsgIwantmore}
+        <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}> 
         ]
-<div #edit-form style=display:none>
+  <div #edit-form style=display:none>
     ^{editFormWidget}

@@ -498,8 +498,9 @@ function cachePopupPost(el) {
     return post;
 }
 
-function cachePopupPosts() {
-    Array.prototype.forEach.call(document.querySelectorAll('.reply-post, .op-post'), function(el, i) {
+function cachePopupPosts(selector) {
+    var s = selector ? selector : '.reply-post, .op-post';
+    Array.prototype.forEach.call(document.querySelectorAll(s), function(el, i) {
         var postId = /p(\d+)/.exec( el.id )[1];        
         var post = cachePopupPost(el);
         Monaba.postCache[postId] = post;
@@ -539,7 +540,7 @@ function showPopupPost(event, postId, localId, board) {
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
-                var el = new DOMParser().parseFromString(request.responseText,"text/html").body.firstChild;
+                var el = parseDOMElement(request.responseText);
                 var postId = /p(\d+)/.exec( el.id )[1];        
                 var post = cachePopupPost(el);
                 Monaba.postCache[postId] = post;
@@ -570,28 +571,43 @@ function delPopupPost(post) {
     }
 }
 //-----------------------------------------------------------------
-// function refreshThread(board, threadId) {
-//     var lastPost = $("#thread-"+threadId+" .reply-post:last");
-//     if (lastPost.length == 0) {
-//         lastPost = $("#thread-"+threadId+" .op-post");
-//     }
-//     var lastPostId = $(lastPost).data('post-local-id');
-//     $(".delete-form .icon-thread-refresh").toggle();
-//     $(".delete-form .ajax-loading").toggle();
-//     $.get("/ajax/thread/"+board+"/"+threadId+"/new/"+lastPostId, function(data) {
-//         $(".delete-form .icon-thread-refresh").toggle();
-//         $(".delete-form .ajax-loading").toggle();
-//         if (/reply/.test(data)) {
-//             $("#thread-"+threadId).append(data);
-//             baseInit();
-//             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-//         } else if (data == "No such thread ") {
-//             popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-//         } else if (data == "No new posts ") {
-//             popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
-//         }
-//     });
-// }
+function refreshThread(board, threadId) {
+    var lastPost = document.getElementById("thread-"+threadId).lastElementChild;
+    if (lastPost == null) {
+        lastPost = document.querySelector("#thread-"+threadId+" .op-post");
+    }
+    var lastPostId = lastPost.dataset.postLocalId;
+    var ictr = document.querySelector(".delete-form .icon-thread-refresh");
+    var ajxl = document.querySelector(".delete-form .ajax-loading");
+    toggleInline(ictr);
+    toggleInline(ajxl);
+
+    var request = new XMLHttpRequest();
+    request.open('GET',"/ajax/thread/"+board+"/"+threadId+"/new/"+lastPostId, true);
+    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    request.onload = function() {
+        toggleInline(ictr);
+        toggleInline(ajxl);
+        if (request.status >= 200 && request.status < 400) {
+            var data = request.responseText;
+            if (/reply/.test(data)) {
+                var posts = parseDOMElements(data);
+                var thr   = document.getElementById("thread-"+threadId);
+                for (var i = 0; i < posts.length; i++)
+                    thr.appendChild(posts[i]);
+                // baseInit();
+                // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            } else if (data == "No such thread ") {
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+            } else if (data == "No new posts ") {
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+            }
+        } else {
+            popupMessage(request.responseText,2000);
+        }
+    };
+    request.send();
+}
 //-----------------------------------------------------------------
 // edit form
 //-----------------------------------------------------------------
@@ -630,7 +646,7 @@ function showEditForm(postId) {
                     request1.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                     request1.onload = function() {
                         hideEditForm();
-                        var newPost = new DOMParser().parseFromString(request1.responseText,"text/html").body.firstChild;
+                        var newPost = parseDOMElement(request1.responseText);
                         post.parentNode.replaceChild(newPost, post);
                         
                         // addEmbeddedPlayer(postId);
@@ -808,4 +824,12 @@ function json2urlencode(data) {
     return Object.keys(data).map(function(k) {
         return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
     }).join('&');
+}
+
+function parseDOMElement(data) {
+    return new DOMParser().parseFromString(data,"text/html").body.firstChild;
+}
+
+function parseDOMElements(data) {
+    return new DOMParser().parseFromString(data,"text/html").body.children;
 }

@@ -16,7 +16,7 @@ var Monaba = {
 
 fillPasswords();
 checkHighlighted();
-doRefMap();
+makeRefmap();
 //-----------------------------------------------------------------
 // function baseInit() {
 //     doImageExpanding();
@@ -102,7 +102,7 @@ function countSymbols(formId) {
 }
 
 function initSymbolCounter(formId) {
-    var h = function() { countSymbols(f); };
+    var h = function() { countSymbols(formId); };
     ['onchange','oncut','onpaste','onkeyup'].forEach(function(ev,j) {
         document.querySelector('#'+formId+' textarea')[ev] = h;
     });
@@ -356,7 +356,7 @@ function popupMessage(text, delay, icon) {
 }
 
 function closePopupMessage() {
-    $('#popupMessage').fadeOut(300);
+    fadeOut(document.getElementById('popupMessage'),300);
 }
 // //-----------------------------------------------------------------
 // function expandPost(postId) {
@@ -536,6 +536,7 @@ function showPopupPost(event, postId, localId, board) {
     if (!Monaba.postCache[postId]) {
         var request = new XMLHttpRequest();
         request.open('GET',"/ajax/post/"+board+"/"+localId,true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 var el = new DOMParser().parseFromString(request.responseText,"text/html").body.firstChild;
@@ -594,61 +595,91 @@ function delPopupPost(post) {
 //-----------------------------------------------------------------
 // edit form
 //-----------------------------------------------------------------
-// function showEditForm(postId) {
-//     var post = document.getElementById('p'+postId);
-//     var localId = post.dataset.postLocalId;
-//     var board   = post.dataset.Board;
-//     if (post.querySelector('#edit-form').length)
-//         return false;
-//     var ef = document.getElementById('edit-form');
+function showEditForm(postId) {
+    var post = document.getElementById('p'+postId);
+    var localId = post.dataset.postLocalId;
+    var board   = post.dataset.board;
+    if (post.querySelector('#edit-form') != null)
+        return false;
+    var ef = document.getElementById('edit-form');
     
-//     $('#edit-form').appendTo('#p'+postId);
-//     $('#edit-button').unbind();
-//     $('#edit-button').click(function() {
-//         var obj = {};
-//         obj[ $('#edit-form textarea').attr('name')            ] = $('#edit-form textarea').val();
-//         obj[ $('#edit-form input[type=password]').attr('name')] = $('#edit-form input[type=password]').val();
-//         obj[ $('#edit-form input[type=hidden]').attr('name')  ] = $('#edit-form input[type=hidden]').val();
-//         obj[ $('#edit-form input[type=number]').attr('name')  ] = postId;
-//         popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-//         $.post( '@{PostEditR}', obj,
-//                 function(response) {
-//                     closePopupMessage();
-//                     if (response.ok) {
-//                         $.get("/ajax/post/"+board+"/"+localId, function(post) {
-//                             hideEditForm();
-//                             $('#p'+postId).replaceWith(post);
+    insertAfter(ef, post);
+    var ta = document.querySelector('#edit-form textarea');
+    var ps = document.querySelector('#edit-form input[type=password]');
+    var hd = document.querySelector('#edit-form input[type=hidden]');
+    var pt = document.querySelector('#edit-form input[type=number]');
+    document.getElementById('edit-button').onclick = function() {
+        var obj = {};
+        obj[ ta.name ] = ta.value;
+        obj[ ps.name ] = ps.value;
+        obj[ hd.name ] = hd.value;
+        obj[ pt.name ] = postId;
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
 
-//                             addEmbeddedPlayer(postId);
-//                             MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        var request = new XMLHttpRequest();
+        request.open('POST','@{PostEditR}', true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        request.onload = function() {
+            closePopupMessage();
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+                if (response.ok) {
+                    var request1 = new XMLHttpRequest(); // update post
+                    request1.open('GET',"/ajax/post/"+board+"/"+localId, true);
+                    request1.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    request1.onload = function() {
+                        hideEditForm();
+                        var newPost = new DOMParser().parseFromString(request1.responseText,"text/html").body.firstChild;
+                        post.parentNode.replaceChild(newPost, post);
+                        
+                        // addEmbeddedPlayer(postId);
+                        // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    
+                        popupMessage(response.ok,2000);
+                    };
+                    request1.send();
+                } else {
+                    popupMessage(response.error,2000);
+                }
+            } else {
+                popupMessage(request.responseText,2000);
+            }
+        };
+        request.send(json2urlencode(obj));
 
-//                             popupMessage(response.ok,2000);
-//                         });
-//                     } else {
-//                         popupMessage(response.error,2000);
-//                     }
-//               });
-//     });
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+    };
 
-//     popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-//     $.getJSON('/ajax/post/'+board+'/'+localId, function(json) {
-//         var raw = json[0].rawMessage;
-//         if (raw) {
-//             $('#edit-form textarea').val(raw).trigger('autosize.resize');
-//         } else { // for old posts only
-//             var msg = $('#p'+postId+' .message').clone();
-//             msg.find("br").replaceWith('\n');
-//             $('#edit-form textarea').val( msg.text().replace(/\n+/g, '\n') ).trigger('autosize.resize');
-//         }
-//         countSymbols('edit-form');
-//         $('#edit-form').css('display','table')
-//     }).fail(hideEditForm).always(closePopupMessage);
-// }
+    var request3 = new XMLHttpRequest();  // get raw post message
+    request3.open('GET', '/ajax/post/'+board+'/'+localId, true);
+    request3.setRequestHeader('Accept', 'application/json');
+    request3.onload = function() {
+        if (request3.status >= 200 && request3.status < 400) {
+            var data = JSON.parse(request3.responseText);
+            var raw = data[0].rawMessage;
+            ta.value = raw;
+            countSymbols('edit-form');
+            ef.style.display = 'table';
+        } else {
+            hideEditForm();
+            closePopupMessage();
+        }
+    };
+    request3.onerror = function() {
+        hideEditForm();
+        closePopupMessage();
+    };
+    request3.send();
+}
 
 function hideEditForm() {
     var ef = document.getElementById('edit-form');
     ef.style.display = 'none';
-    ef.reset();
+    document.querySelector('#edit-form textarea').value = '';
+    document.querySelector('#edit-form input[type=password]').value = ''
+    document.querySelector('#edit-form input[type=hidden]');
+    document.querySelector('#edit-form input[type=number]').value = '';
 }
 
 // ---------------------------------------------------------
@@ -771,4 +802,10 @@ function toggleInline(el) {
 
 function insertAfter(el, el2) {
     el2.parentNode.insertBefore( el, el2.nextSibling );
+}
+
+function json2urlencode(data) {
+    return Object.keys(data).map(function(k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+    }).join('&');
 }

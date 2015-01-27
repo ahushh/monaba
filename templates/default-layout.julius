@@ -8,6 +8,11 @@ Array.prototype.contains = function(obj) {
     return false;
 }
 //-----------------------------------------------------------------
+function postInitialization(selector) {
+    makeRefmap(selector);
+    initVideoPlayer(selector);
+    cachePopupPosts(selector);
+}
 var Monaba = {
     expThreads: {},
     refMap: {},
@@ -16,27 +21,7 @@ var Monaba = {
 
 fillPasswords();
 checkHighlighted();
-makeRefmap();
-//-----------------------------------------------------------------
-// function baseInit() {
-//     doImageExpanding();
-//     addEmbeddedPlayer();
-//     addEmbeddedWebmPlayer();
-//     doRefMap();
-//     cachePopupPosts();
-// }
-//-----------------------------------------------------------------
-// Init
-//-----------------------------------------------------------------
-// baseInit();
-// initSymbolCounter();
-
-// $.ajaxSetup({
-//     error: function(x, e) {
-//         popupMessage(x.responseText+" ("+x.status+")", 2000);
-//     }
-// });
-
+postInitialization();
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
@@ -78,10 +63,6 @@ function fillPasswords() {
     });
 }
 
-function clearFile(fileId) {
-    document.getElementById(fileId).value = "";
-}
-
 function countSymbols(formId) {
     var maxLen = document.getElementById(formId).dataset.maxMsgLength;
     var len = document.querySelector('#'+formId+' textarea').value.length;
@@ -109,6 +90,10 @@ function initSymbolCounter(formId) {
     if (formId == 'post-form') countSymbols(formId);
 }
 
+
+function clearFile(fileId) {
+    document.getElementById(fileId).value = "";
+}
 
 function closePostForm() {
     Array.prototype.forEach.call(document.querySelectorAll('.show-plain-form'), function(el, i) {
@@ -250,17 +235,107 @@ function initCodeButton(formId,plaintext) {
         fadeOut(cm,300); cm.style.display='none';
     };
 }
-// //-----------------------------------------------------------------
-// // webm
-// //-----------------------------------------------------------------
-// function addEmbeddedWebmPlayer() {
-//     $(".video").each(function(i,thumb){
-//         $(thumb).click(function(){
-//             $(this).hide();
-//             $(this).after("<video autoplay controls width="+$(this).attr('width')*2+"><source src='"+$(this).data('url')+"'></video>");
-//         });
-//     });
-// }
+//-----------------------------------------------------------------
+// Edit form
+//-----------------------------------------------------------------
+function showEditForm(postId) {
+    var post = document.getElementById('p'+postId);
+    var localId = post.dataset.postLocalId;
+    var board   = post.dataset.board;
+    if (post.querySelector('#edit-form') != null)
+        return false;
+    var ef = document.getElementById('edit-form');
+    
+    insertAfter(ef, post);
+    var ta = document.querySelector('#edit-form textarea');
+    var ps = document.querySelector('#edit-form input[type=password]');
+    var hd = document.querySelector('#edit-form input[type=hidden]');
+    var pt = document.querySelector('#edit-form input[type=number]');
+    document.getElementById('edit-button').onclick = function() {
+        var obj = {};
+        obj[ ta.name ] = ta.value;
+        obj[ ps.name ] = ps.value;
+        obj[ hd.name ] = hd.value;
+        obj[ pt.name ] = postId;
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+
+        var request = new XMLHttpRequest();
+        request.open('POST','@{PostEditR}', true);
+        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        request.onload = function() {
+            closePopupMessage();
+            if (request.status >= 200 && request.status < 400) {
+                var response = JSON.parse(request.responseText);
+                if (response.ok) {
+                    var request1 = new XMLHttpRequest(); // update post
+                    request1.open('GET',"/ajax/post/"+board+"/"+localId, true);
+                    request1.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    request1.onload = function() {
+                        hideEditForm();
+                        var newPost = parseDOMElement(request1.responseText);
+                        post.parentNode.replaceChild(newPost, post);
+                        
+                        // addEmbeddedPlayer(postId);
+                        // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    
+                        popupMessage(response.ok,2000);
+                    };
+                    request1.send();
+                } else {
+                    popupMessage(response.error,2000);
+                }
+            } else {
+                popupMessage(request.responseText,2000);
+            }
+        };
+        request.send(json2urlencode(obj));
+
+        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+    };
+
+    var request3 = new XMLHttpRequest();  // get raw post message
+    request3.open('GET', '/ajax/post/'+board+'/'+localId, true);
+    request3.setRequestHeader('Accept', 'application/json');
+    request3.onload = function() {
+        if (request3.status >= 200 && request3.status < 400) {
+            var data = JSON.parse(request3.responseText);
+            var raw = data[0].rawMessage;
+            ta.value = raw;
+            countSymbols('edit-form');
+            ef.style.display = 'table';
+        } else {
+            hideEditForm();
+            closePopupMessage();
+        }
+    };
+    request3.onerror = function() {
+        hideEditForm();
+        closePopupMessage();
+    };
+    request3.send();
+}
+
+function hideEditForm() {
+    var ef = document.getElementById('edit-form');
+    ef.style.display = 'none';
+    document.querySelector('#edit-form textarea').value = '';
+    document.querySelector('#edit-form input[type=password]').value = ''
+    document.querySelector('#edit-form input[type=hidden]');
+    document.querySelector('#edit-form input[type=number]').value = '';
+}
+//-----------------------------------------------------------------
+// webm
+//-----------------------------------------------------------------
+function initVideoPlayer(selector) {
+    var thumbs = document.querySelectorAll(selector ? (selector+" ") : "" + ".video");
+    Array.prototype.forEach.call(thumbs, function(el,i) {
+        el.onclick = function(){
+            el.style.display = 'none';
+            el.parentNode.appendChild( parseDOMElement("<video autoplay controls width="+el.width*2+"><source src='"+el.dataset.url+"'></video>") );
+        };
+    });
+}
 // //-----------------------------------------------------------------
 // // youtube
 // //-----------------------------------------------------------------
@@ -410,7 +485,7 @@ function closePopupMessage() {
 //     });
 // }
 //-----------------------------------------------------------------
-// post higlighting
+// Post higlighting
 //-----------------------------------------------------------------
 function checkHighlighted() {
     var postId = window.location.hash.substr(1);
@@ -435,7 +510,7 @@ function makeRefmap(postSelector) {
     var selector = postSelector ? postSelector : ".reply-post, .op-post";
     var posts = document.querySelectorAll(selector);
     Array.prototype.forEach.call(posts, function(el, i) {
-        var postId   = /p(\d+)/.exec( el.id )[1];        
+        var postId   = /p(?:opup)?(\d+)/.exec( el.id )[1];        
         var localId  = el.dataset.postLocalId;
         var board    = el.dataset.board;
         var threadId = el.dataset.threadLocalId;
@@ -508,25 +583,22 @@ function cachePopupPosts(selector) {
 }
 
 function displayPopupPost(event, post) {
-    post.style.left = event.pageX;
-    post.style.top  = event.pageY;
+    post.style.left = event.pageX + "px";
+    post.style.top  = event.pageY + "px";
+    // var wHeight = + window.innerHeight;
+    // var wWidth  = + window.innerWidth;
+    // var pHeight = + post.offsetHeight;
+    // var pWidth  = + post.offsetWidth;
+    // var cursorY = + event.pageY;
+    // var cursorX = + event.pageX;
+    // var diffH   = + window.scrollY;
+    // if (cursorY + pHeight > wHeight + diffH) {
+    //     post.style.top = cursorY - pHeight - 30;
+    // }
+    // if ((cursorX + pWidth + 30) > wWidth) {
+    //     post.style.left = cursorX - pWidth - 40;
+    // }
     document.body.appendChild(post);
-    var wHeight = + window.innerHeight;
-    var wWidth  = + window.innerWidth;
-    var pHeight = + post.offsetHeight;
-    var pWidth  = + post.offsetWidth;
-    var cursorY = + event.pageY;
-    var cursorX = + event.pageX;
-    var diffH   = + window.scrollY;
-    if (cursorY + pHeight > wHeight + diffH) {
-        post.style.top = cursorY - pHeight - 30;
-    }
-    if ((cursorX + pWidth + 30) > wWidth) {
-        post.style.left = cursorX - pWidth - 40;
-    }
-    if (post.querySelectorAll('.refmap-list').length == 0) {
-        makeRefmap(post.id);
-    }
     // var postFullId = post.attr('id');
     // addEmbeddedPlayer(postFullId);
     // doImageExpanding(postFullId);
@@ -595,7 +667,8 @@ function refreshThread(board, threadId) {
                 var thr   = document.getElementById("thread-"+threadId);
                 for (var i = 0; i < posts.length; i++)
                     thr.appendChild(posts[i]);
-                // baseInit();
+                makeRefmap();
+                initVideoPlayer();
                 // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             } else if (data == "No such thread ") {
                 popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
@@ -608,96 +681,6 @@ function refreshThread(board, threadId) {
     };
     request.send();
 }
-//-----------------------------------------------------------------
-// edit form
-//-----------------------------------------------------------------
-function showEditForm(postId) {
-    var post = document.getElementById('p'+postId);
-    var localId = post.dataset.postLocalId;
-    var board   = post.dataset.board;
-    if (post.querySelector('#edit-form') != null)
-        return false;
-    var ef = document.getElementById('edit-form');
-    
-    insertAfter(ef, post);
-    var ta = document.querySelector('#edit-form textarea');
-    var ps = document.querySelector('#edit-form input[type=password]');
-    var hd = document.querySelector('#edit-form input[type=hidden]');
-    var pt = document.querySelector('#edit-form input[type=number]');
-    document.getElementById('edit-button').onclick = function() {
-        var obj = {};
-        obj[ ta.name ] = ta.value;
-        obj[ ps.name ] = ps.value;
-        obj[ hd.name ] = hd.value;
-        obj[ pt.name ] = postId;
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-
-        var request = new XMLHttpRequest();
-        request.open('POST','@{PostEditR}', true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.onload = function() {
-            closePopupMessage();
-            if (request.status >= 200 && request.status < 400) {
-                var response = JSON.parse(request.responseText);
-                if (response.ok) {
-                    var request1 = new XMLHttpRequest(); // update post
-                    request1.open('GET',"/ajax/post/"+board+"/"+localId, true);
-                    request1.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    request1.onload = function() {
-                        hideEditForm();
-                        var newPost = parseDOMElement(request1.responseText);
-                        post.parentNode.replaceChild(newPost, post);
-                        
-                        // addEmbeddedPlayer(postId);
-                        // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-                    
-                        popupMessage(response.ok,2000);
-                    };
-                    request1.send();
-                } else {
-                    popupMessage(response.error,2000);
-                }
-            } else {
-                popupMessage(request.responseText,2000);
-            }
-        };
-        request.send(json2urlencode(obj));
-
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-    };
-
-    var request3 = new XMLHttpRequest();  // get raw post message
-    request3.open('GET', '/ajax/post/'+board+'/'+localId, true);
-    request3.setRequestHeader('Accept', 'application/json');
-    request3.onload = function() {
-        if (request3.status >= 200 && request3.status < 400) {
-            var data = JSON.parse(request3.responseText);
-            var raw = data[0].rawMessage;
-            ta.value = raw;
-            countSymbols('edit-form');
-            ef.style.display = 'table';
-        } else {
-            hideEditForm();
-            closePopupMessage();
-        }
-    };
-    request3.onerror = function() {
-        hideEditForm();
-        closePopupMessage();
-    };
-    request3.send();
-}
-
-function hideEditForm() {
-    var ef = document.getElementById('edit-form');
-    ef.style.display = 'none';
-    document.querySelector('#edit-form textarea').value = '';
-    document.querySelector('#edit-form input[type=password]').value = ''
-    document.querySelector('#edit-form input[type=hidden]');
-    document.querySelector('#edit-form input[type=number]').value = '';
-}
-
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------

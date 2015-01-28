@@ -8,11 +8,6 @@ Array.prototype.contains = function(obj) {
     return false;
 }
 //-----------------------------------------------------------------
-function postInitialization(selector) {
-    makeRefmap(selector);
-    initVideoPlayer(selector);
-    cachePopupPosts(selector);
-}
 var Monaba = {
     expThreads: {},
     refMap: {},
@@ -21,7 +16,10 @@ var Monaba = {
 
 fillPasswords();
 checkHighlighted();
-postInitialization();
+makeRefmap();
+initVideoPlayer();
+initUrlVideoPlayer();
+initPopupsCache();
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
@@ -274,9 +272,11 @@ function showEditForm(postId) {
                     request1.onload = function() {
                         hideEditForm();
                         var newPost = parseDOMElement(request1.responseText);
+                        addVideoPlayer(newPost);
+                        addUrlVideoPlayer(newPost);
                         post.parentNode.replaceChild(newPost, post);
-                        
-                        // addEmbeddedPlayer(postId);
+                        makeRefmap();
+                        initPopupsCache();
                         // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                     
                         popupMessage(response.ok,2000);
@@ -327,86 +327,111 @@ function hideEditForm() {
 //-----------------------------------------------------------------
 // webm
 //-----------------------------------------------------------------
-function initVideoPlayer(selector) {
-    var thumbs = document.querySelectorAll(selector ? (selector+" ") : "" + ".video");
-    Array.prototype.forEach.call(thumbs, function(el,i) {
-        el.onclick = function(){
-            el.style.display = 'none';
-            el.parentNode.appendChild( parseDOMElement("<video autoplay controls width="+el.width*2+"><source src='"+el.dataset.url+"'></video>") );
+function addVideoPlayer(post) {
+    var links = post.querySelectorAll(".video");
+    Array.prototype.forEach.call(links, function(link) {
+        link.onclick = function(){
+            link.style.display = 'none';
+            link.parentNode.appendChild( parseDOMElement("<video autoplay controls width="+link.width*2+"><source src='"+link.dataset.url+"'></video>") );
         };
     });
 }
-// //-----------------------------------------------------------------
-// // youtube
-// //-----------------------------------------------------------------
-// function addEmbeddedPlayer(post) {
-//     var posts = post ? ("#"+post+"") : ".reply-post, .op-post";
-//     $(posts).each(function(i,p) {
-//         var postId = $(p).attr('id');
-//         var first = true;
-//         $('#'+postId+' .message a').each(function(j, link) {
-//             var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/;
-//             var result = regex.exec(link.text);
-//             if (!result) return true;
-//             var videoId = result[1];
-//             var url     = link.text;
 
-//             var first1 = false;
-//             if (first) {
-//                 $('#'+postId+' .message').prepend('<div class=video-container></div>');
-//                 first = false;
-//                 first1 = true;
-//             }
+function initVideoPlayer(selector) {
+    var posts = document.querySelectorAll(selector ? selector : ".reply-post, .op-post");
+    Array.prototype.forEach.call(posts, addVideoPlayer);
+}
 
-//             $.getJSON("https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json", function(data){
-//                 var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
-//                 var height = 270; //data.entry.media$group.media$thumbnail[2].height;
-//                 var title  = data.entry.title.$t;
-//                 var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
-//                 var iframe =  document.createElement("iframe");
+//-----------------------------------------------------------------
+// youtube
+//-----------------------------------------------------------------
+function initUrlVideoPlayer(selector) {
+    var posts = document.querySelectorAll(selector ? selector : ".reply-post, .op-post");
+    Array.prototype.forEach.call(posts, addUrlVideoPlayer);
+}
 
-//                 $(iframe).css('width', width);
-//                 $(iframe).css('height', height);
+function addUrlVideoPlayer(post) {
+    var postId = post.id;
+    var first = true;
+    var links = post.querySelectorAll(".message a");
+    var msg    = post.querySelector(".message");
+    Array.prototype.forEach.call(links, function(link) {
+        var regex = /https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([\w_-]+)/;
+        var result = regex.exec(link.text);
+        if (!result) return true;
+        var videoId = result[1];
+        var url     = link.text;
+        var first1 = false;
+        if (first) {
+            var d = document.createElement("div");
+            d.className = "video-container";
+            msg.insertBefore(d, msg.firstChild);
+            first = false;
+            first1 = true;
+        }
+        var request = new XMLHttpRequest({mozSystem: true});
+        request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
+        request.onload = function(){
+            var data   = JSON.parse(request.responseText);
+            var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
+            var height = 270; //data.entry.media$group.media$thumbnail[2].height;
+            var title  = data.entry.title.$t;
+            var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
+            var iframe =  document.createElement("iframe");
+            iframe.style.width = width;
+            iframe.style.height = height;
+            link.className = 'video-link';
+            link.innerHTML = "<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>";
+            var loadIframe = function () {
+                iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1";
+                addClass(iframe, "loaded");
+            };
+            iframe.style.display = 'none';
+            if (first1) {
+                var vc = post.querySelector(".video-container");
+                var vt = document.createElement("img");
+                vt.className = 'video-thumb';
+                vt.width = width;
+                vt.height = height;
+                vt.src = thumb;
+                vc.insertBefore(vt, vc.firstChild);
+                vc.insertBefore(iframe, vc.firstChild);
+                addClass(link,"focused");
+                vt.onclick = function() {
+                    vt.style.display = 'none';
+                    iframe.style.display = 'inline-block';
+                };
+                loadIframe();
+            } else {
+                link.insertBefore(iframe, link.firstChild);
+            }
 
-//                 $(link).attr('class', 'video-link');
-//                 $(link).html("<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>");
-//                 var loadIframe = function () {
-//                     $(iframe).attr("src", "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1");
-//                     $(iframe).addClass('loaded');
-//                 };
+            link.onclick = function(event) {
+                var iframe = link.getElementsByTagName('iframe')[0];
+                if (/focused/.test(link.className))
+                    return false;
+                if (! /loaded/.test(iframe.className) )
+                    loadIframe();
+                
+                var videoContainer = post.getElementsByClassName("video-container")[0];
+                var currentIframe  = videoContainer.getElementsByTagName("iframe")[0];
+                var videoThumb     = videoContainer.getElementsByClassName("video-thumb")[0];
+                var focusedLink    = post.getElementsByClassName("focused")[0];
+                focusedLink.insertBefore(currentIframe, focusedLink.firstChild);
+                currentIframe.style.display = 'none';
+                videoThumb.style.display = 'none';
+                removeClass(focusedLink,"focused");
+                videoContainer.insertBefore(iframe, videoContainer.firstChild);
+                addClass(link, "focused");
+                iframe.style.display = 'inline-block';
+                return false;
+                event.preventDefault();
+            };
 
-//                 $(iframe).css('display','none');
-//                 if (first1) {
-//                     $('#'+postId+' .video-container').prepend("<img class='video-thumb' width="+width+" height="+height+" src='"+thumb+"'>");
-//                     $('#'+postId+' .video-container').prepend(iframe);
-//                     $(link).addClass('focused');
-//                     $('#'+postId+' .video-thumb').click(function() {
-//                         $(this).hide();
-//                         $('#'+postId+' .video-container iframe').show();
-//                     });
-//                     loadIframe();
-//                 } else {
-//                     $(link).prepend(iframe);
-//                 }
-
-//                 $(link).click(function() {
-//                     if ($(link).hasClass('focused'))
-//                         return false;
-//                     if (! $(link).find('iframe').hasClass('loaded'))
-//                         loadIframe();
-//                     $('#'+postId+' .video-container iframe').appendTo( $('#'+postId+' .focused') );
-//                     $('#'+postId+' .focused iframe').hide();
-//                     $('#'+postId+' .video-container .video-thumb').hide();
-//                     $('#'+postId+' .focused').removeClass('focused');
-//                     $(iframe).appendTo( $('#'+postId+' .video-container') );
-//                     $(link).addClass('focused');
-//                     $('#'+postId+' .video-container iframe').show();
-//                     return false;
-//                 });
-//             });
-//         });
-//     });
-// }
+        };
+        request.send();
+    });
+}
 //-----------------------------------------------------------------
 // popup messages
 //-----------------------------------------------------------------
@@ -510,7 +535,7 @@ function makeRefmap(postSelector) {
     var selector = postSelector ? postSelector : ".reply-post, .op-post";
     var posts = document.querySelectorAll(selector);
     Array.prototype.forEach.call(posts, function(el, i) {
-        var postId   = /p(?:opup)?(\d+)/.exec( el.id )[1];        
+        var postId   = /p(?:opup-)?(\d+)/.exec( el.id )[1];        
         var localId  = el.dataset.postLocalId;
         var board    = el.dataset.board;
         var threadId = el.dataset.threadLocalId;
@@ -532,7 +557,7 @@ function makeRefmap(postSelector) {
     Array.prototype.forEach.call(posts, function(el, i) {
         Array.prototype.forEach.call(el.querySelectorAll(".refmap-list"), function(el2){ el.removeChild(el2) });
 
-        var postId = /p(\d+)/.exec( el.id )[1];
+        var postId = /p(?:opup-)?(\d+)/.exec( el.id )[1];
         var allLinks = Monaba.refMap[postId];
         if (!allLinks) return "";
         var result = "";
@@ -554,7 +579,7 @@ function makeRefmap(postSelector) {
 // popup posts
 //-----------------------------------------------------------------
 function cachePopupPost(el) {
-    var postId   = /p(\d+)/.exec( el.id )[1];
+    var postId   = /p(?:opup-)?(\d+)/.exec( el.id )[1];
     var localId  = el.dataset.postLocalId;
     var board    = el.dataset.board;
     var threadId = el.dataset.threadLocalId;
@@ -570,16 +595,13 @@ function cachePopupPost(el) {
     span.className = 'close-popup-container';
     span.innerHTML = delPopup;
     post.appendChild(span);
+    Monaba.postCache[postId] = post;
     return post;
 }
 
-function cachePopupPosts(selector) {
+function initPopupsCache(selector) {
     var s = selector ? selector : '.reply-post, .op-post';
-    Array.prototype.forEach.call(document.querySelectorAll(s), function(el, i) {
-        var postId = /p(\d+)/.exec( el.id )[1];        
-        var post = cachePopupPost(el);
-        Monaba.postCache[postId] = post;
-    });
+    Array.prototype.forEach.call(document.querySelectorAll(s), cachePopupPost);
 }
 
 function displayPopupPost(event, post) {
@@ -613,9 +635,7 @@ function showPopupPost(event, postId, localId, board) {
         request.onload = function() {
             if (request.status >= 200 && request.status < 400) {
                 var el = parseDOMElement(request.responseText);
-                var postId = /p(\d+)/.exec( el.id )[1];        
                 var post = cachePopupPost(el);
-                Monaba.postCache[postId] = post;
                 displayPopupPost(event, post);
             } else {
                 popupMessage(request.responseText+" ("+request.status+")", 2000);
@@ -665,10 +685,13 @@ function refreshThread(board, threadId) {
             if (/reply/.test(data)) {
                 var posts = parseDOMElements(data);
                 var thr   = document.getElementById("thread-"+threadId);
-                for (var i = 0; i < posts.length; i++)
+                for (var i = 0; i < posts.length; i++) {
+                    addVideoPlayer(posts[i]);
+                    addUrlVideoPlayer(posts[i]);
                     thr.appendChild(posts[i]);
+                }
                 makeRefmap();
-                initVideoPlayer();
+                initPopupsCache();
                 // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
             } else if (data == "No such thread ") {
                 popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);

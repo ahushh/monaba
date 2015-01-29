@@ -450,47 +450,7 @@ function addUrlVideoPlayer(post) {
     });
 }
 //-----------------------------------------------------------------
-// popup messages
-//-----------------------------------------------------------------
-function popupMessage(text, delay, icon) {
-    var msg = document.getElementById('popupMessage');
-    if (msg == null) {
-        msg = document.createElement('div');
-        msg.id = 'popupMessage';
-        document.body.appendChild(msg)
-    }
-    
-    if (icon) {
-        text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
-    }
-    msg.innerHTML = text;
-    fadeIn(msg, 300);
-    if (delay) {
-        var t = setTimeout(function(){
-            fadeOut(msg, 300);
-        }, delay);
-    }
-}
-
-function closePopupMessage() {
-    fadeOut(document.getElementById('popupMessage'),300);
-}
-// //-----------------------------------------------------------------
-// function expandPost(postId) {
-//     if ($('#'+postId+' .message.abbreviated').length == 0)
-//         postId = 'popup-'+postId;
-//     $('#'+postId+' .message.abbreviated').removeClass('abbreviated');
-//     $('#'+postId+' .expand-post').hide();
-//     $('#'+postId+' .shrink-post').show();
-// }
-
-// function shrinkPost(postId) {
-//     if ($('#'+postId+' .message').length == 0)
-//         postId = 'popup-'+postId;
-//     $('#'+postId+' .message').addClass('abbreviated');
-//     $('#'+postId+' .expand-post').show();
-//     $('#'+postId+' .shrink-post').hide();
-// }
+// Images
 //-----------------------------------------------------------------
 function initImageExpanding(selector) {
     var s = selector ? selector : '.reply-post, .op-post';
@@ -533,6 +493,48 @@ function expandImage(post) {
         };
     });
 }
+//-----------------------------------------------------------------
+// popup messages
+//-----------------------------------------------------------------
+function popupMessage(text, delay, icon) {
+    var msg = document.getElementById('popupMessage');
+    if (msg == null) {
+        msg = document.createElement('div');
+        msg.id = 'popupMessage';
+        document.body.appendChild(msg)
+    }
+    
+    if (icon) {
+        text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
+    }
+    msg.innerHTML = text;
+    fadeIn(msg, 300);
+    if (delay) {
+        var t = setTimeout(function(){
+            fadeOut(msg, 300);
+        }, delay);
+    }
+}
+
+function closePopupMessage() {
+    fadeOut(document.getElementById('popupMessage'),300);
+}
+// //-----------------------------------------------------------------
+// function expandPost(postId) {
+//     if ($('#'+postId+' .message.abbreviated').length == 0)
+//         postId = 'popup-'+postId;
+//     $('#'+postId+' .message.abbreviated').removeClass('abbreviated');
+//     $('#'+postId+' .expand-post').hide();
+//     $('#'+postId+' .shrink-post').show();
+// }
+
+// function shrinkPost(postId) {
+//     if ($('#'+postId+' .message').length == 0)
+//         postId = 'popup-'+postId;
+//     $('#'+postId+' .message').addClass('abbreviated');
+//     $('#'+postId+' .expand-post').show();
+//     $('#'+postId+' .shrink-post').hide();
+// }
 //-----------------------------------------------------------------
 // Post higlighting
 //-----------------------------------------------------------------

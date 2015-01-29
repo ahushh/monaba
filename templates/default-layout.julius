@@ -39,6 +39,17 @@ function markToDelete(container) {
 //-----------------------------------------------------------------
 // Forms
 //-----------------------------------------------------------------
+function clearPostFormFields() {
+    var postform = document.getElementById('post-form');
+    var inputs = postform.getElementsByTagName("input");    
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type == "checkbox" || inputs[i].type == "file")
+            inputs[i].value = "";
+    }
+    var textarea = postform.getElementsByTagName("textarea")[0];
+    textarea.value = "";
+}
+
 function generatePassword(n) {
     if(!n) {
         n = 8;
@@ -672,10 +683,11 @@ function delPopupPost(post) {
     }
 }
 //-----------------------------------------------------------------
-function refreshThread(board, threadId) {
-    var lastPost = document.getElementById("thread-"+threadId).lastElementChild;
-    if (lastPost == null) {
-        lastPost = document.querySelector("#thread-"+threadId+" .op-post");
+function refreshThread(board, threadLocalId) {
+    var allPosts = document.querySelectorAll("#thread-"+threadLocalId+" .reply-post");
+    var lastPost = allPosts[ allPosts.length - 1 ];
+    if (! lastPost) {
+        lastPost = document.querySelector("#thread-"+threadLocalId+" .op-post");
     }
     var lastPostId = lastPost.dataset.postLocalId;
     var ictr = document.querySelector(".delete-form .icon-thread-refresh");
@@ -684,7 +696,7 @@ function refreshThread(board, threadId) {
     toggleInline(ajxl);
 
     var request = new XMLHttpRequest();
-    request.open('GET',"/ajax/thread/"+board+"/"+threadId+"/new/"+lastPostId, true);
+    request.open('GET',"/ajax/thread/"+board+"/"+threadLocalId+"/new/"+lastPostId, true);
     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     request.onload = function() {
         toggleInline(ictr);
@@ -693,7 +705,7 @@ function refreshThread(board, threadId) {
             var data = request.responseText;
             if (/reply/.test(data)) {
                 var posts = parseDOMElements(data);
-                var thr   = document.getElementById("thread-"+threadId);
+                var thr   = document.getElementById("thread-"+threadLocalId);
                 for (var i = 0; i < posts.length; i++) {
                     expandImage(posts[i]);
                     addVideoPlayer(posts[i]);

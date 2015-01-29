@@ -64,10 +64,10 @@ function truncateThread(threadLocalId,scrollToThreadBottom) {
     for (var i = 0; i < oldReplies.length; i++) {
         thread.insertBefore(oldReplies[i], tta);
     }
-    if (scrollToThreadBottom) {
+    // if (scrollToThreadBottom) {
         // var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
         // location.href = "#"+n;
-    }
+    // }
 }
 
 function showQuickPostForm(postId) {

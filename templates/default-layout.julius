@@ -17,6 +17,7 @@ var Monaba = {
 fillPasswords();
 checkHighlighted();
 makeRefmap();
+initImageExpanding();
 initVideoPlayer();
 initUrlVideoPlayer();
 initPopupsCache();
@@ -272,6 +273,7 @@ function showEditForm(postId) {
                     request1.onload = function() {
                         hideEditForm();
                         var newPost = parseDOMElement(request1.responseText);
+                        expandImage(newPost);
                         addVideoPlayer(newPost);
                         addUrlVideoPlayer(newPost);
                         post.parentNode.replaceChild(newPost, post);
@@ -474,41 +476,48 @@ function closePopupMessage() {
 //     $('#'+postId+' .expand-post').show();
 //     $('#'+postId+' .shrink-post').hide();
 // }
-// //-----------------------------------------------------------------
-// function doImageExpanding(post) {
-//     var parent = post ? ("#"+post+" ") : "";
-//     $(parent+'.file, '+parent+'.multi-file').each(function() {
-//         var fullUrl = $(this).find('a').attr('href');
-//         if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl))) {
-//             return "";
-//         }
-//         var thumbUrl    = $(this).find('img').attr('src');
-//         var thumbWidth  = $(this).find('img').attr('width');
-//         var thumbHeight = $(this).find('img').attr('height');
-//         $(this).find('img').mousedown(function(e){
-//             if (e.which == 2) { // middle click
-//                 window.open(fullUrl);
-//                 return true;
-//             }
-//             if ($(this).attr('src') == fullUrl) {
-//                 $(this).attr('src', thumbUrl);
-//                 $(this).attr('width' , thumbWidth);
-//                 $(this).attr('height', thumbHeight);
-//                 $(this).css('width', "");
-//             } else {
-//                 $(this).css('opacity', 0.7);
-//                 $(this).attr('src', fullUrl);
-//                 $(this).removeAttr('width');
-//                 $(this).removeAttr('height');
-//                 $(this).css('width', '93%');
+//-----------------------------------------------------------------
+function initImageExpanding(selector) {
+    var s = selector ? selector : '.reply-post, .op-post';
+    Array.prototype.forEach.call(document.querySelectorAll(s), expandImage);
+}
 
-//                 $(this).load(function() {
-//                     $(this).css('opacity', 1);
-//                 });
-//             }
-//         });
-//     });
-// }
+function expandImage(post) {
+    var files = post.querySelectorAll(".file, .multi-file");
+    Array.prototype.forEach.call(files, function(file) {
+        var thumbImg = file.getElementsByTagName("img")[0];
+        var fullUrl  = thumbImg.dataset.url;
+        if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl)))
+            return false;
+        var thumbUrl = thumbImg.src;
+        var thumbWidth = thumbImg.width;
+        var thumbHeight = thumbImg.height;
+        thumbImg.onclick = function(event) {
+            if (event.which == 2 || event.which == 3)
+                return true;
+            console.log(thumbImg.src);
+            console.log(fullUrl);
+            if (new RegExp(fullUrl).test(thumbImg.src)) {
+                thumbImg.src = thumbUrl;
+                thumbImg.onload = function() {
+                    thumbImg.style.width = '';
+                    thumbImg.setAttribute('width', thumbWidth);
+                    thumbImg.setAttribute('height', thumbHeight);
+                };
+            } else {
+                addClass(thumbImg, 'image-loading');
+                thumbImg.onload = function() {
+                    removeClass(thumbImg, 'image-loading');
+                    thumbImg.removeAttribute('width');
+                    thumbImg.removeAttribute('height');
+                    thumbImg.style.width = '100%';
+                };
+                thumbImg.src = fullUrl;
+            }
+            event.preventDefault();
+        };
+    });
+}
 //-----------------------------------------------------------------
 // Post higlighting
 //-----------------------------------------------------------------
@@ -686,6 +695,7 @@ function refreshThread(board, threadId) {
                 var posts = parseDOMElements(data);
                 var thr   = document.getElementById("thread-"+threadId);
                 for (var i = 0; i < posts.length; i++) {
+                    expandImage(posts[i]);
                     addVideoPlayer(posts[i]);
                     addUrlVideoPlayer(posts[i]);
                     thr.appendChild(posts[i]);
@@ -799,7 +809,8 @@ function hasClass(el, cl) {
 }
 
 function removeClass(el, cl) {
-    el.className = el.className.replace(new RegExp('(?:^|\s)'+cl+'(?!\S)'), '');
+    // el.className = el.className.replace(new RegExp('(?:^|\s)'+cl+'(?!\S)'), '');
+    el.className = el.className.replace(new RegExp(cl), '');
 }
 
 function addClass(el, cl) {

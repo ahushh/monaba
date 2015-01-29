@@ -54,10 +54,15 @@ hr {
     float: left;
 }
 
+
 .thumb {
-    margin: 6px;
-    cursor: pointer;
+   margin: 6px;
+   cursor: pointer;
    display: block;
+}
+
+.image-loading {
+   opacity: 0.7;
 }
 
 #message {

@@ -1,52 +1,74 @@
-// function expandThread(board, thread) {
-//     var replies = Monaba['expThreads'][thread];
-//     delete Monaba['expThreads'][thread];
-//     Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
-//     if (replies) {
-//         $("#thread-"+thread+" .omitted").toggle();
-//         $("#thread-"+thread+" .reply-post").remove();
-//         $("#thread-"+thread+" .truncate-thread").toggle();
-//         $("#thread-"+thread+" .truncate-thread-after").toggle();
-//         $("#thread-"+thread+" .truncate-thread").after(replies);
-//     } else {
-//         $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-//         $.get("/ajax/thread/"+board+"/"+thread+"/all", function(data) {
-//             if (data == "No such thread ") {
-//                 popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
-//                 delete Monaba['expThreads'][thread];
-//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-//             } else if (data == "No posts in this thread ") {
-//                 popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
-//                 delete Monaba['expThreads'][thread];
-//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-//             } else {
-//                 $("#thread-"+thread+" .omitted .ajax-loading").toggle();
-//                 $("#thread-"+thread+" .omitted").toggle();
-//                 $("#thread-"+thread+" .reply-post").remove();
-//                 $("#thread-"+thread+" .truncate-thread").toggle();
-//                 $("#thread-"+thread+" .truncate-thread-after").toggle();
-//                 $("#thread-"+thread+" .truncate-thread").after(data);
-//                 baseInit();
-//                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-//             }
-//         });
-//     }
-// }
+function expandThread(board, threadLocalId) {
+    var thread  = document.getElementById("thread-"+threadLocalId);
+    var ajxl    = thread.querySelector(".omitted .ajax-loading");
+    var omitted = thread.getElementsByClassName("omitted")[0];
+    var tt      = thread.getElementsByClassName("truncate-thread")[0];
+    var tta     = thread.getElementsByClassName("truncate-thread-after")[0];
+    delete Monaba['expThreads'][threadLocalId];
+    var newReplies = [];
+    var origReplies = thread.getElementsByClassName("reply-post");
+    for (var i = 0; i < origReplies.length; i++)
+        newReplies.push( origReplies[i].cloneNode(true) );
+    Monaba['expThreads'][threadLocalId] = newReplies;
 
-// function truncateThread(thread,scrollToThreadBottom) {
-//     var replies = Monaba['expThreads'][thread];
-//     delete Monaba['expThreads'][thread];    
-//     Monaba['expThreads'][thread] = $("#thread-"+thread+" .reply-post");
-//     $("#thread-"+thread+" .omitted").toggle();
-//     $("#thread-"+thread+" .truncate-thread").toggle();
-//     $("#thread-"+thread+" .truncate-thread-after").toggle();
-//     $("#thread-"+thread+" .reply-post").remove();
-//     $("#thread-"+thread+" .truncate-thread").after(replies);
-//     if (scrollToThreadBottom) {
-//         var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
-//         location.href = "#"+n;
-//     }
-// }
+    toggleInline(ajxl);
+    var request = new XMLHttpRequest();
+    request.open("GET", "/ajax/thread/"+board+"/"+threadLocalId+"/all", true);
+    request.onload = function() {
+        var data = request.responseText;
+        if (data == "No such thread ") {
+            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+            delete Monaba['expThreads'][threadLocalId];
+            toggleInline(ajxl);
+        } else if (data == "No posts in this thread ") {
+            popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
+            delete Monaba['expThreads'][threadLocalId];
+            toggleInline(ajxl);
+        } else {
+            toggleInline(ajxl);
+            toggleInline(omitted);
+            while (origReplies.length)
+                thread.removeChild(origReplies[0]);
+            toggleInline(tt);
+            toggleInline(tta);
+
+            var wrapper = document.createElement("div");
+            wrapper.innerHTML = data;
+            var posts = wrapper.children;
+            while (posts.length) {
+                initOnePost(posts[0]);
+                thread.insertBefore(posts[0], tta);
+            }
+            makeRefmap();
+            initPopupsCache();
+            // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        }
+    };
+    request.send();
+}
+
+function truncateThread(threadLocalId,scrollToThreadBottom) {
+    var thread  = document.getElementById("thread-"+threadLocalId);
+    var ajxl    = thread.querySelector(".omitted .ajax-loading");
+    var omitted = thread.getElementsByClassName("omitted")[0];
+    var tt      = thread.getElementsByClassName("truncate-thread")[0];
+    var tta     = thread.getElementsByClassName("truncate-thread-after")[0];
+    var oldReplies  = Monaba['expThreads'][threadLocalId];
+    var origReplies = thread.getElementsByClassName("reply-post");
+    delete Monaba['expThreads'][threadLocalId];
+    toggleInline(omitted);
+    while (origReplies.length)
+        thread.removeChild(origReplies[0]);
+    toggleInline(tt);
+    toggleInline(tta);
+    for (var i = 0; i < oldReplies.length; i++) {
+        thread.insertBefore(oldReplies[i], tta);
+    }
+    if (scrollToThreadBottom) {
+        // var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
+        // location.href = "#"+n;
+    }
+}
 
 // function showQuickPostForm(postId) {
 //     $("#post-form").removeClass().addClass("quick-post-form");

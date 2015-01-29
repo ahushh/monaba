@@ -21,6 +21,12 @@ initImageExpanding();
 initVideoPlayer();
 initUrlVideoPlayer();
 initPopupsCache();
+
+function initOnePost(post) {
+    expandImage(post);
+    addVideoPlayer(post);
+    addUrlVideoPlayer(post);
+}
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
@@ -284,9 +290,7 @@ function showEditForm(postId) {
                     request1.onload = function() {
                         hideEditForm();
                         var newPost = parseDOMElement(request1.responseText);
-                        expandImage(newPost);
-                        addVideoPlayer(newPost);
-                        addUrlVideoPlayer(newPost);
+                        initOnePost(newPost);
                         post.parentNode.replaceChild(newPost, post);
                         makeRefmap();
                         initPopupsCache();
@@ -707,9 +711,7 @@ function refreshThread(board, threadLocalId) {
                 var posts = parseDOMElements(data);
                 var thr   = document.getElementById("thread-"+threadLocalId);
                 for (var i = 0; i < posts.length; i++) {
-                    expandImage(posts[i]);
-                    addVideoPlayer(posts[i]);
-                    addUrlVideoPlayer(posts[i]);
+                    initOnePost(posts[i]);
                     thr.appendChild(posts[i]);
                 }
                 makeRefmap();

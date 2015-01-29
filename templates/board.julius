@@ -70,53 +70,84 @@ function truncateThread(threadLocalId,scrollToThreadBottom) {
     }
 }
 
-// function showQuickPostForm(postId) {
-//     $("#post-form").removeClass().addClass("quick-post-form");
-//     $("#p"+postId).after($("#post-form"));
-//     $("#post-form").css("display","table");
-//     $("#go-back-block").hide();
-    
-//     var action = $("#post-form").attr('action');
-//     var thread = /thread-(\d+)/.exec( $("#post-form").parent().attr('id') )[1];
-//     var board = $("#post-form").data('board');
+function showQuickPostForm(postId) {
+    var p = document.getElementById(postId);
+    var postform = document.getElementById('post-form');
+    postform.className = "quick-post-form";
+    insertAfter(postform, p);
+    p.parentNode.insertBefore( postform, p.nextSibling );
+    postform.style.display = 'table';
+    document.getElementById("go-back-block").style.display = 'none';
 
-//     $('#post-form').ajaxForm({
-//         beforeSend: function() {
-//             popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-//         },
-//         success: function(data) {
-//             closePopupMessage();
-//             if (data.ok) {
-//                 $('#post-form input[type=text]').clearFields();
-//                 $('#post-form input[type=file]').clearFields();
-//                 $('#post-form textarea').clearFields();
-//                 popupMessage(data.ok,2000);
-//                 closePostForm();
-//                 refreshThread(board, thread)
-//             } else {
-//                 popupMessage(data.error,2000);
-//             }
-//         }
-//     }); 
+    var action = postform.action;
+    var thread = postform.parentNode;
+    var threadLocalId = /thread-(\d+)/.exec( thread.id )[1];
+    var board = postform.dataset.board;
+    postform.onsubmit = function(event) {
+        var inputs = postform.getElementsByTagName("input");
+        var formData = new FormData();
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].type != "submit") {
+                if (inputs[i].files != null)
+                    formData.append(inputs[i].name, inputs[i].files[0] || "");
+                else
+                    formData.append(inputs[i].name, inputs[i].value || "");
+            }
+        }
+        var textarea = postform.getElementsByTagName("textarea")[0];
+        formData.append(textarea.name, textarea.value);
+        var select = postform.getElementsByTagName("select")[0];
+        formData.append(select.name, 1);
 
-//     $("#post-form").children().find('.reply-to').remove();
-//     $("#post-form").children().find('input[type=submit]').after(" <span class='reply-to'>"+#{toJSON $ msgrender MsgReplyToThread}+thread+"</span>")
-//     $("#no-bump-block").css("display","");
-//     var newUrl = "/"+board+"/"+thread;
-//     $("#post-form").attr('action', newUrl);
-// } 
+        var request = new XMLHttpRequest();
+        request.open('POST', postform.action, true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        request.onloadstart = function() {
+            popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        };
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var data = JSON.parse(request.responseText);
+                if (data.ok) {
+                    clearPostFormFields();
+                    popupMessage(data.ok, 2000);
+                    closePostForm();
+                    refreshThread(board, threadLocalId);
+                } else {
+                    popupMessage(data.error,2000);
+                }
+            } else {
+                popupMessage(request.responseText,2000);
+            }
+        };
+        request.send(formData);
+        event.preventDefault();
+    };
+    var rt = postform.getElementsByClassName("reply-to");
+    if (rt.length) rt[0].parentNode.removeChild( rt[0] );
+    var span = document.createElement("span");
+    span.className = 'reply-to';
+    span.innerHTML = #{toJSON $ msgrender MsgReplyToThread}+threadLocalId;
+    insertAfter( span, postform.querySelector('input[type=submit]') );
 
-// function showPlainPostForm() {
-//     $("#post-form").removeClass().addClass("plain-post-form");
-//     $("#post-form").children().find('.reply-to').remove();
-//     $('.show-plain-form').after($("#post-form"));
-//     $(".show-plain-form").hide();
-//     $("#post-form").css("display","block");
+    document.getElementById('no-bump-block').style.display = '';
+    postform.action = "/"+board+"/"+threadLocalId;
+} 
 
-//     $("#post-form").unbind();
-//     $("#no-bump-block").hide();
-//     $("#go-back-block").css("display","");
+function showPlainPostForm() {
+    var pf = document.getElementById('post-form');
+    pf.className = "plain-post-form";
+    var spf = document.getElementsByClassName('show-plain-form')[0];
+    insertAfter(pf, spf);
+    spf.style.display = 'none';
+    pf.style.display = 'block';
+    var rt = pf.getElementsByClassName("reply-to");
+    if (rt.length) rt[0].parentNode.removeChild( rt[0] );
 
-//     var board = $("#post-form").data('board');
-//     $("#post-form").attr('action', '/'+board);
-// }
+    pf.onsubmit = function() { return true };
+    document.getElementById('no-bump-block').style.display = 'none';
+    document.getElementById('go-back-block').style.display = '';
+
+    var board = pf.dataset.board;
+    pf.action = '/'+board;
+}

@@ -5,7 +5,7 @@ $if hasAccessToNewThread
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 $with na <- not hasAccessToNewThread 
-  <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength}>
+  <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
     ^{formWidget boardVal False muser}
             
 $if null threadsAndPreviews

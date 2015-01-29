@@ -15,7 +15,7 @@ $else
 $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
-    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength}>
+    <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
         ^{formWidget boardVal True muser}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" data-board=#{board}>

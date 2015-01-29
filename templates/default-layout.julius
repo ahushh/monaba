@@ -696,15 +696,15 @@ function refreshThread(board, threadLocalId) {
     var lastPostId = lastPost.dataset.postLocalId;
     var ictr = document.querySelector(".delete-form .icon-thread-refresh");
     var ajxl = document.querySelector(".delete-form .ajax-loading");
-    toggleInline(ictr);
-    toggleInline(ajxl);
+    if (ictr != null) toggleInline(ictr);
+    if (ajxl != null) toggleInline(ajxl);
 
     var request = new XMLHttpRequest();
     request.open('GET',"/ajax/thread/"+board+"/"+threadLocalId+"/new/"+lastPostId, true);
     request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     request.onload = function() {
-        toggleInline(ictr);
-        toggleInline(ajxl);
+        if (ictr != null) toggleInline(ictr);
+        if (ajxl != null) toggleInline(ajxl);
         if (request.status >= 200 && request.status < 400) {
             var data = request.responseText;
             if (/reply/.test(data)) {

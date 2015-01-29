@@ -1,14 +1,3 @@
-function clearPostFormFields() {
-    var postform = document.getElementById('post-form');
-    var inputs = postform.getElementsByTagName("input");    
-    for (var i = 0; i < inputs.length; i++) {
-        if (inputs[i].type == "checkbox" || inputs[i].type == "file")
-            inputs[i].value = "";
-    }
-    var textarea = postform.getElementsByTagName("textarea")[0];
-    textarea.value = "";
-}
-
 var postform = document.getElementById('post-form');
 postform.onsubmit = function(event) {
     var inputs = postform.getElementsByTagName("input");

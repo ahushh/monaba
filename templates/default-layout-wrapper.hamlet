@@ -11,17 +11,17 @@ $newline never
         <title>#{pageTitle pc}
         $maybe s <- stylesheet
           $if s == "Ash"
-              <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+              <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>
           $elseif s == "Futaba"
-              <link rel=stylesheet type=text/css title=Futaba href=@{StaticR css_futaba_css}>
+              <link rel=stylesheet type=text/css title=Futaba href=@{StaticR stylesheets_futaba_css}>
           $elseif s == "Chaos"
-              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_chaos_css}>
+              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_chaos_css}>
           $elseif s == "Mayuri"
-              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_mayuri_css}>
+              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_mayuri_css}>
           $elseif s == "Nox"
-              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR css_nox_css}>
+              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_nox_css}>
         $nothing
-          <link rel=stylesheet type=text/css title=Ash href=@{StaticR css_ash_css}>
+          <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>
         <meta name="description" content="Haskell imageboard">
         <meta name="keywords" content="haskell,haibane renmei,rakka,yesod,monaba,imageboard,хаскелль,имиджборда,альянс серокрылых">
         <meta name="author" content="">

@@ -114,7 +114,7 @@ hr {
     word-wrap: break-word;
 }
 
-.popup-post .icon-edit-post, .popup-post .icon-reply {
+.popup-post .icon-edit-post, .popup-post .icon-reply, .popup-post .last-modified {
    display: none;
 }
 

@@ -16,6 +16,7 @@ var Monaba = {
         mathjax: false,
         animationSpeed: 300,
         popupMessageDelay: 2000,
+        popupPostDelay: 500,
         youtube: {
             enable: true,
             loadTitles: false,
@@ -620,7 +621,7 @@ function makeRefmap(postSelector) {
                     Monaba.refMap[refId] = [];
                 }
                 var link = "/thread/"+board+"/"+threadId+"#"+localId;
-                var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"timeout(this, function(){showPopupPost(event,"+postId+","+localId+",'"+board+"');},700)\" onclick='highlightPost("+postId+")' href='"+link+"'>>>"+localId+"</a>";
+                var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"showPopupPost(this, event,"+postId+","+localId+",'"+board+"')\" onclick='highlightPost("+postId+")' href='"+link+"'>>>"+localId+"</a>";
                 if (! Monaba.refMap[refId].contains(postUrl))
                     Monaba.refMap[refId].push(postUrl);
             }
@@ -677,29 +678,29 @@ function initPopupsCache(selector) {
 }
 
 function displayPopupPost(event, post) {
-    post.style.left = event.pageX + "px";
-    post.style.top  = event.pageY + "px";
-    // var wHeight = + window.innerHeight;
-    // var wWidth  = + window.innerWidth;
-    // var pHeight = + post.offsetHeight;
-    // var pWidth  = + post.offsetWidth;
-    // var cursorY = + event.pageY;
-    // var cursorX = + event.pageX;
-    // var diffH   = + window.scrollY;
-    // if (cursorY + pHeight > wHeight + diffH) {
-    //     post.style.top = cursorY - pHeight - 30;
-    // }
-    // if ((cursorX + pWidth + 30) > wWidth) {
-    //     post.style.left = cursorX - pWidth - 40;
-    // }
     document.body.appendChild(post);
-    // var postFullId = post.attr('id');
-    // addEmbeddedPlayer(postFullId);
-    // doImageExpanding(postFullId);
-    // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    post.style["z-index"] = -999999; // offsetHeight and offsetWidth won't work otherwise
+
+    var wHeight = + window.innerHeight;
+    var wWidth  = + window.innerWidth;
+    var pHeight = + post.offsetHeight;
+    var pWidth  = + post.offsetWidth;
+
+    var cursorY = + event.pageY;
+    var cursorX = + event.pageX;
+    var diffH   = + window.scrollY;
+    post.style.left = cursorX + "px";
+    post.style.top  = cursorY + "px";
+    if (cursorY + pHeight > wHeight + diffH) {
+        post.style.top = (cursorY - pHeight) + "px";
+    }
+    if ((cursorX + pWidth) > wWidth) {
+        post.style.left = (cursorX - pWidth) + "px";
+    }
+    post.style["z-index"] = 0;
 }
 
-function showPopupPost(event, postId, localId, board) {
+function showPopupPost(element, event, postId, localId, board) {
     if (!Monaba.postCache[postId]) {
         var request = new XMLHttpRequest();
         request.open('GET',"/ajax/post/"+board+"/"+localId,true);
@@ -708,7 +709,8 @@ function showPopupPost(event, postId, localId, board) {
             if (request.status >= 200 && request.status < 400) {
                 var el = parseDOMElement(request.responseText);
                 var post = cachePopupPost(el);
-                displayPopupPost(event, post);
+                var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
+                element.onmouseleave = function() { clearTimeout(t) };
             } else {
                 popupMessage(request.responseText+" ("+request.status+")", Monaba.cnf.popupMessageDelay);
             }
@@ -719,7 +721,8 @@ function showPopupPost(event, postId, localId, board) {
         request.send();
     } else {
         var post = Monaba.postCache[postId];
-        displayPopupPost(event, post);
+        var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
+        element.onmouseleave = function() { clearTimeout(t) };
     }
 }
 
@@ -861,11 +864,6 @@ function fadeOut(el,n) {
 // ---------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------
-function timeout(elem, f, time) {
-    var t = setTimeout(f, time);
-    elem.onmouseout = function(){ clearTimeout(t) };
-}
-
 function hasClass(el, cl) {
     return new RegExp('(?:^|\s)'+cl+'( |$)', 'gi').test(el.className);
 }

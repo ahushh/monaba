@@ -87,13 +87,13 @@ function countSymbols(formId) {
         document.querySelector('#'+formId+' textarea').innerHTML = len;
         return;
     }
-
+    var sc = document.querySelector('#'+formId+' .symbol-counter');
     if (len > maxLen) {
-        document.querySelector('.symbol-counter').innerHTML = len+'/'+maxLen;
-        document.querySelector('.symbol-counter').style.color = 'red';
+        sc.innerHTML = len+'/'+maxLen;
+        sc.style.color = 'red';
     } else {
-        document.querySelector('.symbol-counter').innerHTML = len;
-        document.querySelector('.symbol-counter').style.color = 'green';
+        sc.innerHTML = len;
+        sc.style.color = 'green';
     }
 }
 

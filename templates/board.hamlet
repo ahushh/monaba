@@ -26,7 +26,7 @@ $else
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
         ^{deleteWidget permissions}
-    <div #edit-form style=display:none>
+    <div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
         ^{formWidget'}
 
 ^{paginationWidget page pages (BoardR board)}

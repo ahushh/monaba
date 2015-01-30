@@ -43,5 +43,5 @@ $if hasAccessToReply
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
 
-<div #edit-form style=display:none>
+<div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
     ^{formWidget'}         

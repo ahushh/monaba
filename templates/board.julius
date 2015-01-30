@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initSymbolCounter('post-form');
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
+    initMathjax();
 });
 
 function expandThread(board, threadLocalId) {
@@ -28,11 +29,11 @@ function expandThread(board, threadLocalId) {
     request.onload = function() {
         var data = request.responseText;
         if (data == "No such thread ") {
-            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+            popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, Monaba.cnf.popupMessageDelay);
             delete Monaba['expThreads'][threadLocalId];
             toggleInline(ajxl);
         } else if (data == "No posts in this thread ") {
-            popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, 2000);
+            popupMessage(#{toJSON $ msgrender MsgNoPostsAnymore}, Monaba.cnf.popupMessageDelay);
             delete Monaba['expThreads'][threadLocalId];
             toggleInline(ajxl);
         } else {
@@ -121,14 +122,14 @@ function showQuickPostForm(postId) {
                 var data = JSON.parse(request.responseText);
                 if (data.ok) {
                     clearPostFormFields();
-                    popupMessage(data.ok, 2000);
+                    popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
                     closePostForm();
                     refreshThread(board, threadLocalId);
                 } else {
-                    popupMessage(data.error,2000);
+                    popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {
-                popupMessage(request.responseText,2000);
+                popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
             }
         };
         request.send(formData);

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initSymbolCounter('post-form');
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
+    initMathjax();
 
     var postform = document.getElementById('post-form');
     postform.onsubmit = function(event) {
@@ -36,17 +37,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var data = JSON.parse(request.responseText);
                 if (data.ok) {
                     clearPostFormFields();
-                    popupMessage(data.ok, 2000);
+                    popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
                     closePostForm();
                     var thread   = document.getElementsByClassName("thread")[0];
                     var threadId = /thread-(\d+)/.exec( thread.id )[1];
                     var board    = thread.dataset.board;
                     refreshThread(board, threadId);
                 } else {
-                    popupMessage(data.error,2000);
+                    popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {
-                popupMessage(request.responseText,2000);
+                popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
             }
         };
         request.send(formData);

@@ -12,6 +12,18 @@ var Monaba = {
     expThreads: {},
     refMap: {},
     postCache: {},
+    cnf: {
+        mathjax: false,
+        animationSpeed: 300,
+        popupMessageDelay: 2000,
+        youtube: {
+            enable: true,
+            loadTitles: false,
+            html5: true,
+            width: 360,
+            height: 270,
+        }
+    }
 };
 
 function initAllPosts() {
@@ -19,6 +31,35 @@ function initAllPosts() {
     initVideoPlayer();
     initUrlVideoPlayer();
     initPopupsCache();
+}
+
+function initMathjax() {
+    if (!Monaba.cnf.mathjax)
+        return;
+    var head = document.getElementsByTagName('head')[0];        
+    var script = document.createElement('script');
+    script.src = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML";
+    script.onload = function() {
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath : [ ['[l]','[/l]'],
+                               ['$','$'],
+                               ['\\(','\\)']
+                             ],
+                displayMath: [ ['[latex]','[/latex]'],
+                               ['$$','$$'],
+                               ["\\[","\\]"]
+                             ],
+                processEscapes: true
+            },
+        });
+    };
+    head.appendChild(script);
+}
+
+function refreshMathjax() {
+    if (Monaba.cnf.mathjax)
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
 function initOnePost(post) {
@@ -237,17 +278,17 @@ function initCodeButton(formId,plaintext) {
         cm.style.opacity = 0;
         cm.style.top = e.pageY-3+"px";
         cm.style.left = e.pageX-3+"px";
-        fadeIn(cm,300);
+        fadeIn(cm,Monaba.cnf.animationSpeed);
     };
 
-    cm.onmouseleave = function() { fadeOut(cm,300); cm.style.display='none' };
+    cm.onmouseleave = function() { fadeOut(cm,Monaba.cnf.animationSpeed); cm.style.display='none' };
     cm_select.onchange = function() {
         var lang = this.value.toString();
         if (lang && lang != '') {
             insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
             countSymbols(formId);
         }
-        fadeOut(cm,300); cm.style.display='none';
+        fadeOut(cm,Monaba.cnf.animationSpeed); cm.style.display='none';
     };
 }
 //-----------------------------------------------------------------
@@ -293,16 +334,16 @@ function showEditForm(postId) {
                         post.parentNode.replaceChild(newPost, post);
                         makeRefmap();
                         initPopupsCache();
-                        // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                        refreshMathjax();
                     
-                        popupMessage(response.ok,2000);
+                        popupMessage(response.ok, Monaba.cnf.popupMessageDelay);
                     };
                     request1.send();
                 } else {
-                    popupMessage(response.error,2000);
+                    popupMessage(response.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {
-                popupMessage(request.responseText,2000);
+                popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
             }
         };
         request.send(json2urlencode(obj));
@@ -367,6 +408,7 @@ function initUrlVideoPlayer(selector) {
 }
 
 function addUrlVideoPlayer(post) {
+    if (!Monaba.cnf.youtube.enable) return;
     var postId = post.id;
     var first = true;
     var links = post.querySelectorAll(".message a");
@@ -385,21 +427,19 @@ function addUrlVideoPlayer(post) {
             first = false;
             first1 = true;
         }
-        var request = new XMLHttpRequest({mozSystem: true});
-        request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
-        request.onload = function(){
-            var data   = JSON.parse(request.responseText);
-            var width  = 360; //data.entry.media$group.media$thumbnail[2].width;
-            var height = 270; //data.entry.media$group.media$thumbnail[2].height;
-            var title  = data.entry.title.$t;
+        var handle = function(data){
+            var width  = Monaba.cnf.youtube.width || data.entry.media$group.media$thumbnail[2].width;
+            var height = Monaba.cnf.youtube.height || data.entry.media$group.media$thumbnail[2].height;
+            var title  = Monaba.cnf.youtube.loadTitles && data ? data.entry.title.$t : url;
             var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
             var iframe =  document.createElement("iframe");
-            iframe.style.width = width;
-            iframe.style.height = height;
+            iframe.width = width;
+            iframe.height = height;
             link.className = 'video-link';
             link.innerHTML = "<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>";
             var loadIframe = function () {
-                iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1";
+                iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" +
+                    (Monaba.cnf.youtube.html5 ? "&html5=1" : "");
                 addClass(iframe, "loaded");
             };
             iframe.style.display = 'none';
@@ -445,7 +485,14 @@ function addUrlVideoPlayer(post) {
             };
 
         };
-        request.send();
+        if (Monaba.cnf.loadTitles || !Monaba.cnf.youtube.height || !Monaba.cnf.youtube.height) {
+            var request = new XMLHttpRequest({mozSystem: true});
+            request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
+            request.onload = function() { handle( JSON.parse(request.responseText) ) };
+            request.send();
+        } else {
+            handle();
+        }
     });
 }
 //-----------------------------------------------------------------
@@ -507,16 +554,16 @@ function popupMessage(text, delay, icon) {
         text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
     }
     msg.innerHTML = text;
-    fadeIn(msg, 300);
+    fadeIn(msg, Monaba.cnf.animationSpeed);
     if (delay) {
         var t = setTimeout(function(){
-            fadeOut(msg, 300);
+            fadeOut(msg,Monaba.cnf.animationSpeed);
         }, delay);
     }
 }
 
 function closePopupMessage() {
-    fadeOut(document.getElementById('popupMessage'),300);
+    fadeOut(document.getElementById('popupMessage'),Monaba.cnf.animationSpeed);
 }
 // //-----------------------------------------------------------------
 // function expandPost(postId) {
@@ -663,11 +710,11 @@ function showPopupPost(event, postId, localId, board) {
                 var post = cachePopupPost(el);
                 displayPopupPost(event, post);
             } else {
-                popupMessage(request.responseText+" ("+request.status+")", 2000);
+                popupMessage(request.responseText+" ("+request.status+")", Monaba.cnf.popupMessageDelay);
             }
         };
         request.onerror = function() {
-            popupMessage(request.responseText+" ("+request.status+")", 2000);
+            popupMessage(request.responseText+" ("+request.status+")", Monaba.cnf.popupMessageDelay);
         };
         request.send();
     } else {
@@ -717,14 +764,14 @@ function refreshThread(board, threadLocalId) {
                 }
                 makeRefmap();
                 initPopupsCache();
-                // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                refreshMathjax();
             } else if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, 2000);
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, Monaba.cnf.popupMessageDelay);
             } else if (data == "No new posts ") {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, 2000);
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
             }
         } else {
-            popupMessage(request.responseText,2000);
+            popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
         }
     };
     request.send();

@@ -1,3 +1,11 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    fillPasswords();
+    makeRefmap();
+    initAllPosts();
+    initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('edit-form');
+});
+
 function loadPreviousPosts(baseOffset) {
     var offset = document.getElementById('load-previous-posts').dataset.offset;
     Array.prototype.forEach.call(document.querySelectorAll('.ajax-loading'), function(el,i) { toggleInline(el); });

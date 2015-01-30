@@ -1,2 +1,0 @@
-initCodeButton('post-form',#{toJSON $ msgrender MsgPlainText});
-initSymbolCounter('edit-form');

@@ -14,13 +14,12 @@ var Monaba = {
     postCache: {},
 };
 
-fillPasswords();
-checkHighlighted();
-makeRefmap();
-initImageExpanding();
-initVideoPlayer();
-initUrlVideoPlayer();
-initPopupsCache();
+function initAllPosts() {
+    initImageExpanding();
+    initVideoPlayer();
+    initUrlVideoPlayer();
+    initPopupsCache();
+}
 
 function initOnePost(post) {
     expandImage(post);

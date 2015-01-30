@@ -1,47 +1,59 @@
-var postform = document.getElementById('post-form');
-postform.onsubmit = function(event) {
-    var inputs = postform.getElementsByTagName("input");
-    var formData = new FormData();
-    for (var i = 0; i < inputs.length; i++) {
-        if (inputs[i].type != "submit") {
-            if (inputs[i].files != null)
-                formData.append(inputs[i].name, inputs[i].files[0] || "");
-            else
-                formData.append(inputs[i].name, inputs[i].value || "");
+document.addEventListener("DOMContentLoaded", function(event) {
+    fillPasswords();
+    checkHighlighted();
+    makeRefmap();
+    initAllPosts();
+    initCodeButton('post-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('post-form');
+    initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('edit-form');
+
+    var postform = document.getElementById('post-form');
+    postform.onsubmit = function(event) {
+        var inputs = postform.getElementsByTagName("input");
+        var formData = new FormData();
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].type != "submit") {
+                if (inputs[i].files != null)
+                    formData.append(inputs[i].name, inputs[i].files[0] || "");
+                else
+                    formData.append(inputs[i].name, inputs[i].value || "");
+            }
         }
-    }
-    var textarea = postform.getElementsByTagName("textarea")[0];
-    formData.append(textarea.name, textarea.value);
-    var select = postform.getElementsByTagName("select")[0];
+        var textarea = postform.getElementsByTagName("textarea")[0];
+        formData.append(textarea.name, textarea.value);
+        var select = postform.getElementsByTagName("select")[0];
         formData.append(select.name, 1);
 
-    var request = new XMLHttpRequest();
-    request.open('POST', postform.action, true);
-    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    request.onloadstart = function() {
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-    };
-    request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var data = JSON.parse(request.responseText);
-            if (data.ok) {
-                clearPostFormFields();
-                popupMessage(data.ok, 2000);
-                closePostForm();
-                var thread   = document.getElementsByClassName("thread")[0];
-                var threadId = /thread-(\d+)/.exec( thread.id )[1];
-                var board    = thread.dataset.board;
-                refreshThread(board, threadId);
+        var request = new XMLHttpRequest();
+        request.open('POST', postform.action, true);
+        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        request.onloadstart = function() {
+            popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+        };
+        request.onload = function() {
+            if (request.status >= 200 && request.status < 400) {
+                var data = JSON.parse(request.responseText);
+                if (data.ok) {
+                    clearPostFormFields();
+                    popupMessage(data.ok, 2000);
+                    closePostForm();
+                    var thread   = document.getElementsByClassName("thread")[0];
+                    var threadId = /thread-(\d+)/.exec( thread.id )[1];
+                    var board    = thread.dataset.board;
+                    refreshThread(board, threadId);
+                } else {
+                    popupMessage(data.error,2000);
+                }
             } else {
-                popupMessage(data.error,2000);
+                popupMessage(request.responseText,2000);
             }
-        } else {
-            popupMessage(request.responseText,2000);
-        }
+        };
+        request.send(formData);
+        event.preventDefault();
     };
-    request.send(formData);
-    event.preventDefault();
-};
+
+});
 
 function showQuickPostForm(postId) {
     var p = document.getElementById(postId);

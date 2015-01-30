@@ -1,3 +1,14 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    fillPasswords();
+    checkHighlighted();
+    makeRefmap();
+    initAllPosts();
+    initCodeButton('post-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('post-form');
+    initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('edit-form');
+});
+
 function expandThread(board, threadLocalId) {
     var thread  = document.getElementById("thread-"+threadLocalId);
     var ajxl    = thread.querySelector(".omitted .ajax-loading");

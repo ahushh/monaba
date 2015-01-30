@@ -61,7 +61,7 @@ editForm extra = do
   (postIdRes  , postIdView  ) <- mreq intField      "" Nothing
   (messageRes , messageView ) <- mreq textareaField "" Nothing
   (passwordRes, passwordView) <- mreq passwordField "" Nothing  
-  msgrender <- getMessageRender
+  -- msgrender <- getMessageRender
   let result = (,,) <$> messageRes <*> passwordRes <*> postIdRes
       widget = $(widgetFile "edit-form")
   return (result, widget)

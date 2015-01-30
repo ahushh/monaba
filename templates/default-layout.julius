@@ -615,10 +615,10 @@ function cachePopupPost(el) {
     
     var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
     var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-    var delPopup = "<a onclick='delPopupPost()'>"+closeAllPopup+"</a> <a onclick='delPopupPost(\""+postId+"\")'>"+closeOnePopup+"</a>";
+    var closePopups = "<a onclick='closePopupPost()'>"+closeAllPopup+"</a> <a onclick='closePopupPost(\""+postId+"\")'>"+closeOnePopup+"</a>";
     var span = document.createElement('span');
     span.className = 'close-popup-container';
-    span.innerHTML = delPopup;
+    span.innerHTML = closePopups;
     post.appendChild(span);
     Monaba.postCache[postId] = post;
     return post;
@@ -676,14 +676,14 @@ function showPopupPost(event, postId, localId, board) {
     }
 }
 
-function delPopupPost(post) {
+function closePopupPost(post) {
     if (post) {
         var p = document.getElementById('popup-'+post);
         p.parentNode.removeChild(p);
     } else {
         var posts = document.getElementsByClassName('popup-post');
-        for (var i = 0; i < posts.length; i++) {
-            posts[i].parentNode.removeChild(posts[i]);
+        while (posts.length) {
+            posts[0].parentNode.removeChild(posts[0]);
         }
     }
 }

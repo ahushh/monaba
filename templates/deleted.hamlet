@@ -1,6 +1,6 @@
 <div id="board-header"> #{nameOfTheBoard} — #{boardDesc}
-$if not $ T.null boardLongDesc
-    <div id="board-long-desc">#{boardLongDesc}
+$if not $ T.null boardSummaryVal
+  <div id="board-summary">#{boardSummaryVal}
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts

@@ -17,10 +17,10 @@ getDeletedByOpR board thread = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
-  let permissions   = getPermissions       mgroup
-      geoIpEnabled  = boardEnableGeoIp     boardVal
-      boardDesc     = boardTitle     boardVal
-      boardLongDesc = boardSummary boardVal
+  let permissions     = getPermissions       mgroup
+      geoIpEnabled    = boardEnableGeoIp     boardVal
+      boardDesc       = boardTitle     boardVal
+      boardSummaryVal = boardSummary boardVal
   unless (boardOpModeration boardVal) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do

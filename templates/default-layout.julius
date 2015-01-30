@@ -73,13 +73,13 @@ function initOnePost(post) {
 //-----------------------------------------------------------------
 function markToDelete(container) {
     var input = container.querySelector('input');
-    var img   = container.querySelector('img');
+    var icon   = container.querySelector('i');
     if (input.checked == false) {
         input.checked = true;
-        img.style.opacity = 1.0;
+        icon.style.opacity = 0.3;
     } else {
         input.checked = false;
-        img.style.opacity = 0.3;
+        icon.style.opacity = 1;
     }
 }
 
@@ -437,7 +437,7 @@ function addUrlVideoPlayer(post) {
             iframe.width = width;
             iframe.height = height;
             link.className = 'video-link';
-            link.innerHTML = "<img src='/static/img/blank.gif' class='icon-play'>"+title+"</div>";
+            link.innerHTML = "<i class='fa fa-youtube-play'></i>"+title;
             var loadIframe = function () {
                 iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" +
                     (Monaba.cnf.youtube.html5 ? "&html5=1" : "");
@@ -552,7 +552,7 @@ function popupMessage(text, delay, icon) {
     }
     
     if (icon) {
-        text = "<img src=@{StaticR img_ajax_loader_gif}> "+text;
+        text = "<i class='fa fa-refresh fa-sping'> "+text;
     }
     msg.innerHTML = text;
     fadeIn(msg, Monaba.cnf.animationSpeed);
@@ -661,9 +661,9 @@ function cachePopupPost(el) {
     post.className = 'popup-post';
     post.id = 'popup-'+postId;
     
-    var closeAllPopup = "<img alt='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-all'>";
-    var closeOnePopup = "<img alt='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' src='/static/img/blank.gif' class='icon-close-popup-one'>";
-    var closePopups = "<a onclick='closePopupPost()'>"+closeAllPopup+"</a> <a onclick='closePopupPost(\""+postId+"\")'>"+closeOnePopup+"</a>";
+    var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
+    var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
+    var closePopups = closeAllPopup+" "+closeOnePopup;
     var span = document.createElement('span');
     span.className = 'close-popup-container';
     span.innerHTML = closePopups;

@@ -7,7 +7,7 @@ $if offset == 0
         [ 
         <a .i-want-more>
           _{MsgIwantmore}
-          <img style=display:none .ajax-loading src=@{StaticR img_ajax_loader_gif}> 
+          <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
         ]
     <div #edit-form style=display:none>
       ^{editFormWidget}

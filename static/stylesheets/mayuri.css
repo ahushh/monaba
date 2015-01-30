@@ -7,11 +7,6 @@ body {
     background-color: #353535;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-white.png");
-    opacity: 0.5;
-}
-
 .container {
     overflow: hidden;
     margin-top: 0px;

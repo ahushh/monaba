@@ -2,8 +2,8 @@
     <div .post-header>
         <span .mark-to-delete onclick="markToDelete(this)">
             <input type=checkbox name=postdelete value=#{sPostId}>
-            <img alt=[x] title=_{MsgMarkToDeleteIcon} src=@{StaticR img_blank_gif} .icon-del-post>
-        <img alt=[edit] title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" src=@{StaticR img_blank_gif} .icon-edit-post>
+            <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close>
+        <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit>
         $maybe (code, name) <- lookup (entityKey ePost) geoIps
             <img src=#{geoIconPath code} title=#{name}>
         <span .reply-title>#{postTitle $ postVal}
@@ -12,11 +12,11 @@
         $if isThread
             <div .thread-status>
                 $if postSticked postVal
-                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsSticked} alt=_{MsgThreadIsSticked} .icon-thread-sticked>
+                    <i title=_{MsgThreadIsSticked} .fa .fa-caret-down>
                 $if postLocked postVal
-                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadIsLocked} alt=_{MsgThreadIsLocked} .icon-thread-locked>
+                    <i title=_{MsgThreadIsLocked} .fa .fa-lock>
                 $if postAutosage postVal
-                    <img src=@{StaticR img_blank_gif} title=_{MsgThreadAutosage} alt=_{MsgThreadAutosage} .icon-thread-autosage>
+                    <i title=_{MsgThreadAutosage} .fa .fa-angle-double-down>
         <span .reflink>
             $if isThread
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>#{pack "#"}#
@@ -24,7 +24,7 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>#{pack "#"}#
             <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')">#{sPostLocalId}
         $if canPost
-            <img alt=[reply] title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" src=@{StaticR img_blank_gif} .icon-reply>
+            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right>
         <span .cpanel>
            $if isThread
                 $if not inThread

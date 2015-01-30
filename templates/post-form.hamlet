@@ -60,7 +60,7 @@
                         $forall (i, fv) <- enumerate fileviews
                             <div .file-input>
                                 ^{fvInput fv}
-                                <img alt=[remove] title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" src=@{StaticR img_blank_gif} .icon-close>
+                                <i title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" .fa .fa-close .icon-close>
         <tr #go-back-block .post-block>
             <td .post-block-named>_{MsgGoback}
             <td>

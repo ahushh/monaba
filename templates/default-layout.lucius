@@ -25,16 +25,8 @@ hr {
    clear: left;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-  vertical-align: text-top;
-  background-image: url(@{StaticR img_glyphicons_png});
-  background-repeat: no-repeat;
-  display: inline;
-  height: 14px;
-  line-height: 14px;
-  margin-top: 1px;
-  width: 14px;
-  cursor: pointer;
+.fa {
+   cursor: pointer;
 }
 
 .thread {
@@ -114,7 +106,7 @@ hr {
     word-wrap: break-word;
 }
 
-.popup-post .icon-edit-post, .popup-post .icon-reply, .popup-post .last-modified {
+.popup-post .icon-edit-post, .popup-post .icon-reply, .popup-post .last-modified, .popup-post .icon-del-post {
    display: none;
 }
 
@@ -122,14 +114,6 @@ hr {
    margin-left: 2px;  
    float:left;
    clear: left;
-}
-
-.icon-close-popup-all {
-  background-position: -1085px -77px;
-}
-
-.icon-close-popup-one {
-  background-position: -29px -101px;
 }
 
 #board-header {
@@ -154,18 +138,6 @@ hr {
 
 .thread-status {
   display: inline;
-}
-
-.icon-thread-sticked {
-  background-position: -989px -149px;
-}
-
-.icon-thread-locked {
-  background-position: -173px -101px;
-}
-
-.icon-thread-autosage {
-  background-position: -389px -101px;
 }
 
 .admin-table {
@@ -208,17 +180,9 @@ hr {
     font-style: italic;
 }
 
-.icon-reply {
-  background-position: -605px -173px;
-}
-
 .show-plain-form {
     display:none;
     text-align: center;
-}
-
-.icon-thread-refresh {
-   background-position: -773px -29px;
 }
 
 .board-list {
@@ -228,19 +192,6 @@ hr {
 #control-panel {
     float: right;
     text-align: right;
-}
-
-.icon-edit-post {
-    background-position: -77px -77px;
-}
-
-.icon-close {
-    background-position: -269px -101px;
-}
-
-.icon-del-post {
-    background-position: -269px -101px;
-    opacity: 0.3;
 }
 
 .mark-to-delete input[type=checkbox] {
@@ -297,12 +248,6 @@ hr {
 
 iframe {
     border: 0px;
-}
-
-.icon-play {
-    background-position: -629px -77px;
-    margin-right: 3px;
-
 }
 
 .focused {

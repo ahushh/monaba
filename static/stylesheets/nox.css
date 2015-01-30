@@ -6,11 +6,6 @@ html, body {
     padding: 10px;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-white.png");
-    opacity: 0.5;
-}
-
 footer {
 }
 

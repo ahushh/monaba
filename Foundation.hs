@@ -163,11 +163,11 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             -- addScriptRemote "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"
-            -- $(combineStylesheets 'StaticR
-            --     [
-            --     -- css_normalize_css
-            --     -- , css_bootstrap_css
-            --     ])
+            $(combineStylesheets 'StaticR
+                [
+                css_font_awesome_min_css
+                -- , css_bootstrap_css
+                ])
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 

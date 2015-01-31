@@ -17,6 +17,11 @@ var Monaba = {
         animationSpeed: 300,
         popupMessageDelay: 2000,
         popupPostDelay: 500,
+        video: {
+            autoplay: true,
+            loop: true,
+            scale: 1.5,
+        },
         youtube: {
             enable: true,
             loadTitles: false,
@@ -386,7 +391,18 @@ function addVideoPlayer(post) {
     Array.prototype.forEach.call(links, function(link) {
         link.onclick = function(){
             link.style.display = 'none';
-            link.parentNode.appendChild( parseDOMElement("<video autoplay controls width="+link.width*2+"><source src='"+link.dataset.url+"'></video>") );
+            var video = document.createElement("video");
+            video.controls = true;
+            if (Monaba.cnf.video.autoplay)
+                video.autoplay = 'autoplay';
+            if (Monaba.cnf.video.loop)
+                video.loop = 'loop';
+            if (Monaba.cnf.video.scale)
+                video.width = link.width*Monaba.cnf.video.scale;
+            var source = document.createElement("source");
+            source.src = link.dataset.url;
+            video.appendChild(source);
+            link.parentNode.appendChild( video );
         };
     });
 }

@@ -147,7 +147,7 @@ pre {
     background: none repeat scroll 0% 0% #202020;
 }
 
-#popupMessage {
+.popupMessage {
     background: none repeat scroll 0% 0% #050505;
     border: 1px solid #707070;
 }

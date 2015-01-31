@@ -264,6 +264,7 @@ NoNewPosts: Нет новых постов
 ThreadNotExist: Похоже, этот тред больше не существует
 NoPostsAnymore: Внезапно, в этом треде постов нет вообще
 Loading: Загрузка...
+ConnectionError: Ошибка соединения
 
 Replies: Ответы:
 CloseAllPopupIcon: Закрыть все

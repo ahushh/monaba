@@ -165,14 +165,28 @@ hr {
     color: red;
 }
 
-#popupMessage {
-    right: 10px;
-    padding: 10px 10px;
-    position: fixed;
-    text-align: center;
-    top: 10px;
-    width: 15%;
-    word-wrap: break-word;
+.popupMessageText {
+   display: inline;
+}
+
+.closePopupMessage {
+   cursor: pointer;
+   display: inline;
+   vertical-align: top;
+}
+
+.popupMessage {
+   width: auto;
+   margin: 5px 0;
+   word-wrap: break-word;
+   padding: 10px 10px;
+}
+
+#popupMessageContainer {
+   max-width: 90%;
+   right: 10px;
+   position: fixed;
+   top: 10px;
 }
 
 .refmap-list {

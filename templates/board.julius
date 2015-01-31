@@ -129,8 +129,11 @@ function showQuickPostForm(postId) {
                     popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {
-                popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
+                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
             }
+        };
+        request.onerror = function() {
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
         };
         request.send(formData);
         event.preventDefault();

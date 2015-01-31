@@ -31,11 +31,11 @@ function loadPreviousPosts(baseOffset) {
             refreshMathjax();
             document.getElementById('load-previous-posts').dataset.offset = +offset+baseOffset;
         } else {
-            popupMessage(request.responseText+" ("+request.status+")", 2000);
+            popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
         }
     };
     request.onerror = function() {
-            popupMessage(request.responseText+" ("+request.status+")", 2000);
+        popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.status+")", 0, false, true);
     };
     request.send();
 }

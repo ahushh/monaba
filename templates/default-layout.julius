@@ -282,14 +282,14 @@ function initCodeButton(formId,plaintext) {
         fadeIn(cm,Monaba.cnf.animationSpeed);
     };
 
-    cm.onmouseleave = function() { fadeOut(cm,Monaba.cnf.animationSpeed); cm.style.display='none' };
+    cm.onmouseleave = function() { fadeOut(cm,Monaba.cnf.animationSpeed, function(){ cm.style.display='none' }); };
     cm_select.onchange = function() {
         var lang = this.value.toString();
         if (lang && lang != '') {
             insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
             countSymbols(formId);
         }
-        fadeOut(cm,Monaba.cnf.animationSpeed); cm.style.display='none';
+        fadeOut(cm,Monaba.cnf.animationSpeed, function(){ cm.style.display='none' });
     };
 }
 //-----------------------------------------------------------------
@@ -314,14 +314,13 @@ function showEditForm(postId) {
         obj[ ps.name ] = ps.value;
         obj[ hd.name ] = hd.value;
         obj[ pt.name ] = postId;
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-
+        var pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         var request = new XMLHttpRequest();
         request.open('POST','@{PostEditR}', true);
         request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.onload = function() {
-            closePopupMessage();
+            closePopupMessage(pmsg);
             if (request.status >= 200 && request.status < 400) {
                 var response = JSON.parse(request.responseText);
                 if (response.ok) {
@@ -344,12 +343,13 @@ function showEditForm(postId) {
                     popupMessage(response.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {
-                popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
+                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
             }
         };
+        request.onerror = function() {
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
+        };
         request.send(json2urlencode(obj));
-
-        popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
     };
 
     var request3 = new XMLHttpRequest();  // get raw post message
@@ -364,12 +364,10 @@ function showEditForm(postId) {
             ef.style.display = 'table';
         } else {
             hideEditForm();
-            closePopupMessage();
         }
     };
     request3.onerror = function() {
         hideEditForm();
-        closePopupMessage();
     };
     request3.send();
 }
@@ -488,6 +486,9 @@ function addUrlVideoPlayer(post) {
             var request = new XMLHttpRequest({mozSystem: true});
             request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
             request.onload = function() { handle( JSON.parse(request.responseText) ) };
+            request.onerror = function() {
+                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
+            };
             request.send();
         } else {
             handle();
@@ -541,28 +542,51 @@ function expandImage(post) {
 //-----------------------------------------------------------------
 // popup messages
 //-----------------------------------------------------------------
-function popupMessage(text, delay, icon) {
-    var msg = document.getElementById('popupMessage');
-    if (msg == null) {
-        msg = document.createElement('div');
-        msg.id = 'popupMessage';
-        document.body.appendChild(msg)
+function popupMessage(text, delay, loadingIcon, close) {
+    var container = document.getElementById("popupMessageContainer");
+    if (container == null) {
+        container = document.createElement("div");
+        container.id = "popupMessageContainer";
+        document.body.appendChild(container);
     }
-    
-    if (icon) {
-        text = "<i class='fa fa-refresh fa-sping'> "+text;
+
+    var msg = document.createElement("div");
+    msg.className = 'popupMessage';
+
+    if (loadingIcon) {
+        var icon = document.createElement("i");
+        icon.className = 'fa fa-refresh fa-spin';
+        msg.appendChild(icon);
     }
-    msg.innerHTML = text;
+
+    var textContainer = document.createElement("div");
+    textContainer.className = 'popupMessageText';
+    textContainer.innerHTML = text;
+    msg.appendChild(textContainer);
+
+    if (close) {
+        var cpm = document.createElement("div");
+        cpm.className = 'closePopupMessage';
+        var l = document.createElement("a");
+        l.innerHTML = "✖ ";
+        l.onclick = function() {
+            fadeOut(msg,Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg); });
+        };
+        cpm.appendChild(l);
+        msg.appendChild(cpm);
+    }
+    container.appendChild(msg);
     fadeIn(msg, Monaba.cnf.animationSpeed);
     if (delay) {
         var t = setTimeout(function(){
-            fadeOut(msg,Monaba.cnf.animationSpeed);
+            fadeOut(msg,Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg); } );
         }, delay);
     }
+    return msg;
 }
 
-function closePopupMessage() {
-    fadeOut(document.getElementById('popupMessage'),Monaba.cnf.animationSpeed);
+function closePopupMessage(msg) {
+    fadeOut(msg, Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg) });
 }
 // //-----------------------------------------------------------------
 // function expandPost(postId) {
@@ -710,11 +734,11 @@ function showPopupPost(element, event, postId, localId, board) {
                 var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
                 element.onmouseleave = function() { clearTimeout(t) };
             } else {
-                popupMessage(request.responseText+" ("+request.status+")", Monaba.cnf.popupMessageDelay);
+                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
             }
         };
         request.onerror = function() {
-            popupMessage(request.responseText+" ("+request.status+")", Monaba.cnf.popupMessageDelay);
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
         };
         request.send();
     } else {
@@ -772,8 +796,11 @@ function refreshThread(board, threadLocalId) {
                 popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
             }
         } else {
-            popupMessage(request.responseText, Monaba.cnf.popupMessageDelay);
+            popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
         }
+    };
+    request.onerror = function() {
+        popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
     };
     request.send();
 }
@@ -827,7 +854,7 @@ function setItem(k,v) {
 // ---------------------------------------------------------
 // Misc
 // ---------------------------------------------------------
-function fadeIn(el,n) {
+function fadeIn(el,n,callback) {
     el.style.opacity = 0;
 
     var last = +new Date();
@@ -837,13 +864,15 @@ function fadeIn(el,n) {
 
         if (+el.style.opacity < 1) {
             (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+        } else {
+            if (callback) callback.apply(this,[el]);
         }
     };
 
     tick();
 }
 
-function fadeOut(el,n) {
+function fadeOut(el,n,callback) {
     el.style.opacity = 1;
 
     var last = +new Date();
@@ -853,6 +882,8 @@ function fadeOut(el,n) {
 
         if (+el.style.opacity > 0) {
             (window.requestAnimationFrame && requestAnimationFrame(tick)) || setTimeout(tick, 16)
+        } else {
+            if (callback) callback.apply(this,[el]);
         }
     };
 

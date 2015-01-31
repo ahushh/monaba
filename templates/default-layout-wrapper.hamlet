@@ -9,6 +9,7 @@ $newline never
         <meta charset="UTF-8">
 
         <title>#{pageTitle pc}
+        <link rel=stylesheet type=text/css href=@{StaticR css_font_awesome_min_css}>
         $maybe s <- stylesheet
           $if s == "Ash"
               <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>

@@ -12,7 +12,7 @@
         $if isThread
             <div .thread-status>
                 $if postSticked postVal
-                    <i title=_{MsgThreadIsSticked} .fa .fa-caret-down>
+                    <i title=_{MsgThreadIsSticked} .fa .fa-thumb-tack>
                 $if postLocked postVal
                     <i title=_{MsgThreadIsLocked} .fa .fa-lock>
                 $if postAutosage postVal

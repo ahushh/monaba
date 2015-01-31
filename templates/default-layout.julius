@@ -572,7 +572,7 @@ function popupMessage(text, delay, loadingIcon, close) {
 
     if (loadingIcon) {
         var icon = document.createElement("i");
-        icon.className = 'fa fa-refresh fa-spin';
+        icon.className = 'fa fa-spinner fa-spin';
         msg.appendChild(icon);
     }
 

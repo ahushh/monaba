@@ -9,6 +9,7 @@ Array.prototype.contains = function(obj) {
 }
 //-----------------------------------------------------------------
 var Monaba = {
+    zindex: 10,
     expThreads: {},
     refMap: {},
     postCache: {},
@@ -706,6 +707,7 @@ function cachePopupPost(el) {
     span.className = 'close-popup-container';
     span.innerHTML = closePopups;
     post.appendChild(span);
+    post.onclick = function() { post.style['z-index'] = Monaba.zindex + 1; Monaba.zindex += 1; };
     Monaba.postCache[postId] = post;
     return post;
 }
@@ -735,7 +737,7 @@ function displayPopupPost(event, post) {
     if ((cursorX + pWidth) > wWidth) {
         post.style.left = (cursorX - pWidth) + "px";
     }
-    post.style["z-index"] = 0;
+    post.style["z-index"] = Monaba.zindex;
 }
 
 function showPopupPost(element, event, postId, localId, board) {

@@ -378,8 +378,6 @@ function hideEditForm() {
     var ef = document.getElementById('edit-form');
     ef.style.display = 'none';
     document.querySelector('#edit-form textarea').value = '';
-    document.querySelector('#edit-form input[type=password]').value = ''
-    document.querySelector('#edit-form input[type=hidden]');
     document.querySelector('#edit-form input[type=number]').value = '';
 }
 //-----------------------------------------------------------------

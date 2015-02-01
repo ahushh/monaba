@@ -22,7 +22,7 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>#{pack "#"}#
             $else
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>#{pack "#"}#
-            <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}')">#{sPostLocalId}
+            <a onclick="insert('>>#{sPostLocalId}#{pack "\\n"}','post-form')">#{sPostLocalId}
         $if canPost
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right>
         <span .cpanel>
@@ -43,7 +43,7 @@
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
          $else
-             <a .thread-parent onmouseover="showPopupPost(this,event,#{sPostId},#{sPostLocalId},#{board})" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
+             <a .thread-parent onmouseover="showPopupPost(this,event,#{sPostId},#{sPostLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"

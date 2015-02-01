@@ -92,6 +92,11 @@ function markToDelete(container) {
 //-----------------------------------------------------------------
 // Forms
 //-----------------------------------------------------------------
+function refreshCaptcha() {
+    var captcha = document.getElementById("captcha");
+    captcha.src = "@{CaptchaR}" + "?" + new Date().getTime();
+}
+
 function clearPostFormFields() {
     var postform = document.getElementById('post-form');
     var inputs = postform.getElementsByTagName("input");    

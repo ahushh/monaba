@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         };
         request.onload = function() {
+            refreshCaptcha();
             closePopupMessage(pmsg);
             if (request.status >= 200 && request.status < 400) {
                 var data = JSON.parse(request.responseText);

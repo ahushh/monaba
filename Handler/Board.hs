@@ -6,6 +6,7 @@ import           Yesod.Auth
 import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Posting
+import           Handler.Captcha (checkCaptcha)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
@@ -61,7 +62,6 @@ getBoardR board page = do
       maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
-      enableCaptcha     = boardEnableCaptcha     boardVal
       title             = boardTitle             boardVal
       summary           = boardSummary           boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
@@ -99,13 +99,14 @@ postBoardR board _ = do
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
       opFile           = boardOpFile        boardVal
+      enableCaptcha    = boardEnableCaptcha boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm boardVal
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (name, title, message, pswd, files, goback, Just _)
+    FormSuccess (name, title, message, captcha, pswd, files, goback, Just _)
       | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
       | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
@@ -122,6 +123,9 @@ postBoardR board _ = do
             setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
                                           (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             redirect (BoardNoPageR board)
+        -- check captcha
+        when (enableCaptcha && isNothing muser) $ do
+          checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
         now      <- liftIO getCurrentTime
         -- check too fast posting

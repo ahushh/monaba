@@ -52,6 +52,12 @@
             <td .post-block-named>_{MsgPassword}
             <td>
                 ^{fvInput passwordView}
+        $if enableCaptcha
+           <tr .post-block>
+             <td .post-block-named>_{MsgCaptcha}
+             <td>
+               <img #captcha onclick="refreshCaptcha()" src=@{CaptchaR}>
+               ^{fvInput captchaView} 
         $if length fileviews > 0
             <tr .post-block>
                 <td .post-block-named>_{MsgFile}

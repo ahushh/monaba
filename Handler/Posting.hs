@@ -16,6 +16,7 @@ postForm :: Board -> -- ^ Board value
            MForm Handler (FormResult ( Maybe Text     -- ^ Poster name
                                      , Maybe Text     -- ^ Thread subject
                                      , Maybe Textarea -- ^ Message
+                                     , Maybe Text     -- ^ Captcha
                                      , Text           -- ^ Password
                                      , [FormResult (Maybe FileInfo)] -- ^ Files
                                      , GoBackTo       -- ^ Go back to
@@ -36,7 +37,7 @@ postForm boardVal extra = do
 
   let maxMessageLength = boardMaxMsgLength  boardVal
       numberFiles      = boardNumberFiles   boardVal
-
+      enableCaptcha    = boardEnableCaptcha boardVal
       myMessageField = checkBool (not . tooLongMessage maxMessageLength)
                                  (MsgTooLongMessage maxMessageLength )
                                  textareaField
@@ -48,10 +49,11 @@ postForm boardVal extra = do
   (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          "" Nothing
+  (captchaRes  , captchaView ) <- mopt textField              "" Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
-  let result = (,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> passwordRes <*>
+  let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
                FormSuccess fileresults <*> gobackRes  <*> nobumpRes
       widget boardW _ muserW = $(widgetFile "post-form")
   return (result, widget)

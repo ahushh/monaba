@@ -5,6 +5,7 @@
 /robots.txt RobotsR GET
 
 /                    HomeR         GET
+/captcha             CaptchaR      GET
 /feed                FeedR         GET
 /delete              DeleteR       GET 
 /deleted/#Text/#Int  DeletedByOpR  GET

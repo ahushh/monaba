@@ -35,8 +35,10 @@ library
                      Handler.Admin.User
                      Handler.Ajax
                      Handler.Settings
+                     Handler.Captcha
                      Utils.File
                      Utils.YobaMarkup
+                     Utils.PlainCaptcha
                      ModelTypes
 
     if flag(dev) || flag(library-only)
@@ -113,6 +115,7 @@ library
                  , tagsoup                       
                  , parsec                        
                  , yesod-auth-hashdb
+                 , transformers
 
 executable         Monaba
     if flag(library-only)

@@ -10,7 +10,7 @@ import qualified Data.Map.Strict    as Map
 import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Posting
-
+import           Handler.Captcha    (checkCaptcha)
 import           Text.Blaze.Html.Renderer.String
 -------------------------------------------------------------------------------------------------------------------
 -- Костыли-костылики...
@@ -85,6 +85,7 @@ postThreadR board thread = do
       thumbSize        = boardThumbSize     boardVal
       bumpLimit        = boardBumpLimit     boardVal
       replyFile        = boardReplyFile     boardVal
+      enableCaptcha    = boardEnableCaptcha boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm boardVal
@@ -92,7 +93,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
-    FormSuccess (name, title, message, pswd, files, goback, Just nobump)
+    FormSuccess (name, title, message, captcha, pswd, files, goback, Just nobump)
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
       | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
@@ -110,6 +111,9 @@ postThreadR board thread = do
             let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
                                      (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
             trickyRedirect "error" m threadUrl
+        -- check captcha
+        when (enableCaptcha && isNothing muser) $ do
+           checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
         ------------------------------------------------------------------------------------------------------           
         now      <- liftIO getCurrentTime
         -- check too fast posting

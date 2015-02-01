@@ -12,6 +12,7 @@ Goback: Go back to
 ToThread: thread
 ToBoard: board
 Nobump: No bump
+Captcha: Captcha
 
 ### Post form rules
 SupportedFileTypes: Supported file types are
@@ -96,6 +97,7 @@ ShowDeletedPosts: Show deleted posts
 ######################################################################################
 #### Posting messages
 ######################################################################################
+WrongCaptcha: Wrong captcha
 NoFileOrText: File or message is required
 NoFile: File required
 OpFileIsDisabled: OP file attachment is disabled on this board

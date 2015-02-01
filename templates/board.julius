@@ -111,13 +111,15 @@ function showQuickPostForm(postId) {
         var select = postform.getElementsByTagName("select")[0];
         formData.append(select.name, 1);
 
+        var pmsg;
         var request = new XMLHttpRequest();
         request.open('POST', postform.action, true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         request.onloadstart = function() {
-            popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+            pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         };
         request.onload = function() {
+            closePopupMessage(pmsg);
             if (request.status >= 200 && request.status < 400) {
                 var data = JSON.parse(request.responseText);
                 if (data.ok) {

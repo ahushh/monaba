@@ -4,13 +4,17 @@ module Handler.Captcha where
 import Import
 import Utils.PlainCaptcha (makeCaptcha)
 import System.Random (randomIO)
-import System.Directory (removeFile)
+import System.Directory (removeFile, doesFileExist)
+import qualified Data.Text as T
 
 captchaExt :: String
 captchaExt = ".png"
 
 getCaptchaR :: Handler Html
 getCaptchaR = do
+  oldCId <- lookupSession "captchaId"
+  let path = captchaFilePath (unpack $ fromJust oldCId) ++ captchaExt
+    in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
   cId <- liftIO (abs <$> randomIO :: IO Int)
   setSession "captchaId" (showText cId)
   value <- liftIO $ makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
@@ -25,6 +29,8 @@ checkCaptcha mCaptcha wrongCaptchaRedirect = do
   deleteSession "captchaId"
   case mCaptchaId of
    Just cId -> do
-     liftIO $ removeFile $ captchaFilePath (unpack cId) ++ captchaExt
-     when (mCaptchaValue /= mCaptcha) wrongCaptchaRedirect
+     let path = captchaFilePath (unpack cId) ++ captchaExt
+     whenM (liftIO $ doesFileExist path) $
+       liftIO $ removeFile path
+     when (mCaptchaValue /= (T.toLower <$> mCaptcha)) wrongCaptchaRedirect
    _        -> wrongCaptchaRedirect

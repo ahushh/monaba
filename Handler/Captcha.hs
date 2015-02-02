@@ -11,15 +11,11 @@ captchaExt = ".png"
 
 getCaptchaR :: Handler Html
 getCaptchaR = do
-  mCaptchaId <- lookupSession "captchaId"
-  case mCaptchaId of
-   Just cId -> sendFile typePng $ captchaFilePath (unpack cId) ++ captchaExt
-   Nothing -> do
-     cId <- liftIO (abs <$> randomIO :: IO Int)
-     setSession "captchaId" (showText cId)
-     value <- liftIO $ makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
-     setSession "captchaValue" value
-     sendFile typePng $ captchaFilePath (show cId) ++ captchaExt
+  cId <- liftIO (abs <$> randomIO :: IO Int)
+  setSession "captchaId" (showText cId)
+  value <- liftIO $ makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
+  setSession "captchaValue" value
+  sendFile typePng $ captchaFilePath (show cId) ++ captchaExt
 
 checkCaptcha :: Maybe Text -> Handler () -> Handler ()
 checkCaptcha mCaptcha wrongCaptchaRedirect = do

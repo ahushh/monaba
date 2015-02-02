@@ -21,7 +21,8 @@ var Monaba = {
         video: {
             autoplay: true,
             loop: true,
-            scale: 1.5,
+            scaleWidth: 0,
+            scaleHeight: 2
         },
         youtube: {
             enable: true,
@@ -394,22 +395,24 @@ function hideEditForm() {
 // webm
 //-----------------------------------------------------------------
 function addVideoPlayer(post) {
-    var links = post.querySelectorAll(".video");
-    Array.prototype.forEach.call(links, function(link) {
-        link.onclick = function(){
-            link.style.display = 'none';
+    var thumbs = post.querySelectorAll(".video");
+    Array.prototype.forEach.call(thumbs, function(thumb) {
+        thumb.onclick = function(){
             var video = document.createElement("video");
             video.controls = true;
             if (Monaba.cnf.video.autoplay)
                 video.autoplay = 'autoplay';
             if (Monaba.cnf.video.loop)
                 video.loop = 'loop';
-            if (Monaba.cnf.video.scale)
-                video.width = link.width*Monaba.cnf.video.scale;
+            if (Monaba.cnf.video.scaleWidth && Monaba.cnf.video.scaleWidth > 0)
+                video.width = thumb.width*Monaba.cnf.video.scaleWidth;
+            if (Monaba.cnf.video.scaleHeight && Monaba.cnf.video.scaleHeight > 0)
+                video.width = thumb.width*Monaba.cnf.video.scaleHeight;
             var source = document.createElement("source");
-            source.src = link.dataset.url;
+            source.src = thumb.dataset.url;
+            thumb.style.display = 'none';
             video.appendChild(source);
-            link.parentNode.appendChild( video );
+            thumb.parentNode.appendChild( video );
         };
     });
 }
@@ -701,11 +704,15 @@ function cachePopupPost(el) {
     var localId  = el.dataset.postLocalId;
     var board    = el.dataset.board;
     var threadId = el.dataset.threadLocalId;
-
     var post = el.cloneNode(true);
+
+    var vs = post.getElementsByTagName("video");
+    for (var i = 0; i < vs.length; i++) vs[i].pause();
+    vs = post.getElementsByTagName("video");
+    while (vs.length) vs[0].parentNode.removeChild(vs[0]);
+
     post.className = 'popup-post';
     post.id = 'popup-'+postId;
-    
     var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
     var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
     var closePopups = closeAllPopup+" "+closeOnePopup;

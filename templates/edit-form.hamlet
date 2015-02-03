@@ -6,6 +6,7 @@
     ^{fvInput messageView}
 <div style=padding:5px>
     <div style=display:inline .markup-buttons>
+      [
       <a onclick="insertTag('[b]','[/b]','edit-form');countSymbols('edit-form')">
          <strong>
            _{MsgMarkupBold}

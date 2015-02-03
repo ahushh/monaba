@@ -542,8 +542,6 @@ function expandImage(post) {
         thumbImg.onclick = function(event) {
             if (event.which == 2 || event.which == 3)
                 return true;
-            console.log(thumbImg.src);
-            console.log(fullUrl);
             if (new RegExp(fullUrl).test(thumbImg.src)) {
                 thumbImg.src = thumbUrl;
                 thumbImg.onload = function() {
@@ -708,7 +706,6 @@ function cachePopupPost(el) {
 
     var vs = post.getElementsByTagName("video");
     for (var i = 0; i < vs.length; i++) vs[i].pause();
-    vs = post.getElementsByTagName("video");
     while (vs.length) vs[0].parentNode.removeChild(vs[0]);
 
     post.className = 'popup-post';
@@ -754,7 +751,7 @@ function displayPopupPost(event, post) {
 }
 
 function showPopupPost(element, event, postId, localId, board) {
-    if (!Monaba.postCache[postId]) {
+    if (!postId || !Monaba.postCache[postId]) {
         var request = new XMLHttpRequest();
         request.open('GET',"/ajax/post/"+board+"/"+localId,true);
         request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');

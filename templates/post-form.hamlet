@@ -15,6 +15,7 @@
             <td>
                 ^{fvInput messageView}
                 <div .markup-buttons>
+                     [
                      <a onclick="insertTag('[b]','[/b]','post-form');countSymbols('post-form')">
                         <strong>
                           _{MsgMarkupBold}

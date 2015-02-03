@@ -43,7 +43,7 @@
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
          $else
-             <a .thread-parent onmouseover="showPopupPost(this,event,#{sPostId},#{sPostLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
+             <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>>>/#{board}/#{sThreadLocalId}
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"

@@ -17,6 +17,8 @@ $newline never
               <link rel=stylesheet type=text/css title=Futaba href=@{StaticR stylesheets_futaba_css}>
           $elseif s == "Chaos"
               <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_chaos_css}>
+          $elseif s == "Chaosfm"
+              <link rel=stylesheet type=text/css title=Chaosfm href=@{StaticR stylesheets_chaosfm_css}>
           $elseif s == "Mayuri"
               <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR stylesheets_mayuri_css}>
           $elseif s == "Nox"

@@ -1,0 +1,226 @@
+html, body {
+   background-color: #000505;
+   color: #00CCCC;
+   font-family: serif;
+   font-size: 1em;
+   padding: 15px;
+}
+
+#message {
+   font-size: 1.7em;
+   border: 1px dashed red !important;
+   color: red !important;
+}
+
+* {
+   font-family: terminus, Arial, sans-serif;
+   font-size: 10pt;
+}
+
+form {
+   font-size: 0.9em;
+}
+
+textarea {
+   background-color: #001010; 
+   border: 1px dotted #00CCCC;
+   color: #00CCCC;
+}
+
+input {
+   background-color: #001010; 
+   border: 1px dotted #00CCCC;
+   color: #00CCCC;
+}
+
+input.submit {
+   border: 0px;
+   background: none;
+   text-decoration: underline;
+   cursor: pointer;
+} 
+
+.poster-name {
+   color: #FF0000;
+}
+
+.post-block-named {
+   background-color: #001010;
+   font-weight: bold;
+   padding: 5px;
+}
+
+a {
+   color: #CC0000;
+   padding: 0px;
+   border-bottom:#CC0000 1px dotted;
+}
+
+a:hover {
+   color: #DD0000;
+}
+
+header {
+   clear: both;
+   color: #995b46;
+   font-size: 2em;
+   font-weight: bold;
+   text-align: center;
+}
+
+footer {
+   font-family: serif;
+   font-size: 12px;
+   margin: 2em 0pt 0pt;
+   text-align: center;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding-top: 10px;
+}
+
+.reflink {
+   font-size: 85%;
+   font-weight: bold;
+}
+
+.file-info {
+   color: #666666;
+   font-size: 0.8em;
+   text-decoration: none;
+}
+
+.file-name {
+   font-size: 0.8em;
+}
+
+.quote {
+   color: #FF0000 !important;;
+}
+
+.reply-post, .feed .op-post {
+   background: none repeat scroll 0% 0% #001010;
+   margin: 4px;
+   padding: 5px;
+   border:1px dotted #00CCCC;
+}
+
+.popup-post {
+   background: none repeat scroll 0% 0% #001010;
+   border: 1px solid #393939;
+   margin: 4px;
+   padding: 5px;
+}
+
+.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+   background: none repeat scroll 0% 0% #000505;
+   border: 1px double #00CCCC;
+}
+
+.op-post.highlighted-post {
+   background: none repeat scroll 0% 0% #000505;
+}
+
+.thread {
+   margin: 2px;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding: 25px 2px;
+}
+
+.reply-title {
+   color: #002244;
+   font-size: 1em;
+   font-weight: bold;
+}
+
+hr {
+   border-style: solid none #BBBBBB;
+   border-width: 1px;
+}
+
+table {
+   border-style: none;
+}
+
+table td {
+   border-style: none;
+}
+
+#delete-container {
+   text-align: right;
+}
+
+pre {
+   background-color: #EEEEEE;
+   border: 1px dashed #DFDFDF;
+   padding: 10px;
+}
+
+.board-category {
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #001010;
+}
+
+#board-list-full {
+   border: 1px solid #001010;
+}
+
+#latest-news {
+   border: 1px solid #001010;
+}
+
+#news-title {
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #001010;
+}
+
+.popupMessage {
+   background: none repeat scroll 0% 0% #001010;
+   border: 1px solid #393939;
+}
+
+.quick-post-form {
+   background: none repeat scroll 0% 0% #001010;
+   border: 1px solid #393939;
+   padding: 5px;
+}
+
+.hist-msg {
+   background: none repeat scroll 0% 0% #001010;
+   border: 1px solid #393939;
+   margin: 4px;
+   padding: 5px;
+}
+
+.admin-navbar {
+   border-top: 1px solid rgba(50,50,50,0.5);
+   margin-bottom: 10px;
+   padding: 3px;
+   background-color: #001010;
+}
+
+#delete-container {
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding-top: 10px;
+}
+
+.show-plain-form {
+   margin-bottom: 10px;
+}
+
+.markup-wrapper {
+   background-color: #001010;
+}
+
+.expand-post {
+   color: #666666;
+}
+
+.reply-title {
+   color: #CC1105;
+   font-size: 1.1em;
+   font-weight: bold;
+}
+
+#pages-list {
+   border: 1px solid grey;
+   padding: 0 3px;
+}

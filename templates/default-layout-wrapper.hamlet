@@ -18,9 +18,9 @@ $newline never
           $elseif s == "Chaos"
               <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_chaos_css}>
           $elseif s == "Mayuri"
-              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_mayuri_css}>
+              <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR stylesheets_mayuri_css}>
           $elseif s == "Nox"
-              <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_nox_css}>
+              <link rel=stylesheet type=text/css title=Nox href=@{StaticR stylesheets_nox_css}>
         $nothing
           <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>
         <meta name="description" content="Haskell imageboard">

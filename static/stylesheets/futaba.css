@@ -1,93 +1,104 @@
+#message {
+   font-size: 1.5em;
+   border: 2px dashed red;
+   color: black;
+}
+
 html, body {
-    background-color: #FFFFEE;
-    color: #600000;
-    font-family: serif;
-    font-size: 1em;
-    padding: 10px;
+   background-color: #FFFFEE;
+   color: #600000;
+   font-family: serif;
+   font-size: 1em;
+   padding: 10px;
 }
 
 form {
-    font-size: 0.9em;
+   font-size: 0.9em;
 }
 
 textarea {
-    /* background-color: #FFFFFF; */
+   color: black;
+   background-color: #FFFFFF;
+}
+
+input[type="text"] {
+   background-color: #FFFFFF;
 }
 
 input {
-    /* background-color: #FFFFFF; */
+   color: black;
 }
 
 input.submit {
-    border: 0px;
-    background: none;
-    text-decoration: underline;
-    cursor: pointer;
+   border: 0px;
+   background: none;
+   text-decoration: underline;
+   cursor: pointer;
 } 
 
 .poster-name {
-    color: #117743;
+   color: #117743;
 }
 
 .post-block-named {
-    background-color: #EEAA88;
-    font-weight: bold;
-    padding: 5px;
+   background-color: #EEAA88;
+   font-weight: bold;
+   padding: 5px;
 }
 
 a {
-    color: #0000EE;
-    padding: 0px;
+   color: #0000EE;
+   padding: 0px;
 }
 
 a:hover {
-    color: #DD0000;
+   color: #DD0000;
 }
 
 header {
-    clear: both;
-    color: #995b46;
-    font-size: 2em;
-    font-weight: bold;
-    text-align: center;
+   clear: both;
+   color: #995b46;
+   font-size: 2em;
+   font-weight: bold;
+   text-align: center;
 }
 
 footer {
-    font-family: serif;
-    font-size: 12px;
-    margin: 2em 0pt 0pt;
-    text-align: center;
-    border-top: 1px solid rgba(50,50,50,0.5);
-    padding-top: 10px;
+   font-family: serif;
+   font-size: 12px;
+   margin: 2em 0pt 0pt;
+   text-align: center;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding-top: 10px;
 }
 
 .reflink {
-    font-size: 85%;
-    font-weight: bold;
+   font-size: 85%;
+   font-weight: bold;
 }
 
 .file-info {
-    color: #666666;
-    font-size: 0.8em;
-    text-decoration: none;
+   color: #666666;
+   font-size: 0.8em;
+   text-decoration: none;
 }
 
 .file-name {
-    font-size: 0.8em;
+   font-size: 0.8em;
 }
 
 .reply-post, .feed .op-post {
-    background: none repeat scroll 0% 0% #F0E0D6;
-    border: 1px solid #DDCCC5;
-    margin: 4px;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #F0E0D6;
+   border: 1px solid #DDCCC5;
+   margin: 4px;
+   padding: 5px;
 }
 
 .popup-post {
-    background: none repeat scroll 0% 0% #F0E0D6;
-    border: 1px solid #DDCCC5;
-    margin: 4px;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #F0E0D6;
+   border: 1px solid #DDCCC5;
+   margin: 4px;
+   padding: 5px;
 }
 
 .reply-post.highlighted-post, .feed .op-post.highlighted-post {
@@ -100,43 +111,43 @@ footer {
 }
 
 .thread {
-    margin: 2px;
-    border-top: 1px solid rgba(50,50,50,0.5);
-    padding: 25px 2px;
+   margin: 2px;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding: 25px 2px;
 }
 
 .reply-title {
-    color: #002244;
-    font-size: 1em;
-    font-weight: bold;
+   color: #002244;
+   font-size: 1em;
+   font-weight: bold;
 }
 
 hr {
-    border-style: solid none #BBBBBB;
-    border-width: 1px;
+   border-style: solid none #BBBBBB;
+   border-width: 1px;
 }
 
 table {
-    border-style: none;
+   border-style: none;
 }
 
 table td {
-    border-style: none;
+   border-style: none;
 }
 
 #delete-container {
-    text-align: right;
+   text-align: right;
 }
 
 pre {
-    background-color: #EEEEEE;
-    border: 1px dashed #DFDFDF;
-    padding: 10px;
+   background-color: #EEEEEE;
+   border: 1px dashed #DFDFDF;
+   padding: 10px;
 }
 
 .board-category {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #EEAA88;
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #EEAA88;
 }
 
 #board-list-full {
@@ -148,59 +159,59 @@ pre {
 }
 
 #news-title {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #EEAA88;
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #EEAA88;
 }
 
 .popupMessage {
-    background: none repeat scroll 0% 0% #F0E0D6;
-    border: 1px solid #DDCCC5;
+   background: none repeat scroll 0% 0% #F0E0D6;
+   border: 1px solid #DDCCC5;
 }
 
 .quick-post-form {
-    background: none repeat scroll 0% 0% #F0E0D6;
-    border: 1px solid #DDCCC5;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #F0E0D6;
+   border: 1px solid #DDCCC5;
+   padding: 5px;
 }
 
 .hist-msg {
-    backg1round: none repeat scroll 0% 0% #F0E0D6;
-    border: 1px solid #DDCCC5;
-    margin: 4px;
-    padding: 5px;
+   backg1round: none repeat scroll 0% 0% #F0E0D6;
+   border: 1px solid #DDCCC5;
+   margin: 4px;
+   padding: 5px;
 }
 
 .admin-navbar {
-    border-top: 1px solid rgba(50,50,50,0.5);
-    margin-bottom: 10px;
-    padding: 3px;
-    background-color: #F0E0D6;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   margin-bottom: 10px;
+   padding: 3px;
+   background-color: #F0E0D6;
 }
 
 #delete-container {
-    border-top: 1px solid rgba(50,50,50,0.5);
-    padding-top: 10px;
+   border-top: 1px solid rgba(50,50,50,0.5);
+   padding-top: 10px;
 }
 
 .show-plain-form {
-    margin-bottom: 10px;
+   margin-bottom: 10px;
 }
 
 .markup-wrapper {
-    background-color: #F0E0D6;
+   background-color: #F0E0D6;
 }
 
 .expand-post {
-    color: #666666;
+   color: #666666;
 }
 
 .reply-title {
-    color: #CC1105;
-    font-size: 1.1em;
-    font-weight: bold;
+   color: #CC1105;
+   font-size: 1.1em;
+   font-weight: bold;
 }
 
 #pages-list {
-    border: 1px solid grey;
-    padding: 0 3px;
+   border: 1px solid grey;
+   padding: 0 3px;
 }

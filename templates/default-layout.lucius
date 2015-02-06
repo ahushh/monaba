@@ -58,9 +58,6 @@ hr {
 }
 
 #message {
-    border: 2px dashed red;
-    color: black;
-    font-size: 1.7em;
     font-weight: bold;
     margin: 5px;
     padding: 5px;

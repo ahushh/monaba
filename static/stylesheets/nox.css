@@ -1,89 +1,98 @@
+#message {
+   font-size: 1.5em;
+   color: red;
+   border-right: 0;
+   border-left: 0;
+   border-bottom: 2px dashed rgba(100, 100, 100, 0.7);
+   border-top: 0;
+}
+
 html, body {
-    background-color: black;;
-    color: #7C7C7C;
-    font-family: serif;
-    font-size: 1em;
-    padding: 10px;
+   background-color: black;;
+   color: #7C7C7C;
+   font-family: serif;
+   font-size: 1em;
+   padding: 10px;
 }
 
 footer {
 }
 
 form {
-    font-size: 0.9em;
+   font-size: 0.9em;
 }
 
 textarea, input, select {
-    border-top: 1px solid rgba(100, 100, 100, 0.5);
-    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
-    border-right: 0;
-    border-left: 0;
-    background-color: black;
-    color: #7C7C7C;
+   border-top: 1px solid rgba(100, 100, 100, 0.5);
+   border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+   border-right: 0;
+   border-left: 0;
+   background-color: black;
+   color: #7C7C7C;
 }
 
 input[type=submit]:hover {
-    background-color: #191919;
+   background-color: #191919;
 }
 
 input[type=submit] {
-    border: 1px solid rgba(100, 100, 100, 0.5);
+   border: 1px solid rgba(100, 100, 100, 0.5);
 }
 
 .time {
-    font-size: 0.8em;
-    color: #555555;
+   font-size: 0.8em;
+   color: #555555;
 }
 
 a {
-    color: #964509;
-    padding: 0px;
+   color: #964509;
+   padding: 0px;
 }
 
 a:hover {
-    color: #742307;
+   color: #742307;
 }
 
 header {
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);    
+   border-bottom: 1px solid rgba(100, 100, 100, 0.3);    
 }
 
 footer {
-    font-family: serif;
-    font-size: 12px;
-    margin: 2em 0pt 0pt;
-    text-align: center;
-    border-top: 1px solid rgba(100, 100, 100, 0.3);
-    padding-top: 10px;
+   font-family: serif;
+   font-size: 12px;
+   margin: 2em 0pt 0pt;
+   text-align: center;
+   border-top: 1px solid rgba(100, 100, 100, 0.3);
+   padding-top: 10px;
 }
 
 .reflink {
-    font-size: 85%;
-    font-weight: bold;
+   font-size: 85%;
+   font-weight: bold;
 }
 
 .file-info {
-    color: #666666;
-    font-size: 0.8em;
-    text-decoration: none;
+   color: #666666;
+   font-size: 0.8em;
+   text-decoration: none;
 }
 
 .file-name {
-    font-size: 0.8em;
+   font-size: 0.8em;
 }
 
 .reply-post, .feed .op-post {
-    background: none repeat scroll 0% 0% #050505;
-    border: 1px solid #383838;
-    margin: 3px;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #050505;
+   border: 1px solid #383838;
+   margin: 3px;
+   padding: 5px;
 }
 
 .popup-post {
-    background: none repeat scroll 0% 0% #050505;
-    border: 1px solid #383838;
-    margin: 3px;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #050505;
+   border: 1px solid #383838;
+   margin: 3px;
+   padding: 5px;
 }
 
 .reply-post.highlighted-post, .feed .op-post.highlighted-post {
@@ -96,44 +105,44 @@ footer {
 }
 
 .thread {
-    margin: 2px;
-    border-top: 1px solid rgba(100, 100, 100, 0.3);
-    padding: 25px 2px;
+   margin: 2px;
+   border-top: 1px solid rgba(100, 100, 100, 0.3);
+   padding: 25px 2px;
 }
 
 .reply-title {
-    color: #005566;
-    font-size: 1em;
-    font-weight: bold;
+   color: #005566;
+   font-size: 1em;
+   font-weight: bold;
 }
 
 hr {
-    border-color: #505050;
-    border-style: solid none none;
-    border-width: 1px;
+   border-color: #505050;
+   border-style: solid none none;
+   border-width: 1px;
 }
 
 table {
-    border-style: none;
+   border-style: none;
 }
 
 table td {
-    border-style: none;
+   border-style: none;
 }
 
 #delete-container {
-    text-align: right;
+   text-align: right;
 }
 
 pre {
-    background-color: black;
-    border: 1px dashed #DFDFDF;
-    padding: 10px;
+   background-color: black;
+   border: 1px dashed #DFDFDF;
+   padding: 10px;
 }
 
 .board-category {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #202020;
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #202020;
 }
 
 #board-list-full {
@@ -145,30 +154,30 @@ pre {
 }
 
 #news-title {
-    font-weight: bold;
-    background: none repeat scroll 0% 0% #202020;
+   font-weight: bold;
+   background: none repeat scroll 0% 0% #202020;
 }
 
 .popupMessage {
-    background: none repeat scroll 0% 0% #050505;
-    border: 1px solid #707070;
+   background: none repeat scroll 0% 0% #050505;
+   border: 1px solid #707070;
 }
 
 .quick-post-form {
-    background: none repeat scroll 0% 0% #050505;
-    border: 1px solid #383838;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #050505;
+   border: 1px solid #383838;
+   padding: 5px;
 }
 
 .hist-msg {
-    background: none repeat scroll 0% 0% #050505;
-    border: 1px solid #383838;
-    margin: 3px;
-    padding: 5px;
+   background: none repeat scroll 0% 0% #050505;
+   border: 1px solid #383838;
+   margin: 3px;
+   padding: 5px;
 }
 
 #board-header {
-    color: #800000;
+   color: #800000;
 }
 
 #board-long-desc {
@@ -176,60 +185,52 @@ pre {
 }
 
 #board-subtitle {
-    color: #800000;
+   color: #800000;
 }
 
 .admin-navbar {
-    background-color: #050505;
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
-    padding: 3px;
-    margin-bottom: 10px;
+   background-color: #050505;
+   border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+   padding: 3px;
+   margin-bottom: 10px;
 }
 
 #delete-container {
-    border-top: 1px solid rgba(100, 100, 100, 0.3);
-    padding-top: 10px;
+   border-top: 1px solid rgba(100, 100, 100, 0.3);
+   padding-top: 10px;
 }
 
 .show-plain-form {
-    margin-bottom: 10px;
+   margin-bottom: 10px;
 }
 
 .expand-post {
-    color: #666666;
+   color: #666666;
 }
 
 .quote {
-    color: #105510 !important;
+   color: #105510 !important;
 }
 
 #next-page {
-    border-right: 1px solid rgba(100, 100, 100, 0.7);
-    padding-right: 5px;
+   border-right: 1px solid rgba(100, 100, 100, 0.7);
+   padding-right: 5px;
 }
 
 #prev-page {
-    border-left: 1px solid rgba(100, 100, 100, 0.7);
-    padding-left: 5px;
+   border-left: 1px solid rgba(100, 100, 100, 0.7);
+   padding-left: 5px;
 }
 
 #thread-header {
-    background-color: #050505;
-    padding: 2px;
+   background-color: #050505;
+   padding: 2px;
 }
 
 .file-info {
-    display:none;
+   display:none;
 }
 
 #main-image {
-    opacity: 0.4;
-}
-
-#message {
-    color: red !important;
-    border-right: 0 !important;
-    border-left: 0 !important;
-    border-bottom: 2px dashed rgba(100, 100, 100, 0.7) !important;
-    border-top: 2px dashed rgba(100, 100, 100, 0.7) !important;
+   opacity: 0.4;
 }

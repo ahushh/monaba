@@ -1,114 +1,119 @@
-html,
-body {
-    margin:0;
-    padding:0;
-    font:15px "Arial", serif;
-    color:#999;
-    background-color: #353535;
+#message {
+   font-size: 1.5em;
+   border: 2px dashed red;
+}
+
+html, body {
+   margin:0;
+   padding:0;
+   font:15px "Arial", serif;
+   color:#999;
+   background-color: #353535;
 }
 
 .container {
-    overflow: hidden;
-    margin-top: 0px;
-    background-color: #292929;
-    border-bottom: 2px solid #863D3D;
-    border-top: 2px solid #863D3D;
-    border-right: 1px solid #030303;
-    border-left: 1px solid #030303;
+   overflow: hidden;
+   margin-top: 0px;
+   background-color: #292929;
+   border-bottom: 2px solid #863D3D;
+   border-top: 2px solid #863D3D;
+   border-right: 1px solid #030303;
+   border-left: 1px solid #030303;
 }
 
 #main {
-    margin: auto 3%;
-    padding:5px 25px;
-    min-height:600px;
-    box-shadow:5px 0 10px #222;
-    border-right:1px solid #000;
-    box-shadow: -2px 0px 10px #1A1A1A;
-    border-left: 2px dashed #863D3D;
+   margin: auto 3%;
+   padding:5px 25px;
+   min-height:600px;
+   box-shadow:5px 0 10px #222;
+   border-right:1px solid #000;
+   box-shadow: -2px 0px 10px #1A1A1A;
+   border-left: 2px dashed #863D3D;
 }
 
 a {
-    color:#A75353;
+   color:#A75353;
 }
 
 a:hover {
-    color:#804040;
+   color:#804040;
 }
 
 hr {
-    border-color:#853737;
-    border-style:solid none none none;
-    border-width:1px;
+   border-color:#853737;
+   border-style:solid none none none;
+   border-width:1px;
 }
 
 .spoiler {
-	background: #000;
-    box-shadow: -2px 1px 2px #1A1A1A;
-	color: transparent;
-	transition:all 0.2s ease;
+   background: #000;
+   box-shadow: -2px 1px 2px #1A1A1A;
+   color: transparent;
+   transition:all 0.2s ease;
 }
 .spoiler:hover {
-	background: none;
-	color: #999;
-    box-shadow: none;
+   background: none;
+   color: #999;
+   box-shadow: none;
 }
 
 #board-list-full, .popupMessage {
-    background: none repeat scroll 0% 0% #2C2C2C;
-    border: 1px dashed #5c1f1f;
-    width: auto !important;
+   background: none repeat scroll 0% 0% #2C2C2C;
+   border: 1px dashed #5c1f1f;
+   width: auto !important;
 }
 
 .thread {
-    margin: 2px;
-    border-top: 2px solid #863D3D;
-    padding: 20px 2px;
+   margin: 2px;
+   border-top: 2px solid #863D3D;
+   padding: 20px 2px;
 }
 
 .reply-post, .feed .op-post {
-    overflow: hidden;
-    padding: 8px 15px;
-    margin-bottom: 6px;
-    background: #252525;
-    border: 1px solid #000;
+   overflow: hidden;
+   padding: 8px 15px;
+   margin-bottom: 6px;
+   background: #252525;
+   border: 1px solid #000;
 }
 
 .popup-post {
-    z-index: 300;
-    position:absolute;
-    border:1px dashed #863D3D;
-    box-shadow: 0px 0px 10px #0C0C0C;
+   background: #252525;
+   z-index: 300;
+   position:absolute;
+   border:1px dashed #863D3D;
+   box-shadow: 0px 0px 10px #0C0C0C;
 }
 
 .post-block-named {
-    padding: 1px 8px;
-    background-color: #2E2E2E;
-    border: 1px solid #0C0C0C;
-    box-shadow: 0px 0px 10px #202020;
-    color: #CCC;
+   padding: 1px 8px;
+   background-color: #2E2E2E;
+   border: 1px solid #0C0C0C;
+   box-shadow: 0px 0px 10px #202020;
+   color: #CCC;
 }
 
 input[type="text"], input[type="password"] {
-    height: 20px;
+   height: 20px;
 }
 
 input[type="checkbox"], input[type="submit"] {
-    margin: 3px 3px 3px 4px;
+   margin: 3px 3px 3px 4px;
 }
 
 select, textarea, input[type="text"], input[type="password"], input[type="submit"] {
-    background:#212121;
-    color:#CCC;
-    border:1px solid #4C4C4C;
-    box-shadow: 0px 0px 10px #202020;
+   background:#212121;
+   color:#CCC;
+   border:1px solid #4C4C4C;
+   box-shadow: 0px 0px 10px #202020;
 }
 
 input::-webkit-input-placeholder {
-    color:#727272;
+   color:#727272;
 }
 
 input::-moz-placeholder {
-    color:#727272;
+   color:#727272;
 }
 
 .reply-post.highlighted-post, .feed .op-post.highlighted-post {
@@ -121,11 +126,11 @@ input::-moz-placeholder {
 }
 
 #delete-container {
-    border-top: 1px solid #5c1f1f;
-    padding-top: 10px;
-    text-align: right;
+   border-top: 1px solid #5c1f1f;
+   padding-top: 10px;
+   text-align: right;
 }
 
 footer {
-    text-align:center;
+   text-align:center;
 }

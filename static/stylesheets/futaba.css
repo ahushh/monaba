@@ -90,11 +90,13 @@ footer {
     padding: 5px;
 }
 
-.highlighted-post {
-    background: none repeat scroll 0% 0% #EEDACB;
-    border: 2px dashed #EE6600;
-    margin: 4px;
-    padding: 5px;
+.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+   border: 1px dashed #EE6600;
+   background: none repeat scroll 0% 0% #EEDACB;
+}
+
+.op-post.highlighted-post {
+   background: none repeat scroll 0% 0% #EEDACB;
 }
 
 .thread {

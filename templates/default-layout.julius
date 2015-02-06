@@ -639,13 +639,17 @@ function checkHighlighted() {
 }
 
 function highlightPost(postId) {
+    removePostHighlight();
+    var p = document.getElementById(postId);
+    if (p != null) {
+        addClass(p, 'highlighted-post');
+    }
+}
+
+function removePostHighlight() {
     Array.prototype.forEach.call(document.querySelectorAll('.highlighted-post'), function(el, i) {
         removeClass(el,'highlighted-post');
     });
-    var p = document.getElementById(postId);
-    if (p != null && !hasClass(p,'op-post') ) {
-        addClass(p, 'highlighted-post');
-    }
 }
 //-----------------------------------------------------------------
 // Reference map
@@ -770,9 +774,15 @@ function showPopupPost(element, event, postId, localId, board) {
         };
         request.send();
     } else {
-        var post = Monaba.postCache[postId];
-        var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
-        element.onmouseleave = function() { clearTimeout(t) };
+        var postInViewPort = document.getElementById("p"+postId);
+        if (postInViewPort != null && isElementInViewport(postInViewPort)) {
+            highlightPost("p"+postId);
+            element.onmouseleave = removePostHighlight;
+        } else {
+            var post = Monaba.postCache[postId];
+            var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
+            element.onmouseleave = function() { clearTimeout(t) };
+        }
     }
 }
 
@@ -966,4 +976,20 @@ function parseDOMElement(data) {
 
 function parseDOMElements(data) {
     return new DOMParser().parseFromString(data,"text/html").body.children;
+}
+
+// http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
+function isElementInViewport (el) {
+    //special bonus for those using jQuery
+    if (typeof jQuery === "function" && el instanceof jQuery) {
+        el = el[0];
+    }
+    var rect = el.getBoundingClientRect();
+    console.log(rect);
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
 }

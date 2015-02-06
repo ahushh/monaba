@@ -111,12 +111,13 @@ input::-moz-placeholder {
     color:#727272;
 }
 
-.highlighted-post {
-    border:1px dashed #863D3D;
-    box-shadow: 0px 0px 10px #0C0C0C;
-    background: none repeat scroll 0% 0% #1A1A1A;
-    margin: 0 0 1 0.5%;
-    padding: 5px;
+.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+   background: none repeat scroll 0% 0% #1A1A1A;
+   border: 1px dashed #863D3D;
+}
+
+.op-post.highlighted-post {
+   background: none repeat scroll 0% 0% #1A1A1A;
 }
 
 #delete-container {

@@ -49,6 +49,7 @@ Set your path to GeSHi in `highlight.php`
     cabal sandbox init
     cabal install yesod-bin && cabal install --only-dependencies # this takes a while, be patient
     cabal clean && cabal configure && cabal build # and this too
+    cp dist/build/Captcha/Captcha Captcha
 
 You may also want to change meta tags such as `description` and `keywords` in `templates/default-layout-wrapper.hamlet`. Do it before building.
 

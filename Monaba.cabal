@@ -38,7 +38,6 @@ library
                      Handler.Captcha
                      Utils.File
                      Utils.YobaMarkup
-                     Utils.PlainCaptcha
                      ModelTypes
 
     if flag(dev) || flag(library-only)
@@ -95,7 +94,6 @@ library
                  , unix                          
                  , nano-md5                      
                  , process                       
-                 , imagemagick
                  , system-filepath
                  , blaze-markup                  
                  , old-locale                    
@@ -106,7 +104,6 @@ library
                  , utf8-string                   
                  , array                         
                  , split                         
-                 , random                        
                  , esqueleto                     
                  , containers                    
                  , http-types                    
@@ -115,7 +112,23 @@ library
                  , tagsoup                       
                  , parsec                        
                  , yesod-auth-hashdb
-                 , transformers
+                 , random
+                 , imagemagick
+
+executable         Captcha
+    if flag(library-only)
+        Buildable: False
+
+    main-is:           PlainCaptcha.hs
+    hs-source-dirs:    Utils
+    build-depends:     base
+                     , transformers
+                     , random
+                     , imagemagick
+                     , text
+                     , system-filepath
+    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+
 
 executable         Monaba
     if flag(library-only)

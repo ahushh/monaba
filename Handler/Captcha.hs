@@ -2,13 +2,18 @@
 module Handler.Captcha where
  
 import Import
-import Utils.PlainCaptcha (makeCaptcha)
 import System.Random (randomIO)
 import System.Directory (removeFile, doesFileExist)
+import System.Process
 import qualified Data.Text as T
 
 captchaExt :: String
 captchaExt = ".png"
+
+makeCaptcha :: String -> Handler Text
+makeCaptcha path = do
+  captcha <- extraCaptcha <$> getExtra
+  liftIO $ pack <$> readProcess (unpack captcha) [path] ""
 
 getCaptchaR :: Handler Html
 getCaptchaR = do
@@ -17,7 +22,7 @@ getCaptchaR = do
     in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
   cId <- liftIO (abs <$> randomIO :: IO Int)
   setSession "captchaId" (showText cId)
-  value <- liftIO $ makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
+  value <- makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
   setSession "captchaValue" value
   sendFile typePng $ captchaFilePath (show cId) ++ captchaExt
 

@@ -1,20 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Utils.PlainCaptcha
-       ( makeCaptcha
-       ) where
-------------------------------------------------------------------------------------------------
 import           Control.Applicative             ((<$>))
 import           Control.Arrow                   (second)
 import           Control.Monad                   (forM)
 import           Control.Monad.IO.Class          (liftIO)
-import           Data.Text                       (Text, pack, unpack)
-import qualified Data.Text                       as T
+import           Data.Char                       (toLower)
+import           Data.Text                       (pack)
 import           Data.Text.Encoding              (encodeUtf8)
 import           Data.Monoid                     ((<>))
 import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand
 import           Prelude
 import           System.Random                   (randomRIO)
+import           System.Environment             (getArgs)
 ------------------------------------------------------------------------------------------------
 -- | Takes a random element from list
 pick :: [a] -> IO a
@@ -22,8 +19,8 @@ pick xs = (xs!!) <$> randomRIO (0, length xs - 1)
 ------------------------------------------------------------------------------------------------
 chars = ['a'..'x']++['A'..'X']++['0'..'9']
 
-makeCaptcha :: String  -> -- ^ Path to captcha
-              IO Text   -- ^ captcha value
+makeCaptcha :: String    -> -- ^ Path to captcha
+              IO String   -- ^ captcha value
 makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
   (_, w) <- magickWand
   (_,dw) <- drawingWand
@@ -47,7 +44,7 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
     y    <- liftIO (randomRIO (-1.0,1.0) :: IO Double)
     char <- liftIO $ pick chars
     drawAnnotation dw (x+space*(fromIntegral i)) ((fSize :: Double)+y) (pack $ char:[])
-    return char
+    return $ toLower char
   drawImage w dw
   -- Trim the image down to include only the text
   trimImage w 0
@@ -64,7 +61,7 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
   newImage w' width height pw
   compositeImage w' w overCompositeOp 0 0
   writeImage w' $ Just $ fromText $ pack path
-  return $ T.toLower $ pack text
+  return text
 ------------------------------------------------------------------------------------------------
--- main = do
---   print =<< makeCaptcha "magick.png"
+main = do
+  putStrLn =<< makeCaptcha . head =<< getArgs

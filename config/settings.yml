@@ -10,6 +10,7 @@ Default: &defaults
   stylesheet: Chaos # default stylesheet
   maxLenOfPostTitle: 60
   maxLenOfPostName: 20
+  captcha: "./Captcha"
 
 Development:
   <<: *defaults

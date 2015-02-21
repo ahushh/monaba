@@ -539,15 +539,17 @@ function expandImage(post) {
         var thumbUrl = thumbImg.src;
         var thumbWidth = thumbImg.width;
         var thumbHeight = thumbImg.height;
+        var isFull = false;
         thumbImg.onclick = function(event) {
             if (event.which == 2 || event.which == 3)
                 return true;
-            if (new RegExp(fullUrl).test(thumbImg.src)) {
+            if (isFull) {
                 thumbImg.src = thumbUrl;
                 thumbImg.onload = function() {
                     thumbImg.style.width = '';
                     thumbImg.setAttribute('width', thumbWidth);
                     thumbImg.setAttribute('height', thumbHeight);
+                    isFull = false;
                 };
             } else {
                 addClass(thumbImg, 'image-loading');
@@ -556,6 +558,7 @@ function expandImage(post) {
                     thumbImg.removeAttribute('width');
                     thumbImg.removeAttribute('height');
                     thumbImg.style.width = '100%';
+                    isFull = true;
                 };
                 thumbImg.src = fullUrl;
             }
@@ -985,7 +988,6 @@ function isElementInViewport (el) {
         el = el[0];
     }
     var rect = el.getBoundingClientRect();
-    console.log(rect);
     return (
         rect.top >= 0 &&
         rect.left >= 0 &&

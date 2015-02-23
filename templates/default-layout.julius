@@ -759,23 +759,25 @@ function displayPopupPost(event, post) {
 
 function showPopupPost(element, event, postId, localId, board) {
     if (!postId || !Monaba.postCache[postId]) {
-        var request = new XMLHttpRequest();
-        request.open('GET',"/ajax/post/"+board+"/"+localId,true);
-        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.onload = function() {
-            if (request.status >= 200 && request.status < 400) {
-                var el = parseDOMElement(request.responseText);
-                var post = cachePopupPost(el);
-                var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
-                element.onmouseleave = function() { clearTimeout(t) };
-            } else {
-                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
-            }
-        };
-        request.onerror = function() {
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-        };
-        request.send();
+        var t = setTimeout(function(){
+            var request = new XMLHttpRequest();
+            request.open('GET',"/ajax/post/"+board+"/"+localId,true);
+            request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            request.onload = function() {
+                if (request.status >= 200 && request.status < 400) {
+                    var el = parseDOMElement(request.responseText);
+                    var post = cachePopupPost(el);
+                    displayPopupPost(event, post);
+                } else {
+                    popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
+                }
+            };
+            request.onerror = function() {
+                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
+            };
+            request.send();
+        }, Monaba.cnf.popupPostDelay);
+        element.onmouseleave = function() { clearTimeout(t) };
     } else {
         var postInViewPort = document.getElementById("p"+postId);
         if (postInViewPort != null && isElementInViewport(postInViewPort)) {

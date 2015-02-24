@@ -93,11 +93,11 @@
       <tr>
         <td>##1231
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelTrue"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
+        <td><span class="pLabelTrue"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
       <tr>
         <td>##123
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelFalse"><a href="/thread/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
+        <td><span class="pLabelFalse"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
     <hr>
 
     <p style=text-align:center><strong>_{MsgLatex}</strong>

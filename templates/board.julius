@@ -99,11 +99,15 @@ function showQuickPostForm(postId) {
         var inputs = postform.getElementsByTagName("input");
         var formData = new FormData();
         for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].type != "submit") {
-                if (inputs[i].files != null)
-                    formData.append(inputs[i].name, inputs[i].files[0] || "");
-                else
-                    formData.append(inputs[i].name, inputs[i].value || "");
+            if (inputs[i].type == "submit") {
+                ;
+            } else if (inputs[i].type == "file" && inputs[i].files != null) {
+                formData.append(inputs[i].name, inputs[i].files[0]);
+            } else if (inputs[i].type == "checkbox") {
+                if (inputs[i].checked)
+                    formData.append(inputs[i].name, inputs[i].value);
+            } else {
+                formData.append(inputs[i].name, inputs[i].value);
             }
         }
         var textarea = postform.getElementsByTagName("textarea")[0];

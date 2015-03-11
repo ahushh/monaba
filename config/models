@@ -79,6 +79,7 @@ Attachedfile json
     name         String
     extension    String
     type         FileType
+    path         FilePath default=''
     size         String
     thumbSize    Int   -- just thumbSize from Board table
     thumbWidth   Int      
@@ -99,3 +100,5 @@ Config
     showNews        Int  
     maxEditings     Int  
     showLatestPosts Int  
+Storage
+    uploadDir       Int default=1

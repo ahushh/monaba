@@ -7,14 +7,15 @@ import           Data.Conduit                    (($$))
 import qualified Data.ByteString                 as BS
 import qualified Data.Conduit.List               as CL
 import           Data.Ratio
-import           System.Posix                    (getFileStatus, fileSize, FileOffset())
 import           Text.Printf
-import           System.Directory                (copyFile, doesFileExist, doesDirectoryExist, createDirectory, getDirectoryContents)
+import           System.Directory                (copyFile, doesFileExist, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
 import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
 import qualified Graphics.ImageMagick.MagickWand as IM
 import           System.FilePath                 ((</>))
 import           System.Process                  (readProcess)
+import           System.Posix                    (FileOffset())
+import           System.Posix.Files              (createSymbolicLink, getFileStatus, fileSize)
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
@@ -26,15 +27,17 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
   case formfile of
     FormSuccess (Just f) -> do
       hashsum    <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
-      uploadPath <- liftIO $ saveFile f hashsum
+      uploadPath <- saveFile f hashsum
       filesize   <- liftIO $ formatFileSize <$> getFileSize uploadPath
       let filetype = detectFileType f
           filename = sanitizeFileName $ unpack $ fileName f
+          fileext  = fileExt f
           newFile  = Attachedfile { attachedfileParentId    = postId
                                   , attachedfileHashsum     = hashsum
                                   , attachedfileName        = filename
-                                  , attachedfileExtension   = fileExt f
+                                  , attachedfileExtension   = fileext
                                   , attachedfileType        = detectFileType f
+                                  , attachedfilePath        = uploadPath
                                   , attachedfileSize        = filesize
                                   , attachedfileThumbSize   = thumbSize
                                   , attachedfileThumbWidth  = 0
@@ -44,15 +47,15 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
       case filetype of
         FileImage -> do
           (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath
-          (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize uploadPath filename hashsum (imgW, imgH)
+          (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize uploadPath fileext hashsum (imgW, imgH)
           void $ runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
                                           , attachedfileThumbWidth  = thumbW
                                           , attachedfileThumbHeight = thumbH
                                           }
         FileVideo -> do
-          liftIO $ unlessM (doesDirectoryExist (thumbDirectory </> hashsum)) $ createDirectory (thumbDirectory </> hashsum)
+          liftIO $ unlessM (doesDirectoryExist thumbDirectory) $ createDirectory thumbDirectory
           -- make thumbnail
-          let thumbpath = thumbDirectory </> hashsum </> (show thumbSize ++ "thumb-" ++ filename++".png")
+          let thumbpath = thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
           void $ liftIO $ readProcess "/usr/bin/ffmpeg" ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
           (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize)
           -- get video info
@@ -67,20 +70,35 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
         _         -> void $ runDB $ insert newFile
     _                    -> return ())
 
-saveFile :: FileInfo -> String -> IO FilePath
+saveFile :: FileInfo -> String -> Handler FilePath
 saveFile file hashsum = do
   let fn = sanitizeFileName $ unpack $ fileName file
-  dirExists     <- doesDirectoryExist (uploadDirectory </> hashsum)
-  dirIsNotEmpty <- liftIO $ (/=0) . length . filter (`notElem`[".",".."]) <$> (if dirExists then getDirectoryContents (uploadDirectory </> hashsum) else return [])
-  if dirExists && dirIsNotEmpty
+  n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
+  dirExists  <- liftIO $ doesDirectoryExist (uploadDirectory </> show n)
+  unless dirExists $ liftIO $ createDirectory (uploadDirectory </> show n)
+  files <- liftIO $ getDirectoryContents (uploadDirectory </> show n)
+  let sameName = (>0) $ length $ filter ((==) $ unpack $ fileName file) files
+  if sameName
     then do
-      fn':_ <- filter (`notElem`[".",".."]) <$> getDirectoryContents (uploadDirectory </> hashsum)
-      return $ uploadFilePath fn' hashsum
-    else do
-      let path = uploadFilePath fn hashsum
-      unless dirExists $ createDirectory (uploadDirectory </> hashsum)
-      unlessM (doesFileExist path) $ fileMove file path 
+      runDB $ updateWhere ([]::[Filter Storage]) [StorageUploadDir +=. 1]
+      dirExists <- liftIO $ doesDirectoryExist (uploadDirectory </> show (n+1))
+      liftIO $ createDirectory (uploadDirectory </> show (n+1))
+      let path = uploadDirectory </> show (n+1) </> (unpack $ fileName file)
+      liftIO $ fileMove file path
       return path
+    else do
+      fileExists <- runDB $ selectFirst [AttachedfileHashsum ==. hashsum] []
+      if isJust fileExists
+        then do
+          cd <- liftIO $ getCurrentDirectory
+          let oldPath = cd ++ "/" ++ (attachedfilePath . entityVal . fromJust $ fileExists)
+              path    = uploadDirectory </> show n </> (unpack $ fileName file)
+          liftIO $ createSymbolicLink oldPath path
+          return path
+        else do
+          let path = uploadDirectory </> show n </> (unpack $ fileName file)
+          liftIO $ fileMove file path
+          return path
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 detectFileType :: FileInfo -> FileType
@@ -154,16 +172,16 @@ resizeImage from to maxSz = withMagickWandGenesis $ do
 -- | Make a thumbnail for an image file
 makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                FilePath        ->  -- ^ File path
-               String          ->  -- ^ File name
+               String          ->  -- ^ File extentions
                String          ->  -- ^ Hashsum of source file
                ImageResolution ->  -- ^ Width and height of the source file
                IO ImageResolution -- ^ Width and height of the destination file
-makeThumbImg thumbSize filepath filename hashsum (width, height) = do
+makeThumbImg thumbSize filepath fileext hashsum (width, height) = do
   unlessM (doesDirectoryExist (thumbDirectory </> hashsum)) $
     createDirectory (thumbDirectory </> hashsum)
   if height > thumbSize || width > thumbSize
     then resizeImage filepath thumbpath (thumbSize,thumbSize)
     else copyFile filepath thumbpath >> return (width, height)
-    where thumbpath = thumbDirectory </> hashsum </> (show thumbSize ++ "thumb-" ++ filename)
+    where thumbpath = thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)
 
 

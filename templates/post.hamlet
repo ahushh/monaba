@@ -47,20 +47,20 @@
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-          $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileName file) (attachedfileHashsum file)
-            $with up <- uploadUrlPath (attachedfileName file) (attachedfileHashsum file)
+          $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
+            $with up <- attachedfilePath file
               <div class=#{c}>
                 <div .file-name>
-                    <a title=#{attachedfileName file} target=_blank href=#{up}>#{truncateFileName $ attachedfileName file}
+                    <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName $ attachedfileName file}
                 <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
                 $if attachedfileThumbWidth file == -1
                     <img src="#{tp}" .thumb>
                 $elseif attachedfileType file == FileVideo
-                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url=#{up}>
+                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}">
                 $elseif attachedfileType file == FileImage
-                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url=#{up}>
+                    <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}">
                 $else
-                    <img src="#{tp}" .thumb data-url=#{up}>
+                    <img src="#{tp}" .thumb data-url="/#{up}">
     $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
         <div .message>#{m}
     $maybe lm <- postLastModified postVal

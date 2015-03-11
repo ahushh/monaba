@@ -104,13 +104,7 @@ geoIconPath :: Text -> Text
 geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
 
 uploadDirectory :: FilePath
-uploadDirectory = staticDir </> "files"
-
-uploadFilePath :: String -> String -> FilePath
-uploadFilePath filename hashsum = uploadDirectory </> hashsum </> filename
-
-uploadUrlPath :: String -> String -> FilePath
-uploadUrlPath filename hashsum = ("/" </>) $ uploadFilePath filename hashsum
+uploadDirectory = staticDir </> "upload"
 
 captchaFilePath :: String -> String
 captchaFilePath file = staticDir </> "captcha" </> file
@@ -130,16 +124,13 @@ thumbDirectory :: FilePath
 thumbDirectory = staticDir </> "thumb"
 
 thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
-thumbUrlPath size filetype filename hashsum
-  | filetype == FileVideo           = "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename ++ ".png")
-  | filetype `elem` thumbFileTypes = "/" </> thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  | otherwise                      = "/" </> staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
+thumbUrlPath size filetype fileext hashsum = "/" </> (thumbFilePath size filetype fileext hashsum)
 
 thumbFilePath :: Int -> FileType -> String -> String -> FilePath
-thumbFilePath size filetype filename hashsum
-  | filetype == FileVideo           = thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename ++ ".png")
-  | filetype `elem` thumbFileTypes = thumbDirectory </> hashsum </> (show size ++ "thumb-" ++ filename)
-  | otherwise                      = staticDir </> "fileicons" </> (choseFileIcon filetype) ++ "." ++ thumbIconExt
+thumbFilePath size filetype fileext hashsum
+  | filetype == FileVideo           = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ ".png")
+  | filetype `elem` thumbFileTypes = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ "." ++ fileext)
+  | otherwise                      = staticDir </> "fileicons" </> ((choseFileIcon filetype) ++ "." ++ thumbIconExt)
 
 -------------------------------------------------------------------------------------------------------------------
 -- Handler helpers

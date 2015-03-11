@@ -94,22 +94,18 @@ deleteFiles idsToRemove = do
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
     let ft = attachedfileType f
-        fn = attachedfileName f
+        fe = attachedfileExtension f
         hs = attachedfileHashsum f
         ts = attachedfileThumbSize f
-        td = thumbDirectory </> hs
-        ud = uploadDirectory </> hs
     case sameFilesCount `compare` 0 of
       GT -> do -- this file belongs to several posts so don't delete it from disk
         filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
           when (ft `elem` thumbFileTypes) $ do
-            void $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
-        removeDirIfEmpty td >> removeDirIfEmpty ud
+            void $ liftIO $ removeFile $ thumbFilePath ts ft fe hs
       _  -> do
-        liftIO $ removeFile $ uploadFilePath fn hs 
-        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath ts ft fn hs
-        removeDirIfEmpty td >> removeDirIfEmpty ud
+        liftIO $ removeFile $ attachedfilePath f
+        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath ts ft fe hs
   runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board

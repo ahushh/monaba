@@ -68,12 +68,6 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
   ------------------------------------------------------------------------------------------------------- 
-  geoIps' <- forM (if geoIpEnabled then threadsAndPreviews else []) $ \((Entity tId t,_),ps,_) -> do
-    xs <- forM ps $ \(Entity pId p,_) -> getCountry (postIp p) >>= (\c' -> return (pId, c'))
-    c  <- getCountry $ postIp t
-    return $ (tId, c):xs
-  let geoIps = map (second fromJust) $ filter (isJust . snd) $ concat geoIps'
-  -------------------------------------------------------------------------------------------------------
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
@@ -128,6 +122,7 @@ postBoardR board _ = do
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
         now      <- liftIO getCurrentTime
+        country  <- getCountry ip
         -- check too fast posting
         lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent ==. 0] [Desc PostDate] -- last thread by IP
         when (isJust lastPost) $ do
@@ -151,6 +146,7 @@ postBoardR board _ = do
                            , postPassword     = pswd
                            , postBumped       = Just now
                            , postIp           = ip
+                           , postCountry      = (\(code,name') -> GeoCountry code name') <$> country
                            , postLocked       = False
                            , postSticked      = False
                            , postAutosage     = False

@@ -51,6 +51,7 @@ Post json
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text
+    country      GeoCountry Maybe
     sticked      Bool
     locked       Bool
     autosage     Bool

@@ -1,12 +1,31 @@
+{-# LANGUAGE OverloadedStrings #-}
 module ModelTypes
        (
          Permission(..)
        , FileType(..)
+       , GeoCountry(..)
        ) where
 
 import Prelude
-import Data.Text (unpack)
+import Data.Text (pack, unpack, Text)
+import Control.Monad (mzero)
+import Control.Applicative ((<$>), (<*>))
 import Yesod
+
+-- | Contains country code and name
+data GeoCountry = GeoCountry { geoCountryCode' :: Text
+                             , geoCountryName' :: Text
+                             }
+                deriving (Show, Ord, Read, Eq)
+
+instance ToJSON GeoCountry where
+  toJSON (GeoCountry code name) = object ["code" .= code, "name" .= name]
+
+instance FromJSON GeoCountry where
+  parseJSON (Object o) = GeoCountry  <$>
+                         o .: "code" <*>
+                         o .: "name"
+  parseJSON _          = mzero
 
 data Permission = ManageThreadP |
                   ManageBoardP  |
@@ -33,3 +52,4 @@ instance FromJSON FileType where
 
 derivePersistField "Permission"
 derivePersistField "FileType"
+derivePersistField "GeoCountry"

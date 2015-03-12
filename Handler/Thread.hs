@@ -55,8 +55,6 @@ getThreadR board thread = do
       opPostFiles     = reverse $ snd $ head allPosts
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
-  geoIps    <- getCountries (if geoIpEnabled then allPosts else [])
-  -------------------------------------------------------------------------------------------------------
   (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard            <- extraSiteName <$> getExtra
@@ -115,6 +113,7 @@ postThreadR board thread = do
         when (enableCaptcha && isNothing muser) $ do
            checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
         ------------------------------------------------------------------------------------------------------           
+        country  <- getCountry ip
         now      <- liftIO getCurrentTime
         -- check too fast posting
         lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent !=. 0] [Desc PostDate] -- last reply by IP
@@ -143,6 +142,7 @@ postThreadR board thread = do
                            , postPassword     = pswd
                            , postBumped       = Nothing
                            , postIp           = ip
+                           , postCountry      = (\(code,name') -> GeoCountry code name') <$> country
                            , postLocked       = False
                            , postSticked      = False
                            , postAutosage     = False

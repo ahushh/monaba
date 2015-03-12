@@ -14,14 +14,13 @@ getPostsHelper selectPosts board thread errorString = do
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
-  let permissions  = getPermissions   mgroup
-      geoIpEnabled = boardEnableGeoIp boardVal
-  let selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
+  let permissions   = getPermissions   mgroup
+      geoIpEnabled  = boardEnableGeoIp boardVal
+      selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
     files <- selectFiles p
     return (p, files))
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
-  geoIps    <- getCountries (if geoIpEnabled then postsAndFiles else [])
   timeZone <- getTimeZone
   case () of
     _ | t == 0              -> selectRep $ do
@@ -33,7 +32,7 @@ getPostsHelper selectPosts board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget muser post files True True False permissions geoIps timeZone}
+                                   ^{postWidget muser post files True True False geoIpEnabled permissions timeZone}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -75,15 +74,12 @@ getAjaxPostByIdR postId = do
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   let geoIpEnabled = boardEnableGeoIp boardVal
-
-
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps <- getCountries [(post, files) | geoIpEnabled]
   timeZone <- getTimeZone
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal post) == 0
-                       then postWidget muser post files False True False permissions geoIps timeZone
-                       else postWidget muser post files False True False permissions geoIps timeZone
+                       then postWidget muser post files False True False geoIpEnabled permissions timeZone
+                       else postWidget muser post files False True False geoIpEnabled permissions timeZone
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -101,12 +97,11 @@ getAjaxPostR board postId = do
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  geoIps <- getCountries [(post, files) | geoIpEnabled]
   timeZone <- getTimeZone
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget muser post files False True False permissions geoIps timeZone
-                       else postWidget muser post files False True False permissions geoIps timeZone
+                       then postWidget muser post files False True False geoIpEnabled permissions timeZone
+                       else postWidget muser post files False True False geoIpEnabled permissions timeZone
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

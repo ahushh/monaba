@@ -32,8 +32,6 @@ getDeletedByOpR board thread = do
     return (post, file)
   let allPosts = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
   ------------------------------------------------------------------------------------------------------- 
-  geoIps <- getCountries (if geoIpEnabled then allPosts else [])      
-  ------------------------------------------------------------------------------------------------------- 
   nameOfTheBoard <- extraSiteName <$> getExtra
   msgrender      <- getMessageRender
   timeZone      <- getTimeZone

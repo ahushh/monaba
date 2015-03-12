@@ -12,12 +12,6 @@ import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Posting
 import           Handler.Captcha    (checkCaptcha)
 import           Text.Blaze.Html.Renderer.String
-getKostylR :: Handler Html
-getKostylR = do
-  files <- runDB $ selectList ([]::[Filter Attachedfile]) []
-  forM_ files $ \(Entity k v) -> do
-    runDB $ update k [AttachedfilePath =. ("static/upload/0/"++ attachedfileName v)]
-  redirect HomeR
 -------------------------------------------------------------------------------------------------------------------
 -- Костыли-костылики...
 getJsonFromMsgR :: Text -> Handler TypedContent

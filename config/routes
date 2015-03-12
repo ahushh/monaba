@@ -1,3 +1,4 @@
+/kostyl KostylR GET
 /static StaticR Static getStatic
 /auth   AuthR   Auth   getAuth
 

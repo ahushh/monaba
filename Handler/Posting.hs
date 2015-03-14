@@ -11,8 +11,12 @@ data GoBackTo = ToThread | ToBoard
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Board -> -- ^ Board value
-           Html  -> -- ^ Extra token
+
+postForm :: Int   -> -- ^ The maximium length of post title
+           Int   -> -- ^ The maximium length of poster name
+           Board -> -- ^ Board value
+           Maybe (Entity User) -> -- ^ User
+           Html                -> -- ^ Extra token
            MForm Handler (FormResult ( Maybe Text     -- ^ Poster name
                                      , Maybe Text     -- ^ Thread subject
                                      , Maybe Textarea -- ^ Message
@@ -22,11 +26,8 @@ postForm :: Board -> -- ^ Board value
                                      , GoBackTo       -- ^ Go back to
                                      , Maybe Bool     -- ^ No bump
                                      )
-                         , Board        -> -- ^ boardW
-                           Bool         -> -- ^ isthreadW
-                           Maybe (Entity User) -> -- ^ muserW
-                           Widget)
-postForm boardVal extra = do
+                         , Widget)
+postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -41,21 +42,25 @@ postForm boardVal extra = do
       myMessageField = checkBool (not . tooLongMessage maxMessageLength)
                                  (MsgTooLongMessage maxMessageLength )
                                  textareaField
-
-  let urls :: [(Text, GoBackTo)]
+      urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
+      passInput    lbl = lbl { fsAttrs = [("autocomplete","off")] }
+      captchaInput lbl = lbl { fsAttrs = [("placeholder",msgrender MsgCaptcha)] }
+      msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
+      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName ),("placeholder",msgrender MsgName)] }
+      subjectInput lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostTitle),("placeholder",msgrender MsgSubject)] }
   ----------------------------------------------------------------------------------------------------------------
-  (nameRes     , nameView    ) <- mopt textField              "" (Just              <$> lastName)
-  (subjectRes  , subjectView ) <- mopt textField              "" (Just              <$> lastTitle)
-  (messageRes  , messageView ) <- mopt myMessageField         "" ((Just . Textarea) <$> lastMessage)
-  (passwordRes , passwordView) <- mreq passwordField          "" Nothing
-  (captchaRes  , captchaView ) <- mopt textField              "" Nothing
-  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) "" (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
-  (nobumpRes   , nobumpView  ) <- mopt checkBoxField          "" Nothing
+  (nameRes     , nameView    ) <- mopt textField              (nameInput    "") (Just              <$> lastName)
+  (subjectRes  , subjectView ) <- mopt textField              (subjectInput "") (Just              <$> lastTitle)
+  (messageRes  , messageView ) <- mopt myMessageField         (msgInput     "") ((Just . Textarea) <$> lastMessage)
+  (passwordRes , passwordView) <- mreq passwordField          (passInput    "") Nothing
+  (captchaRes  , captchaView ) <- mopt textField              (captchaInput "")  Nothing
+  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
+  (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
                FormSuccess fileresults <*> gobackRes  <*> nobumpRes
-      widget boardW _ muserW = $(widgetFile "post-form")
+      widget = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
 editForm :: Html -> MForm Handler (FormResult (Textarea, Text, Int), Widget)

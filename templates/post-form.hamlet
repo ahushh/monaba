@@ -54,11 +54,12 @@
             <td>
                 ^{fvInput passwordView}
         $if enableCaptcha
-           <tr .post-block>
-             <td .post-block-named>_{MsgCaptcha}
-             <td>
-               <img #captcha onclick="refreshCaptcha()" src=@{CaptchaR}>
-               ^{fvInput captchaView} 
+          $if isNothing muser
+            <tr .post-block>
+              <td .post-block-named>_{MsgCaptcha}
+              <td>
+                <img #captcha onclick="refreshCaptcha()" src=@{CaptchaR}>
+                  ^{fvInput captchaView} 
         $if length fileviews > 0
             <tr .post-block>
                 <td .post-block-named>_{MsgFile}
@@ -81,14 +82,14 @@
         <td>
             <div #board-info>
                 <ul>
-                    <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardW}
-                    <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardW}
+                    <li>_{MsgSupportedFileTypes} #{intercalate ", " $ boardAllowedTypes boardVal}
+                    <li>_{MsgPostFormBumpLimit $ boardBumpLimit boardVal}
                     <li>_{MsgMaxFileSize} #{show $ maxFileSize} MB
-                    $with s <- boardThumbSize boardW
+                    $with s <- boardThumbSize boardVal
                        <li>_{MsgImgsWillBeThumbnailed s}
-                    $if boardOpModeration boardW
+                    $if boardOpModeration boardVal
                        <li>_{MsgOpModerationIsEnabled}
-                    $forall r <- boardExtraRules boardW
+                    $forall r <- boardExtraRules boardVal
                        $if not $ T.null r
                            <li>#{r}
 <div .close-post-form>

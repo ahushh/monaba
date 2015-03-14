@@ -16,7 +16,7 @@ $if hasAccessToReply
     <div .show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
-        ^{formWidget boardVal True muser}
+        ^{formWidget}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" data-board=#{board}>
         ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False geoIpEnabled permissions timeZone}

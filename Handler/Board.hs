@@ -68,7 +68,9 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
   ------------------------------------------------------------------------------------------------------- 
-  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
+  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
@@ -95,7 +97,7 @@ postBoardR board _ = do
       opFile           = boardOpFile        boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm boardVal
+  ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal muser
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs

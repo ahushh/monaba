@@ -55,7 +55,9 @@ getThreadR board thread = do
       opPostFiles     = reverse $ snd $ head allPosts
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
-  (formWidget, formEnctype) <- generateFormPost $ postForm boardVal
+  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
   (formWidget', _)          <- generateFormPost editForm
   nameOfTheBoard            <- extraSiteName <$> getExtra
   msgrender                 <- getMessageRender
@@ -86,7 +88,7 @@ postThreadR board thread = do
       enableCaptcha    = boardEnableCaptcha boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm boardVal
+  ((result, _), _) <- runFormPost $ postForm 0 0 boardVal muser
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
@@ -129,7 +131,7 @@ postThreadR board thread = do
           trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
 
         maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-        maxLenOfPostName  <- extraMaxLenOfPostName <$> getExtra
+        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost')
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId

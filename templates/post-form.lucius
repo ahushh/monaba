@@ -1,32 +1,102 @@
-#post-form textarea {
+.no-js #board-info {
+   display: block;
+}
+.no-js .close-post-form {
+   display: none;
+}
+
+.no-js #attach-file {
+   display: none;
+}
+
+.no-js input[type="file"] {
+   display: block;
+}
+
+.js input[type="file"] {
+   visibility: none;
+   position: absolute;
+   left: -999999px;
+}
+
+#attach-file {
+   cursor:pointer;
+   margin: 5px 0;
+}
+
+#attach-file.inactive {
+   opacity: 0.5;
+}
+
+#attachment-thumbs {
+}
+
+.attachment-thumb {
+   display: inline-block;
+   width: 15%;
+   margin: 5px;
+}
+
+.attachment-thumb img {
    width: 100%;
+   margin: 1px;
+}
+
+#post-form-inputs {
+}
+
+#post-form textarea {
+   width: 99.3%;
    height: 150px;
    min-height: 150px;
 }
 
-#board-info {
-  font-size: 0.8em;
-}
-
-.post-block-name {
-  font-weight: bolder;
+.plain-post-form {
+   border: 0px;
 }
 
 .quick-post-form {
-  text-align: left;
-  margin: 5px 0 0;
-  display: table;
-  width: 95%;  
-  padding: 5px;
+   text-align: left;
+   display: table;
 }
 
-.plain-post-form {
-  width: 75%;
-  margin: 10px 10%;
-  border: 0px;
-  padding: 5px;
+@media all and (max-width:1024px) {
+   .quick-post-form {
+      margin: 5px 0 0;
+      width: 100%;
+   }
+   .plain-post-form {
+      box-sizing: content-box;
+      width: 90%;
+      margin: 10px 5%;
+   }
+   .plain-post-form input[type="text"],
+         .plain-post-form input[type="submit"],
+         .plain-post-form input[type="password"] {
+            width: 45%;
+            box-sizing: content-box;
+         }
+}
+
+@media all and (min-width:1024px) {
+   .quick-post-form {
+      margin: 5px 0 0;
+      width: 65%;
+   }
+   .plain-post-form {
+      box-sizing: content-box;
+      width: 50%;
+      margin: 10px 25%;
+      border: 0px;
+   }
+   .plain-post-form input[type="text"],
+         .plain-post-form input[type="submit"],
+         .plain-post-form input[type="password"] {
+            width: 24%;
+            box-sizing: content-box;
+         }
 }
 
 .close-post-form {
-  text-align: center;
+   text-align: center;
 }

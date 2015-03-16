@@ -3,9 +3,9 @@
 ######################################################################################
 ## fields
 Name: Name
-Subject: Subject
+Subject: Post's subject
 SubmitBtn: Submit
-Message: Message
+Message: Your message
 Password: Password
 File: File
 Goback: Go back to
@@ -16,7 +16,7 @@ Captcha: Captcha
 
 ### Post form rules
 SupportedFileTypes: Supported file types are
-MaxFileSize: Max file size allowed is
+MaxFileSize: Max files size allowed is
 ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.
 OpModerationIsEnabled: OP moderation is enabled on this board.
 PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "∞"}
@@ -27,6 +27,9 @@ NewThread: New thread
 ClosePostForm: Close form
 Reply: Reply
 ReplyToThread: Reply to thread №
+AttachFile: Attach file
+ShowRules: Show rules
+HideRules: Hide Rules
 
 ### Editing
 Edit: Edit

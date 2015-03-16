@@ -93,7 +93,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
-    FormSuccess (name, title, message, captcha, pswd, files, goback, Just nobump)
+    FormSuccess (name, title, message, captcha, pswd, files, goback, nobump)
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
       | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
@@ -158,7 +158,7 @@ postThreadR board thread = do
         -------------------------------------------------------------------------------------------------------
         -- bump thread if it's necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
-        unless (nobump || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
+        unless ((fromMaybe False nobump) || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         -- remember poster name
         when (isJust name) $ setSession "name" (fromMaybe defaultName name)
         -- everything went well, delete these values

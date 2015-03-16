@@ -54,7 +54,7 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
   (subjectRes  , subjectView ) <- mopt textField              (subjectInput "") (Just              <$> lastTitle)
   (messageRes  , messageView ) <- mopt myMessageField         (msgInput     "") ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          (passInput    "") Nothing
-  (captchaRes  , captchaView ) <- mopt textField              (captchaInput "")  Nothing
+  (captchaRes  , captchaView ) <- mopt textField              (captchaInput "") Nothing
   (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)

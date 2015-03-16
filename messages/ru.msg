@@ -3,20 +3,20 @@
 ######################################################################################
 ## fields
 Name: Имя
-Subject: Тема
+Subject: Тема сообщения
 SubmitBtn: Отправить
-Message: Текст
+Message: Текст сообщения
 Password: Пароль
 File: Файл
 Goback: Перейти к 
 ToThread: треду
 ToBoard: борде
 Nobump: Не бампать
-Captcha: Капча
+Captcha: Проверочный код
 
 ### Post form rules
 SupportedFileTypes: Поддерживаемые типы файлов:
-MaxFileSize: Маскимальный размер файла:
+MaxFileSize: Маскимальный размер файлов:
 ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
 OpModerationIsEnabled: На этой доске включена ОП-модерация.
 PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
@@ -27,6 +27,9 @@ NewThread: Новый тред
 ClosePostForm: Закрыть форму
 Reply: Ответить
 ReplyToThread: Ответ в тред №
+AttachFile: Прикрепить файл
+ShowRules: Показать правила
+HideRules: Скрыть правила
 
 ### Editing
 Edit: Редактировать

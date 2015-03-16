@@ -102,7 +102,7 @@ postBoardR board _ = do
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (name, title, message, captcha, pswd, files, goback, Just _)
+    FormSuccess (name, title, message, captcha, pswd, files, goback, _)
       | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
       | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText

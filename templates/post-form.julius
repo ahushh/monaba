@@ -1,0 +1,92 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    if (getItem("hideRules"))
+         hideRules();
+    else
+        showRules();
+
+    var fs = document.querySelectorAll("input[type='file']");
+    for (var i = 0; i < fs.length; i++) {
+        fs[i].value = '';
+    }
+    var af = document.getElementById("attach-file");
+
+    af.onclick = function() {
+        var fsNodeList = document.querySelectorAll("input[type='file']");
+        var fs = [];
+        for (var i = 0; i < fsNodeList.length; i++)
+            if (!fsNodeList[i].value) fs.push(fsNodeList[i]);
+        if (!fs.length) return;
+        if (fs.length == 1) {
+            af.className = "inactive";
+        }            
+        var fInput = fs[0];
+        fInput.onchange = function(event) {
+            event.preventDefault();
+            var files = event.target.files;
+            handleFile(files, fInput);
+        };
+        fInput.click();
+    };
+});
+
+function handleFile(files, fInput) {
+    if (!files.length) return;
+    var file = files[0];
+    var fts = document.getElementById("attachment-thumbs");
+    var bytes = file.size;
+    var fSize;
+    for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"], nMultiple = 0, nApprox = bytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
+            fSize = " " + nApprox.toFixed(2) + " " + aMultiples[nMultiple];
+    }
+    if (window.FileReader) {
+        var div = document.createElement('div');
+        div.onclick = function() {
+            fInput.value = '';
+            fts.removeChild(div);
+            document.getElementById("attach-file").className = "";
+        };
+        div.onmouseover = function() {
+            img.style.border = '1px solid red'
+            img.style.margin = '0';
+        };
+        div.onmouseout = function() {
+            img.style.border = '';
+            img.style.margin = '1px';
+        };
+        div.className = "attachment-thumb";
+
+        var img = new Image();
+        img.title = file.name + ", " + fSize;
+        img.file = file;
+        div.appendChild(img);
+        fts.appendChild(div);
+        if (file.type.match('image.*')) {
+            var reader = new FileReader();
+            reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+            reader.readAsDataURL(file);
+        } else if (file.type.match('archive.*')) {
+            img.src = "@{StaticR fileicons_archive_png}";            
+        } else if (file.type.match('audio.*')) {
+            img.src = "@{StaticR fileicons_audio_png}";            
+        } else if (file.type.match('.*compressed') || file.type.match('application/(rar|7z|zip)') ) {
+            img.src = "@{StaticR fileicons_archive_png}";            
+        } else  {
+            img.src = "@{StaticR fileicons_default_png}";
+        }
+    }
+ 
+}
+
+function showRules() {
+    setItem("hideRules",false);
+    document.getElementsByClassName("hide-rules")[0].style.display = 'inline';
+    document.getElementsByClassName("show-rules")[0].style.display = 'none';
+    document.getElementById("board-info").style.display = 'block';
+}
+
+function hideRules() {
+    setItem("hideRules",true);
+    document.getElementsByClassName("hide-rules")[0].style.display = 'none';
+    document.getElementsByClassName("show-rules")[0].style.display = 'inline';
+    document.getElementById("board-info").style.display = 'none';
+}

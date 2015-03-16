@@ -83,6 +83,9 @@ function truncateThread(threadLocalId,scrollToThreadBottom) {
 }
 
 function showQuickPostForm(postId) {
+    var spf = document.getElementsByClassName('show-plain-form')[0];
+    spf.style.display = 'block';
+
     var p = document.getElementById(postId);
     var postform = document.getElementById('post-form');
     postform.className = "quick-post-form";
@@ -132,7 +135,7 @@ function showQuickPostForm(postId) {
                     popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
                     closePostForm();
                     refreshThread(board, threadLocalId);
-                } else {
+p                } else {
                     popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {

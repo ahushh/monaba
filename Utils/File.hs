@@ -9,6 +9,7 @@ import qualified Data.ByteString                 as BS
 import qualified Data.Conduit.List               as CL
 import           Control.Monad                   (mplus)
 import           Data.Ratio
+import           Data.Text                       (isPrefixOf)
 import           Text.Printf
 import           System.Directory                (copyFile, doesFileExist, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
 import           Filesystem.Path.CurrentOS       (fromText)
@@ -38,7 +39,7 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
                                   , attachedfileHashsum     = hashsum
                                   , attachedfileName        = filename
                                   , attachedfileExtension   = fileext
-                                  , attachedfileType        = detectFileType f
+                                  , attachedfileType        = filetype
                                   , attachedfilePath        = uploadPath
                                   , attachedfileSize        = filesize
                                   , attachedfileThumbSize   = thumbSize
@@ -115,22 +116,19 @@ saveFile file hashsum = do
 -------------------------------------------------------------------------------------------------------------------
 detectFileType :: FileInfo -> FileType
 detectFileType f
-  | fileExt f `elem` video   = FileVideo
-  | fileExt f `elem` audio   = FileAudio
-  | fileExt f `elem` image   = FileImage
-  | fileExt f `elem` flash   = FileFlash
-  | fileExt f `elem` doc     = FileDoc
-  | fileExt f `elem` source  = FileSource
-  | fileExt f `elem` archive = FileArchive
-  | otherwise                  = FileUndetected
-  where video   = ["mkv", "mp4", "webm", "avi", "flv", "ogv", "wmv", "rm", "rmvb", "mpg", "mpeg"]
-        audio   = ["mp3", "flac", "ogg", "aac", "m4a", "oga", "opus", "wav"]
-        image   = ["jpg", "jpeg", "png", "gif", "bmp"]
-        flash   = ["swf"]
-        doc     = ["pdf", "djvu", "ps"]
-        source  = ["c", "cpp", "hs", "lisp", "s", "m", "py", "js", "php", "pl", "rb", "java", "lua", "txt", "html"]
-        archive = ["7z", "rar", "7zip", "zip", "tar", "gz", "bz2"]
-
+  | "video" `isPrefixOf` fType                  = FileVideo
+  | "audio" `isPrefixOf` fType                  = FileAudio
+  | "image" `isPrefixOf` fType                  = FileImage
+  | flash == fType                               = FileFlash
+  | fType `elem` docs                           = FileDoc
+  | "text" `isPrefixOf` fType || fType `elem` js = FileSource
+  | fType `elem` archive                        = FileArchive
+  | otherwise                                   = FileUndetected
+  where fType   = fileContentType f
+        docs    = ["image/vnd.djvu", "image/x-djvu", "application/pdf"]
+        js      = ["application/javascript", "application/x-javascript", "application/json"]
+        flash   = "application/x-shockwave-flash"
+        archive = ["application/rar", "application/zip", "application/gzip", "application/x-gzip", "application/x-rar-compressed", "application/x-7z-compressed"]
 
 getFileSize :: FilePath -> IO FileOffset
 getFileSize path = fileSize <$> getFileStatus path

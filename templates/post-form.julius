@@ -64,11 +64,11 @@ function handleFile(files, fInput) {
             var reader = new FileReader();
             reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
             reader.readAsDataURL(file);
-        } else if (file.type.match('archive.*')) {
-            img.src = "@{StaticR fileicons_archive_png}";            
+        } else if (file.type.match('video.*')) {
+            img.src = "@{StaticR fileicons_video_png}";
         } else if (file.type.match('audio.*')) {
             img.src = "@{StaticR fileicons_audio_png}";            
-        } else if (file.type.match('.*compressed') || file.type.match('application/(rar|7z|zip)') ) {
+        } else if (file.type.match('archive.*') || file.type.match('.*compressed') || file.type.match('application/(x-)?(rar|7z|zip|gzip)') ) {
             img.src = "@{StaticR fileicons_archive_png}";            
         } else  {
             img.src = "@{StaticR fileicons_default_png}";

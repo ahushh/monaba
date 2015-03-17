@@ -58,6 +58,10 @@
                     <img src="#{tp}" .thumb>
                 $elseif attachedfileType file == FileVideo
                     <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}">
+                $elseif attachedfileType file == FileAudio
+                    <audio controls>
+                      <source src="/#{up}">
+                    <img src="#{tp}" .thumb data-url="/#{up}">
                 $elseif attachedfileType file == FileImage
                     <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}">
                 $else

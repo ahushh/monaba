@@ -10,7 +10,8 @@ Dependencies
 * cabal-install >= 1.18
 * PHP5 to use GeSHi for code highlighting
 * Imagemagick library
-* ffmpeg and ffprobe for webm video
+* ffmpeg
+* exiftool
 
 Installation
 -----

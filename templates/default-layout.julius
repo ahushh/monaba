@@ -39,6 +39,14 @@ function initAllPosts() {
     initVideoPlayer();
     initUrlVideoPlayer();
     initPopupsCache();
+    initAudioPlayer();
+}
+
+function initOnePost(post) {
+    expandImage(post);
+    addVideoPlayer(post);
+    addUrlVideoPlayer(post);
+    initAudioPlayer(post);
 }
 
 function initMathjax() {
@@ -70,10 +78,32 @@ function refreshMathjax() {
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
-function initOnePost(post) {
-    expandImage(post);
-    addVideoPlayer(post);
-    addUrlVideoPlayer(post);
+// flash fallback
+function initAudioPlayer(post) {
+    var audios = (post ? post : document).getElementsByTagName("audio");
+    var toRemove = [];
+    for (var i = 0; i < audios.length; i++) {
+        if (isNaN(audios[i].duration)) {
+            var obj = document.createElement("object");
+            obj.width = 290;
+            obj.height = 24;
+            obj.type = "application/x-shockwave-flash";
+            obj.data = "/static/player.swf?soundFile="+encodeURI(audios[i].children[0].src);
+            obj.style.display = 'block';
+            var p1 = document.createElement("param");
+            var p2 = document.createElement("param");
+            p1.name = "wmode"
+            p1.value = "transparent";
+            p2.name = "soundFile";
+            p2.value = audios[i].children[0].src;
+            obj.appendChild(p1);
+            // obj.appendChild(p2);
+            insertAfter(obj, audios[i]);
+            toRemove.push(audios[i]);
+        }
+    }
+    for (var i = 0; i < toRemove.length; i++)
+        toRemove[i].parentNode.removeChild( toRemove[i] );
 }
 //-----------------------------------------------------------------
 // deletion checkboxes

@@ -2,10 +2,12 @@
 module Utils.File where
 
 import           Import
+import           Prelude                         as P
 import           Data.Digest.OpenSSL.MD5         (md5sum)
 import           Data.Conduit                    (($$))
 import qualified Data.ByteString                 as BS
 import qualified Data.Conduit.List               as CL
+import           Control.Monad                   (mplus)
 import           Data.Ratio
 import           Text.Printf
 import           System.Directory                (copyFile, doesFileExist, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
@@ -59,13 +61,23 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
           void $ liftIO $ readProcess "/usr/bin/ffmpeg" ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
           (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize)
           -- get video info
-          info <- liftIO $ readProcess "/usr/bin/ffprobe" ["-v","quiet","-show_streams",uploadPath] []
-          -- DANGEROUS! FIX THIS
-          let width  = drop 1 $ dropWhile ((/=)'=') (lines info !! 9)
-              height = drop 1 $ dropWhile ((/=)'=') (lines info !! 10)
-          void $ runDB $ insert $ newFile { attachedfileInfo        = width++"x"++height
+          info' <- liftIO $ readProcess "/usr/bin/exiftool" ["-t",uploadPath] []
+          let info   = parseExifInfo info'
+              width  = fromMaybe "0" $ lookup "Image Width" info
+              height = fromMaybe "0" $ lookup "Image Height" info
+              duration = fromMaybe "N/A" $ lookup "Duration" info
+          void $ runDB $ insert $ newFile { attachedfileInfo        = width++"x"++height++", "++duration
                                           , attachedfileThumbWidth  = thumbW
                                           , attachedfileThumbHeight = thumbH
+                                          }
+        FileAudio -> do
+          info' <- liftIO $ readProcess "/usr/bin/exiftool" ["-t",uploadPath] []
+          let info      = parseExifInfo info'
+              bitrate1  = lookup "Audio Bitrate" info
+              bitrate2  = lookup "Nominal Bitrate" info
+              bitrate   = fromMaybe "0 kbps" $ mplus bitrate1 bitrate2
+              duration  = takeWhile (/=' ') $ fromMaybe "0" $ lookup "Duration" info
+          void $ runDB $ insert $ newFile { attachedfileInfo        = bitrate++", "++duration
                                           }
         _         -> void $ runDB $ insert newFile
     _                    -> return ())
@@ -131,6 +143,15 @@ formatFileSize size | b > mb    = (printf "%.2f" $ b/mb) ++ " MB"
   where kb  = 1024    :: Double
         mb  = 1048576 :: Double
         b   = fromIntegral size :: Double
+
+parseExifInfo :: String -> [(String,String)]
+parseExifInfo = filter f2 . map f1 . lines
+  where f1 x = let k  = takeWhile (/='\t') x
+                   v' = dropWhile (/='\t') x
+                   v  = if length v' > 0 then P.tail v' else ""
+               in (k,v)
+        f2 (x,y) = x /= y && x /= "" && y /= ""
+
 -------------------------------------------------------------------------------------------------------------------
 -- Images
 -------------------------------------------------------------------------------------------------------------------

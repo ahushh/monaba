@@ -679,7 +679,9 @@ function initImageExpanding(selector) {
 function expandImage(post) {
     var files = post.querySelectorAll(".file, .multi-file");
     Array.prototype.forEach.call(files, function(file) {
-        var thumbImg = file.getElementsByTagName("img")[0];
+        var imgs = file.getElementsByTagName("img");
+        if (imgs.length == 0) return;
+        var thumbImg = imgs[0];
         var fullUrl  = thumbImg.dataset.url;
         if (!(/.+\.(jpg|jpeg|png|gif)/i.test(fullUrl)))
             return false;
@@ -1078,8 +1080,8 @@ function httpRequest(cnf) {
     var onloadAfter  = cnf.onloadAfter || function() {};
     var onloadstart  = cnf.onloadstart;
     var onerror = cnf.onerror;
-    var onerrorBefore = cnf.onerrorBefore;
-    var onerrorAfter = cnf.onerrorAfter;
+    var onerrorBefore = cnf.onerrorBefore || function() {};
+    var onerrorAfter = cnf.onerrorAfter || function() {};
     var headers = cnf.headers || {};
     var data = cnf.data;
 

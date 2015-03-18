@@ -30,7 +30,7 @@ function refreshFeed() {
                 var parent = rf.parentNode;
                 for (var i = posts.length-1; i >= 0; i--) {
                     initOnePost(posts[i]);
-                    parent.insertAfter(posts[i], rf);
+                    insertAfter(posts[i], rf);
                 }
                 makeRefmap();
                 initPopupsCache();
@@ -57,13 +57,41 @@ function showQuickPostForm(postId) {
             wrapper.innerHTML = request.responseText;
             var postform = wrapper.children[0];
             insertAfter(postform, post);
+            insert('>>'+post.dataset.postLocalId+'\n','post-form');
             initPostForm();
             initCodeButton('post-form',#{toJSON $ msgrender MsgPlainText});
             initSymbolCounter('post-form');
             fillPasswords();
             postform.action = '/'+board+'/'+threadLocalId;
-            // postform.onsubmit = function(event) {
-            // };
+            postform.onsubmit = function(event) {
+                var formData = makePostFormData(postform);
+                var pmsg;
+                httpRequest({
+                    method: 'POST',
+                    action: postform.action,
+                    data: formData,
+                    onloadstart: function() {
+                        pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                    },
+                    onloadBefore: function() {
+                        refreshCaptcha();
+                        closePopupMessage(pmsg);
+                    },
+                    onloadOk: function(request) {
+                        var data = JSON.parse(request.responseText);
+                        if (data.ok) {
+                            clearPostFormFields();
+                            popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
+                            closePostForm();
+                            refreshFeed();
+                        } else {
+                            popupMessage(data.error, Monaba.cnf.popupMessageDelay);
+                        }
+                    }
+                });
+                event.preventDefault();
+            };
+
             var rt = postform.getElementsByClassName("reply-to");
             if (rt.length) rt[0].parentNode.removeChild( rt[0] );
             var span = document.createElement("span");

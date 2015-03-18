@@ -42,9 +42,10 @@ getAjaxFeedOffsetR offset = do
   geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
   -------------------------------------------------------------------------------------------------------------------
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
-  timeZone       <- getTimeZone  
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  nameOfTheBoard   <- extraSiteName <$> getExtra
+  msgrender        <- getMessageRender
+  timeZone         <- getTimeZone  
   (editFormWidget, _) <- generateFormPost editForm
   if offset == 0
      then defaultLayout $ do
@@ -74,7 +75,8 @@ getAjaxNewFeedR lastPostId = do
   geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
   -------------------------------------------------------------------------------------------------------------------
-  msgrender       <- getMessageRender
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  msgrender        <- getMessageRender
   (editFormWidget, _) <- generateFormPost editForm
   let offset = -1 :: Int
   bareLayout $(widgetFile "feed")

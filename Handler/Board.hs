@@ -76,7 +76,7 @@ getBoardR board page = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
-
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", showText page, ") "] else ""

@@ -65,6 +65,7 @@ getThreadR board thread = do
   timeZone                  <- getTimeZone
 
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardTitleVal, if T.null pagetitle then "" else titleDelimiter, pagetitle]

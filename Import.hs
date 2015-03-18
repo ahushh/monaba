@@ -184,11 +184,10 @@ myFormatTime :: Int     -> -- ^ Time offset in seconds
                String
 myFormatTime offset t = formatTime defaultTimeLocale "%d %B %Y (%a) %H:%M:%S" $ addUTCTime' offset t
 
--- | Truncate file name if it's length greater than 47
-truncateFileName :: String -> String
-truncateFileName s = if len > maxLen then result else s
-  where maxLen   = 47
-        len      = length s
+-- | Truncate file name if it's length greater than specified
+truncateFileName :: Int -> String -> String
+truncateFileName maxLen s = if len > maxLen then result else s
+  where len      = length s
         excess   = len - maxLen
         halfLen  = round $ fromIntegral len    / (2 :: Double)
         halfExc  = round $ fromIntegral excess / (2 :: Double)
@@ -209,8 +208,9 @@ postWidget :: Maybe (Entity User)      ->
              Bool                     -> -- ^ Show post date
              [Permission]             -> -- ^ List of the all permissions
              Int                      -> -- ^ Time offset in seconds
+             Int                      -> -- ^ Max file name length
              Widget
-postWidget muser ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset = 
+postWidget muser ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset maxLenOfFileName = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost

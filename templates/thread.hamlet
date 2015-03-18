@@ -19,10 +19,10 @@ $if hasAccessToReply
         ^{formWidget}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }" data-board=#{board}>
-        ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone}
+        ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
     
         $forall (eReply, files) <- repliesAndFiles
-            ^{postWidget muser eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone}
+            ^{postWidget muser eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
     <i .icon-thread-refresh .fa .fa-refresh>
     <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]

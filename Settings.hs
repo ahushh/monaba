@@ -75,6 +75,7 @@ data Extra = Extra
     , extraMaxLenOfPostTitle :: Int
     , extraMaxLenOfPostName :: Int
     , extraCaptcha       :: Text
+    , extraMaxLenOfFileName :: Int
     } deriving Show
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
@@ -88,3 +89,4 @@ parseExtra _ o = Extra
     <*> o .: "maxLenOfPostTitle"
     <*> o .: "maxLenOfPostName"
     <*> o .: "captcha"
+    <*> o .: "maxLenOfFileName"

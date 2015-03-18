@@ -4,5 +4,5 @@ $if not $ T.null boardSummaryVal
 <div #thread-header> _{MsgDeletedPostsIn thread} [ <a href=@{ThreadR board thread}> _{MsgBack} </a> ]
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{postWidget muser eReply files True False False geoIpEnabled showPostDate permissions timeZone}
+        ^{postWidget muser eReply files True False False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
     ^{deleteWidget permissions}

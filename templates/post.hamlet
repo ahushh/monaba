@@ -53,7 +53,7 @@
             $with up <- attachedfilePath file
               <div class=#{c}>
                 <div .file-name>
-                    <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName $ attachedfileName file}
+                    <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName maxLenOfFileName $ attachedfileName file}
                 <div .file-info> #{extractFileExt $ attachedfileName file}, #{attachedfileSize file}, #{attachedfileInfo file}
                 $if attachedfileThumbWidth file == -1
                     <img src="#{tp}" .thumb>

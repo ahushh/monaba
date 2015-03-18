@@ -11,6 +11,7 @@ Default: &defaults
   maxLenOfPostTitle: 60
   maxLenOfPostName: 20
   captcha: "./Captcha"
+  maxLenOfFileName: 20
 
 Development:
   <<: *defaults

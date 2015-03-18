@@ -23,6 +23,7 @@ getPostsHelper selectPosts board thread errorString = do
     return (p, files))
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
   timeZone <- getTimeZone
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   case () of
     _ | t == 0              -> selectRep $ do
           provideRep  $ bareLayout [whamlet|No such thread|]
@@ -33,7 +34,7 @@ getPostsHelper selectPosts board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget muser post files True True False geoIpEnabled showPostDate permissions timeZone}
+                                   ^{postWidget muser post files True True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -78,10 +79,11 @@ getAjaxPostByIdR postId = do
       showPostDate    = boardShowPostDate boardVal
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   timeZone <- getTimeZone
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal post) == 0
-                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone
-                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone
+                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
+                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -101,10 +103,11 @@ getAjaxPostR board postId = do
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   timeZone <- getTimeZone
+  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone
-                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone
+                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
+                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

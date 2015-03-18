@@ -64,8 +64,10 @@
                     <img src="#{tp}" .thumb data-url="/#{up}">
                 $elseif attachedfileType file == FileImage
                     <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}">
+                $elseif attachedfileType file == FileFlash
+                    <img src="#{tp}" .thumb .flash data-url="/#{up}">
                 $else
-                    <img src="#{tp}" .thumb data-url="/#{up}">
+                    <img src="#{tp}" .thumb data-url="/#{up}">w
     $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
         <div .message>#{m}
     $maybe lm <- postLastModified postVal

@@ -30,7 +30,11 @@ var Monaba = {
             html5: true,
             width: 360,
             height: 270,
-        }
+        },
+        flash: {
+            height: 400,
+            width: 400
+        },
     }
 };
 
@@ -40,6 +44,7 @@ function initAllPosts() {
     initUrlVideoPlayer();
     initPopupsCache();
     initAudioPlayer();
+    initFlashByClick();
 }
 
 function initOnePost(post) {
@@ -47,6 +52,7 @@ function initOnePost(post) {
     addVideoPlayer(post);
     addUrlVideoPlayer(post);
     initAudioPlayer(post);
+    initFlashByClick(post);
 }
 
 function initMathjax() {
@@ -76,6 +82,34 @@ function initMathjax() {
 function refreshMathjax() {
     if (Monaba.cnf.mathjax)
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+}
+
+function initFlashByClick(post) {
+    Array.prototype.forEach.call((post ? post : document).querySelectorAll('.thumb.flash'), function(el,i) {
+        el.onclick = function() {
+            var obj   = document.createElement("object");
+            var embed = document.createElement("embed");
+            embed.height = Monaba.cnf.flash.height;
+            embed.width = Monaba.cnf.flash.width;
+            embed.type = "application/x-shockwave-flash";
+            embed.wmode = "transparent";
+            embed.style.display='block';
+            embed.src = el.dataset.url;
+            obj.appendChild(embed);
+            insertAfter(obj, el);
+            var close = document.createElement("a");
+            close.innerHTML = #{toJSON $ msgrender MsgCloseIcon}+" ✖";
+            close.style.display = 'block';
+            close.style['text-align'] = 'right';
+            close.onclick = function() {
+                el.style.display = 'block';
+                obj.parentNode.removeChild(obj);
+                close.parentNode.removeChild(close);
+            };
+            insertAfter(close, el);
+            el.style.display = 'none';
+        };
+    });
 }
 
 // flash fallback
@@ -439,9 +473,11 @@ function handleFile(files, fInput) {
         } else if (file.type.match('video.*')) {
             img.src = "@{StaticR fileicons_video_png}";
         } else if (file.type.match('audio.*')) {
-            img.src = "@{StaticR fileicons_audio_png}";            
+            img.src = "@{StaticR fileicons_audio_png}";
         } else if (file.type.match('archive.*') || file.type.match('.*compressed') || file.type.match('application/(x-)?(rar|7z|zip|gzip)') ) {
             img.src = "@{StaticR fileicons_archive_png}";            
+        } else if (file.type == "application/x-shockwave-flash") {
+            img.src = "@{StaticR fileicons_flash_png}";
         } else  {
             img.src = "@{StaticR fileicons_default_png}";
         }

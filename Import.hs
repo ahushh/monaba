@@ -164,6 +164,10 @@ isAjaxRequest = do
 -------------------------------------------------------------------------------------------------------------------
 -- Template helpers
 -------------------------------------------------------------------------------------------------------------------
+makeFileInfo :: Attachedfile -> String
+makeFileInfo file = extractFileExt (attachedfileName file) ++", "++ attachedfileSize file ++i
+  where i = if length (attachedfileInfo file) > 0 then ", "++ attachedfileInfo file else ""
+
 checkAbbr :: Int  -> -- ^ Message length
             Bool -> -- ^ Show full message
             Bool

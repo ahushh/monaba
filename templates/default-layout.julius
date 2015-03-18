@@ -343,6 +343,28 @@ function initCodeButton(formId,plaintext) {
 //-----------------------------------------------------------------
 // Post form
 //-----------------------------------------------------------------
+function makePostFormData(postform) {
+    var inputs = postform.getElementsByTagName("input");
+    var formData = new FormData();
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].type == "submit") {
+            ;
+        } else if (inputs[i].type == "file" && inputs[i].files != null) {
+            formData.append(inputs[i].name, inputs[i].files[0]);
+        } else if (inputs[i].type == "checkbox") {
+            if (inputs[i].checked)
+                formData.append(inputs[i].name, inputs[i].value);
+        } else {
+            formData.append(inputs[i].name, inputs[i].value);
+        }
+    }
+    var textarea = postform.getElementsByTagName("textarea")[0];
+    formData.append(textarea.name, textarea.value);
+    var select = postform.getElementsByTagName("select")[0];
+    formData.append(select.name, 1);
+    return formData;
+}
+
 function initPostForm() {
     if (getItem("hideRules"))
          hideRules();
@@ -458,61 +480,51 @@ function showEditForm(postId) {
         obj[ hd.name ] = hd.value;
         obj[ pt.name ] = postId;
         var pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-        var request = new XMLHttpRequest();
-        request.open('POST','@{PostEditR}', true);
-        request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.onload = function() {
-            closePopupMessage(pmsg);
-            if (request.status >= 200 && request.status < 400) {
+        httpRequest({
+            method: 'POST',
+            action: '@{PostEditR}',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            data: json2urlencode(obj),
+            onloadBefore: function() { closePopupMessage(pmsg); },
+            onloadOk: function(request) {
                 var response = JSON.parse(request.responseText);
                 if (response.ok) {
-                    var request1 = new XMLHttpRequest(); // update post
-                    request1.open('GET',"/ajax/post/"+board+"/"+localId, true);
-                    request1.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    request1.onload = function() {
-                        hideEditForm();
-                        var newPost = parseDOMElement(request1.responseText);
-                        initOnePost(newPost);
-                        post.parentNode.replaceChild(newPost, post);
-                        makeRefmap();
-                        initPopupsCache();
-                        refreshMathjax();
-                    
-                        popupMessage(response.ok, Monaba.cnf.popupMessageDelay);
-                    };
-                    request1.send();
+                    httpRequest({
+                        action: "/ajax/post/"+board+"/"+localId,
+                        onload: function(request) {
+                            hideEditForm();
+                            var newPost = parseDOMElement(request.responseText);
+                            initOnePost(newPost);
+                            post.parentNode.replaceChild(newPost, post);
+                            makeRefmap();
+                            initPopupsCache();
+                            refreshMathjax();
+                            popupMessage(response.ok, Monaba.cnf.popupMessageDelay);
+                        }
+                    });
                 } else {
                     popupMessage(response.error, Monaba.cnf.popupMessageDelay);
                 }
-            } else {
-                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
             }
-        };
-        request.onerror = function() {
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-        };
-        request.send(json2urlencode(obj));
+        });
     };
 
-    var request3 = new XMLHttpRequest();  // get raw post message
-    request3.open('GET', '/ajax/post/'+board+'/'+localId, true);
-    request3.setRequestHeader('Accept', 'application/json');
-    request3.onload = function() {
-        if (request3.status >= 200 && request3.status < 400) {
-            var data = JSON.parse(request3.responseText);
-            var raw = data[0].rawMessage;
-            ta.value = raw;
-            countSymbols('edit-form');
-            ef.style.display = 'table';
-        } else {
-            hideEditForm();
-        }
-    };
-    request3.onerror = function() {
-        hideEditForm();
-    };
-    request3.send();
+    httpRequest({
+        action: '/ajax/post/'+board+'/'+localId,
+        headers: { 'Accept': 'application/json' },
+        onload: function(request) {
+            if (request.status >= 200 && request.status < 400) {
+                var data = JSON.parse(request.responseText);
+                var raw = data[0].rawMessage;
+                ta.value = raw;
+                countSymbols('edit-form');
+                ef.style.display = 'table';
+            } else {
+                hideEditForm();
+            }
+        },
+        onerror: hideEditForm
+    });
 }
 
 function hideEditForm() {
@@ -890,22 +902,14 @@ function displayPopupPost(event, post) {
 function showPopupPost(element, event, postId, localId, board) {
     if (!postId || !Monaba.postCache[postId]) {
         var t = setTimeout(function(){
-            var request = new XMLHttpRequest();
-            request.open('GET',"/ajax/post/"+board+"/"+localId,true);
-            request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            request.onload = function() {
-                if (request.status >= 200 && request.status < 400) {
+            httpRequest({
+                action: "/ajax/post/"+board+"/"+localId,
+                onloadOk: function(request) {
                     var el = parseDOMElement(request.responseText);
                     var post = cachePopupPost(el);
                     displayPopupPost(event, post);
-                } else {
-                    popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
                 }
-            };
-            request.onerror = function() {
-                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-            };
-            request.send();
+            });
         }, Monaba.cnf.popupPostDelay);
         element.onmouseleave = function() { clearTimeout(t) };
     } else {
@@ -945,13 +949,13 @@ function refreshThread(board, threadLocalId) {
     if (ictr != null) toggleInline(ictr);
     if (ajxl != null) toggleInline(ajxl);
 
-    var request = new XMLHttpRequest();
-    request.open('GET',"/ajax/thread/"+board+"/"+threadLocalId+"/new/"+lastPostId, true);
-    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    request.onload = function() {
-        if (ictr != null) toggleInline(ictr);
-        if (ajxl != null) toggleInline(ajxl);
-        if (request.status >= 200 && request.status < 400) {
+    httpRequest({
+        action: "/ajax/thread/"+board+"/"+threadLocalId+"/new/"+lastPostId,
+        onloadBefore: function() {
+            if (ictr != null) toggleInline(ictr);
+            if (ajxl != null) toggleInline(ajxl);
+        },
+        onloadOk: function(request) {
             var data = request.responseText;
             if (/reply/.test(data)) {
                 var posts = parseDOMElements(data);
@@ -968,14 +972,8 @@ function refreshThread(board, threadLocalId) {
             } else if (data == "No new posts ") {
                 popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
             }
-        } else {
-            popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
         }
-    };
-    request.onerror = function() {
-        popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-    };
-    request.send();
+    });
 }
 // ---------------------------------------------------------
 //  wakaba3.js
@@ -1066,6 +1064,49 @@ function fadeOut(el,n,callback) {
 // ---------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------
+function httpRequest(cnf) {
+    var method = cnf.method || 'GET';
+    var action = cnf.action;
+    var onload = cnf.onload;
+    var onloadOk   = cnf.onloadOk || function() {};
+    var onloadBefore = cnf.onloadBefore || function() {};
+    var onloadAfter  = cnf.onloadAfter || function() {};
+    var onloadstart  = cnf.onloadstart;
+    var onerror = cnf.onerror;
+    var onerrorBefore = cnf.onerrorBefore;
+    var onerrorAfter = cnf.onerrorAfter;
+    var headers = cnf.headers || {};
+    var data = cnf.data;
+
+    var request = new XMLHttpRequest();
+    request.open(method, action, true);
+    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    for (var k in headers) {
+        request.setRequestHeader(k, headers[k]);
+    }
+    request.onload = function() {
+        onloadBefore(request);
+        if (request.status >= 200 && request.status < 400) {
+            onloadOk(request);
+        } else {
+            popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
+        }
+        onloadAfter(request)
+    };
+    request.onerror = function() {
+        onerrorBefore(request);
+        popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.status+")", 0, false, true);
+        onerrorAfter(request);
+    };
+    if (onload ) request.onload  = function(){ onload(request)  };
+    if (onerror) request.onerror = function(){ onerror(request) };
+    if (onloadstart) request.onloadstart = function(){ onloadstart(request) };
+    if (data)
+        request.send(data);
+    else
+        request.send();
+}
+
 function hasClass(el, cl) {
     return new RegExp('(?:^|\s)'+cl+'( |$)', 'gi').test(el.className);
 }

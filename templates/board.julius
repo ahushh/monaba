@@ -24,9 +24,9 @@ function expandThread(board, threadLocalId) {
     Monaba['expThreads'][threadLocalId] = newReplies;
 
     toggleInline(ajxl);
-    var request = new XMLHttpRequest();
-    request.open("GET", "/ajax/thread/"+board+"/"+threadLocalId+"/all", true);
-    request.onload = function() {
+    httpRequest({
+        action: "/ajax/thread/"+board+"/"+threadLocalId+"/all",
+        onload: function(request) {
         var data = request.responseText;
         if (data == "No such thread ") {
             popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, Monaba.cnf.popupMessageDelay);
@@ -55,8 +55,8 @@ function expandThread(board, threadLocalId) {
             initPopupsCache();
             // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         }
-    };
-    request.send();
+        },
+    });
 }
 
 function truncateThread(threadLocalId,scrollToThreadBottom) {
@@ -90,7 +90,7 @@ function showQuickPostForm(postId) {
     var postform = document.getElementById('post-form');
     postform.className = "quick-post-form";
     insertAfter(postform, p);
-    p.parentNode.insertBefore( postform, p.nextSibling );
+    // p.parentNode.insertBefore( postform, p.nextSibling );
     postform.style.display = 'table';
     document.getElementById("go-back-block").style.display = 'none';
 
@@ -99,36 +99,20 @@ function showQuickPostForm(postId) {
     var threadLocalId = /thread-(\d+)/.exec( thread.id )[1];
     var board = postform.dataset.board;
     postform.onsubmit = function(event) {
-        var inputs = postform.getElementsByTagName("input");
-        var formData = new FormData();
-        for (var i = 0; i < inputs.length; i++) {
-            if (inputs[i].type == "submit") {
-                ;
-            } else if (inputs[i].type == "file" && inputs[i].files != null) {
-                formData.append(inputs[i].name, inputs[i].files[0]);
-            } else if (inputs[i].type == "checkbox") {
-                if (inputs[i].checked)
-                    formData.append(inputs[i].name, inputs[i].value);
-            } else {
-                formData.append(inputs[i].name, inputs[i].value);
-            }
-        }
-        var textarea = postform.getElementsByTagName("textarea")[0];
-        formData.append(textarea.name, textarea.value);
-        var select = postform.getElementsByTagName("select")[0];
-        formData.append(select.name, 1);
-
+        var formData = makePostFormData(postform);
         var pmsg;
-        var request = new XMLHttpRequest();
-        request.open('POST', postform.action, true);
-        request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        request.onloadstart = function() {
-            pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-        };
-        request.onload = function() {
-            refreshCaptcha();
-            closePopupMessage(pmsg);
-            if (request.status >= 200 && request.status < 400) {
+        httpRequest({
+            method: 'POST',
+            action: postform.action,
+            data: formData,
+            onloadstart: function() {
+                pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+            },
+            onloadBefore: function() {
+                refreshCaptcha();
+                closePopupMessage(pmsg);
+            },
+            onloadOk: function(request) {
                 var data = JSON.parse(request.responseText);
                 if (data.ok) {
                     clearPostFormFields();
@@ -138,14 +122,8 @@ function showQuickPostForm(postId) {
                 } else {
                     popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
-            } else {
-                popupMessage(request.responseText+" ("+request.status+")", 0, false, true);
             }
-        };
-        request.onerror = function() {
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-        };
-        request.send(formData);
+        });
         event.preventDefault();
     };
     var rt = postform.getElementsByClassName("reply-to");

@@ -96,6 +96,7 @@ postBoardR board _ = do
       allowedTypes     = boardAllowedTypes  boardVal
       thumbSize        = boardThumbSize     boardVal
       opFile           = boardOpFile        boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------       
@@ -145,7 +146,7 @@ postBoardR board _ = do
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         = maybe defaultName (T.take maxLenOfPostName) name
+                           , postName         = if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now

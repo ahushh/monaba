@@ -59,6 +59,7 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                                             , Maybe Text   -- ^ Show or not editing history
                                             , Maybe Text   -- ^ Show or not post date
                                             , Maybe Text   -- ^ Summary
+                                            , Maybe Text   -- ^ Enable forced anonymity (no name input)
                                             , Maybe Int    -- ^ Index
                                             )
                                 , Widget)
@@ -107,8 +108,9 @@ updateBoardForm board action bCategories groups extra = do
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
   (showPostDateRes     , showPostDateView     ) <- mopt (selectFieldList onoff) "" (helper'  boardShowPostDate)
+  (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper' boardEnableForcedAnon)
   (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
@@ -118,7 +120,7 @@ updateBoardForm board action bCategories groups extra = do
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> showPostDateRes    <*> summaryRes        <*>
-               indexRes
+               enableForcedAnonRes  <*> indexRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -133,12 +135,12 @@ postNewBoardsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bIndex
+    FormSuccess ( bName            , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
+                , bShowPostDate    , bSummary     , bEnableForcedAnon, bIndex
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -173,6 +175,7 @@ postNewBoardsR = do
                            , boardPostEditing       = onoff bPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory
                            , boardShowPostDate      = onoff bShowPostDate
+                           , boardEnableForcedAnon  = onoff bEnableForcedAnon
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       void $ runDB $ insert newBoard
@@ -188,12 +191,12 @@ postAllBoardsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( _                , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bIndex
+    FormSuccess ( _                , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
+                , bShowPostDate    , bSummary     , bEnableForcedAnon, bIndex
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -227,6 +230,7 @@ postAllBoardsR = do
                              , boardPostEditing       = onoff bPostEditing     boardPostEditing
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                              , boardShowPostDate      = onoff bShowPostDate    boardShowPostDate
+                             , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                              , boardIndex             = fromMaybe 0 bIndex
                              }
           in runDB $ replace oldBoardId newBoard)
@@ -243,12 +247,12 @@ postUpdateBoardsR board = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bIndex
+    FormSuccess ( bName            , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
+                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
+                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
+                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
+                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
+                , bShowPostDate    , bSummary     , bEnableForcedAnon, bIndex
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -282,6 +286,7 @@ postUpdateBoardsR board = do
                            , boardPostEditing       = onoff bPostEditing     boardPostEditing
                            , boardShowPostDate      = onoff bShowPostDate    boardShowPostDate
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                           , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       runDB $ replace oldBoardId newBoard

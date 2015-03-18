@@ -1,6 +1,7 @@
 #{extra}
 <div #post-form-inputs>
-  ^{fvInput nameView}#
+  $if not forcedAnon
+      ^{fvInput nameView}#
   ^{fvInput passwordView}#
   ^{fvInput subjectView}#
   <input type=submit value=_{MsgSubmitBtn}>#

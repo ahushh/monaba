@@ -160,6 +160,7 @@ BoardCategories: Board categories (separate by comma)
 BoardViewAccess: To view this board you must be a
 BoardReplyAccess: To reply you must be a
 BoardThreadAccess: To crate new thread you must be a
+BoardEnableForcedAnon: Force anonymity (disable name input)
 WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
 OpModeration: OP moderation
 PostEditing: Post editing

@@ -39,6 +39,7 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
   let maxMessageLength = boardMaxMsgLength  boardVal
       numberFiles      = boardNumberFiles   boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal
       myMessageField = checkBool (not . tooLongMessage maxMessageLength)
                                  (MsgTooLongMessage maxMessageLength )
                                  textareaField

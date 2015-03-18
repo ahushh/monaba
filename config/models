@@ -43,6 +43,7 @@ Board
     postEditing       Bool     
     showEditHistory   Bool     
     showPostDate      Bool default=true
+    enableForcedAnon  Bool default=false
     deriving          Typeable
 Post json
     board        Text

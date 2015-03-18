@@ -88,6 +88,7 @@ postThreadR board thread = do
       replyFile        = boardReplyFile     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
       showPostDate     = boardShowPostDate  boardVal
+      forcedAnon       = boardEnableForcedAnon boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm 0 0 boardVal muser
@@ -141,7 +142,7 @@ postThreadR board thread = do
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         = maybe defaultName (T.take maxLenOfPostName) name
+                           , postName         =  if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

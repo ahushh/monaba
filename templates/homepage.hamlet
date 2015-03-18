@@ -8,8 +8,8 @@
               <div .board-category>#{c}
               $forall Entity _ b <- sortBoards bs
                 <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardTitle b}
-    <div #main-image>
-        <img #main-image src=#{staticDir ++ "/home.jpg"}>
+    <div #home-content>
+      #{preEscapedToHtml $ unTextarea homeContent}
     $if not $ null newsAndFiles
         <div #latest-news>
             <div #news-title>_{MsgNews}

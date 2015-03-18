@@ -233,6 +233,8 @@ NewsBoard: Доска для новостей
 UpdateConfig: Обновить настройки
 ReplyDelay: Задержка перед ответом в тред
 ThreadDelay: Задержка перед созданием нового треда
+AdminAboutPage: Html страницы about
+AdminHomePage: Html домашней страницы
 ## Messages
 ConfigUpdated: Настройки обновлены
 

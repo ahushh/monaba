@@ -9,6 +9,7 @@ getHelpR :: Handler Html
 getHelpR = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
+  about            <- getConfig configAbout
   defaultLayout $ do
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHelp]
     $(widgetFile "help")

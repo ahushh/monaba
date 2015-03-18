@@ -232,6 +232,8 @@ NewsBoard: Board for news
 UpdateConfig: Update config
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
+AdminAboutPage: Html of about page
+AdminHomePage: Html of home page
 ## Messages
 ConfigUpdated: Config successufly updated
 

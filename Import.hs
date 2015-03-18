@@ -288,6 +288,9 @@ getPosterId = do
 
 getConfig :: forall b. (Config -> b) -> Handler b
 getConfig f = f . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
+
+getConfigEntity :: Handler Config
+getConfigEntity = entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

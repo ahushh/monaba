@@ -101,5 +101,7 @@ Config
     showNews        Int  
     maxEditings     Int  
     showLatestPosts Int  
+    about           Textarea default=''
+    home            Textarea default=''
 Storage
     uploadDir       Int default=1

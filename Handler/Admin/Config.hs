@@ -15,6 +15,8 @@ configForm :: Config ->
                                        , Maybe Int  -- ^ How many news show
                                        , Maybe Int  -- ^ The maximum number of post editings
                                        , Maybe Int  -- ^ How many latest posts show
+                                       , Maybe Textarea -- ^ Html of home page
+                                       , Maybe Textarea -- ^ Html of about page
                                        )
                            , Widget)
 configForm config extra = do
@@ -29,11 +31,13 @@ configForm config extra = do
   (showNewsRes        , showNewsView       ) <- mopt intField  "" (f configShowNews       )
   (maxEditingsRes     , maxEditingsView    ) <- mopt intField  "" (f configMaxEditings    )
   (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
+  (aboutRes           , aboutView)           <- mopt textareaField "" (f configAbout)
+  (homeRes            , homeView )           <- mopt textareaField "" (f configHome)
 
-  let result = (,,,,,,) <$>
+  let result = (,,,,,,,,) <$>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
-               showLatestPostsRes
+               showLatestPostsRes <*> aboutRes          <*> homeRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -63,7 +67,7 @@ postConfigR = do
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (replyDelay , threadDelay, boardCategories,
-                 newsBoard  , showNews   , maxEditings    , showLatestPosts
+                 newsBoard  , showNews   , maxEditings    , showLatestPosts, about, home
                 ) -> do
       let newConfig = Config { configReplyDelay      = fromMaybe (configReplyDelay      oldConfigVal) replyDelay
                              , configThreadDelay     = fromMaybe (configThreadDelay     oldConfigVal) threadDelay
@@ -72,6 +76,8 @@ postConfigR = do
                              , configShowNews        = fromMaybe (configShowNews        oldConfigVal) showNews
                              , configMaxEditings     = fromMaybe (configMaxEditings     oldConfigVal) maxEditings
                              , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
+                             , configAbout           = fromMaybe (configAbout           oldConfigVal) about
+                             , configHome            = fromMaybe (configHome            oldConfigVal) home
                              }
       void $ runDB $ replace oldConfigKey newConfig
       msgRedirect MsgConfigUpdated

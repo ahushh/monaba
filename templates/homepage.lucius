@@ -22,14 +22,6 @@
     width: 90%;
 }
 
-#main-image {
-    margin-left: 8%;
-    margin-bottom: 8%;
-}
-
-#main-image img {
-}
-
 #news-title {
     padding: 3px 3px 3px 5px;
     text-align: center;

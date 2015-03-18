@@ -23,3 +23,9 @@
         <tr>
             <td>_{MsgMaxEditings}
             <td>^{fvInput maxEditingsView}
+        <tr>
+            <td>_{MsgAdminAboutPage}
+            <td>^{fvInput aboutView}
+        <tr>
+            <td>_{MsgAdminHomePage}
+            <td>^{fvInput homeView}

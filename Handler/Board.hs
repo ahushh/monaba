@@ -172,4 +172,5 @@ postBoardR board _ = do
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)
+          ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" MsgPostSent FeedR
     _  -> msgRedirect MsgUnknownError

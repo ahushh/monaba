@@ -135,7 +135,7 @@ function showQuickPostForm(postId) {
                     popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
                     closePostForm();
                     refreshThread(board, threadLocalId);
-p                } else {
+                } else {
                     popupMessage(data.error, Monaba.cnf.popupMessageDelay);
                 }
             } else {

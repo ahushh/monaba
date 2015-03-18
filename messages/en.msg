@@ -11,6 +11,7 @@ File: File
 Goback: Go back to
 ToThread: thread
 ToBoard: board
+ToFeed: /feed/
 Nobump: No bump
 Captcha: Captcha
 

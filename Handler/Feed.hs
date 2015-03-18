@@ -4,10 +4,25 @@ module Handler.Feed where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
-import           Handler.Posting (editForm)
+import           Handler.Posting (postForm, editForm)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getAjaxFeedOffsetR 0
+
+getAjaxGetPostFormR :: Text -> Handler Html
+getAjaxGetPostFormR board = do
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  unless (checkAccessToReply mgroup boardVal) notFound
+  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
+  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+  let maxMessageLength = boardMaxMsgLength boardVal
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  bareLayout [whamlet|<form .quick-post-form #post-form method=post enctype=#{formEnctype} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
+                        ^{formWidget}
+                     |]
 
 getAjaxFeedOffsetR :: Int -> Handler Html
 getAjaxFeedOffsetR offset = do

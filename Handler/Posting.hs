@@ -6,7 +6,7 @@ import qualified Data.Text as T
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
-data GoBackTo = ToThread | ToBoard
+data GoBackTo = ToThread | ToBoard | ToFeed
     deriving (Show, Read, Eq, Enum, Bounded)
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
@@ -43,7 +43,7 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
                                  (MsgTooLongMessage maxMessageLength )
                                  textareaField
       urls :: [(Text, GoBackTo)]
-      urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard)]
+      urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard), (msgrender MsgToFeed, ToFeed)]
       passInput    lbl = lbl { fsAttrs = [("autocomplete","off")] }
       captchaInput lbl = lbl { fsAttrs = [("placeholder",msgrender MsgCaptcha)] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }

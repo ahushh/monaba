@@ -11,6 +11,7 @@ File: Файл
 Goback: Перейти к 
 ToThread: треду
 ToBoard: борде
+ToFeed: /feed/
 Nobump: Не бампать
 Captcha: Проверочный код
 

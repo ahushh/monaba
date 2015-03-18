@@ -1,4 +1,4 @@
-.mark-to-delete, .icon-reply {
+.mark-to-delete {
     display: none !important;
 }
 

@@ -301,3 +301,93 @@ ul {
 #delete-container {
     clear: both;
 }
+
+// post form
+.no-js #board-info {
+   display: block;
+}
+.no-js .close-post-form {
+   display: none;
+}
+
+.no-js #attach-file {
+   display: none;
+}
+
+.no-js input[type="file"] {
+   display: block;
+}
+
+.js input[type="file"] {
+   visibility: none;
+   position: absolute;
+   left: -999999px;
+}
+
+#attach-file {
+   cursor:pointer;
+   margin: 5px 0;
+}
+
+#attach-file.inactive {
+   opacity: 0.5;
+}
+
+#attachment-thumbs {
+}
+
+.attachment-thumb {
+   display: inline-block;
+   width: 15%;
+   margin: 5px;
+}
+
+.attachment-thumb img {
+   width: 100%;
+   margin: 1px;
+}
+
+#post-form-inputs {
+}
+
+#post-form textarea {
+   width: 100%;
+   height: 150px;
+   min-height: 150px;
+   max-width: 900px;
+}
+
+.plain-post-form {
+   border: 0px;
+}
+
+.quick-post-form {
+   text-align: left;
+   display: table;
+}
+
+@media all and (max-width:1024px) {
+   .quick-post-form {
+      margin: 5px 0 0;
+      width: 100%;
+   }
+   .plain-post-form {
+      width: 90%;
+      margin: 10px 5%;
+   }
+}
+
+@media all and (min-width:1024px) {
+   .quick-post-form {
+      margin: 5px 0 0;
+      width: 65%;
+   }
+   .plain-post-form {
+      width: 60%;
+      margin: 10px 20%;
+   }
+}
+
+.close-post-form {
+   text-align: center;
+}

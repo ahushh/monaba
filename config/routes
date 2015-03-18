@@ -17,6 +17,7 @@
 /help/markup         HelpMarkupR   GET
 
 
+/ajax/postform/#Text              AjaxGetPostFormR  GET
 /ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET
 /ajax/thread/#Text/#Int/last/#Int AjaxLastPostsR    GET
 /ajax/thread/#Text/#Int/all       AjaxAllPostsR     GET

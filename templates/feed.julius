@@ -7,6 +7,41 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initMathjax();
 });
 
+function refreshFeed() {
+    var allPosts = document.querySelectorAll(".op-post, .reply-post");
+    var lastPost = allPosts[0];
+    if (! lastPost) return;
+    var lastPostId = lastPost.id.slice(1);
+    var ictr = document.querySelector("#refresh-feed .icon-thread-refresh");
+    var ajxl = document.querySelector("#refresh-feed .ajax-loading");
+    if (ictr != null) toggleInline(ictr);
+    if (ajxl != null) toggleInline(ajxl);
+    httpRequest({
+        action: "/ajax/newfeed/"+lastPostId,
+        onloadBefore: function() {
+            if (ictr != null) toggleInline(ictr);
+            if (ajxl != null) toggleInline(ajxl);
+        },
+        onloadOk: function(request) {
+            var data = request.responseText;
+            if (/post/.test(data)) {
+                var posts = parseDOMElements(data);
+                var rf     = document.getElementById('refresh-feed');
+                var parent = rf.parentNode;
+                for (var i = posts.length-1; i >= 0; i--) {
+                    initOnePost(posts[i]);
+                    parent.insertAfter(posts[i], rf);
+                }
+                makeRefmap();
+                initPopupsCache();
+                refreshMathjax();
+            } else {
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
+            }
+        }
+    });
+}
+
 function showQuickPostForm(postId) {
     var postform = document.getElementById('post-form');    
     if (postform)

@@ -52,3 +52,30 @@ getAjaxFeedOffsetR offset = do
             $(widgetFile "feed")
     else bareLayout $(widgetFile "feed")
   
+getAjaxNewFeedR :: Int -> Handler Html
+getAjaxNewFeedR lastPostId = do
+  lastPost <- runDB $ get404 $ toSqlKey $ fromIntegral lastPostId
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  timeZone <- getTimeZone
+  let permissions = getPermissions mgroup
+      group       = (groupName . entityVal) <$> mgroup
+      lastPostDate= postDate lastPost
+  -------------------------------------------------------------------------------------------------------------------      
+  showPosts <- getConfig configShowLatestPosts
+  boards    <- runDB $ selectList ([]::[Filter Board]) []
+  let boards' = mapMaybe (ignoreBoards group) boards
+  liftIO $ print lastPostDate
+  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDate >. lastPostDate, PostDeleted ==. False] [Desc PostDate]
+  liftIO $ print posts
+  postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
+  let postsAndFiles = zip posts postFiles
+  -------------------------------------------------------------------------------------------------------------------
+  geoIpEnabled' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
+  let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled' 
+  -------------------------------------------------------------------------------------------------------------------
+  msgrender       <- getMessageRender
+  (editFormWidget, _) <- generateFormPost editForm
+  let offset = -1 :: Int
+  bareLayout $(widgetFile "feed")
+  

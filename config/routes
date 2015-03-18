@@ -24,7 +24,8 @@
 /ajax/thread/#Text/#Int/deleted   AjaxDeletedPostsR GET
 /ajax/post/#Text/#Int             AjaxPostR         GET
 /ajax/feed/#Int                   AjaxFeedOffsetR   GET
-/jsonfrommsg/#Text               JsonFromMsgR     GET
+/ajax/newfeed/#Int                AjaxNewFeedR      GET
+/jsonfrommsg/#Text                JsonFromMsgR      GET
 
 
 /admin                     AdminR        GET

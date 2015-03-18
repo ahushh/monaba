@@ -298,3 +298,4 @@ Applied: Settings applied
 TimeZone: Time zone
 Style: Style
 Language: Language
+FeedIgnoredBoards: /feed/ ignored boards

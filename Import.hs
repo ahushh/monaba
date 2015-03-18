@@ -296,6 +296,13 @@ getConfig f = f . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Confi
 
 getConfigEntity :: Handler Config
 getConfigEntity = entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
+
+getLiveBoards :: Handler [Text]
+getLiveBoards = do
+  bs <- lookupSession "feed-ignore-boards"
+  case bs of
+   Just xs -> return $ readText xs
+   Nothing -> setSession "feed-ignore-boards" "[]" >> return []
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

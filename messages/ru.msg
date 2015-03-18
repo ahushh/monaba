@@ -299,3 +299,4 @@ Applied: Настройки применены
 TimeZone: Часовой пояс
 Style: Стиль
 Language: Язык
+FeedIgnoredBoards: /feed/ игнорируемые борды

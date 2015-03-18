@@ -33,8 +33,9 @@ getAjaxFeedOffsetR offset = do
   -------------------------------------------------------------------------------------------------------------------      
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
+  ignoredBoards <- getLiveBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
-      boards' = mapMaybe (ignoreBoards group) boards
+      boards' = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts, OffsetBy offset]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
@@ -66,8 +67,9 @@ getAjaxNewFeedR lastPostId = do
   -------------------------------------------------------------------------------------------------------------------      
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
+  ignoredBoards <- getLiveBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
-      boards'                = mapMaybe (ignoreBoards group) boards
+      boards'                = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDate >. lastPostDate, PostDeleted ==. False] [Desc PostDate]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles

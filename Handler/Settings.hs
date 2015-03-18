@@ -6,17 +6,20 @@ import qualified Data.Text  as T
 import           Data.Foldable as Foldable (forM_)
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
-settingsForm :: Int  -> -- ^ Default time offset
-               Text -> -- ^ Default stylesheet 
-               Html -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Maybe Text), Widget)
-settingsForm defaultZone defaultStyle extra = do
+settingsForm :: [(Text,Text)] -> -- ^ All boards
+               [Text] -> -- ^ Ignored boards
+               Int    -> -- ^ Default time offset
+               Text   -> -- ^ Default stylesheet 
+               Html   -> -- ^ Extra token
+               MForm Handler (FormResult (Int, Text, Maybe Text, Maybe [Text]), Widget)
+settingsForm allBoards ignoredBoards defaultZone defaultStyle extra = do
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe defaultZone (read . unpack) oldTimeZone)
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe defaultStyle oldStyle)
   (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
-  let result = (,,) <$> timezoneRes <*> styleRes <*> langRes
+  (boardResults, boardViews  ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
+  let result = (,,,) <$> timezoneRes <*> styleRes <*> langRes <*> boardResults
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -24,14 +27,17 @@ postSettingsR :: Handler TypedContent
 postSettingsR = do
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra  
-  ((result, _), _) <- runFormPost $ settingsForm defaultZone defaultStyle
+  allBoards <- map ((boardTitle &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  ignoredBoards <- getLiveBoards
+  ((result, _), _) <- runFormPost $ settingsForm  allBoards ignoredBoards defaultZone defaultStyle
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, lang) -> do
+    FormSuccess (timezone, stylesheet, lang, boards) -> do
       setSession "timezone"   $ showText timezone
       setSession "stylesheet" stylesheet
+      setSession "feed-ignore-boards" $ showText $ fromMaybe [] boards
       Foldable.forM_ lang setLanguage
       trickyRedirect "ok" MsgApplied SettingsR
 
@@ -39,7 +45,9 @@ getSettingsR :: Handler Html
 getSettingsR = do
   defaultZone  <- extraTimezone   <$> getExtra
   defaultStyle <- extraStylesheet <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ settingsForm defaultZone defaultStyle
+  allBoards <- map ((boardTitle &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  ignoredBoards <- getLiveBoards
+  (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards defaultZone defaultStyle
 
   nameOfTheBoard  <- extraSiteName <$> getExtra
   msgrender       <- getMessageRender

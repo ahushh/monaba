@@ -10,3 +10,6 @@
     <tr>
       <td>_{MsgLanguage}
       <td>^{fvInput langView}
+    <tr>
+      <td>_{MsgFeedIgnoredBoards}
+      <td>^{fvInput boardViews}

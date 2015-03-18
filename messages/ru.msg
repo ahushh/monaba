@@ -166,6 +166,7 @@ OpModeration: ОП-модерация
 PostEditing: Редактирование постов
 OpEditing: Редактирование ОП-постов
 ShowEditHistory: Показывать историю изменений
+ShowPostDate: Показывать дату постов
 ## board list
 NewBoard: Новая борда
 AllBoards: Все борды

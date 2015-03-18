@@ -165,6 +165,7 @@ OpModeration: OP moderation
 PostEditing: Post editing
 OpEditing: OP editing
 ShowEditHistory: Show editing history
+ShowPostDate: Show post date
 ## board list
 NewBoard: New board
 AllBoards: All boards

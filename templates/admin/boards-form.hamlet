@@ -106,6 +106,10 @@
             <td>_{MsgShowEditHistory}
             <td>^{fvInput showEditHistoryView}
             <td>&nbsp;
+        <tr>
+            <td>_{MsgShowPostDate}
+            <td>^{fvInput showPostDateView}
+            <td>&nbsp;
         $if action == NewBoard
             <tr>
                 <td colspan=2><strong>_{MsgOptional}:</strong>

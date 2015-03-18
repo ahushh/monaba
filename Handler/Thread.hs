@@ -47,6 +47,7 @@ getThreadR board thread = do
       boardTitleVal    = boardTitle        boardVal
       boardSummaryVal  = boardSummary      boardVal
       geoIpEnabled     = boardEnableGeoIp  boardVal
+      showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------
   allPosts <- selectThread board thread
   when (null allPosts) notFound
@@ -86,6 +87,7 @@ postThreadR board thread = do
       bumpLimit        = boardBumpLimit     boardVal
       replyFile        = boardReplyFile     boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
+      showPostDate     = boardShowPostDate  boardVal
       threadUrl        = ThreadR board thread
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm 0 0 boardVal muser

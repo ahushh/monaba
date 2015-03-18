@@ -21,6 +21,7 @@ getDeletedByOpR board thread = do
       geoIpEnabled    = boardEnableGeoIp     boardVal
       boardDesc       = boardTitle     boardVal
       boardSummaryVal = boardSummary boardVal
+      showPostDate    = boardShowPostDate boardVal
   unless (boardOpModeration boardVal) notFound  
   -------------------------------------------------------------------------------------------------------
   allPosts' <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
@@ -34,7 +35,7 @@ getDeletedByOpR board thread = do
   ------------------------------------------------------------------------------------------------------- 
   nameOfTheBoard <- extraSiteName <$> getExtra
   msgrender      <- getMessageRender
-  timeZone      <- getTimeZone
+  timeZone       <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgDeletedPosts]

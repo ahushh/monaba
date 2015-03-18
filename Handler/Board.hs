@@ -65,6 +65,7 @@ getBoardR board page = do
       title             = boardTitle             boardVal
       summary           = boardSummary           boardVal
       geoIpEnabled      = boardEnableGeoIp       boardVal
+      showPostDate      = boardShowPostDate      boardVal
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
   ------------------------------------------------------------------------------------------------------- 
@@ -96,6 +97,7 @@ postBoardR board _ = do
       thumbSize        = boardThumbSize     boardVal
       opFile           = boardOpFile        boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
+      showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal muser
   case result of

@@ -57,6 +57,7 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                                             , Maybe Text   -- ^ Enable OP editing
                                             , Maybe Text   -- ^ Enable post editing
                                             , Maybe Text   -- ^ Show or not editing history
+                                            , Maybe Text   -- ^ Show or not post date
                                             , Maybe Text   -- ^ Summary
                                             , Maybe Int    -- ^ Index
                                             )
@@ -105,8 +106,9 @@ updateBoardForm board action bCategories groups extra = do
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
   (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
+  (showPostDateRes     , showPostDateView     ) <- mopt (selectFieldList onoff) "" (helper'  boardShowPostDate)
   (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
@@ -115,7 +117,8 @@ updateBoardForm board action bCategories groups extra = do
                categoryRes          <*> viewAccessRes      <*> replyAccessRes    <*>
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
-               showEditHistoryRes   <*> summaryRes         <*> indexRes
+               showEditHistoryRes   <*> showPostDateRes    <*> summaryRes        <*>
+               indexRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -135,7 +138,7 @@ postNewBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary         , bIndex
+                , bShowPostDate    , bSummary     , bIndex
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bDefaultName, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -169,6 +172,7 @@ postNewBoardsR = do
                            , boardOpEditing         = onoff bOpEditing
                            , boardPostEditing       = onoff bPostEditing
                            , boardShowEditHistory   = onoff bShowEditHistory
+                           , boardShowPostDate      = onoff bShowPostDate
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       void $ runDB $ insert newBoard
@@ -189,7 +193,7 @@ postAllBoardsR = do
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary         , bIndex
+                , bShowPostDate    , bSummary     , bIndex
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -222,6 +226,7 @@ postAllBoardsR = do
                              , boardOpEditing         = onoff bOpEditing       boardOpEditing
                              , boardPostEditing       = onoff bPostEditing     boardPostEditing
                              , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
+                             , boardShowPostDate      = onoff bShowPostDate    boardShowPostDate
                              , boardIndex             = fromMaybe 0 bIndex
                              }
           in runDB $ replace oldBoardId newBoard)
@@ -238,12 +243,12 @@ postUpdateBoardsR board = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bTitle        , bBumpLimit   , bNumberFiles    , bAllowedTypes
+    FormSuccess ( bName            , bTitle       , bBumpLimit   , bNumberFiles    , bAllowedTypes
                 , bDefaultName     , bMaxMsgLen   , bThumbSize   , bThreadsPerPage , bPrevPerThread
                 , bThreadLimit     , bOpFile      , bReplyFile   , bIsHidden       , bEnableCaptcha
                 , bCategory        , bViewAccess  , bReplyAccess , bThreadAccess   , bOpModeration
                 , bExtraRules      , bEnableGeoIp , bOpEditing   , bPostEditing    , bShowEditHistory
-                , bSummary         , bIndex
+                , bShowPostDate    , bSummary     , bIndex
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -275,6 +280,7 @@ postUpdateBoardsR board = do
                            , boardEnableGeoIp       = onoff bEnableGeoIp     boardEnableGeoIp
                            , boardOpEditing         = onoff bOpEditing       boardOpEditing
                            , boardPostEditing       = onoff bPostEditing     boardPostEditing
+                           , boardShowPostDate      = onoff bShowPostDate    boardShowPostDate
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                            , boardIndex             = fromMaybe 0 bIndex
                            }

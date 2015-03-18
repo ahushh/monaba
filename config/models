@@ -42,6 +42,7 @@ Board
     opEditing         Bool     
     postEditing       Bool     
     showEditHistory   Bool     
+    showPostDate      Bool default=true
     deriving          Typeable
 Post json
     board        Text

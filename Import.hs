@@ -206,10 +206,11 @@ postWidget :: Maybe (Entity User)      ->
              Bool                     -> -- ^ Have access to post
              Bool                     -> -- ^ Show parent board/thread in the upper right corner
              Bool                     -> -- ^ If geo ip enabled
+             Bool                     -> -- ^ Show post date
              [Permission]             -> -- ^ List of the all permissions
              Int                      -> -- ^ Time offset in seconds
              Widget
-postWidget muser ePost eFiles inThread canPost showParent geoIp permissions tOffset = 
+postWidget muser ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost

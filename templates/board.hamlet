@@ -14,7 +14,7 @@ $else
     <form .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
-                ^{postWidget muser eOpPost opPostFiles False hasAccessToReply False geoIpEnabled permissions timeZone}
+                ^{postWidget muser eOpPost opPostFiles False hasAccessToReply False geoIpEnabled showPostDate permissions timeZone}
                 $if omitted > 0
                     <div .omitted>
                         _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
@@ -22,7 +22,7 @@ $else
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost })>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
-                    ^{postWidget muser ePreview previewFiles False hasAccessToReply False geoIpEnabled permissions timeZone}
+                    ^{postWidget muser ePreview previewFiles False hasAccessToReply False geoIpEnabled showPostDate permissions timeZone}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
         ^{deleteWidget permissions}

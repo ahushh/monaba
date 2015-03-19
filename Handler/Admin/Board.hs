@@ -65,14 +65,18 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                                 , Widget)
 updateBoardForm board action bCategories groups extra = do
   msgrender   <- getMessageRender
-  let helper g  = (Just . g . entityVal) <$> board
-      helper :: forall a. (Board -> a) -> Maybe (Maybe a)
+  let helper :: forall a. (Board -> a) -> a -> Maybe (Maybe a)
+      helper g defaultValue
+        | action == NewBoard = Just $ Just defaultValue
+        | otherwise         = (Just . g . entityVal) <$> board
       -----------------------------------------------------------------------------
       bool2Text True  = Just $ Just "Enable"
       bool2Text False = Just $ Just "Disable"
       bool2Text :: Bool -> Maybe (Maybe Text)
       -----------------------------------------------------------------------------
-      helper' g = maybe Nothing (bool2Text . g . entityVal) board
+      helper' g defaultValue
+        | action == NewBoard = Just $ Just defaultValue
+        | otherwise         = maybe Nothing (bool2Text . g . entityVal) board
       onoff     = map (first msgrender) [(MsgEnable,"Enable"),(MsgDisable,"Disable")]
       onoff     :: [(Text, Text)]
       onoffreq  = map (first msgrender) [(MsgEnable,"Enabled"),(MsgDisable,"Disabled"),(MsgRequired,"Required")]
@@ -81,35 +85,35 @@ updateBoardForm board action bCategories groups extra = do
       helper'' :: forall a. (Board -> a) -> Maybe a
       helper'' g = (g . entityVal) <$> board
       
-  (nameRes             , nameView             ) <- mopt textField     "" (helper boardName)
-  (titleRes            , titleView            ) <- mopt textField     "" (helper boardTitle)
-  (summaryRes          , summaryView          ) <- mopt textField     "" (helper boardSummary)
-  (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit)
-  (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles)
-  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes))
-  (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (helper boardDefaultName)
-  (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (helper boardMaxMsgLength)
-  (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (helper boardThumbSize)
-  (threadsPerPageRes   , threadsPerPageView   ) <- mopt intField      "" (helper boardThreadsPerPage)
-  (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (helper boardPreviewsPerThread)
-  (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (helper boardThreadLimit)
+  (nameRes             , nameView             ) <- mopt textField     "" (helper boardName "")
+  (titleRes            , titleView            ) <- mopt textField     "" (helper boardTitle "")
+  (summaryRes          , summaryView          ) <- mopt textField     "" (helper boardSummary "")
+  (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit 500)
+  (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles 10)
+  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes) "jpg jpeg png gif webm swf rar zip 7z mp3 flaac ogv txt")
+  (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (helper boardDefaultName "Anonymous")
+  (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (helper boardMaxMsgLength 20000)
+  (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (helper boardThumbSize 200)
+  (threadsPerPageRes   , threadsPerPageView   ) <- mopt intField      "" (helper boardThreadsPerPage 10)
+  (previewsPerThreadRes, previewsPerThreadView) <- mopt intField      "" (helper boardPreviewsPerThread 5)
+  (threadLimitRes      , threadLimitView      ) <- mopt intField      "" (helper boardThreadLimit (-1))
   (categoryRes         , categoryView         ) <- mopt (selectFieldList bCategories) "" (helper'' boardCategory)
-  (opFileRes           , opFileView           ) <- mopt (selectFieldList onoffreq) "" (helper boardOpFile)
-  (replyFileRes        , replyFileView        ) <- mopt (selectFieldList onoffreq) "" (helper boardReplyFile)
-  (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper'  boardHidden)
-  (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableCaptcha)
+  (opFileRes           , opFileView           ) <- mopt (selectFieldList onoffreq) "" (helper boardOpFile "Enabled")
+  (replyFileRes        , replyFileView        ) <- mopt (selectFieldList onoffreq) "" (helper boardReplyFile "Enabled")
+  (isHiddenRes         , isHiddenView         ) <- mopt (selectFieldList onoff) "" (helper'  boardHidden "Disable")
+  (enableCaptchaRes    , enableCaptchaView    ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableCaptcha "Disable")
   (viewAccessRes       , viewAccessView       ) <- mopt (multiSelectFieldList groups) "" (helper'' boardViewAccess)
   (replyAccessRes      , replyAccessView      ) <- mopt (multiSelectFieldList groups) "" (helper'' boardReplyAccess)
   (threadAccessRes     , threadAccessView     ) <- mopt (multiSelectFieldList groups) "" (helper'' boardThreadAccess)
-  (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration)
-  (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules))
-  (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp)
-  (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing)
-  (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing)
-  (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory)
-  (showPostDateRes     , showPostDateView     ) <- mopt (selectFieldList onoff) "" (helper'  boardShowPostDate)
-  (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper' boardEnableForcedAnon)
-  (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex)
+  (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration "Enable")
+  (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules) "")
+  (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp "Disable")
+  (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing "Enable")
+  (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing "Enable")
+  (showEditHistoryRes  , showEditHistoryView  ) <- mopt (selectFieldList onoff) "" (helper'  boardShowEditHistory "Enable")
+  (showPostDateRes     , showPostDateView     ) <- mopt (selectFieldList onoff) "" (helper'  boardShowPostDate "Enable")
+  (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper' boardEnableForcedAnon "Disable")
+  (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex 0)
   let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>

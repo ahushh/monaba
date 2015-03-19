@@ -25,7 +25,7 @@
         <tr>
             <td>_{MsgBoardSummary }
             <td>^{fvInput summaryView}
-            <td>_{MsgBoardSummaryEG}
+            <td>_{MsgOptional}, _{MsgBoardSummaryEG}
         <tr>
             <td>_{MsgBoardBumpLimit}
             <td>^{fvInput bumpLimitView}
@@ -41,10 +41,11 @@
         <tr>
             <td>_{MsgBoardExtraRules}
             <td>^{fvInput extraRulesView}
-            <td>_{MsgSeparateBy ";"}
+            <td>_{MsgOptional}, _{MsgSeparateBy ";"}
         <tr>
             <td>_{MsgBoardDefaultName }
             <td>^{fvInput defaultNameView}
+            <td>_{MsgOptional}
             <td>&nbsp;
         <tr>
             <td>_{MsgBoardMaxMsgLength}

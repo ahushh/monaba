@@ -1,9 +1,10 @@
 ^{adminNavbarWidget muser permissions}
 $if not (action == NewBoard)
-    <a href=@{CleanBoardR  action board}>_{MsgCleanBoard}
-    <a href=@{DeleteBoardR action board}>_{MsgDeleteBtn}
+    <a href=@{CleanBoardR  action board} onclick="return confirm('_{MsgCleanBoardConfirm}')">_{MsgCleanBoard}
+    |
+    <a href=@{DeleteBoardR action board} onclick="return confirm('_{MsgDeleteBoardConfirm}')">_{MsgDeleteBtn}
+    |
     <a href=@{RebuildPostsMessagesOnBoardR action board}>_{MsgRebuildPostsMessagesOnBoard}
-^{formWidget}
 <select onchange="location = '/admin/boards/list/'+this.options[this.selectedIndex].value;">
     $if action == AllBoards
         $if not $ null boards
@@ -26,3 +27,4 @@ $if not (action == NewBoard)
         $else
             <option value="#{show UpdateBoard}/#{boardName b}">
               #{boardName b}
+^{formWidget}

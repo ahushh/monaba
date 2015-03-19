@@ -176,6 +176,8 @@ UpdateBoardsBtn: Обновить
 AddBoardBtn: Добавить
 DeleteAll: Удалить все
 CleanBoard: Очистить
+CleanBoardConfirm: Будут удалены ВСЕ посты на борде. Точно продолжить?
+DeleteBoardConfirm: Будет уделана борда вместе со всеми постами. Точно продолжить?
 RebuildPostsMessagesOnBoard: Обновить HTML сообщений в постах
 ## info
 SeparateBy d@Text: Разделять с помощью '#{d}'
@@ -224,7 +226,7 @@ AddNewUserOrUpdate: Новый аккаунт/обновить
 UsersAddedOrUpdated: Аккаунт добавлен/обновлен
 UserDoesNotExist: Пользователь не существует
 UsersDeleted: Аккаунт удален
-YouAreTheOnlyWhoCanManageUsers: Вы единственный, кто может добавить нового пользователя!
+YouAreTheOnlyWhoCanManageUsers: Нетъ. Вы единственный, кто может добавить нового пользователя.
 
 ### Config management
 Config: Настройки

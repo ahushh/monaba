@@ -175,6 +175,8 @@ UpdateBoardsBtn: Update
 AddBoardBtn: Add board
 DeleteAll: Delete all
 CleanBoard: Clean
+CleanBoardConfirm: This will delete ALL posts from the board! Are you sure you want to continue?
+DeleteBoardConfirm: Are you sure you want to delete the board?
 RebuildPostsMessagesOnBoard: Rebuild HTML of posts messages
 ## info
 SeparateBy d@Text: Separate by '#{d}'
@@ -223,7 +225,7 @@ AddNewUserOrUpdate: New user/update
 UsersAddedOrUpdated: New user successufully added/updated
 UsersDeleted: User successufully deleted
 UserDoesNotExist: User doesn't exist
-YouAreTheOnlyWhoCanManageUsers: You are the only who can manage users!
+YouAreTheOnlyWhoCanManageUsers: DENIED. You are the only who can manage users.
 
 ### Config management
 Config: Config

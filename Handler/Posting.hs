@@ -11,7 +11,6 @@ data GoBackTo = ToThread | ToBoard | ToFeed
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------
-
 postForm :: Int   -> -- ^ The maximium length of post title
            Int   -> -- ^ The maximium length of poster name
            Board -> -- ^ Board value
@@ -76,6 +75,26 @@ editForm extra = do
 -------------------------------------------------------------------------------------------------------------------
 -- Helpers
 -------------------------------------------------------------------------------------------------------------------
+checkBan :: Text -> (AppMessage -> HandlerT App IO ()) -> HandlerT App IO ()
+checkBan ip redirectSomewhere = do
+  mBan <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
+  msgrender <- getMessageRender  
+  timeZone  <- getTimeZone
+  case mBan of
+   Just eBan@(Entity _ ban) -> unlessM (isBanExpired eBan) $ do
+     let m = MsgYouAreBanned (banReason ban) (maybe (msgrender MsgNeverExpires) (pack . myFormatTime timeZone) (banExpires ban))
+     redirectSomewhere m
+   Nothing -> return ()
+
+checkTooFastPosting :: Filter Post -> Text -> UTCTime -> HandlerT App IO () -> HandlerT App IO ()
+checkTooFastPosting cond ip now redirectSomewhere = do
+  lastPost <- runDB $ selectFirst [PostIp ==. ip, cond] [Desc PostDate]
+  case lastPost of
+   Just (Entity _ post) -> do
+     let diff = ceiling ((realToFrac $ diffUTCTime now (postDate post)) :: Double)
+     whenM ((>diff) <$> getConfig configReplyDelay) redirectSomewhere
+   Nothing             -> return ()
+
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes
 isFileAllowed _            _                      = True
@@ -98,6 +117,18 @@ bumpThread board thread now = do
   case maybeThread of
     Just (Entity thrId _) -> runDB $ update thrId [PostBumped =. Just now]
     _                     -> error "pattern matching failed at bumpThread"
+-------------------------------------------------------------------------------------------------------------------
+makeThreadtitle :: Entity Post -> Text
+makeThreadtitle ePost =
+  let maxLen = 60
+      pt     = postTitle $ entityVal ePost
+      pm     = stripTags $ unTextarea $ postMessage $ entityVal ePost
+      pagetitle | not $ T.null pt                                 = pt
+                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > maxLen
+                                                                    then flip T.append "…" $ T.take maxLen pm
+                                                                    else pm
+                | otherwise                                     = ""
+  in pagetitle
 -------------------------------------------------------------------------------------------------------------------
 -- | Check if ban expired
 isBanExpired :: Entity Ban -> Handler Bool

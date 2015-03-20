@@ -73,8 +73,8 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
-  (formWidget', _)          <- generateFormPost editForm
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  (editFormWidget, _)           <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone
@@ -113,31 +113,22 @@ postBoardR board _ = do
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText
       | not $ all (isFileAllowed allowedTypes) files  -> msgRedirect MsgTypeNotAllowed
       | otherwise                                   -> do
-        -- save form values in case something goes wrong
+        -------------------------------------------------------------------------------------------------------
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
-        -- check ban
-        ip  <- pack <$> getIp
-        ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
-        when (isJust ban) $ 
-          unlessM (isBanExpired $ fromJust ban) $ do
-            setMessageI $ MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                          (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
-            redirect (BoardNoPageR board)
-        -- check captcha
-        when (enableCaptcha && isNothing muser) $ do
-          checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
+        ip       <- pack <$> getIp
         now      <- liftIO getCurrentTime
         country  <- getCountry ip
-        -- check too fast posting
-        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent ==. 0] [Desc PostDate] -- last thread by IP
-        when (isJust lastPost) $ do
-          let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
-          whenM ((>diff) <$> getConfig configReplyDelay) $ 
-            setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
-        ------------------------------------------------------------------------------------------------------
         posterId <- getPosterId
+        -------------------------------------------------------------------------------------------------------
+        checkBan ip $ \m -> setMessageI m >> redirect (BoardNoPageR board)
+        -------------------------------------------------------------------------------------------------------
+        when (enableCaptcha && isNothing muser) $ 
+          checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
+        -------------------------------------------------------------------------------------------------------
+        checkTooFastPosting (PostParent ==. 0) ip now $ setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
+        ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted  <- doYobaMarkup message board 0
         maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
@@ -169,9 +160,7 @@ postBoardR board _ = do
           in when (tl >= 0) $
                flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
-        -- remember poster name
         when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
-        -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"
         case goback of

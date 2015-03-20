@@ -107,8 +107,8 @@ NoFile: File required
 OpFileIsDisabled: OP file attachment is disabled on this board
 ReplyFileIsDisabled: Reply file attachment is disabled on this board
 UnknownError: Unknown error
-BadFormData: Bad input
-NoFormData: No input
+BadFormData: Error parsing submitted data
+NoFormData: No data was submitted
 TooLongMessage n@Int: Your message is too long. Max length is #{show n}
 DeleteNoPosts: Didn't you forget to mark the posts you want to delete?
 DeleteWrongPassword: Wrong password

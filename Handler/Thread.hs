@@ -58,8 +58,8 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
-  (formWidget', _)          <- generateFormPost editForm
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  (editFormWidget, _)           <- generateFormPost editForm
   nameOfTheBoard            <- extraSiteName <$> getExtra
   msgrender                 <- getMessageRender
   timeZone                  <- getTimeZone
@@ -73,7 +73,7 @@ getThreadR board thread = do
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
-  when (thread == 0) notFound
+  when (thread <= 0) notFound
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
@@ -82,61 +82,50 @@ postThreadR board thread = do
 
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   -------------------------------------------------------------------------------------------------------     
-  let defaultName      = boardDefaultName   boardVal
-      allowedTypes     = boardAllowedTypes  boardVal
-      thumbSize        = boardThumbSize     boardVal
-      bumpLimit        = boardBumpLimit     boardVal
-      replyFile        = boardReplyFile     boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
-      showPostDate     = boardShowPostDate  boardVal
+  let defaultName      = boardDefaultName      boardVal
+      allowedTypes     = boardAllowedTypes     boardVal
+      thumbSize        = boardThumbSize        boardVal
+      bumpLimit        = boardBumpLimit        boardVal
+      replyFile        = boardReplyFile        boardVal
+      enableCaptcha    = boardEnableCaptcha    boardVal
+      showPostDate     = boardShowPostDate     boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
       threadUrl        = ThreadR board thread
+      boardUrl         = BoardNoPageR board
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm 0 0 boardVal muser
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
-    FormMissing                        -> trickyRedirect "error" MsgNoFormData  threadUrl
+    FormMissing                        -> trickyRedirect "error" MsgNoFormData threadUrl
     FormSuccess (name, title, message, captcha, pswd, files, goback, nobump)
+      | isNothing maybeParent                             -> trickyRedirect "error" MsgNoSuchThread        boardUrl
+      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
       | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
-      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
       | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText        threadUrl
       | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed      threadUrl
       | otherwise                                         -> do
-        -- save form values in case something goes wrong
+        ------------------------------------------------------------------------------------------------------
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
-        ip        <- pack <$> getIp
-        -- check ban
-        ban <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
-        when (isJust ban) $
-          unlessM (isBanExpired $ fromJust ban) $ do
-            let m =  MsgYouAreBanned (banReason $ entityVal $ fromJust ban)
-                                     (maybe "never" (pack . myFormatTime 0) (banExpires $ entityVal $ fromJust ban))
-            trickyRedirect "error" m threadUrl
-        -- check captcha
-        when (enableCaptcha && isNothing muser) $ do
-           checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
-        ------------------------------------------------------------------------------------------------------           
-        country  <- getCountry ip
-        now      <- liftIO getCurrentTime
-        -- check too fast posting
-        lastPost <- runDB $ selectFirst [PostIp ==. ip, PostParent !=. 0] [Desc PostDate] -- last reply by IP
-        when (isJust lastPost) $ do
-          let diff = ceiling ((realToFrac $ diffUTCTime now (postDate $ entityVal $ fromJust lastPost)) :: Double)
-          whenM ((>diff) <$> getConfig configReplyDelay) $ 
-            trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
-        posterId         <- getPosterId
-        messageFormatted <- doYobaMarkup message board thread
-        lastPost'        <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        when (isNothing lastPost') $  -- reply to non-existent thread
-          trickyRedirect "error" MsgNoSuchThread (BoardNoPageR board)
-
+        ip        <- pack <$> getIp
+        now       <- liftIO getCurrentTime
+        country   <- getCountry ip
+        posterId  <- getPosterId
+        ------------------------------------------------------------------------------------------------------
+        checkBan ip $ \m -> trickyRedirect "error" m threadUrl
+        ------------------------------------------------------------------------------------------------------
+        when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
+        ------------------------------------------------------------------------------------------------------
+        checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" MsgPostingTooFast threadUrl
+        ------------------------------------------------------------------------------------------------------
+        messageFormatted  <- doYobaMarkup message board thread
         maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
         maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-        let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost')
+        lastPost          <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
+        let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost)
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = thread
@@ -160,10 +149,10 @@ postThreadR board thread = do
                            }
         void $ insertFiles files thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------
-        -- bump thread if it's necessary
+        -- bump thread if necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
         unless ((fromMaybe False nobump) || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
-        -- remember poster name
+        -------------------------------------------------------------------------------------------------------
         when (isJust name) $ setSession "name" (fromMaybe defaultName name)
         -- everything went well, delete these values
         deleteSession "message"
@@ -173,15 +162,3 @@ postThreadR board thread = do
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
           ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" MsgPostSent FeedR
     _  -> trickyRedirect "error" MsgUnknownError threadUrl
--------------------------------------------------------------------------------------------------------------------
-makeThreadtitle :: Entity Post -> Text
-makeThreadtitle ePost =
-  let maxLen = 60
-      pt     = postTitle $ entityVal ePost
-      pm     = stripTags $ unTextarea $ postMessage $ entityVal ePost
-      pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > maxLen
-                                                                    then flip T.append "…" $ T.take maxLen pm
-                                                                    else pm
-                | otherwise                                     = ""
-  in pagetitle

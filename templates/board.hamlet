@@ -6,7 +6,7 @@ $if hasAccessToNewThread
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 $with na <- not hasAccessToNewThread 
   <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
-    ^{formWidget}
+    ^{postFormWidget}
             
 $if null threadsAndPreviews
     <p> _{MsgNoThreads}
@@ -27,6 +27,6 @@ $else
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},true)>_{MsgTruncateThread}</a>
         ^{deleteWidget permissions}
     <div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
-        ^{formWidget'}
+        ^{editFormWidget}
 
 ^{paginationWidget page pages (BoardR board)}

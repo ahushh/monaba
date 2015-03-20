@@ -8,7 +8,7 @@ SubmitBtn: Отправить
 Message: Текст сообщения
 Password: Пароль
 File: Файл
-Goback: Перейти к 
+Goback: Перейти к
 ToThread: треду
 ToBoard: борде
 ToFeed: /feed/
@@ -18,12 +18,12 @@ Captcha: Проверочный код
 ### Post form rules
 SupportedFileTypes: Поддерживаемые типы файлов:
 MaxFileSize: Маскимальный размер файлов:
-ImgsWillBeThumbnailed s@Int: Изображения больше #{show s}x#{show s} будут уменьшены.
+ImgsWillBeThumbnailed size@Int: Изображения больше #{show size}x#{show size} будут уменьшены.
 OpModerationIsEnabled: На этой доске включена ОП-модерация.
-PostFormBumpLimit b@Int: Бамп-лимит: #{unlimitedBump b "∞"}
+PostFormBumpLimit bl@Int: Бамп-лимит: #{unlimitedBump bl "∞"}
 ### misc
-ThreadHeaderNumber t@Int: Тред №#{show t}
-ThreadHeaderReplyTo t@Int: Ответ в тред №#{show t}
+ThreadHeaderNumber thr@Int: Тред №#{show thr}
+ThreadHeaderReplyTo thr2@Int: Ответ в тред №#{show thr2}
 NewThread: Новый тред
 ClosePostForm: Закрыть форму
 Reply: Ответить
@@ -42,9 +42,8 @@ LastModified: Последнее изменение
 EditingHistory: История измнений
 EditingHistoryIsDisabled: Просмотр истории изменений отключен
 GoTo: Перейти к
-EditingHistoryOfPost desu@Int: История изменений поста №#{show desu}.
-YouAlreadyEditedPost boku@Int: Вы уже отредактировали пост #{show boku} #{timesRus boku}. Больше нельзя.
-EditPosts: Редактирование постов и просмотр истории
+EditingHistoryOfPost post@Int: История изменений поста №#{show post}.
+YouAlreadyEditedPost n@Int: Вы уже отредактировали пост #{show n} #{timesRus n}. Больше нельзя.
 
 ### Markup
 PlainText: Простой текст
@@ -58,8 +57,8 @@ MarkupInlineLatex: inline LaTeX
 MarkupLatex: LaTeX
 MarkupQuote: >цитата
 
-Error lolka@Text: Ошибка: #{lolka}
-MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' должно быть больше #{show qw}
+Error err@Text: Ошибка: #{err}
+MustBeGreaterThan thing@Text n@Int: '#{thing}' должно быть больше #{show n}
 ######################################################################################
 #### Page
 ######################################################################################
@@ -95,7 +94,7 @@ ThreadIsLocked: Тред закрыт
 ThreadAutosage: Тред не бампается
 ### Deleted posts
 DeletedPosts: Удаленные посты
-DeletedPostsIn z@Int: Удаленные посты в треде №#{show z}
+DeletedPostsIn thr@Int: Удаленные посты в треде №#{show thr}
 ShowDeletedPosts: Просмотреть удаленные посты
 
 ######################################################################################
@@ -110,11 +109,11 @@ UnknownError: Неизвестная ошибка
 BadFormData: Что-то введено не так
 NoFormData: Ничего не введено
 
-TooLongMessage n@Int: Сообщение слишком длинное. Максимальная длина #{show n}
+TooLongMessage maxl@Int: Сообщение слишком длинное. Максимальная длина #{show maxl}
 DeleteNoPosts: Не отмечено постов к удалению
 DeleteWrongPassword: Неправильный пароль
 YouAreNotOp: Пароль/сессия не совпадает с тем, что в ОП-посте. Вы не можете модерировать этот тред.
-TypeNotAllowed: Данный тип файла не разрешен к загрузк
+TypeNotAllowed: Данный тип файла не разрешен к загрузке
 NoSuchThread: Нет такого треда
 NoSuchBoard: Нет такой борды
 LockedThread: Тред закрыт
@@ -177,7 +176,7 @@ AddBoardBtn: Добавить
 DeleteAll: Удалить все
 CleanBoard: Очистить
 CleanBoardConfirm: Будут удалены ВСЕ посты на борде. Точно продолжить?
-DeleteBoardConfirm: Будет уделана борда вместе со всеми постами. Точно продолжить?
+DeleteBoardConfirm: Будет удалена борда вместе со всеми постами. Точно продолжить?
 RebuildPostsMessagesOnBoard: Обновить HTML сообщений в постах
 ## info
 SeparateBy d@Text: Разделять с помощью '#{d}'
@@ -189,8 +188,6 @@ BoardsUpdated: Борды обновлены
 BoardAdded: Борда добавлена
 BoardCleaned: Борда очищена от всех постов
 BoardDeleted: Борда удалена
-InvalidData: Неверные данные
-UpdateBoardsInvalidInput: Что-то введено не так
 
 ### Bans management
 Ban: Бан
@@ -199,7 +196,7 @@ BanReason: Причина
 BanExpires: Истекает
 BanExpiresInHours: Истекает через * часов
 BanBoard: На борде
-NeverExpires: Никогда
+NeverExpires: НИКОГДА
 ## Messages
 YouAreBanned reason@Text expires@Text: Вы забанены! Причина: "#{reason}". Бан истекает #{expires}
 BanAdded: Бан добавлен
@@ -252,6 +249,7 @@ DeletePosts : Удаление постов
 ManagePanel : Доступ в админку
 ManageBan   : Бан
 AdditionalMarkup: Расширенная разметка
+EditPosts: Редактирование постов и просмотр истории
 
 ######################################################################################
 #### Help

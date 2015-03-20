@@ -18,12 +18,12 @@ Captcha: Captcha
 ### Post form rules
 SupportedFileTypes: Supported file types are
 MaxFileSize: Max files size allowed is
-ImgsWillBeThumbnailed s@Int: Images greater than #{show s}x#{show s} will be thumbnailed.
+ImgsWillBeThumbnailed size@Int: Images greater than #{show size}x#{show size} will be thumbnailed.
 OpModerationIsEnabled: OP moderation is enabled on this board.
-PostFormBumpLimit b@Int: Bump limit is #{unlimitedBump b "∞"}
+PostFormBumpLimit bl@Int: Bump limit is #{unlimitedBump bl "∞"}
 ### misc
-ThreadHeaderNumber t@Int: Thread №#{show t}
-ThreadHeaderReplyTo t@Int: Reply to #{show t} thread
+ThreadHeaderNumber thr@Int: Thread ##{show thr}
+ThreadHeaderReplyTo thr2@Int: Reply to #{show thr2} thread
 NewThread: New thread
 ClosePostForm: Close form
 Reply: Reply
@@ -42,9 +42,8 @@ LastModified: Last modified
 EditingHistory: Editing history
 EditingHistoryIsDisabled: Editing history is disabled
 GoTo: Go to
-EditingHistoryOfPost desu@Int: Editing history of post №#{show desu}
-YouAlreadyEditedPost boku@Int: You've already edited this post #{show boku} times.
-EditPosts: Edit posts and view history
+EditingHistoryOfPost post@Int: Editing history of post ##{show post}
+YouAlreadyEditedPost n@Int: You've already edited this post #{show n} times.
 
 ### Markup
 PlainText: Plain text
@@ -58,8 +57,8 @@ MarkupInlineLatex: inline LaTeX
 MarkupLatex: LaTeX
 MarkupQuote: >quote
 
-Error lolka@Text: Error: #{lolka}
-MustBeGreaterThan qwe@Text qw@Int: '#{qwe}' must be greater than #{show qw}
+Error err@Text: Error: #{err}
+MustBeGreaterThan thing@Text n@Int: '#{thing}' must be greater than #{show n}
 ######################################################################################
 #### Page
 ######################################################################################
@@ -95,7 +94,7 @@ ThreadIsLocked: Thread is locked
 ThreadAutosage: Thread is on autosage
 ### Deleted posts
 DeletedPosts: Deleted posts
-DeletedPostsIn z@Int: Deleted posts in thread №#{show z}
+DeletedPostsIn thr@Int: Deleted posts in thread ##{show thr}
 ShowDeletedPosts: Show deleted posts
 
 ######################################################################################
@@ -109,11 +108,11 @@ ReplyFileIsDisabled: Reply file attachment is disabled on this board
 UnknownError: Unknown error
 BadFormData: Error parsing submitted data
 NoFormData: No data was submitted
-TooLongMessage n@Int: Your message is too long. Max length is #{show n}
+TooLongMessage maxl@Int: Your message is too long. Max length is #{show maxl}
 DeleteNoPosts: Didn't you forget to mark the posts you want to delete?
 DeleteWrongPassword: Wrong password
 YouAreNotOp: Wrong OP password or session. You can't moderate this thread.
-TypeNotAllowed: This filetype isn't allowed
+TypeNotAllowed: This file type isn't allowed
 NoSuchThread: No such thread
 NoSuchBoard: No such board
 LockedThread: This thread is locked and can't be posted in
@@ -159,7 +158,7 @@ BoardCategory: Category
 BoardCategories: Board categories (separate by comma)
 BoardViewAccess: To view this board you must be a
 BoardReplyAccess: To reply you must be a
-BoardThreadAccess: To crate new thread you must be a
+BoardThreadAccess: To create new thread you must be a
 BoardEnableForcedAnon: Force anonymity (disable name input)
 WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
 OpModeration: OP moderation
@@ -188,8 +187,6 @@ BoardsUpdated: Boards successfully updated
 BoardAdded: Board successfully added
 BoardCleaned: Board successfully cleaned
 BoardDeleted: Board successfully deleted
-InvalidData: Invalid data
-UpdateBoardsInvalidInput: Invalid input
 
 ### Bans management
 Ban: Ban
@@ -198,7 +195,7 @@ BanReason: Reason
 BanExpires: Expires
 BanExpiresInHours: Expires (in hours)
 BanBoard: Board
-NeverExpires: Never
+NeverExpires: NEVER
 ## Messages
 YouAreBanned reason@Text expires@Text: You are banned! Reason: "#{reason}". Your ban expires at #{expires}
 BanAdded: Ban successfully added
@@ -209,28 +206,28 @@ Group: Group
 Groups: Groups
 GroupAddOrUpdate: Add/updated
 GroupAddedOrUpdated: Group added/updated
-GroupDoesNotExist: Group dosn't exist
+GroupDoesNotExist: Group doesn't exist
 GroupDeleted: Group deleted
 
 ### Account
 Account: Account
 NewPassword: New password
 ## Messages
-PasswordChanged: Password successully changed
+PasswordChanged: Password successfully changed
 
 ### Users management
 Users: Users
 AddNewUserOrUpdate: New user/update
 ## Messages
-UsersAddedOrUpdated: New user successufully added/updated
-UsersDeleted: User successufully deleted
+UsersAddedOrUpdated: New user successfully added/updated
+UsersDeleted: User successfully deleted
 UserDoesNotExist: User doesn't exist
 YouAreTheOnlyWhoCanManageUsers: DENIED. You are the only who can manage users.
 
 ### Config management
 Config: Config
-ShowNews: How many news show
-ShowLatestPosts: How many latest posts show on /feed
+ShowNews: How many news will be displayed
+ShowLatestPosts: How many posts will be displayed on /feed page
 MaxEditings: How many times you can edit your post
 NewsBoard: Board for news
 UpdateConfig: Update config
@@ -239,7 +236,7 @@ ThreadDelay: New thread delay
 AdminAboutPage: Html of about page
 AdminHomePage: Html of home page
 ## Messages
-ConfigUpdated: Config successufly updated
+ConfigUpdated: Config successfully updated
 
 ### Permissions
 Permissions: Permissions
@@ -251,6 +248,7 @@ DeletePosts :Delete Posts
 ManagePanel :Manage Panel
 ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
+EditPosts: Edit posts and view history
 
 ######################################################################################
 #### Help

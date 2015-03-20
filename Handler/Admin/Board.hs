@@ -148,7 +148,7 @@ postNewBoardsR = do
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
-           setMessageI MsgUpdateBoardsInvalidInput >> redirect (ManageBoardsR NewBoard "")
+           setMessageI MsgBadFormData >> redirect (ManageBoardsR NewBoard "")
       let onoff (Just "Enable" ) = True
           onoff (Just "Disable") = False
           onoff _                = False

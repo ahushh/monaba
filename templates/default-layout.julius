@@ -981,10 +981,10 @@ function closePopupPost(post) {
 }
 //-----------------------------------------------------------------
 function refreshThread(board, threadLocalId) {
-    var allPosts = document.querySelectorAll("#thread-"+threadLocalId+" .reply-post");
+    var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply-post");
     var lastPost = allPosts[ allPosts.length - 1 ];
     if (! lastPost) {
-        lastPost = document.querySelector("#thread-"+threadLocalId+" .op-post");
+        lastPost = document.querySelector("#thread-"+threadLocalId+"-"+board+" .op-post");
     }
     var lastPostId = lastPost.dataset.postLocalId;
     var ictr = document.querySelector(".delete-form .icon-thread-refresh");
@@ -1002,7 +1002,7 @@ function refreshThread(board, threadLocalId) {
             var data = request.responseText;
             if (/reply/.test(data)) {
                 var posts = parseDOMElements(data);
-                var thr   = document.getElementById("thread-"+threadLocalId);
+                var thr   = document.getElementById("thread-"+threadLocalId+"-"+board);
                 for (var i = 0; i < posts.length; i++) {
                     initOnePost(posts[i]);
                     thr.appendChild(posts[i]);

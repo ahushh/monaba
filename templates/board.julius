@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 function expandThread(board, threadLocalId) {
-    var thread  = document.getElementById("thread-"+threadLocalId);
+    var thread  = document.getElementById("thread-"+threadLocalId+"-"+board);
     var ajxl    = thread.querySelector(".omitted .ajax-loading");
     var omitted = thread.getElementsByClassName("omitted")[0];
     var tt      = thread.getElementsByClassName("truncate-thread")[0];
@@ -60,7 +60,7 @@ function expandThread(board, threadLocalId) {
 }
 
 function truncateThread(threadLocalId,scrollToThreadBottom) {
-    var thread  = document.getElementById("thread-"+threadLocalId);
+    var thread  = document.getElementById("thread-"+threadLocalId+"-"+board);
     var ajxl    = thread.querySelector(".omitted .ajax-loading");
     var omitted = thread.getElementsByClassName("omitted")[0];
     var tt      = thread.getElementsByClassName("truncate-thread")[0];

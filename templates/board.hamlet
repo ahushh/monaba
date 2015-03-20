@@ -13,7 +13,7 @@ $if null threadsAndPreviews
 $else
     <form .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
-            <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }">
+            <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}">
                 ^{postWidget muser eOpPost opPostFiles False hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
                 $if omitted > 0
                     <div .omitted>

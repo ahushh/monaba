@@ -291,6 +291,15 @@ CloseIcon: Close
 PostMessageIsTooLong: Message is too long.
 ExpandPost: Show full.
 ShrinkPost: Shrink message.
+
+######################################################################################
+#### Thread hiding
+######################################################################################
+HideThread: Hide thread
+ThreadIsHidden: Thread is hidden.
+HiddenThreads: Hidden threads
+ShowThread: Show thread
+
 ######################################################################################
 #### Settings
 ######################################################################################

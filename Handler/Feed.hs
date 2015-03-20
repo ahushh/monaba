@@ -36,7 +36,9 @@ getAjaxFeedOffsetR offset = do
   ignoredBoards <- getLiveBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boards' = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
-  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False] [Desc PostDate, LimitTo showPosts, OffsetBy offset]
+  ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
+  posts     <- runDB $ selectList [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
+                                 [Desc PostDate, LimitTo showPosts, OffsetBy offset]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
@@ -70,7 +72,9 @@ getAjaxNewFeedR lastPostId = do
   ignoredBoards <- getLiveBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boards'                = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
-  posts     <- runDB $ selectList [PostDeletedByOp ==. False, PostBoard /<-. boards', PostDate >. lastPostDate, PostDeleted ==. False] [Desc PostDate]
+  ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
+  posts     <- runDB $ selectList [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDate >. lastPostDate, PostDeleted ==. False]
+                                 [Desc PostDate]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------

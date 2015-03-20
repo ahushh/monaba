@@ -3,7 +3,10 @@ module Handler.Ajax where
 
 import           Import
 import           Yesod.Auth
---------------------------------------------------------------------------------------------------------- 
+import qualified Data.Text as T (concat)
+---------------------------------------------------------------------------------------------------------
+-- Get multiple posts
+---------------------------------------------------------------------------------------------------------
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  Text -> -- ^ Board name
                  Int  -> -- ^ Thread internal ID
@@ -62,6 +65,8 @@ getAjaxLastPostsR board thread postCount = getPostsHelper selectPosts board thre
                                   PostParent ==. thread, PostDeleted ==. False] [Desc PostDate, LimitTo postCount]
         errorString = "No such posts"
 ---------------------------------------------------------------------------------------------------------
+-- Get single post
+---------------------------------------------------------------------------------------------------------
 getAjaxPostByIdR :: Int -> Handler TypedContent
 getAjaxPostByIdR postId = do
   let postKey = toSqlKey $ fromIntegral postId
@@ -111,3 +116,36 @@ getAjaxPostR board postId = do
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
+---------------------------------------------------------------------------------------------------------
+-- Thread hiding
+---------------------------------------------------------------------------------------------------------
+getAjaxHideThreadR :: Text -> Int -> Int -> Handler TypedContent
+getAjaxHideThreadR board threadId postId = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+   Just xs' ->
+     let xs = read (unpack xs') :: [(Text,[(Int,Int)])]
+         ys = fromMaybe [] $ lookup board xs
+         zs = filter ((/=board).fst) xs
+         new = pack $ show ((board, (threadId,postId):ys):zs)
+     in setSession "hidden-threads" new
+   Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[(",showText threadId,",",showText postId,")])]"]
+  selectRep $ do
+    provideRep $ bareLayout [whamlet|ok|]
+    provideJson $ object [("ok", "hidden")]
+
+getAjaxUnhideThreadR :: Text -> Int -> Handler TypedContent
+getAjaxUnhideThreadR board threadId = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+   Just xs' ->
+     let xs = read (unpack xs') :: [(Text,[(Int,Int)])]
+         ys = fromMaybe [] $ lookup board xs
+         zs = filter ((/=board).fst) xs
+         ms = filter ((/=threadId).fst) ys
+         new = pack $ show (if null ms then zs else (board, ms):zs)
+     in setSession "hidden-threads" new
+   Nothing -> setSession "hidden-threads" "[]"
+  selectRep $ do
+    provideRep $ bareLayout [whamlet|ok|]
+    provideJson $ object [("ok", "showed")]

@@ -10,3 +10,21 @@
 //     }
 // }); 
 
+function showThread(threadLocalId, board) {
+    httpRequest({
+        action: "/ajax/unhide/thread/"+board+"/"+threadLocalId,
+        headers: { 'Accept': 'application/json' },
+        onloadOk: function() {
+            var ht = document.getElementById('hidden-thread-elem-'+board+'-'+threadLocalId);
+            ht.parentNode.removeChild(ht);
+            var b = document.getElementById('hidden-threads-board-'+board);
+            if (b.getElementsByTagName('td').length == 0) {
+                b.parentNode.removeChild(b);
+            }
+            var tl = document.getElementById('hidden-threads-list');
+            if (tl.getElementsByClassName('hidden-threads-board').length == 0) {
+                tl.parentNode.removeChild(tl);
+            }
+        }
+    });
+}

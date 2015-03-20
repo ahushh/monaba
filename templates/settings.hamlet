@@ -1,6 +1,26 @@
 <h2 style=text-align:center>_{MsgSettings}
 <div style="margin-left:30px">
-  <form #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
+  <div #settings-form-container>
+    <form #settings-form method=post enctype=#{formEnctype} action=@{SettingsR}>
       ^{formWidget}
       <input type=submit value=_{MsgApply}>
       <span style=display:none #settings-applied>
+  <div #hidden-threads-list>
+    $if not $ null hiddenThreads
+      <div #hidden-threads-title>
+        _{MsgHiddenThreads}:
+    $forall (b, ths) <- hiddenThreads
+      <div .hidden-threads-board #hidden-threads-board-#{b}>
+        <div #hidden-thread-board-title>
+          /#{b}/:
+        <table>
+          $forall (t,_) <- ths
+            <tr #hidden-thread-elem-#{b}-#{t}>
+              <td>
+                <a href="@{ThreadR b t}">
+                  No. #{t}
+              <td>
+                [
+                <a onclick="showThread(#{t},'#{b}')">
+                  _{MsgShowThread}
+                ]

@@ -25,6 +25,8 @@
 /ajax/post/#Text/#Int             AjaxPostR         GET
 /ajax/feed/#Int                   AjaxFeedOffsetR   GET
 /ajax/newfeed/#Int                AjaxNewFeedR      GET
+/ajax/hide/thread/#Text/#Int/#Int AjaxHideThreadR   GET
+/ajax/unhide/thread/#Text/#Int    AjaxUnhideThreadR GET
 /jsonfrommsg/#Text                JsonFromMsgR      GET
 
 

@@ -1018,6 +1018,28 @@ function refreshThread(board, threadLocalId) {
         }
     });
 }
+
+function hideThread(threadLocalId, board, postId) {
+    httpRequest({
+        action: "/ajax/hide/thread/"+board+"/"+threadLocalId+"/"+postId.slice(1),
+        headers: { 'Accept': 'application/json' },
+        onloadOk: function(request) {
+            var op = document.getElementById(postId);
+            removeElement(op);
+            var t = document.getElementById("thread-"+threadLocalId+"-"+board);
+            if (t != null) removeElement(t);
+            var posts = document.getElementsByClassName("reply-post");
+            var postsToRemove = [];
+            for (var i = 0; i < posts.length; i++) {
+                if (posts[i].dataset.threadLocalId == threadLocalId && posts[i].dataset.board == board)
+                    postsToRemove.push(posts[i]);
+            }
+            for (var i = 0; i < postsToRemove.length; i++)
+                removeElement( postsToRemove[i] );
+        }
+    });
+}
+
 // ---------------------------------------------------------
 //  wakaba3.js
 // ---------------------------------------------------------
@@ -1177,6 +1199,10 @@ function toggleInline(el) {
     } else {
         el.style.display = 'none';
     }
+}
+
+function removeElement(el) {
+    el.parentNode.removeChild(el);
 }
 
 function insertAfter(el, el2) {

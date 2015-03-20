@@ -16,18 +16,19 @@ getBoardNoPageR board = getBoardR board 0
 postBoardNoPageR :: Text -> Handler Html
 postBoardNoPageR board = postBoardR board 0
 --------------------------------------------------------------------------------------------------------- 
-selectThreadsAndPreviews :: Text ->
-                           Int  ->
-                           Int  ->
-                           Int  ->
-                           Text ->
+selectThreadsAndPreviews :: Text  -> -- ^ Board name
+                           Int   -> -- ^ Page
+                           Int   -> -- ^ Threads per page
+                           Int   -> -- ^ Previews per thread
+                           Text  -> -- ^ posterId
                            [Permission] ->
+                           [Int] -> -- ^ Hidden threads
                            Handler [(  (Entity Post, [Entity Attachedfile])
                                     , [(Entity Post, [Entity Attachedfile])]
                                     , Int
                                     )]
-selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions =
-  let selectThreads = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads =
+  let selectThreads = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads]
                       [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
       --------------------------------------------------------------------------------------------------
       selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
@@ -58,6 +59,7 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
   posterId        <- getPosterId
+  hiddenThreads   <- map fst <$> getHiddenThreads board
   let numberFiles       = boardNumberFiles       boardVal
       maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
@@ -67,7 +69,7 @@ getBoardR board page = do
       geoIpEnabled      = boardEnableGeoIp       boardVal
       showPostDate      = boardShowPostDate      boardVal
       pages             = listPages threadsPerPage numberOfThreads
-  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions
+  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra

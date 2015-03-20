@@ -303,6 +303,28 @@ getLiveBoards = do
   case bs of
    Just xs -> return $ readText xs
    Nothing -> setSession "feed-ignore-boards" "[]" >> return []
+
+getHiddenThreads :: Text -> Handler [(Int,Int)]
+getHiddenThreads board = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+   Just xs -> return $ fromMaybe [] $ lookup board (read (unpack xs) :: [(Text, [(Int,Int)])])
+   Nothing -> setSession "hidden-threads" "[]" >> return []
+
+getAllHiddenThreads :: Handler [(Text, [(Int,Int)])]
+getAllHiddenThreads = do
+  ht <- lookupSession "hidden-threads"
+  case ht of
+   Just xs -> return $ read $ unpack xs
+   Nothing -> setSession "hidden-threads" "[]" >> return []
+
+getAllHiddenPostsIds :: [Text] -> Handler [Key Post]
+getAllHiddenPostsIds boards = do
+  threadsIds <- concat <$> forM boards (\b -> map (toSqlKey . fromIntegral . snd) <$> getHiddenThreads b)
+  threads    <- runDB $ selectList [PostId <-. threadsIds] []
+  replies    <- runDB $ forM threads $ \(Entity _ t) -> selectList [PostBoard ==. postBoard t, PostParent ==. postLocalId t] []
+  return $ map f threads ++ map f (concat replies)
+  where f (Entity k _) = k
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------

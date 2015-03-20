@@ -86,6 +86,6 @@ getAjaxNewFeedR lastPostId = do
   msgrender        <- getMessageRender
   (editFormWidget, _) <- generateFormPost editForm
   let offset  = -1 :: Int
-      mBanner = Nothing
+      mBanner = Nothing :: Maybe (String, String)
   bareLayout $(widgetFile "feed")
   

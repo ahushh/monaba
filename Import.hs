@@ -49,7 +49,7 @@ import           Data.Time.Format        (formatTime)
 import           Network.Wai
 import           System.FilePath         ((</>))
 import           System.Locale           (defaultTimeLocale)
-import           System.Random           (randomIO)
+import           System.Random           (randomIO, randomRIO)
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
@@ -62,6 +62,12 @@ titleDelimiter = " / "
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
+-- | Takes a random element from list
+pick :: [a] -> IO (Maybe a)
+pick xs
+  | length xs == 0 = return Nothing
+  | otherwise = (Just . (xs!!)) <$> randomRIO (0, length xs - 1)
+
 whenM :: Monad m => m Bool -> m () -> m ()
 whenM = (. flip when) . (>>=)
 

@@ -3,6 +3,8 @@ module Handler.Posting where
 
 import           Import
 import qualified Data.Text as T
+import           System.Directory (doesDirectoryExist, createDirectory, getDirectoryContents)
+import           System.FilePath ((</>))
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -75,6 +77,20 @@ editForm extra = do
 -------------------------------------------------------------------------------------------------------------------
 -- Helpers
 -------------------------------------------------------------------------------------------------------------------
+chooseBanner :: Handler (Maybe (String, String))
+chooseBanner = liftIO $ do
+  unlessM (doesDirectoryExist (staticDir </> "banners")) $ createDirectory (staticDir </> "banners")
+  boards   <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (staticDir </> "banners")
+  mBoard   <- pick boards
+  case mBoard of
+   Just board -> do
+     banners <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (staticDir </> "banners" </> board)
+     mBanner <- pick banners
+     case mBanner of
+      Just banner -> return $ Just ("/" ++ staticDir </> "banners" </> board </> banner, "/" ++ board)
+      Nothing -> return Nothing
+   Nothing -> return Nothing
+
 checkBan :: Text -> (AppMessage -> HandlerT App IO ()) -> HandlerT App IO ()
 checkBan ip redirectSomewhere = do
   mBan <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]

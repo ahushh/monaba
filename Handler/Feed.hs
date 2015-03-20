@@ -4,7 +4,7 @@ module Handler.Feed where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
-import           Handler.Posting (postForm, editForm)
+import           Handler.Posting (chooseBanner, postForm, editForm)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getAjaxFeedOffsetR 0
@@ -49,6 +49,7 @@ getAjaxFeedOffsetR offset = do
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
   timeZone         <- getTimeZone  
+  mBanner          <- chooseBanner
   (editFormWidget, _) <- generateFormPost editForm
   if offset == 0
      then defaultLayout $ do
@@ -84,6 +85,7 @@ getAjaxNewFeedR lastPostId = do
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   msgrender        <- getMessageRender
   (editFormWidget, _) <- generateFormPost editForm
-  let offset = -1 :: Int
+  let offset  = -1 :: Int
+      mBanner = Nothing
   bareLayout $(widgetFile "feed")
   

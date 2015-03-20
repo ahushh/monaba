@@ -1,4 +1,9 @@
 $if offset == 0
+    $maybe banner <- mBanner
+      $with (img, url) <- banner
+        <div .banner>
+          <a href="#{url}">
+            <img src="#{img}">
     <h2 style=text-align:center> _{MsgFeed}
     <div .feed>
       <div #refresh-feed style=text-align:center onclick="refreshFeed()">

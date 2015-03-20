@@ -1,3 +1,9 @@
+$maybe banner <- mBanner
+  $with (img, url) <- banner
+    <div .banner>
+      <a href="#{url}">
+        <img src="#{img}">
+
 $if T.null pagetitle
     <div id="board-header"> #{nameOfTheBoard} — #{boardTitleVal}
     $if not $ T.null boardSummaryVal

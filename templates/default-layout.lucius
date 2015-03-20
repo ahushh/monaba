@@ -113,6 +113,10 @@ hr {
    clear: left;
 }
 
+.banner {
+   text-align: center;
+}
+
 #board-header {
     text-align: center;
     font-size: 2em;

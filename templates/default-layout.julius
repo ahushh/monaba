@@ -1216,11 +1216,23 @@ function json2urlencode(data) {
 }
 
 function parseDOMElement(data) {
-    return new DOMParser().parseFromString(data,"text/html").body.firstChild;
+    try {
+        return new DOMParser().parseFromString(data,"text/html").body.firstChild;
+    } catch(e) {
+        var wrapper = document.createElement("div");
+        wrapper.innerHTML = data;
+        return wrapper.children[0];
+    }
 }
 
 function parseDOMElements(data) {
-    return new DOMParser().parseFromString(data,"text/html").body.children;
+    try {
+        return new DOMParser().parseFromString(data,"text/html").body.children;
+    } catch(e) {
+        var wrapper = document.createElement("div");
+        wrapper.innerHTML = data;
+        return wrapper.children;
+    }
 }
 
 // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport

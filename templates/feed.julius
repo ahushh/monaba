@@ -53,9 +53,7 @@ function showQuickPostForm(postId) {
     httpRequest({
         action: '/ajax/postform/'+board,
         onloadOk: function(request) {
-            var wrapper = document.createElement("div");
-            wrapper.innerHTML = request.responseText;
-            var postform = wrapper.children[0];
+            var postform = parseDOMElement(request.responseText);
             insertAfter(postform, post);
             insert('>>'+post.dataset.postLocalId+'\n','post-form');
             initPostForm();
@@ -111,9 +109,7 @@ function loadPreviousPosts(baseOffset) {
             Array.prototype.forEach.call(document.querySelectorAll('.ajax-loading'), function(el,i) { toggleInline(el); });
             var lpp = document.getElementById('load-previous-posts');
             var parent = document.getElementById('load-previous-posts').parentNode;
-            var wrapper = document.createElement("div");
-            wrapper.innerHTML = request.responseText;
-            var posts = wrapper.children;
+            var posts = parseDOMElements(request.responseText);
             for (var i = 0; i < posts.length; i++) {
                 initOnePost(posts[i]);
                 parent.insertBefore(posts[i], lpp);

@@ -44,9 +44,7 @@ function expandThread(board, threadLocalId) {
             toggleInline(tt);
             toggleInline(tta);
 
-            var wrapper = document.createElement("div");
-            wrapper.innerHTML = data;
-            var posts = wrapper.children;
+            var posts = parseDOMElements(data);
             while (posts.length) {
                 initOnePost(posts[0]);
                 thread.insertBefore(posts[0], tta);

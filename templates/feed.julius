@@ -110,9 +110,9 @@ function loadPreviousPosts(baseOffset) {
             var lpp = document.getElementById('load-previous-posts');
             var parent = document.getElementById('load-previous-posts').parentNode;
             var posts = parseDOMElements(request.responseText);
-            for (var i = 0; i < posts.length; i++) {
-                initOnePost(posts[i]);
-                parent.insertBefore(posts[i], lpp);
+            while (posts.length) {
+                initOnePost(posts[0]);
+                parent.insertBefore(posts[0], lpp);
             }
             makeRefmap();
             initPopupsCache();

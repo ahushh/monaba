@@ -31,18 +31,22 @@
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right>
         <span .cpanel>
            $if isThread
-                $if not inThread
-                    [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
-           $if elem ManageThreadP permissions
-               [ #{postIp postVal} ]
-               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
-                   B
+             $if not inThread
+               [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
+             $if elem ManageThreadP permissions
+               [ 
                <a title=_{MsgStickThread} href=@{StickR board postLocalId'}>
                    S                
                <a title=_{MsgLockThread} href=@{LockR board postLocalId'}>
                    L
                <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
-                   A
+                   A 
+               ]
+           $if elem ManageBanP permissions
+             [ #{postIp postVal} 
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
+                 B 
+             ]
        $if showParent
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/

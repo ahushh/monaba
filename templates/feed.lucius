@@ -2,6 +2,10 @@
     display: none !important;
 }
 
+#go-back-block {
+   display: none;
+}
+
 .thread-parent {
     float: right;
     font-size: 0.8em

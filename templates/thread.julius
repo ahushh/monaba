@@ -51,7 +51,7 @@ function showQuickPostForm(postId) {
     insertAfter(pf, p);
     // p.parentNode.insertBefore( pf, p.nextSibling );
     pf.style.display = 'table';
-    document.getElementById("go-back-block").style.display = 'none';
+    // document.getElementById("go-back-block").style.display = 'none';
 } 
 
 function showPlainPostForm() {

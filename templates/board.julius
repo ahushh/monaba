@@ -82,7 +82,7 @@ function truncateThread(threadLocalId,scrollToThreadBottom) {
 
 function showQuickPostForm(postId) {
     var spf = document.getElementsByClassName('show-plain-form')[0];
-    spf.style.display = 'block';
+    if (spf) spf.style.display = 'block';
 
     var p = document.getElementById(postId);
     var postform = document.getElementById('post-form');

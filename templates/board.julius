@@ -57,7 +57,7 @@ function expandThread(board, threadLocalId) {
     });
 }
 
-function truncateThread(threadLocalId,scrollToThreadBottom) {
+function truncateThread(threadLocalId,board,scrollToThreadBottom) {
     var thread  = document.getElementById("thread-"+threadLocalId+"-"+board);
     var ajxl    = thread.querySelector(".omitted .ajax-loading");
     var omitted = thread.getElementsByClassName("omitted")[0];
@@ -74,10 +74,10 @@ function truncateThread(threadLocalId,scrollToThreadBottom) {
     for (var i = 0; i < oldReplies.length; i++) {
         thread.insertBefore(oldReplies[i], tta);
     }
-    // if (scrollToThreadBottom) {
-        // var n = $("#thread-"+thread+" .reply-post:last .post-header .reflink a").attr("name");
-        // location.href = "#"+n;
-    // }
+    if (scrollToThreadBottom) {
+        var ps = thread.querySelectorAll(".reply-post");
+        ps[ps.length-1].scrollIntoView();
+    }
 }
 
 function showQuickPostForm(postId) {

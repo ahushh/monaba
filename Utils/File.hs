@@ -87,6 +87,8 @@ saveFile :: FileInfo -> String -> Handler FilePath
 saveFile file hashsum = do
   let fn = sanitizeFileName $ unpack $ fileName file
   n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
+  dirExists'  <- liftIO $ doesDirectoryExist uploadDirectory
+  unless dirExists' $ liftIO $ createDirectory uploadDirectory
   dirExists  <- liftIO $ doesDirectoryExist (uploadDirectory </> show n)
   unless dirExists $ liftIO $ createDirectory (uploadDirectory </> show n)
   files <- liftIO $ getDirectoryContents (uploadDirectory </> show n)

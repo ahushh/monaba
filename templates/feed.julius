@@ -36,7 +36,7 @@ function refreshFeed() {
                 initPopupsCache();
                 refreshMathjax();
             } else {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDelay"));
             }
         }
     });
@@ -79,11 +79,11 @@ function showQuickPostForm(postId) {
                         var data = JSON.parse(request.responseText);
                         if (data.ok) {
                             clearPostFormFields();
-                            popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
+                            popupMessage(data.ok, getConfig("popupMessageDelay"));
                             closePostForm();
                             refreshFeed();
                         } else {
-                            popupMessage(data.error, Monaba.cnf.popupMessageDelay);
+                            popupMessage(data.error, getConfig("popupMessageDelay"));
                         }
                     }
                 });

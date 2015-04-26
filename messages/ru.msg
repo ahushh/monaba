@@ -309,3 +309,4 @@ TimeZone: Часовой пояс
 Style: Стиль
 Language: Язык
 FeedIgnoredBoards: /feed/ игнорируемые борды
+ResetDefaults: Сбросить

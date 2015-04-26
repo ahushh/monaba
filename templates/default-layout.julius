@@ -13,30 +13,81 @@ var Monaba = {
     expThreads: {},
     refMap: {},
     postCache: {},
-    cnf: {
-        mathjax: false,
-        animationSpeed: 300,
-        popupMessageDelay: 2000,
-        popupPostDelay: 500,
-        video: {
-            autoplay: true,
-            loop: true,
-            scaleWidth: 0,
-            scaleHeight: 2
-        },
-        youtube: {
-            enable: true,
-            loadTitles: false,
-            html5: true,
-            width: 360,
-            height: 270,
-        },
-        flash: {
-            height: 400,
-            width: 400
-        },
-    }
 };
+
+loadConfig();
+applyCSSSettings();
+
+function loadConfig() {
+    setConfigIfNull("mathjax", false);
+    setConfigIfNull("animationSpeed", 300);
+    setConfigIfNull("popupMessageDelay", 2000);
+    setConfigIfNull("popupPostDelay", 500);
+    setConfigIfNull("video_autoplay", true);
+    setConfigIfNull("video_loop", true);
+    setConfigIfNull("video_scaleWidth", 0);
+    setConfigIfNull("video_scaleHeight", 2);
+    setConfigIfNull("youtube_enable", true);
+    setConfigIfNull("youtube_loadTitles", false);
+    setConfigIfNull("youtube_html5", true);
+    setConfigIfNull("youtube_width", 360);
+    setConfigIfNull("youtube_height", 270);
+    setConfigIfNull("flash_height", 400);
+    setConfigIfNull("flash_width", 400);
+    setConfigIfNull("css_wide_posts", false);
+    setConfigIfNull("css_side_margin", 0);
+    setConfigIfNull("css_hide_files_names", false);
+    setConfigIfNull("css_hide_files_info", false);
+}
+
+function resetConfig() {
+    setConfig("mathjax", false);
+    setConfig("animationSpeed", 300);
+    setConfig("popupMessageDelay", 2000);
+    setConfig("popupPostDelay", 500);
+    setConfig("video_autoplay", true);
+    setConfig("video_loop", true);
+    setConfig("video_scaleWidth", 0);
+    setConfig("video_scaleHeight", 2);
+    setConfig("youtube_enable", true);
+    setConfig("youtube_loadTitles", false);
+    setConfig("youtube_html5", true);
+    setConfig("youtube_width", 360);
+    setConfig("youtube_height", 270);
+    setConfig("flash_height", 400);
+    setConfig("flash_width", 400);
+    setConfig("css_wide_posts", false);
+    setConfig("css_side_margin", 0);
+    setConfig("css_hide_files_names", false);
+    setConfig("css_hide_files_info", false);
+}
+
+function applyCSSSettings() {
+    var style = document.createElement("style");
+    document.head.appendChild(style);
+    var index = 0;
+    var side_margin = getConfig("css_side_margin");
+    if (side_margin) {
+        var width = 100 - side_margin*2;
+        style.sheet.insertRule(".container { width: "+width+"%; margin: auto; }", index);
+        index++;
+    }
+    var wide_posts = getConfig("css_wide_posts");
+    if (wide_posts) {
+        style.sheet.insertRule(".reply-post, .feed .op-post { display: block; }", index);
+        index++;
+    }
+    var hide_files_names = getConfig("css_hide_files_names");
+    if (hide_files_names) {
+        style.sheet.insertRule(".file-name { display: none; }", index);
+        index++;
+    }
+    var hide_files_info = getConfig("css_hide_files_info");
+    if (hide_files_info) {
+        style.sheet.insertRule(".file-info { display: none; }", index);
+        index++;
+    }
+}
 
 function initAllPosts() {
     initImageExpanding();
@@ -56,7 +107,7 @@ function initOnePost(post) {
 }
 
 function initMathjax() {
-    if (!Monaba.cnf.mathjax)
+    if (!getConfig("mathjax"))
         return;
     var head = document.getElementsByTagName('head')[0];        
     var script = document.createElement('script');
@@ -80,7 +131,7 @@ function initMathjax() {
 }
 
 function refreshMathjax() {
-    if (Monaba.cnf.mathjax)
+    if (getConfig("mathjax"))
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 }
 
@@ -89,8 +140,8 @@ function initFlashByClick(post) {
         el.onclick = function() {
             var obj   = document.createElement("object");
             var embed = document.createElement("embed");
-            embed.height = Monaba.cnf.flash.height;
-            embed.width = Monaba.cnf.flash.width;
+            embed.height = getConfig("flash_height");
+            embed.width = getConfig("flash_width");
             embed.type = "application/x-shockwave-flash";
             embed.wmode = "transparent";
             embed.style.display='block';
@@ -366,17 +417,17 @@ function initCodeButton(formId,plaintext) {
         cm.style.opacity = 0;
         cm.style.top = e.pageY-3+"px";
         cm.style.left = e.pageX-3+"px";
-        fadeIn(cm,Monaba.cnf.animationSpeed);
+        fadeIn(cm,getConfig("animationSpeed"));
     };
 
-    cm.onmouseleave = function() { fadeOut(cm,Monaba.cnf.animationSpeed, function(){ cm.style.display='none' }); };
+    cm.onmouseleave = function() { fadeOut(cm,getConfig("animationSpeed"), function(){ cm.style.display='none' }); };
     cm_select.onchange = function() {
         var lang = this.value.toString();
         if (lang && lang != '') {
             insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
             countSymbols(formId);
         }
-        fadeOut(cm,Monaba.cnf.animationSpeed, function(){ cm.style.display='none' });
+        fadeOut(cm,getConfig("animationSpeed"), function(){ cm.style.display='none' });
     };
 }
 //-----------------------------------------------------------------
@@ -540,11 +591,11 @@ function showEditForm(postId) {
                             makeRefmap();
                             initPopupsCache();
                             refreshMathjax();
-                            popupMessage(response.ok, Monaba.cnf.popupMessageDelay);
+                            popupMessage(response.ok, getConfig("popupMessageDelay"));
                         }
                     });
                 } else {
-                    popupMessage(response.error, Monaba.cnf.popupMessageDelay);
+                    popupMessage(response.error, getConfig("popupMessageDelay"));
                 }
             }
         });
@@ -583,14 +634,14 @@ function addVideoPlayer(post) {
         thumb.onclick = function(){
             var video = document.createElement("video");
             video.controls = true;
-            if (Monaba.cnf.video.autoplay)
+            if (getConfig("video_autoplay"))
                 video.autoplay = 'autoplay';
-            if (Monaba.cnf.video.loop)
+            if (getConfig("video_loop"))
                 video.loop = 'loop';
-            if (Monaba.cnf.video.scaleWidth && Monaba.cnf.video.scaleWidth > 0)
-                video.width = thumb.width*Monaba.cnf.video.scaleWidth;
-            if (Monaba.cnf.video.scaleHeight && Monaba.cnf.video.scaleHeight > 0)
-                video.width = thumb.width*Monaba.cnf.video.scaleHeight;
+            if (getConfig("video_scaleWidth") > 0)
+                video.width = thumb.width*getConfig("video_scaleWidth")
+            if (getConfig("video_scaleHeight") > 0)
+                video.width = thumb.width*getConfig("video_scaleHeight")
             var source = document.createElement("source");
             source.src = thumb.dataset.url;
             thumb.style.display = 'none';
@@ -614,7 +665,7 @@ function initUrlVideoPlayer(selector) {
 }
 
 function addUrlVideoPlayer(post) {
-    if (!Monaba.cnf.youtube.enable) return;
+    if (!getConfig("youtube_enable")) return;
     var postId = post.id;
     var first = true;
     var links = post.querySelectorAll(".message a");
@@ -634,9 +685,9 @@ function addUrlVideoPlayer(post) {
             first1 = true;
         }
         var handle = function(data){
-            var width  = Monaba.cnf.youtube.width || data.entry.media$group.media$thumbnail[2].width;
-            var height = Monaba.cnf.youtube.height || data.entry.media$group.media$thumbnail[2].height;
-            var title  = Monaba.cnf.youtube.loadTitles && data ? data.entry.title.$t : url;
+            var width  = getConfig("youtube_width") || data.entry.media$group.media$thumbnail[2].width;
+            var height = getConfig("youtube_height") || data.entry.media$group.media$thumbnail[2].height;
+            var title  = getConfig("youtube_loadTitles") && data ? data.entry.title.$t : url;
             var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
             var iframe =  document.createElement("iframe");
             iframe.width = width;
@@ -645,7 +696,7 @@ function addUrlVideoPlayer(post) {
             link.innerHTML = "<i class='fa fa-youtube-play'></i>"+title;
             var loadIframe = function () {
                 iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" +
-                    (Monaba.cnf.youtube.html5 ? "&html5=1" : "");
+                    (getConfig("youtube_html5") ? "&html5=1" : "");
                 addClass(iframe, "loaded");
             };
             iframe.style.display = 'none';
@@ -691,7 +742,7 @@ function addUrlVideoPlayer(post) {
             };
 
         };
-        if (Monaba.cnf.loadTitles || !Monaba.cnf.youtube.height || !Monaba.cnf.youtube.height) {
+        if (getConfig("loadTitles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
             request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
             request.onload = function() { handle( JSON.parse(request.responseText) ) };
@@ -782,23 +833,23 @@ function popupMessage(text, delay, loadingIcon, close) {
         var l = document.createElement("a");
         l.innerHTML = "✖ ";
         l.onclick = function() {
-            fadeOut(msg,Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg); });
+            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg); });
         };
         cpm.appendChild(l);
         msg.appendChild(cpm);
     }
     container.appendChild(msg);
-    fadeIn(msg, Monaba.cnf.animationSpeed);
+    fadeIn(msg, getConfig("animationSpeed"));
     if (delay) {
         var t = setTimeout(function(){
-            fadeOut(msg,Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg); } );
+            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg); } );
         }, delay);
     }
     return msg;
 }
 
 function closePopupMessage(msg) {
-    fadeOut(msg, Monaba.cnf.animationSpeed, function(){ msg.parentNode.removeChild(msg) });
+    fadeOut(msg, getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg) });
 }
 // //-----------------------------------------------------------------
 // function expandPost(postId) {
@@ -953,7 +1004,7 @@ function showPopupPost(element, event, postId, localId, board) {
                     displayPopupPost(event, post);
                 }
             });
-        }, Monaba.cnf.popupPostDelay);
+        }, getConfig("popupPostDelay"));
         element.onmouseleave = function() { clearTimeout(t) };
     } else {
         var postInViewPort = document.getElementById("p"+postId);
@@ -962,7 +1013,7 @@ function showPopupPost(element, event, postId, localId, board) {
             element.onmouseleave = removePostHighlight;
         } else {
             var post = Monaba.postCache[postId];
-            var t = setTimeout(function(){ displayPopupPost(event, post); }, Monaba.cnf.popupPostDelay);
+            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popupPostDelay"));
             element.onmouseleave = function() { clearTimeout(t) };
         }
     }
@@ -1011,9 +1062,9 @@ function refreshThread(board, threadLocalId) {
                 initPopupsCache();
                 refreshMathjax();
             } else if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, Monaba.cnf.popupMessageDelay);
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popupMessageDelay"));
             } else if (data == "No new posts ") {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, Monaba.cnf.popupMessageDelay);
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDelay"));
             }
         }
     });
@@ -1086,6 +1137,19 @@ function setItem(k,v) {
         set_cookie(k, JSON.stringify(v)) :
         localStorage.setItem(k, JSON.stringify(v));
     return true;
+}
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
+function getConfig(k) {
+    return getItem("cnf_"+k);
+}
+function setConfig(k,v) {
+    return setItem("cnf_"+k,v);
+}
+function setConfigIfNull(k,v) {
+    var a = getConfig(k);
+    if (a == null) return setConfig(k,v);
 }
 // ---------------------------------------------------------
 // Misc

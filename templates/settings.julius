@@ -1,14 +1,63 @@
-// $('#settings-form').ajaxForm({
-//     success: function(data) {
-//         if (data.ok) {
-//             $('#settings-applied').html(data.ok);
-//             $('#settings-applied').fadeIn(1000).fadeOut(1000);
-//         } else {
-//             $('#settings-applied').html(data.error);
-//             $('#settings-applied').fadeIn(1000).fadeOut(1000);
-//         }
-//     }
-// }); 
+document.addEventListener("DOMContentLoaded", function(event) {
+    var sf    = document.getElementById("settings-form-container");
+    var jsf   = document.createElement("div");
+    var table = document.createElement("table");
+    var tbody = document.createElement("tbody");
+    sf.appendChild(jsf);
+    jsf.appendChild(table);
+    table.appendChild(tbody);
+
+    var opts = [["checkbox", "mathjax"],
+                ["number", "animationSpeed"],
+                ["number", "popupMessageDelay"],
+                ["number", "popupPostDelay"],
+                ["checkbox", "video_autoplay"],
+                ["checkbox", "video_loop"],
+                ["number","video_scaleWidth"],
+                ["number","video_scaleHeight"],
+                ["checkbox", "youtube_enable"],
+                ["checkbox", "youtube_loadTitles"],
+                ["checkbox", "youtube_html5"],
+                ["number", "youtube_width"],
+                ["number", "youtube_height"],
+                ["number","flash_width"],
+                ["number", "flash_height"],
+                ["checkbox", "css_wide_posts"],
+                ["number", "css_side_margin"],
+                ["checkbox", "css_hide_files_names"],
+                ["checkbox", "css_hide_files_info"],
+               ];
+    Array.prototype.forEach.call(opts, function(x, i) {
+        var tr  = document.createElement("tr");
+        var td1 = document.createElement("td");
+        var td2 = document.createElement("td");
+        var input = document.createElement("input");
+        var opt = "cnf_"+x[1];
+        var type = x[0];
+        td1.innerHTML = x[1];
+        var e = function() { setItem(opt, type == "checkbox" ? this.checked : this.value) };
+        input.oninput = e; input.onchange = e;
+        input.type = type;
+        if (type == "checkbox")
+            input.checked = getItem(opt);
+        else
+            input.value = getItem(opt);
+        td2.appendChild(input);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tbody.appendChild(tr);
+    });
+    var tr  = document.createElement("tr");
+    var input = document.createElement("input");
+    input.type = 'submit';
+    input.value = #{toJSON $ msgrender MsgResetDefaults};
+    input.onclick = function() { resetConfig() };
+    var td1 = document.createElement("td");
+    td1.appendChild(input);
+    tr.appendChild(td1);
+    tbody.appendChild(tr);
+});
+
 
 function showThread(threadLocalId, board) {
     httpRequest({

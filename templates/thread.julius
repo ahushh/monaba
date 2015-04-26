@@ -28,14 +28,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 var data = JSON.parse(request.responseText);
                 if (data.ok) {
                     clearPostFormFields();
-                    popupMessage(data.ok, Monaba.cnf.popupMessageDelay);
+                    popupMessage(data.ok, getConfig("popupMessageDelay"));
                     closePostForm();
                     var thread   = document.getElementsByClassName("thread")[0];
                     var threadId = /thread-(\d+)/.exec( thread.id )[1];
                     var board    = thread.dataset.board;
                     refreshThread(board, threadId);
                 } else {
-                    popupMessage(data.error, Monaba.cnf.popupMessageDelay);
+                    popupMessage(data.error, getConfig("popupMessageDelay"));
                 }
             }
         });

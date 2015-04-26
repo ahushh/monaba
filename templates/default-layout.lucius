@@ -177,8 +177,11 @@ hr {
 }
 
 .popupMessage {
-   width: auto;
-   margin: 5px 0;
+   /* display: inline-block;     */
+   float: right;
+   clear: both;
+   text-align: right;
+   margin: 3px 0;
    word-wrap: break-word;
    padding: 10px 10px;
 }

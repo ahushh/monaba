@@ -813,6 +813,9 @@ function popupMessage(text, delay, loadingIcon, close) {
         document.body.appendChild(container);
     }
 
+    var wrap = document.createElement("div");
+    wrap.className = 'popupMessageWrap';
+
     var msg = document.createElement("div");
     msg.className = 'popupMessage';
 
@@ -833,19 +836,20 @@ function popupMessage(text, delay, loadingIcon, close) {
         var l = document.createElement("a");
         l.innerHTML = "✖ ";
         l.onclick = function() {
-            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg); });
+            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.parentNode.removeChild(wrap); });
         };
         cpm.appendChild(l);
         msg.appendChild(cpm);
     }
-    container.appendChild(msg);
+    wrap.appendChild(msg);
+    container.appendChild(wrap);
     fadeIn(msg, getConfig("animationSpeed"));
     if (delay) {
         var t = setTimeout(function(){
-            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg); } );
+            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.parentNode.removeChild(wrap); } );
         }, delay);
     }
-    return msg;
+    return wrap;
 }
 
 function closePopupMessage(msg) {

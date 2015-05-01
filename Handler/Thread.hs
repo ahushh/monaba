@@ -130,6 +130,7 @@ postThreadR board thread = do
             newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = thread
+                           , postParentTitle  = postTitle $ entityVal $ fromJust $ maybeParent
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title

@@ -137,6 +137,7 @@ postBoardR board _ = do
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
+                           , postParentTitle  = ""
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
                            , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title

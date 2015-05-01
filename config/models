@@ -49,6 +49,7 @@ Post json
     board        Text
     localId      Int
     parent       Int
+    parentTitle  Text default=''
     owner        Text Maybe
     date         UTCTime
     bumped       UTCTime Maybe

@@ -19,7 +19,7 @@ loadConfig();
 applyCSSSettings();
 
 function loadConfig() {
-    setConfigIfNull("mathjax", false);
+    setConfigIfNull("mathjax", true);
     setConfigIfNull("animationSpeed", 300);
     setConfigIfNull("popupMessageDelay", 2000);
     setConfigIfNull("popupPostDelay", 500);
@@ -29,7 +29,7 @@ function loadConfig() {
     setConfigIfNull("video_scaleHeight", 2);
     setConfigIfNull("vimeo_enable", true);
     setConfigIfNull("youtube_enable", true);
-    setConfigIfNull("youtube_loadTitles", false);
+    setConfigIfNull("youtube_loadTitles", true);
     setConfigIfNull("youtube_html5", true);
     setConfigIfNull("url_video_width", 360);
     setConfigIfNull("url_video_height", 270);
@@ -42,7 +42,7 @@ function loadConfig() {
 }
 
 function resetConfig() {
-    setConfig("mathjax", false);
+    setConfig("mathjax", true);
     setConfig("animationSpeed", 300);
     setConfig("popupMessageDelay", 2000);
     setConfig("popupPostDelay", 500);
@@ -52,7 +52,7 @@ function resetConfig() {
     setConfig("video_scaleHeight", 2);
     setConfig("vimeo_enable", true);
     setConfig("youtube_enable", true);
-    setConfig("youtube_loadTitles", false);
+    setConfig("youtube_loadTitles", true);
     setConfig("youtube_html5", true);
     setConfig("url_video_width", 360);
     setConfig("url_video_height", 270);

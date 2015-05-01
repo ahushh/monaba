@@ -103,7 +103,8 @@ function initAllPosts() {
 function initOnePost(post) {
     expandImage(post);
     addVideoPlayer(post);
-    addUrlVideoPlayer(post);
+    addYoutubeVideoPlayer(post);
+    addVimeoVideoPlayer(post);
     initAudioPlayer(post);
     initFlashByClick(post);
 }

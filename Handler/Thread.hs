@@ -155,7 +155,9 @@ postThreadR board thread = do
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
         unless ((fromMaybe False nobump) || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         -------------------------------------------------------------------------------------------------------
-        when (isJust name) $ setSession "name" (fromMaybe defaultName name)
+        case name of
+          Just name' -> setSession "name" name'
+          Nothing    -> deleteSession "name"
         -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"

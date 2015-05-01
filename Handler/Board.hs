@@ -162,7 +162,9 @@ postBoardR board _ = do
           in when (tl >= 0) $
                flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy tl])
         -------------------------------------------------------------------------------------------------------
-        when (isJust name) $ setSession "name" (fromMaybe defaultName name) 
+        case name of
+          Just name' -> setSession "name" name'
+          Nothing    -> deleteSession "name"
         deleteSession "message"
         deleteSession "post-title"
         case goback of

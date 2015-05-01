@@ -742,7 +742,7 @@ function addUrlVideoPlayer(post) {
             };
 
         };
-        if (getConfig("loadTitles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
+        if (getConfig("youtube_loadTitles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
             request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
             request.onload = function() { handle( JSON.parse(request.responseText) ) };

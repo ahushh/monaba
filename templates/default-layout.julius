@@ -718,9 +718,9 @@ function addYoutubeVideoPlayer(post) {
                 addClass(link,"focused");
                 vt.onclick = function() {
                     vt.style.display = 'none';
+                    loadIframe();
                     iframe.style.display = 'inline-block';
                 };
-                loadIframe();
             } else {
                 link.insertBefore(iframe, link.firstChild);
             }
@@ -743,7 +743,6 @@ function addYoutubeVideoPlayer(post) {
                 videoContainer.insertBefore(iframe, videoContainer.firstChild);
                 addClass(link, "focused");
                 iframe.style.display = 'inline-block';
-                return false;
                 event.preventDefault();
             };
 
@@ -809,9 +808,9 @@ function addVimeoVideoPlayer(post) {
                 addClass(link,"focused");
                 vt.onclick = function() {
                     vt.style.display = 'none';
+                    loadIframe();
                     iframe.style.display = 'inline-block';
                 };
-                loadIframe();
             } else {
                 link.insertBefore(iframe, link.firstChild);
             }
@@ -834,7 +833,6 @@ function addVimeoVideoPlayer(post) {
                 videoContainer.insertBefore(iframe, videoContainer.firstChild);
                 addClass(link, "focused");
                 iframe.style.display = 'inline-block';
-                return false;
                 event.preventDefault();
             };
 

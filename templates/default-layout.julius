@@ -27,11 +27,12 @@ function loadConfig() {
     setConfigIfNull("video_loop", true);
     setConfigIfNull("video_scaleWidth", 0);
     setConfigIfNull("video_scaleHeight", 2);
+    setConfigIfNull("vimeo_enable", true);
     setConfigIfNull("youtube_enable", true);
     setConfigIfNull("youtube_loadTitles", false);
     setConfigIfNull("youtube_html5", true);
-    setConfigIfNull("youtube_width", 360);
-    setConfigIfNull("youtube_height", 270);
+    setConfigIfNull("url_video_width", 360);
+    setConfigIfNull("url_video_height", 270);
     setConfigIfNull("flash_height", 400);
     setConfigIfNull("flash_width", 400);
     setConfigIfNull("css_wide_posts", false);
@@ -49,11 +50,12 @@ function resetConfig() {
     setConfig("video_loop", true);
     setConfig("video_scaleWidth", 0);
     setConfig("video_scaleHeight", 2);
+    setConfig("vimeo_enable", true);
     setConfig("youtube_enable", true);
     setConfig("youtube_loadTitles", false);
     setConfig("youtube_html5", true);
-    setConfig("youtube_width", 360);
-    setConfig("youtube_height", 270);
+    setConfig("url_video_width", 360);
+    setConfig("url_video_height", 270);
     setConfig("flash_height", 400);
     setConfig("flash_width", 400);
     setConfig("css_wide_posts", false);
@@ -657,14 +659,17 @@ function initVideoPlayer(selector) {
 }
 
 //-----------------------------------------------------------------
-// youtube
+// youtube, vimeo
 //-----------------------------------------------------------------
 function initUrlVideoPlayer(selector) {
     var posts = document.querySelectorAll(selector ? selector : ".reply-post, .op-post");
-    Array.prototype.forEach.call(posts, addUrlVideoPlayer);
+    Array.prototype.forEach.call(posts, function(post) {
+        addYoutubeVideoPlayer(post);
+        addVimeoVideoPlayer(post);
+    });
 }
 
-function addUrlVideoPlayer(post) {
+function addYoutubeVideoPlayer(post) {
     if (!getConfig("youtube_enable")) return;
     var postId = post.id;
     var first = true;
@@ -685,8 +690,8 @@ function addUrlVideoPlayer(post) {
             first1 = true;
         }
         var handle = function(data){
-            var width  = getConfig("youtube_width") || data.entry.media$group.media$thumbnail[2].width;
-            var height = getConfig("youtube_height") || data.entry.media$group.media$thumbnail[2].height;
+            var width  = getConfig("url_video_width") || data.entry.media$group.media$thumbnail[2].width;
+            var height = getConfig("url_video_height") || data.entry.media$group.media$thumbnail[2].height;
             var title  = getConfig("youtube_loadTitles") && data ? data.entry.title.$t : url;
             var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
             var iframe =  document.createElement("iframe");
@@ -755,6 +760,94 @@ function addUrlVideoPlayer(post) {
         }
     });
 }
+
+function addVimeoVideoPlayer(post) {
+    if (!getConfig("vimeo_enable")) return;
+    var postId = post.id;
+    var first = true;
+    var links = post.querySelectorAll(".message a");
+    var msg    = post.querySelector(".message");
+    Array.prototype.forEach.call(links, function(link) {
+        var regex = /https?:\/\/(?:www\.)?vimeo.com\/(\d+)/;
+        var result = regex.exec(link.text);
+        if (!result) return true;
+        var videoId = result[1];
+        var url     = link.text;
+        var first1 = false;
+        if (first) {
+            var d = document.createElement("div");
+            d.className = "video-container";
+            msg.insertBefore(d, msg.firstChild);
+            first = false;
+            first1 = true;
+        }
+        var handle = function(data){
+            var thumb = data[0].thumbnail_medium;
+            var width  = getConfig("url_video_width");
+            var height = getConfig("url_video_height");
+            var title = data[0].title;
+            var iframe =  document.createElement("iframe");
+            iframe.width = width;
+            iframe.height = height;
+            link.className = 'video-link';
+            link.innerHTML = "<i class='fa fa-vimeo-square'></i>"+title;
+            var loadIframe = function () {
+                iframe.src = "https://player.vimeo.com/video/" + videoId;
+                addClass(iframe, "loaded");
+            };
+            iframe.style.display = 'none';
+            if (first1) {
+                var vc = post.querySelector(".video-container");
+                var vt = document.createElement("img");
+                vt.className = 'video-thumb';
+                vt.width = width;
+                vt.height = height;
+                vt.src = thumb;
+                vc.insertBefore(vt, vc.firstChild);
+                vc.insertBefore(iframe, vc.firstChild);
+                addClass(link,"focused");
+                vt.onclick = function() {
+                    vt.style.display = 'none';
+                    iframe.style.display = 'inline-block';
+                };
+                loadIframe();
+            } else {
+                link.insertBefore(iframe, link.firstChild);
+            }
+
+            link.onclick = function(event) {
+                var iframe = link.getElementsByTagName('iframe')[0];
+                if (/focused/.test(link.className))
+                    return false;
+                if (! /loaded/.test(iframe.className) )
+                    loadIframe();
+                
+                var videoContainer = post.getElementsByClassName("video-container")[0];
+                var currentIframe  = videoContainer.getElementsByTagName("iframe")[0];
+                var videoThumb     = videoContainer.getElementsByClassName("video-thumb")[0];
+                var focusedLink    = post.getElementsByClassName("focused")[0];
+                focusedLink.insertBefore(currentIframe, focusedLink.firstChild);
+                currentIframe.style.display = 'none';
+                videoThumb.style.display = 'none';
+                removeClass(focusedLink,"focused");
+                videoContainer.insertBefore(iframe, videoContainer.firstChild);
+                addClass(link, "focused");
+                iframe.style.display = 'inline-block';
+                return false;
+                event.preventDefault();
+            };
+
+        };
+        var request = new XMLHttpRequest({mozSystem: true});
+        request.open("GET","http://vimeo.com/api/v2/video/"+videoId+".json",true);
+        request.onload = function() { handle( JSON.parse(request.responseText) ) };
+        request.onerror = function() {
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
+        };
+        request.send();
+    });
+}
+
 //-----------------------------------------------------------------
 // Images
 //-----------------------------------------------------------------

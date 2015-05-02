@@ -329,6 +329,7 @@ function insertTag(open, close, parentId) {
     var len = textarea.value.length; 
     var txt = open + textarea.value.substring(start, end) + close; 
     textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
+    textarea.focus();
     // $(textarea).trigger('autosize.resize');
 } 
 

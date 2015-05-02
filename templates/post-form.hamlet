@@ -36,7 +36,7 @@
        <a onclick="insertTag('[latex]','[/latex]','post-form');countSymbols('post-form')">
           _{MsgMarkupLatex}
        &nbsp;
-       <a .quote onclick="insertQuote('post-form');countSymbols('post-form')">
+       <a .quote onmousedown="insertQuote('post-form');countSymbols('post-form')">
           _{MsgMarkupQuote}
        &nbsp;
        <span style=display:inline .symbol-counter>

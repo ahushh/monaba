@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     var opts = [["checkbox", "mathjax"],
                 ["number", "animationSpeed"],
-                ["number", "popupMessageDelay"],
-                ["number", "popupPostDelay"],
+                ["number", "popupMessageDisplayTime"],
+                ["number", "popupPostDelayBeforeDisplaying"],
+                ["checkbox", "popupPostRemovingOnMouseOut"],
+                ["number", "popupPostDelayBeforeRemoving"],
                 ["checkbox", "video_autoplay"],
                 ["checkbox", "video_loop"],
                 ["number","video_scaleWidth"],

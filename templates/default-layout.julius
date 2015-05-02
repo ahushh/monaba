@@ -13,6 +13,7 @@ var Monaba = {
     expThreads: {},
     refMap: {},
     postCache: {},
+    removePopupPostTimer: {},
 };
 
 loadConfig();
@@ -21,8 +22,10 @@ applyCSSSettings();
 function loadConfig() {
     setConfigIfNull("mathjax", true);
     setConfigIfNull("animationSpeed", 300);
-    setConfigIfNull("popupMessageDelay", 2000);
-    setConfigIfNull("popupPostDelay", 500);
+    setConfigIfNull("popupMessageDisplayTime", 2000);
+    setConfigIfNull("popupPostDelayBeforeDisplaying", 500);
+    setConfigIfNull("popupPostRemovingOnMouseOut", false);
+    setConfigIfNull("popupPostDelayBeforeRemoving", 500);
     setConfigIfNull("video_autoplay", true);
     setConfigIfNull("video_loop", true);
     setConfigIfNull("video_scaleWidth", 0);
@@ -44,8 +47,10 @@ function loadConfig() {
 function resetConfig() {
     setConfig("mathjax", true);
     setConfig("animationSpeed", 300);
-    setConfig("popupMessageDelay", 2000);
-    setConfig("popupPostDelay", 500);
+    setConfig("popupMessageDisplayTime", 2000);
+    setConfig("popupPostDelayBeforeDisplaying", 500);
+    setConfig("popupPostRemovingOnMouseOut", false);
+    setConfig("popupPostDelayBeforeRemoving", 500);
     setConfig("video_autoplay", true);
     setConfig("video_loop", true);
     setConfig("video_scaleWidth", 0);
@@ -595,11 +600,11 @@ function showEditForm(postId) {
                             makeRefmap();
                             initPopupsCache();
                             refreshMathjax();
-                            popupMessage(response.ok, getConfig("popupMessageDelay"));
+                            popupMessage(response.ok, getConfig("popupMessageDisplayTime"));
                         }
                     });
                 } else {
-                    popupMessage(response.error, getConfig("popupMessageDelay"));
+                    popupMessage(response.error, getConfig("popupMessageDisplayTime"));
                 }
             }
         });
@@ -1050,13 +1055,19 @@ function cachePopupPost(el) {
 
     post.className = 'popup-post';
     post.id = 'popup-'+postId;
-    var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
-    var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
-    var closePopups = closeAllPopup+" "+closeOnePopup;
-    var span = document.createElement('span');
-    span.className = 'close-popup-container';
-    span.innerHTML = closePopups;
-    post.appendChild(span);
+    if ( getConfig('popupPostRemovingOnMouseOut') ) {
+        post.onmouseleave = function() { Monaba.removePopupPostTimer = setTimeout(closePopupPost, getConfig("popupPostDelayBeforeRemoving")); };
+        post.onmouseenter = function() { clearTimeout(Monaba.removePopupPostTimer) };
+    } else {
+        var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
+        var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
+        var closePopups = closeAllPopup+" "+closeOnePopup;
+        var span = document.createElement('span');
+        span.className = 'close-popup-container';
+        span.innerHTML = closePopups;
+        post.appendChild(span);
+    }
+
     post.onclick = function() { post.style['z-index'] = Monaba.zindex + 1; Monaba.zindex += 1; };
     Monaba.postCache[postId] = post;
     return post;
@@ -1068,6 +1079,7 @@ function initPopupsCache(selector) {
 }
 
 function displayPopupPost(event, post) {
+    clearTimeout(Monaba.removePopupPostTimer);
     document.body.appendChild(post);
     post.style["z-index"] = -999999; // offsetHeight and offsetWidth won't work otherwise
 
@@ -1076,16 +1088,16 @@ function displayPopupPost(event, post) {
     var pHeight = + post.offsetHeight;
     var pWidth  = + post.offsetWidth;
 
-    var cursorY = + event.pageY;
-    var cursorX = + event.pageX;
+    var cursorY = + event.pageY - 15;
+    var cursorX = + event.pageX - 10;
     var diffH   = + window.scrollY;
     post.style.left = cursorX + "px";
     post.style.top  = cursorY + "px";
     if (cursorY + pHeight > wHeight + diffH) {
-        post.style.top = (cursorY - pHeight) + "px";
+        post.style.top = (cursorY - pHeight + 25) + "px";
     }
     if ((cursorX + pWidth) > wWidth) {
-        post.style.left = (cursorX - pWidth) + "px";
+        post.style.left = (cursorX - pWidth + 10) + "px";
     }
     post.style["z-index"] = Monaba.zindex;
 }
@@ -1101,7 +1113,7 @@ function showPopupPost(element, event, postId, localId, board) {
                     displayPopupPost(event, post);
                 }
             });
-        }, getConfig("popupPostDelay"));
+        }, getConfig("popupPostDelayBeforeDisplaying"));
         element.onmouseleave = function() { clearTimeout(t) };
     } else {
         var postInViewPort = document.getElementById("p"+postId);
@@ -1110,7 +1122,7 @@ function showPopupPost(element, event, postId, localId, board) {
             element.onmouseleave = removePostHighlight;
         } else {
             var post = Monaba.postCache[postId];
-            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popupPostDelay"));
+            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popupPostDelayBeforeDisplaying"));
             element.onmouseleave = function() { clearTimeout(t) };
         }
     }
@@ -1159,9 +1171,9 @@ function refreshThread(board, threadLocalId) {
                 initPopupsCache();
                 refreshMathjax();
             } else if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popupMessageDelay"));
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popupMessageDisplayTime"));
             } else if (data == "No new posts ") {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDelay"));
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDisplayTime"));
             }
         }
     });

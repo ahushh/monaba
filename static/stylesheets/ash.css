@@ -6,6 +6,7 @@
 
 html, body {
    background-color: #E0E0E0;
+   background-image: url("/static/img/dust.jpg");
    color: #333333;
    font-family: serif;
    font-size: 1em;

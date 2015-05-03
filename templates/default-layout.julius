@@ -21,18 +21,18 @@ applyCSSSettings();
 
 function loadConfig() {
     setConfigIfNull("mathjax", true);
-    setConfigIfNull("animationSpeed", 300);
-    setConfigIfNull("popupMessageDisplayTime", 2000);
-    setConfigIfNull("popupPostDelayBeforeDisplaying", 500);
-    setConfigIfNull("popupPostRemovingOnMouseOut", false);
-    setConfigIfNull("popupPostDelayBeforeRemoving", 500);
+    setConfigIfNull("animation_speed", 300);
+    setConfigIfNull("popup_message_display_time", 2000);
+    setConfigIfNull("popup_post_delay_before_posting", 500);
+    setConfigIfNull("popup_post_removing_on_mouse_out", false);
+    setConfigIfNull("popup_post_delay_before_removing", 500);
     setConfigIfNull("video_autoplay", true);
     setConfigIfNull("video_loop", true);
-    setConfigIfNull("video_scaleWidth", 0);
-    setConfigIfNull("video_scaleHeight", 2);
+    setConfigIfNull("video_scale_width", 0);
+    setConfigIfNull("video_scale_height", 2);
     setConfigIfNull("vimeo_enable", true);
     setConfigIfNull("youtube_enable", true);
-    setConfigIfNull("youtube_loadTitles", true);
+    setConfigIfNull("youtube_load_titles", true);
     setConfigIfNull("youtube_html5", true);
     setConfigIfNull("url_video_width", 360);
     setConfigIfNull("url_video_height", 270);
@@ -46,18 +46,18 @@ function loadConfig() {
 
 function resetConfig() {
     setConfig("mathjax", true);
-    setConfig("animationSpeed", 300);
-    setConfig("popupMessageDisplayTime", 2000);
-    setConfig("popupPostDelayBeforeDisplaying", 500);
-    setConfig("popupPostRemovingOnMouseOut", false);
-    setConfig("popupPostDelayBeforeRemoving", 500);
+    setConfig("animation_speed", 300);
+    setConfig("popup_message_display_time", 2000);
+    setConfig("popup_post_delay_before_posting", 500);
+    setConfig("popup_post_removing_on_mouse_out", false);
+    setConfig("popup_post_delay_before_removing", 500);
     setConfig("video_autoplay", true);
     setConfig("video_loop", true);
-    setConfig("video_scaleWidth", 0);
-    setConfig("video_scaleHeight", 2);
+    setConfig("video_scale_width", 0);
+    setConfig("video_scale_height", 2);
     setConfig("vimeo_enable", true);
     setConfig("youtube_enable", true);
-    setConfig("youtube_loadTitles", true);
+    setConfig("youtube_load_titles", true);
     setConfig("youtube_html5", true);
     setConfig("url_video_width", 360);
     setConfig("url_video_height", 270);
@@ -426,17 +426,17 @@ function initCodeButton(formId,plaintext) {
         cm.style.opacity = 0;
         cm.style.top = e.pageY-3+"px";
         cm.style.left = e.pageX-3+"px";
-        fadeIn(cm,getConfig("animationSpeed"));
+        fadeIn(cm,getConfig("animation_speed"));
     };
 
-    cm.onmouseleave = function() { fadeOut(cm,getConfig("animationSpeed"), function(){ cm.style.display='none' }); };
+    cm.onmouseleave = function() { fadeOut(cm,getConfig("animation_speed"), function(){ cm.style.display='none' }); };
     cm_select.onchange = function() {
         var lang = this.value.toString();
         if (lang && lang != '') {
             insertTag('[code='+lang.split(',')[0]+']','[/code]',formId);
             countSymbols(formId);
         }
-        fadeOut(cm,getConfig("animationSpeed"), function(){ cm.style.display='none' });
+        fadeOut(cm,getConfig("animation_speed"), function(){ cm.style.display='none' });
     };
 }
 //-----------------------------------------------------------------
@@ -600,11 +600,11 @@ function showEditForm(postId) {
                             makeRefmap();
                             initPopupsCache();
                             refreshMathjax();
-                            popupMessage(response.ok, getConfig("popupMessageDisplayTime"));
+                            popupMessage(response.ok, getConfig("popup_message_display_time"));
                         }
                     });
                 } else {
-                    popupMessage(response.error, getConfig("popupMessageDisplayTime"));
+                    popupMessage(response.error, getConfig("popup_message_display_time"));
                 }
             }
         });
@@ -647,10 +647,10 @@ function addVideoPlayer(post) {
                 video.autoplay = 'autoplay';
             if (getConfig("video_loop"))
                 video.loop = 'loop';
-            if (getConfig("video_scaleWidth") > 0)
-                video.width = thumb.width*getConfig("video_scaleWidth")
-            if (getConfig("video_scaleHeight") > 0)
-                video.width = thumb.width*getConfig("video_scaleHeight")
+            if (getConfig("video_scale_width") > 0)
+                video.width = thumb.width*getConfig("video_scale_width")
+            if (getConfig("video_scale_height") > 0)
+                video.width = thumb.width*getConfig("video_scale_height")
             var source = document.createElement("source");
             source.src = thumb.dataset.url;
             thumb.style.display = 'none';
@@ -699,7 +699,7 @@ function addYoutubeVideoPlayer(post) {
         var handle = function(data){
             var width  = getConfig("url_video_width") || data.entry.media$group.media$thumbnail[2].width;
             var height = getConfig("url_video_height") || data.entry.media$group.media$thumbnail[2].height;
-            var title  = getConfig("youtube_loadTitles") && data ? data.entry.title.$t : url;
+            var title  = getConfig("youtube_load_titles") && data ? data.entry.title.$t : url;
             var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
             var iframe =  document.createElement("iframe");
             iframe.width = width;
@@ -753,7 +753,7 @@ function addYoutubeVideoPlayer(post) {
             };
 
         };
-        if (getConfig("youtube_loadTitles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
+        if (getConfig("youtube_load_titles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
             request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
             request.onload = function() { handle( JSON.parse(request.responseText) ) };
@@ -904,18 +904,18 @@ function expandImage(post) {
 // popup messages
 //-----------------------------------------------------------------
 function popupMessage(text, delay, loadingIcon, close) {
-    var container = document.getElementById("popupMessageContainer");
+    var container = document.getElementById("popup_message_container");
     if (container == null) {
         container = document.createElement("div");
-        container.id = "popupMessageContainer";
+        container.id = "popup_message_container";
         document.body.appendChild(container);
     }
 
     var wrap = document.createElement("div");
-    wrap.className = 'popupMessageWrap';
+    wrap.className = 'popup_message_wrap';
 
     var msg = document.createElement("div");
-    msg.className = 'popupMessage';
+    msg.className = 'popup_message';
 
     if (loadingIcon) {
         var icon = document.createElement("i");
@@ -924,34 +924,34 @@ function popupMessage(text, delay, loadingIcon, close) {
     }
 
     var textContainer = document.createElement("div");
-    textContainer.className = 'popupMessageText';
+    textContainer.className = 'popup_message_text';
     textContainer.innerHTML = text;
     msg.appendChild(textContainer);
 
     if (close) {
         var cpm = document.createElement("div");
-        cpm.className = 'closePopupMessage';
+        cpm.className = 'close_popup_message';
         var l = document.createElement("a");
         l.innerHTML = "✖ ";
         l.onclick = function() {
-            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.parentNode.removeChild(wrap); });
+            fadeOut(msg,getConfig("animation_speed"), function(){ msg.parentNode.parentNode.removeChild(wrap); });
         };
         cpm.appendChild(l);
         msg.appendChild(cpm);
     }
     wrap.appendChild(msg);
     container.appendChild(wrap);
-    fadeIn(msg, getConfig("animationSpeed"));
+    fadeIn(msg, getConfig("animation_speed"));
     if (delay) {
         var t = setTimeout(function(){
-            fadeOut(msg,getConfig("animationSpeed"), function(){ msg.parentNode.parentNode.removeChild(wrap); } );
+            fadeOut(msg,getConfig("animation_speed"), function(){ msg.parentNode.parentNode.removeChild(wrap); } );
         }, delay);
     }
     return wrap;
 }
 
 function closePopupMessage(msg) {
-    fadeOut(msg, getConfig("animationSpeed"), function(){ msg.parentNode.removeChild(msg) });
+    fadeOut(msg, getConfig("animation_speed"), function(){ msg.parentNode.removeChild(msg) });
 }
 // //-----------------------------------------------------------------
 // function expandPost(postId) {
@@ -1055,8 +1055,8 @@ function cachePopupPost(el) {
 
     post.className = 'popup-post';
     post.id = 'popup-'+postId;
-    if ( getConfig('popupPostRemovingOnMouseOut') ) {
-        post.onmouseleave = function() { Monaba.removePopupPostTimer = setTimeout(closePopupPost, getConfig("popupPostDelayBeforeRemoving")); };
+    if ( getConfig('popup_post_removing_on_mouse_out') ) {
+        post.onmouseleave = function() { Monaba.removePopupPostTimer = setTimeout(closePopupPost, getConfig("popup_post_delay_before_removing")); };
         post.onmouseenter = function() { clearTimeout(Monaba.removePopupPostTimer) };
     } else {
         var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
@@ -1113,7 +1113,7 @@ function showPopupPost(element, event, postId, localId, board) {
                     displayPopupPost(event, post);
                 }
             });
-        }, getConfig("popupPostDelayBeforeDisplaying"));
+        }, getConfig("popup_post_delay_before_posting"));
         element.onmouseleave = function() { clearTimeout(t) };
     } else {
         var postInViewPort = document.getElementById("p"+postId);
@@ -1122,7 +1122,7 @@ function showPopupPost(element, event, postId, localId, board) {
             element.onmouseleave = removePostHighlight;
         } else {
             var post = Monaba.postCache[postId];
-            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popupPostDelayBeforeDisplaying"));
+            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popup_post_delay_before_posting"));
             element.onmouseleave = function() { clearTimeout(t) };
         }
     }
@@ -1139,6 +1139,8 @@ function closePopupPost(post) {
         }
     }
 }
+//-----------------------------------------------------------------
+// threads
 //-----------------------------------------------------------------
 function refreshThread(board, threadLocalId) {
     var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply-post");
@@ -1171,9 +1173,9 @@ function refreshThread(board, threadLocalId) {
                 initPopupsCache();
                 refreshMathjax();
             } else if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popupMessageDisplayTime"));
+                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popup_message_display_time"));
             } else if (data == "No new posts ") {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDisplayTime"));
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
             }
         }
     });

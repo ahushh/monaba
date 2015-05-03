@@ -8,18 +8,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
     table.appendChild(tbody);
 
     var opts = [["checkbox", "mathjax"],
-                ["number", "animationSpeed"],
-                ["number", "popupMessageDisplayTime"],
-                ["number", "popupPostDelayBeforeDisplaying"],
-                ["checkbox", "popupPostRemovingOnMouseOut"],
-                ["number", "popupPostDelayBeforeRemoving"],
+                ["number", "animation_speed"],
+                ["number", "popup_message_display_time"],
+                ["number", "popup_post_delay_before_displaying"],
+                ["checkbox", "popup_post_removing_on_mouse_out"],
+                ["number", "popup_post_delay_before_removing"],
                 ["checkbox", "video_autoplay"],
                 ["checkbox", "video_loop"],
-                ["number","video_scaleWidth"],
-                ["number","video_scaleHeight"],
+                ["number","video_scale_width"],
+                ["number","video_scale_height"],
                 ["checkbox", "vimeo_enable"],
                 ["checkbox", "youtube_enable"],
-                ["checkbox", "youtube_loadTitles"],
+                ["checkbox", "youtube_load_titles"],
                 ["checkbox", "youtube_html5"],
                 ["number", "url_video_width"],
                 ["number", "url_video_height"],
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["checkbox", "css_hide_files_names"],
                 ["checkbox", "css_hide_files_info"],
                ];
-    Array.prototype.forEach.call(opts, function(x, i) {
+    opts.forEach(function(x, i) {
         var tr  = document.createElement("tr");
         var td1 = document.createElement("td");
         var td2 = document.createElement("td");

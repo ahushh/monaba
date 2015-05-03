@@ -166,17 +166,17 @@ hr {
     color: red;
 }
 
-.popupMessageText {
+.popup_message_text {
    display: inline;
 }
 
-.closePopupMessage {
+.close_popup_message {
    cursor: pointer;
    display: inline;
    vertical-align: top;
 }
 
-.popupMessage {
+.popup_message {
    /* display: inline-block;     */
    float: right;
    clear: both;
@@ -186,7 +186,7 @@ hr {
    padding: 10px 10px;
 }
 
-#popupMessageContainer {
+#popup_message_container {
    max-width: 90%;
    right: 10px;
    position: fixed;

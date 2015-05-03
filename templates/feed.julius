@@ -36,7 +36,7 @@ function refreshFeed() {
                 initPopupsCache();
                 refreshMathjax();
             } else {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popupMessageDisplayTime"));
+                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
             }
         }
     });
@@ -79,11 +79,11 @@ function showQuickPostForm(postId) {
                         var data = JSON.parse(request.responseText);
                         if (data.ok) {
                             clearPostFormFields();
-                            popupMessage(data.ok, getConfig("popupMessageDisplayTime"));
+                            popupMessage(data.ok, getConfig("popup_message_display_time"));
                             closePostForm();
                             refreshFeed();
                         } else {
-                            popupMessage(data.error, getConfig("popupMessageDisplayTime"));
+                            popupMessage(data.error, getConfig("popup_message_display_time"));
                         }
                     }
                 });

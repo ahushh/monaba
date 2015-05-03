@@ -57,7 +57,7 @@ hr {
    box-shadow: none;
 }
 
-#board-list-full, .popupMessage {
+#board-list-full, .popup_message {
    background: none repeat scroll 0% 0% #2C2C2C;
    border: 1px dashed #5c1f1f;
    width: auto !important;

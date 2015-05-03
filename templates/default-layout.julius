@@ -24,7 +24,7 @@ function loadConfig() {
     setConfigIfNull("mathjax", true);
     setConfigIfNull("animation_speed", 300);
     setConfigIfNull("popup_message_display_time", 2000);
-    setConfigIfNull("popup_post_delay_before_posting", 500);
+    setConfigIfNull("popup_post_delay_before_displaying", 500);
     setConfigIfNull("popup_post_removing_on_mouse_out", false);
     setConfigIfNull("popup_post_delay_before_removing", 500);
     setConfigIfNull("video_autoplay", true);
@@ -50,7 +50,7 @@ function resetConfig() {
     setConfig("mathjax", true);
     setConfig("animation_speed", 300);
     setConfig("popup_message_display_time", 2000);
-    setConfig("popup_post_delay_before_posting", 500);
+    setConfig("popup_post_delay_before_displaying", 500);
     setConfig("popup_post_removing_on_mouse_out", false);
     setConfig("popup_post_delay_before_removing", 500);
     setConfig("video_autoplay", true);
@@ -1146,7 +1146,7 @@ function showPopupPost(element, event, postId, localId, board) {
                     displayPopupPost(event, post);
                 }
             });
-        }, getConfig("popup_post_delay_before_posting"));
+        }, getConfig("popup_post_delay_before_displaying"));
         element.onmouseleave = function() { clearTimeout(t) };
     } else {
         var postInViewPort = document.getElementById("p"+postId);
@@ -1155,7 +1155,7 @@ function showPopupPost(element, event, postId, localId, board) {
             element.onmouseleave = removePostHighlight;
         } else {
             var post = Monaba.postCache[postId];
-            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popup_post_delay_before_posting"));
+            var t = setTimeout(function(){ displayPopupPost(event, post); }, getConfig("popup_post_delay_before_displaying"));
             element.onmouseleave = function() { clearTimeout(t) };
         }
     }

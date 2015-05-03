@@ -86,10 +86,13 @@ Open another terminal and fill database with default values:
 
 You are done. Open [http://localhost:3000](http://localhost:3000) and navigate to manage page and use "admin" both for username and for password to log in.
 
-Deployment
+Configuring Nginx for serving uploaded files
 ------
 
-See `extra/nginx.conf` example if you want to use Nginx as reverse proxy. That's generally a good idea.
+See `extra/nginx.conf`
+
+Deployment
+------
 
 init.d script for gentoo: `extra/monaba`
 

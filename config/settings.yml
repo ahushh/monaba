@@ -1,8 +1,8 @@
 Default: &defaults
   host: "*4" # any IPv4 host
   port: 3000
-  approot: "http://localhost:3000"
-  copyright: " "
+  approot: "http://localhost" # your domain
+  copyright: " " # footer
   #analytics: UA-YOURCODE
   sitename: "Monaba"
   geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"

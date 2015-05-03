@@ -110,7 +110,7 @@ geoIconPath :: Text -> Text
 geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
 
 uploadDirectory :: FilePath
-uploadDirectory = staticDir </> "upload"
+uploadDirectory = "upload"
 
 captchaFilePath :: String -> String
 captchaFilePath file = staticDir </> "captcha" </> file
@@ -127,7 +127,7 @@ thumbIconExt :: String
 thumbIconExt = "png"
 
 thumbDirectory :: FilePath
-thumbDirectory = staticDir </> "thumb"
+thumbDirectory = uploadDirectory </> "thumb"
 
 thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
 thumbUrlPath size filetype fileext hashsum = "/" </> (thumbFilePath size filetype fileext hashsum)

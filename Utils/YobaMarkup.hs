@@ -117,7 +117,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     openStrike  = "<span style='text-decoration:line-through'>"
     refHtml :: Text -> Text -> Text -> Text -> Text -> Text -> Text
     refHtml acc brd "0" p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=0 onmouseover="showPopupPost(this,event,#{pId},#{p},'#{brd}')" onclick='highlightPost("p#{pId}")' href='/#{brd}/#{p}'>#{ref}</a> |]
-    refHtml acc brd thr p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=#{thr} onmouseover="showPopupPost(this,event,#{pId},#{p},'#{brd}')" onclick='highlightPost("p#{pId}")' href='/#{brd}/#{thr}##{p}'>#{ref}</a> |]
+    refHtml acc brd thr p ref pId = [st|#{acc}<a data-post-id=#{pId} data-post-local-id=#{p} data-board=#{brd} data-thread-local-id=#{thr} onmouseover="showPopupPost(this,event,#{pId},#{p},'#{brd}')" onclick='highlightPost("p#{pId}")' href='/#{brd}/#{thr}#p#{p}'>#{ref}</a> |]
     getUserName  = userName  . entityVal . fromJust
     getGroupName = groupName . entityVal . fromJust
     li         g = "<li>" <> g <> "</li>"

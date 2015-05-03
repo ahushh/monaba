@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["number","video_scale_width"],
                 ["number","video_scale_height"],
                 ["checkbox", "vimeo_enable"],
+                ["checkbox", "coub_enable"],
                 ["checkbox", "youtube_enable"],
                 ["checkbox", "youtube_load_titles"],
                 ["checkbox", "youtube_html5"],

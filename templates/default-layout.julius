@@ -14,6 +14,7 @@ var Monaba = {
     refMap: {},
     postCache: {},
     removePopupPostTimer: {},
+    iframelyAPIKey: 'a24983cf9554abfbd77bd2',
 };
 
 loadConfig();
@@ -31,6 +32,7 @@ function loadConfig() {
     setConfigIfNull("video_scale_width", 0);
     setConfigIfNull("video_scale_height", 2);
     setConfigIfNull("vimeo_enable", true);
+    setConfigIfNull("coub_enable", true);
     setConfigIfNull("youtube_enable", true);
     setConfigIfNull("youtube_load_titles", true);
     setConfigIfNull("youtube_html5", true);
@@ -56,6 +58,7 @@ function resetConfig() {
     setConfig("video_scale_width", 0);
     setConfig("video_scale_height", 2);
     setConfig("vimeo_enable", true);
+    setConfig("coub_enable", true);
     setConfig("youtube_enable", true);
     setConfig("youtube_load_titles", true);
     setConfig("youtube_html5", true);
@@ -110,6 +113,7 @@ function initOnePost(post) {
     addVideoPlayer(post);
     addYoutubeVideoPlayer(post);
     addVimeoVideoPlayer(post);
+    addCoubVideoPlayer(post);
     initAudioPlayer(post);
     initFlashByClick(post);
 }
@@ -673,8 +677,72 @@ function initUrlVideoPlayer(selector) {
     Array.prototype.forEach.call(posts, function(post) {
         addYoutubeVideoPlayer(post);
         addVimeoVideoPlayer(post);
+        addCoubVideoPlayer(post);
     });
 }
+
+function addUrlVideoPlayer(data) {
+    var width     = data.width;
+    var height    = data.height;
+    var title     = data.title;
+    var thumbUrl  = data.thumb_url;
+    var iframeUrl = data.iframe_url;
+    var iconClass = data.icon_class;
+    var link      = data.link;
+    var post      = data.post;
+    var first1    = data.first1;
+
+    var iframe    =  document.createElement("iframe");
+    iframe.width = width;
+    iframe.height = height;
+    link.className = 'video-link';
+    link.innerHTML = "<i class='fa "+iconClass+"'></i>"+title;
+
+    var loadIframe = function () {
+        iframe.src = iframeUrl;
+        addClass(iframe, "loaded");
+    };
+    iframe.style.display = 'none';
+    if (first1) {
+        var vc = post.querySelector(".video-container");
+        var vt = document.createElement("img");
+        vt.className = 'video-thumb';
+        if (width)  vt.width = width;
+        if (height) vt.height = height;
+        vt.src = thumbUrl;
+        vc.insertBefore(vt, vc.firstChild);
+        vt.onclick = function() {
+            vt.style.display = 'none';
+            loadIframe();
+            iframe.style.display = 'inline-block';
+        };
+        vc.insertBefore(iframe, vc.firstChild);
+        addClass(link,"focused");
+    } else {
+        link.insertBefore(iframe, link.firstChild);
+    }
+    
+    link.onclick = function(event) {
+        event.preventDefault();
+        var iframe = link.getElementsByTagName('iframe')[0];
+        if (/focused/.test(link.className))
+            return false;
+        if (! /loaded/.test(iframe.className) )
+            loadIframe();
+        var videoContainer = post.getElementsByClassName("video-container")[0];
+        var currentIframe  = videoContainer.getElementsByTagName("iframe")[0];
+        var videoThumb     = videoContainer.getElementsByClassName("video-thumb")[0];
+        var focusedLink    = post.getElementsByClassName("focused")[0];
+        focusedLink.insertBefore(currentIframe, focusedLink.firstChild);
+        currentIframe.style.display = 'none';
+        videoThumb.style.display = 'none';
+        removeClass(focusedLink,"focused");
+        videoContainer.insertBefore(iframe, videoContainer.firstChild);
+        addClass(link, "focused");
+        iframe.style.display = 'inline-block';
+    };
+}
+
 
 function addYoutubeVideoPlayer(post) {
     if (!getConfig("youtube_enable")) return;
@@ -696,73 +764,39 @@ function addYoutubeVideoPlayer(post) {
             first = false;
             first1 = true;
         }
-        var handle = function(data){
-            var width  = getConfig("url_video_width") || data.entry.media$group.media$thumbnail[2].width;
-            var height = getConfig("url_video_height") || data.entry.media$group.media$thumbnail[2].height;
-            var title  = getConfig("youtube_load_titles") && data ? data.entry.title.$t : url;
-            var thumb  = "https://i.ytimg.com/vi/"+videoId+"/0.jpg"
-            var iframe =  document.createElement("iframe");
-            iframe.width = width;
-            iframe.height = height;
-            link.className = 'video-link';
-            link.innerHTML = "<i class='fa fa-youtube-play'></i>"+title;
-            var loadIframe = function () {
-                iframe.src = "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" +
-                    (getConfig("youtube_html5") ? "&html5=1" : "");
-                addClass(iframe, "loaded");
-            };
-            iframe.style.display = 'none';
-            if (first1) {
-                var vc = post.querySelector(".video-container");
-                var vt = document.createElement("img");
-                vt.className = 'video-thumb';
-                vt.width = width;
-                vt.height = height;
-                vt.src = thumb;
-                vc.insertBefore(vt, vc.firstChild);
-                vc.insertBefore(iframe, vc.firstChild);
-                addClass(link,"focused");
-                vt.onclick = function() {
-                    vt.style.display = 'none';
-                    loadIframe();
-                    iframe.style.display = 'inline-block';
-                };
-            } else {
-                link.insertBefore(iframe, link.firstChild);
-            }
 
-            link.onclick = function(event) {
-                var iframe = link.getElementsByTagName('iframe')[0];
-                if (/focused/.test(link.className))
-                    return false;
-                if (! /loaded/.test(iframe.className) )
-                    loadIframe();
-                
-                var videoContainer = post.getElementsByClassName("video-container")[0];
-                var currentIframe  = videoContainer.getElementsByTagName("iframe")[0];
-                var videoThumb     = videoContainer.getElementsByClassName("video-thumb")[0];
-                var focusedLink    = post.getElementsByClassName("focused")[0];
-                focusedLink.insertBefore(currentIframe, focusedLink.firstChild);
-                currentIframe.style.display = 'none';
-                videoThumb.style.display = 'none';
-                removeClass(focusedLink,"focused");
-                videoContainer.insertBefore(iframe, videoContainer.firstChild);
-                addClass(link, "focused");
-                iframe.style.display = 'inline-block';
-                event.preventDefault();
-            };
-
-        };
         if (getConfig("youtube_load_titles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
             request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
-            request.onload = function() { handle( JSON.parse(request.responseText) ) };
+            request.onload = function() {
+                var data = JSON.parse(request.responseText);
+                addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.entry.media$group.media$thumbnail[2].width,
+                                    height: getConfig("url_video_height") || data.entry.media$group.media$thumbnail[2].height,
+                                    title:  getConfig("youtube_load_titles") && data ? data.entry.title.$t : url,
+                                    thumb_url: "https://i.ytimg.com/vi/"+videoId+"/0.jpg",
+                                    iframe_url: "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" + (getConfig("youtube_html5") ? "&html5=1" : ""),
+                                    icon_class: "fa-youtube-play",
+                                    link: link,
+                                    post: post,
+                                    first1: first1
+                                  });
+            };
             request.onerror = function() {
                 popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
             };
             request.send();
         } else {
-            handle();
+            var data = JSON.parse(request.responseText);
+            addUrlVideoPlayer({ width:  getConfig("url_video_width"),
+                                height: getConfig("url_video_height"),
+                                title:  url,
+                                thumb_url: "https://i.ytimg.com/vi/"+videoId+"/0.jpg",
+                                iframe_url: "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" + (getConfig("youtube_html5") ? "&html5=1" : ""),
+                                icon_class: "fa-youtube-play",
+                                link: link,
+                                post: post,
+                                first1: first1
+                              });
         }
     });
 }
@@ -787,65 +821,22 @@ function addVimeoVideoPlayer(post) {
             first = false;
             first1 = true;
         }
-        var handle = function(data){
-            var thumb = data[0].thumbnail_medium;
-            var width  = getConfig("url_video_width");
-            var height = getConfig("url_video_height");
-            var title = data[0].title;
-            var iframe =  document.createElement("iframe");
-            iframe.width = width;
-            iframe.height = height;
-            link.className = 'video-link';
-            link.innerHTML = "<i class='fa fa-vimeo-square'></i>"+title;
-            var loadIframe = function () {
-                iframe.src = "https://player.vimeo.com/video/" + videoId;
-                addClass(iframe, "loaded");
-            };
-            iframe.style.display = 'none';
-            if (first1) {
-                var vc = post.querySelector(".video-container");
-                var vt = document.createElement("img");
-                vt.className = 'video-thumb';
-                vt.width = width;
-                vt.height = height;
-                vt.src = thumb;
-                vc.insertBefore(vt, vc.firstChild);
-                vc.insertBefore(iframe, vc.firstChild);
-                addClass(link,"focused");
-                vt.onclick = function() {
-                    vt.style.display = 'none';
-                    loadIframe();
-                    iframe.style.display = 'inline-block';
-                };
-            } else {
-                link.insertBefore(iframe, link.firstChild);
-            }
 
-            link.onclick = function(event) {
-                var iframe = link.getElementsByTagName('iframe')[0];
-                if (/focused/.test(link.className))
-                    return false;
-                if (! /loaded/.test(iframe.className) )
-                    loadIframe();
-                
-                var videoContainer = post.getElementsByClassName("video-container")[0];
-                var currentIframe  = videoContainer.getElementsByTagName("iframe")[0];
-                var videoThumb     = videoContainer.getElementsByClassName("video-thumb")[0];
-                var focusedLink    = post.getElementsByClassName("focused")[0];
-                focusedLink.insertBefore(currentIframe, focusedLink.firstChild);
-                currentIframe.style.display = 'none';
-                videoThumb.style.display = 'none';
-                removeClass(focusedLink,"focused");
-                videoContainer.insertBefore(iframe, videoContainer.firstChild);
-                addClass(link, "focused");
-                iframe.style.display = 'inline-block';
-                event.preventDefault();
-            };
-
-        };
         var request = new XMLHttpRequest({mozSystem: true});
         request.open("GET","http://vimeo.com/api/v2/video/"+videoId+".json",true);
-        request.onload = function() { handle( JSON.parse(request.responseText) ) };
+        request.onload = function() {
+            var data = JSON.parse(request.responseText);
+            addUrlVideoPlayer({ width:  getConfig("url_video_width"),
+                                height: getConfig("url_video_height"),
+                                title:  data[0].title,
+                                thumb_url: data[0].thumbnail_medium,
+                                iframe_url: "https://player.vimeo.com/video/" + videoId,
+                                icon_class: "fa-vimeo-square",
+                                link: link,
+                                post: post,
+                                first1: first1
+                         });
+        };
         request.onerror = function() {
             popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
         };
@@ -853,6 +844,48 @@ function addVimeoVideoPlayer(post) {
     });
 }
 
+function addCoubVideoPlayer(post) {
+    if (!getConfig("coub_enable")) return;
+    var postId = post.id;
+    var first = true;
+    var links = post.querySelectorAll(".message a");
+    var msg    = post.querySelector(".message");
+    Array.prototype.forEach.call(links, function(link) {
+        var regex = /https?:\/\/(?:www\.)?coub.com\/view\/(\w+)/;
+        var result = regex.exec(link.text);
+        if (!result) return true;
+        var videoId = result[1];
+        var url     = link.text;
+        var first1 = false;
+        if (first) {
+            var d = document.createElement("div");
+            d.className = "video-container";
+            msg.insertBefore(d, msg.firstChild);
+            first = false;
+            first1 = true;
+        }
+
+        var request = new XMLHttpRequest({mozSystem: true});
+        request.open("GET","//iframe.ly/api/oembed?url="+url+"&api_key="+Monaba.iframelyAPIKey, true);
+        request.onload = function() {
+            var data = JSON.parse(request.responseText);
+            addUrlVideoPlayer({ width:  getConfig("url_video_width"),
+                                // height: getConfig("url_video_height"),
+                                title:  data.title,
+                                thumb_url: data.thumbnail_url,
+                                iframe_url: "https://coub.com/embed/"+videoId,
+                                icon_class: "fa-cube",
+                                link: link,
+                                post: post,
+                                first1: first1
+                         });
+        };
+        request.onerror = function() {
+            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
+        };
+        request.send();
+    });
+}
 //-----------------------------------------------------------------
 // Images
 //-----------------------------------------------------------------

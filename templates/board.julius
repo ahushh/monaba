@@ -84,11 +84,14 @@ function showQuickPostForm(postId) {
     var spf = document.getElementsByClassName('show-plain-form')[0];
     if (spf) spf.style.display = 'block';
 
+    var subjectInput = document.getElementsByClassName("subject-input")[0];
+    subjectInput.required = '';
+    subjectInput.placeholder = #{toJSON $ msgrender MsgPostSubject};
+
     var p = document.getElementById(postId);
     var postform = document.getElementById('post-form');
     postform.className = "quick-post-form";
     insertAfter(postform, p);
-    // p.parentNode.insertBefore( postform, p.nextSibling );
     postform.style.display = 'table';
     document.getElementById("go-back-block").style.display = 'none';
 
@@ -136,6 +139,10 @@ function showQuickPostForm(postId) {
 } 
 
 function showPlainPostForm() {
+    var subjectInput = document.getElementsByClassName("subject-input")[0];
+    subjectInput.required = 'required';
+    subjectInput.placeholder = #{toJSON $ msgrender MsgThreadSubject};
+
     var pf = document.getElementById('post-form');
     pf.className = "plain-post-form";
     var spf = document.getElementsByClassName('show-plain-form')[0];

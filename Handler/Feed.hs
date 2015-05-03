@@ -19,7 +19,7 @@ getAjaxGetPostFormR board = do
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
   let maxMessageLength = boardMaxMsgLength boardVal
-  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName False boardVal muser
   bareLayout [whamlet|<form .quick-post-form #post-form method=post enctype=#{formEnctype} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
                         ^{formWidget}
                      |]

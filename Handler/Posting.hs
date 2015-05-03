@@ -15,6 +15,7 @@ data GoBackTo = ToThread | ToBoard | ToFeed
 -------------------------------------------------------------------------------------------------------------------
 postForm :: Int   -> -- ^ The maximium length of post title
            Int   -> -- ^ The maximium length of poster name
+           Bool  -> -- ^ Is a new thread
            Board -> -- ^ Board value
            Maybe (Entity User) -> -- ^ User
            Html                -> -- ^ Extra token
@@ -28,7 +29,7 @@ postForm :: Int   -> -- ^ The maximium length of post title
                                      , Maybe Bool     -- ^ No bump
                                      )
                          , Widget)
-postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
+postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -50,7 +51,9 @@ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser extra = do
       captchaInput lbl = lbl { fsAttrs = [("placeholder",msgrender MsgCaptcha)] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
       nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName ),("placeholder",msgrender MsgName)] }
-      subjectInput lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostTitle),("placeholder",msgrender MsgSubject)] }
+      subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",showText maxLenOfPostTitle),
+                                          if isNewThread then ("placeholder",msgrender MsgThreadSubject) else ("placeholder",msgrender MsgPostSubject)]++
+                                         [("required","required") | boardRequiredThreadTitle boardVal && isNewThread] }
   ----------------------------------------------------------------------------------------------------------------
   (nameRes     , nameView    ) <- mopt textField              (nameInput    "") (Just              <$> lastName)
   (subjectRes  , subjectView ) <- mopt textField              (subjectInput "") (Just              <$> lastTitle)

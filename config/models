@@ -44,6 +44,7 @@ Board
     showEditHistory   Bool     
     showPostDate      Bool default=true
     enableForcedAnon  Bool default=false
+    requiredThreadTitle Bool default=false
     deriving          Typeable
 Post json
     board        Text

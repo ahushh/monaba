@@ -3,7 +3,8 @@
 ######################################################################################
 ## fields
 Name: Имя
-Subject: Тема сообщения
+PostSubject: Тема поста
+ThreadSubject: Тема треда
 SubmitBtn: Отправить
 Message: Текст сообщения
 Password: Пароль
@@ -104,6 +105,7 @@ WrongCaptcha: Неверная капча
 NoFileOrText: Необходимо ввести текст или прикрепить файл
 NoFile: Необходимо приложить файл
 OpFileIsDisabled: Тред должен быть без файлов
+ThreadTitleIsRequired: Необходимо ввести тему треда
 ReplyFileIsDisabled: Ответ в тред должен быть без файлов
 UnknownError: Неизвестная ошибка
 BadFormData: Что-то введено не так
@@ -161,6 +163,7 @@ BoardViewAccess: Для просмотра доски нужно быть
 BoardReplyAccess: Для ответа в тред нужно быть
 BoardThreadAccess: Для создание треда нужно быть
 BoardEnableForcedAnon: Принудительная анонимность (отключение ввода имени)
+BoardRequiredThreadTitle: Обязательное название треда
 WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
 OpModeration: ОП-модерация
 PostEditing: Редактирование постов

@@ -3,7 +3,8 @@
 ######################################################################################
 ## fields
 Name: Name
-Subject: Post's subject
+PostSubject: Post's subject
+ThreadSubject: Thread's subject
 SubmitBtn: Submit
 Message: Your message
 Password: Password
@@ -104,6 +105,7 @@ WrongCaptcha: Wrong captcha
 NoFileOrText: File or message is required
 NoFile: File required
 OpFileIsDisabled: OP file attachment is disabled on this board
+ThreadTitleIsRequired: Thread subject is required
 ReplyFileIsDisabled: Reply file attachment is disabled on this board
 UnknownError: Unknown error
 BadFormData: Error parsing submitted data
@@ -160,6 +162,7 @@ BoardViewAccess: To view this board you must be a
 BoardReplyAccess: To reply you must be a
 BoardThreadAccess: To create new thread you must be a
 BoardEnableForcedAnon: Force anonymity (disable name input)
+BoardRequiredThreadTitle: Required thread title
 WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
 OpModeration: OP moderation
 PostEditing: Post editing

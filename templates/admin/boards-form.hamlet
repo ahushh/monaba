@@ -96,6 +96,10 @@
             <td>^{fvInput enableForcedAnonView}
             <td>&nbsp;
         <tr>
+            <td>_{MsgBoardRequiredThreadTitle}
+            <td>^{fvInput requiredThreadTitleView}
+            <td>&nbsp;
+        <tr>
             <td>_{MsgOpModeration}
             <td>^{fvInput opModerationView}
             <td>&nbsp;

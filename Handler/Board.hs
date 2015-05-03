@@ -73,7 +73,7 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName True boardVal muser
   (editFormWidget, _)           <- generateFormPost editForm
   nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
@@ -103,12 +103,13 @@ postBoardR board _ = do
       enableCaptcha    = boardEnableCaptcha boardVal
       showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm 0 0 boardVal muser
+  ((result, _),   _) <- runFormPost $ postForm 0 0 True boardVal muser
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (name, title, message, captcha, pswd, files, goback, _)
+      | isNothing title && boardRequiredThreadTitle boardVal -> msgRedirect MsgThreadTitleIsRequired
       | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
       | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
       | noMessage message  && noFiles files          -> msgRedirect MsgNoFileOrText

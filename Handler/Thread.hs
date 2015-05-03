@@ -58,7 +58,7 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName boardVal muser
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName False boardVal muser
   (editFormWidget, _)           <- generateFormPost editForm
   nameOfTheBoard            <- extraSiteName <$> getExtra
   msgrender                 <- getMessageRender
@@ -94,7 +94,7 @@ postThreadR board thread = do
       threadUrl        = ThreadR board thread
       boardUrl         = BoardNoPageR board
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm 0 0 boardVal muser
+  ((result, _), _) <- runFormPost $ postForm 0 0 False boardVal muser
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl

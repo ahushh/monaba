@@ -15,6 +15,7 @@ var Monaba = {
     postCache: {},
     removePopupPostTimer: {},
     iframelyAPIKey: 'a24983cf9554abfbd77bd2',
+    youtubeAPIKey: 'AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw',
 };
 
 loadConfig();
@@ -767,12 +768,13 @@ function addYoutubeVideoPlayer(post) {
 
         if (getConfig("youtube_load_titles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
-            request.open("GET","https://gdata.youtube.com/feeds/api/videos/"+ videoId +"?v=2&alt=json",true);
+            request.open("GET","https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key="+Monaba.youtubeAPIKey+"&part=snippet,contentDetails,statistics,status",true);
             request.onload = function() {
                 var data = JSON.parse(request.responseText);
-                addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.entry.media$group.media$thumbnail[2].width,
-                                    height: getConfig("url_video_height") || data.entry.media$group.media$thumbnail[2].height,
-                                    title:  getConfig("youtube_load_titles") && data ? data.entry.title.$t : url,
+                console.log(data);
+                addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.items[0].snippet.thumbnails.high.width,
+                                    height: getConfig("url_video_height") || data.items[0].snippet.thumbnails.high.height,
+                                    title:  getConfig("youtube_load_titles") && data ? data.items[0].snippet.title : url,
                                     thumb_url: "https://i.ytimg.com/vi/"+videoId+"/0.jpg",
                                     iframe_url: "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" + (getConfig("youtube_html5") ? "&html5=1" : ""),
                                     icon_class: "fa-youtube-play",
@@ -786,7 +788,6 @@ function addYoutubeVideoPlayer(post) {
             };
             request.send();
         } else {
-            var data = JSON.parse(request.responseText);
             addUrlVideoPlayer({ width:  getConfig("url_video_width"),
                                 height: getConfig("url_video_height"),
                                 title:  url,

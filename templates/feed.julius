@@ -54,6 +54,7 @@ function showQuickPostForm(postId) {
         action: '/ajax/postform/'+board,
         onloadOk: function(request) {
             var postform = parseDOMElement(request.responseText);
+            initDragAndDrop(postform);
             insertAfter(postform, post);
             insert('>>'+post.dataset.postLocalId+'\n','post-form');
             initPostForm();

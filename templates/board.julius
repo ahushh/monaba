@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
     initMathjax();
+    var postform = document.getElementById('post-form');
+    initDragAndDrop(postform);
 });
 
 function expandThread(board, threadLocalId) {

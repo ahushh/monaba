@@ -494,15 +494,52 @@ function initPostForm() {
         fInput.onchange = function(event) {
             event.preventDefault();
             var files = event.target.files;
-            handleFile(files, fInput);
+            if (files.length)
+                handleFile(files[0], fInput);
         };
         fInput.click();
     };
 }
 
-function handleFile(files, fInput) {
-    if (!files.length) return;
-    var file = files[0];
+function initDragAndDrop(postform) {
+    postform.addEventListener("dragenter", function(e) {
+        addClass(postform, "drag-here");
+        e.stopPropagation();
+        e.preventDefault();
+    }, false);
+    postform.addEventListener("dragover", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }, false);
+    postform.addEventListener("dragleave", function(e) {
+        removeClass(postform, "drag-here");
+    }, false);
+    postform.ondrop = function(e) {
+        removeClass(postform, "drag-here");
+        e.stopPropagation();
+        e.preventDefault();
+        var dt = e.dataTransfer;
+        var files = dt.files;
+        var fsNodeList = postform.querySelectorAll("input[type='file']");
+        var fs = [];
+        for (var i = 0; i < fsNodeList.length; i++)
+            if (!fsNodeList[i].value) fs.push(fsNodeList[i]);
+        if (!fs.length) return;
+        if (fs.length == 1) {
+            af.className = "inactive";
+        }            
+        // for (var i = 0; i < fs.length && i < files.length; i++) {
+        //     handleFile(files[i], fs[i]);
+        //     var newFiles = files[i];
+        //     newFiles = FileListReadOnly;
+        //     fs[i].files = newFiles;
+        // }
+        handleFile(files[0], fs[0]);
+        fs[0].files = files;
+    };
+}
+
+function handleFile(file, fInput) {
     var fts = document.getElementById("attachment-thumbs");
     var bytes = file.size;
     var fSize;

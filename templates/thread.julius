@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initMathjax();
 
     var postform = document.getElementById('post-form');
+    initDragAndDrop(postform);
     postform.onsubmit = function(event) {
         var formData = makePostFormData(postform);
         var pmsg;

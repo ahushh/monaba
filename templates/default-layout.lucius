@@ -352,6 +352,11 @@ ul {
 .attachment-thumb img {
    width: 100%;
    margin: 1px;
+   vertical-align: top;
+}
+
+.drag-here {
+    border: 2px dashed grey !important;
 }
 
 #post-form-inputs {

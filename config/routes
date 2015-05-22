@@ -35,6 +35,7 @@
 /admin/stick/#Text/#Int    StickR        GET
 /admin/lock/#Text/#Int     LockR         GET
 /admin/autosage/#Text/#Int AutoSageR     GET
+/admin/move/#Text/#Int/#Text MoveThreadR   GET 
 
 /admin/ban/#Text/#Text     BanByIpR      GET POST
 

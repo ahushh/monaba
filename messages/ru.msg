@@ -134,6 +134,8 @@ Required: Обязательно
 XForUnlim x@Text: #{x} — неограничено
 Boards: Борды
 Bans: Баны
+MoveThread: Переместить тред
+WhichBoard: На какую борду?
 
 ### Boards
 BoardIndexNumber: Порядковый номер

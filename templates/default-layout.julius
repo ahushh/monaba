@@ -1336,6 +1336,12 @@ function setConfigIfNull(k,v) {
 // ---------------------------------------------------------
 // Misc
 // ---------------------------------------------------------
+function moveThread(board, thread) {
+    var destBoard = prompt(#{toJSON $ msgrender MsgWhichBoard});
+    console.log("/admin/move/"+board+"/"+thread+"/"+destBoard);
+    window.location.href = "/admin/move/"+board+"/"+thread+"/"+destBoard;
+}
+
 function fadeIn(el,n,callback) {
     el.style.opacity = 0;
 

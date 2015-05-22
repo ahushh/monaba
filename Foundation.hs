@@ -210,6 +210,7 @@ instance Yesod App where
       StickR{}        -> isAuthorized' [ManageThreadP]
       LockR{}         -> isAuthorized' [ManageThreadP]
       AutoSageR{}     -> isAuthorized' [ManageThreadP]
+      MoveThreadR{}   -> isAuthorized' [ManageThreadP] 
 
       BanByIpR{}      -> isAuthorized' [ManageBanP]
       ManageBoardsR{} -> isAuthorized' [ManageBoardP]

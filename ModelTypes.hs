@@ -27,15 +27,16 @@ instance FromJSON GeoCountry where
                          o .: "name"
   parseJSON _          = mzero
 
-data Permission = ManageThreadP |
-                  ManageBoardP  |
-                  ManageUsersP  |
-                  ManageConfigP |
-                  DeletePostsP  |
-                  ManagePanelP  |
-                  ManageBanP    |
-                  EditPostsP    |
-                  AdditionalMarkupP
+data Permission = ManageThreadP
+                | ManageBoardP
+                | ManageUsersP
+                | ManageConfigP
+                | DeletePostsP
+                | ManagePanelP
+                | ManageBanP
+                | EditPostsP
+                | ViewModlogP
+                | AdditionalMarkupP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 data Ternary = Enabled | Disabled | Required

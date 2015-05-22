@@ -239,6 +239,8 @@ ReplyDelay: Задержка перед ответом в тред
 ThreadDelay: Задержка перед созданием нового треда
 AdminAboutPage: Html страницы about
 AdminHomePage: Html домашней страницы
+ModlogMaxEntriesView: Максимальное количество записей в мод-логе
+ModlogEntriesPerPage: Сколько показывать мод-лог записей на странице
 ## Messages
 ConfigUpdated: Настройки обновлены
 
@@ -253,6 +255,7 @@ ManagePanel : Доступ в админку
 ManageBan   : Бан
 AdditionalMarkup: Расширенная разметка
 EditPosts: Редактирование постов и просмотр истории
+ViewModlog: Просматривать мод-логи 
 
 ######################################################################################
 #### Help
@@ -313,3 +316,42 @@ Style: Стиль
 Language: Язык
 FeedIgnoredBoards: /feed/ игнорируемые борды
 ResetDefaults: Сбросить
+
+######################################################################################
+#### Modlogs
+######################################################################################
+Modlog: Мод-логи
+ModlogDate: Дата
+ModlogGroup: Группа
+ModlogUser: Пользователь
+ModlogMessage: Сообщение
+
+ModlogBanAdded ip@Text reason@Text nn@Int: Забанен IP #{ip} — ##{show nn} — #{reason}
+ModlogDelBan nnn@Int: Удален бан ##{show nnn}
+
+ModlogNewBoard bn@Text: Добавлена борда /#{bn}/
+ModlogUpdateAllBoards: Обновлены все борды
+ModlogUpdateBoard bnn@Text: Обновлена борда /#{bnn}/
+ModlogCleanAllBoards: Очищены все борды
+ModlogCleanBoard bnnn@Text: Очищена борда /#{bnnn}/
+ModlogDeleteAllBoards: Удалены все борды
+ModlogDeleteBoard adsf@Text: Удалена борда /#{adsf}/
+
+ModlogUpdateGroup ggp@Text: Обновлена группа #{ggp}
+ModlogAddGroup gag@Text: Добавлена группа #{gag}
+ModlogDelGroup gsd@Text: Удалена группа #{gsd}
+
+ModlogAddUser gag@Text: Добавлен пользователь #{gag}
+ModlogDelUser gag@Text: Удален пользователь #{gag}
+
+ModlogUpdateConfig: Обновлен конфиг
+
+ModlogStickThread thr@Int board@Text: Прикреплен тред ##{show thr} /#{board}/
+ModlogLockThread thr@Int board@Text: Закрыт тред ##{show thr} /#{board}/
+ModlogAutosageThread thr@Int board@Text: Отключен бамп треда ##{show thr} /#{board}/
+
+ModlogHellban uid@Text: Премодерируются все сообщения пользователя #{uid}
+ModlogUnhellban uid@Text: Пользователь снят с премодерации #{uid}
+
+ModlogRebuildPostsMessagesOn board@Text: Обновлены HTML сообщения в постах на борде /#{board}/
+ModlogRebuildPostsMessages: Обновлены HTML сообщения в постах на борде

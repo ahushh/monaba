@@ -1,0 +1,16 @@
+^{adminNavbarWidget muser permissions}
+
+<table .admin-table>
+  <tr>
+      <td>_{MsgModlogDate}
+      <td>_{MsgModlogUser}
+      <td>_{MsgModlogGroup}
+      <td>_{MsgModlogMessage}      
+  $forall Entity _ entry <- entries
+      <tr>
+          <td> #{myFormatTime timeZone $ modlogDate entry}
+          <td> #{modlogUser entry}
+          <td> #{modlogGroup entry}
+          <td> #{modlogMessage entry}
+
+^{paginationWidget page pages ModlogR}

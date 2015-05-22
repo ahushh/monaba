@@ -31,5 +31,7 @@
         <tr>
             <td>_{MsgAdditionalMarkup   }
             <td>^{fvInput aMarkupView   }
-
+        <tr>
+            <td>_{MsgViewModlog           }
+            <td>^{fvInput viewModlogView  }
     <input type=submit value=_{MsgGroupAddOrUpdate}>

@@ -7,6 +7,7 @@ import qualified Data.Text         as T
 import           Handler.Delete    (deletePosts)
 import           Control.Monad     (mplus)
 import           Utils.YobaMarkup  (doYobaMarkup)
+import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: ManageBoardAction -> Text -> Handler Html
 getManageBoardsR action board = do
@@ -186,6 +187,7 @@ postNewBoardsR = do
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       void $ runDB $ insert newBoard
+      addModlogEntry $ MsgModlogNewBoard (fromJust bName) 
       msgRedirect MsgBoardAdded
 
 postAllBoardsR :: Handler Html
@@ -242,6 +244,7 @@ postAllBoardsR = do
                              , boardIndex             = fromMaybe 0 bIndex
                              }
           in runDB $ replace oldBoardId newBoard)
+      addModlogEntry $ MsgModlogUpdateAllBoards 
       msgRedirect MsgBoardsUpdated
 
 postUpdateBoardsR :: Text -> Handler Html
@@ -299,6 +302,7 @@ postUpdateBoardsR board = do
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       runDB $ replace oldBoardId newBoard
+      addModlogEntry $ MsgModlogUpdateBoard (fromJust bName) 
       msgRedirect MsgBoardsUpdated
 -------------------------------------------------------------------------------------------------------------
 cleanBoard :: ManageBoardAction -> Text -> Handler ()
@@ -307,12 +311,14 @@ cleanBoard action board = case action of
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
     postIDs <- forM boards $ \(Entity _ b) -> runDB $ selectList [PostBoard ==. boardName b] []
     void $ deletePosts (concat postIDs) False
+    addModlogEntry $ MsgModlogCleanAllBoards 
   NewBoard -> msgRedirect MsgNoSuchBoard
   _        -> do
     maybeBoard <- runDB $ selectFirst [BoardName ==. board] []  
     when (isNothing maybeBoard) $ msgRedirect MsgNoSuchBoard
     postIDs <- runDB $ selectList [PostBoard ==. board] []
     void $ deletePosts postIDs False
+    addModlogEntry $ MsgModlogCleanBoard board 
   where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR UpdateBoard board)
 
 getCleanBoardR :: ManageBoardAction -> Text -> Handler ()
@@ -325,8 +331,8 @@ getDeleteBoardR :: ManageBoardAction -> Text -> Handler ()
 getDeleteBoardR action board = do
   cleanBoard action board
   case action of
-    AllBoards -> runDB $ deleteWhere ([]::[Filter Board ])
-    _         -> runDB $ deleteWhere [BoardName ==. board]
+    AllBoards -> addModlogEntry MsgModlogDeleteAllBoards     >> (runDB $ deleteWhere ([]::[Filter Board ]))
+    _         -> addModlogEntry (MsgModlogDeleteBoard board) >> (runDB $ deleteWhere [BoardName ==. board])
   setMessageI MsgBoardDeleted
   redirect (ManageBoardsR AllBoards "")
 
@@ -338,6 +344,7 @@ getRebuildPostsMessagesOnBoardR action board = case action of
       when ((/="") $ postRawMessage pVal ) $ do
         messageFormatted <- doYobaMarkup (Just $ Textarea $ postRawMessage pVal) (postBoard pVal) (postParent pVal)
         runDB $ update pKey [PostMessage =. messageFormatted]
+    addModlogEntry $ MsgModlogRebuildPostsMessagesOn board 
     msgRedirect MsgBoardsUpdated
   _           -> do
     boards  <- runDB $ selectList ([]::[Filter Board ]) []
@@ -347,6 +354,7 @@ getRebuildPostsMessagesOnBoardR action board = case action of
         when ((/="") $ postRawMessage pVal ) $ do
           messageFormatted <- doYobaMarkup (Just $ Textarea $ postRawMessage pVal) (postBoard pVal) (postParent pVal)
           runDB $ update pKey [PostMessage =. messageFormatted]
+    addModlogEntry $ MsgModlogRebuildPostsMessages
     msgRedirect MsgBoardsUpdated
   where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR AllBoards "")
 

@@ -4,6 +4,7 @@ module Handler.Admin where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
+import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
@@ -22,19 +23,19 @@ getStickR :: Text -> Int -> Handler Html
 getStickR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> runDB (update pId [PostSticked =. not (postSticked p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> addModlogEntry (MsgModlogStickThread thread board) >> runDB (update pId [PostSticked =. not (postSticked p)]) >> redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
 getLockR :: Text -> Int -> Handler Html
 getLockR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> runDB (update pId [PostLocked =. not (postLocked p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> addModlogEntry (MsgModlogLockThread thread board) >> runDB (update pId [PostLocked =. not (postLocked p)]) >> redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
 getAutoSageR :: Text -> Int -> Handler Html
 getAutoSageR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> runDB (update pId [PostAutosage =. not (postAutosage p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> addModlogEntry (MsgModlogAutosageThread thread board) >> runDB (update pId [PostAutosage =. not (postAutosage p)]) >> redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR

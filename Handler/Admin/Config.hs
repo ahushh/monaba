@@ -4,7 +4,7 @@ module Handler.Admin.Config where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
-
+import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 configForm :: Config ->
              Html   ->
@@ -17,6 +17,8 @@ configForm :: Config ->
                                        , Maybe Int  -- ^ How many latest posts show
                                        , Maybe Textarea -- ^ Html of home page
                                        , Maybe Textarea -- ^ Html of about page
+                                       , Maybe Int  -- ^ Max modlog entries
+                                       , Maybe Int  -- ^ Modlog entries per page
                                        )
                            , Widget)
 configForm config extra = do
@@ -33,11 +35,14 @@ configForm config extra = do
   (showLatestPostsRes , showLatestPostsView) <- mopt showLatestPostsField "" (f configShowLatestPosts)
   (aboutRes           , aboutView)           <- mopt textareaField "" (f configAbout)
   (homeRes            , homeView )           <- mopt textareaField "" (f configHome)
+  (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
+  (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
 
-  let result = (,,,,,,,,) <$>
+  let result = (,,,,,,,,,,) <$>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
-               showLatestPostsRes <*> aboutRes          <*> homeRes
+               showLatestPostsRes <*> aboutRes          <*> homeRes            <*>
+               modlogMaxEntriesRes <*> modlogEntriesPerPageRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -67,7 +72,8 @@ postConfigR = do
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (replyDelay , threadDelay, boardCategories,
-                 newsBoard  , showNews   , maxEditings    , showLatestPosts, about, home
+                 newsBoard  , showNews   , maxEditings    , showLatestPosts, about, home,
+                 modlogMaxEntries, modlogEntriesPerPage
                 ) -> do
       let newConfig = Config { configReplyDelay      = fromMaybe (configReplyDelay      oldConfigVal) replyDelay
                              , configThreadDelay     = fromMaybe (configThreadDelay     oldConfigVal) threadDelay
@@ -78,6 +84,9 @@ postConfigR = do
                              , configShowLatestPosts = fromMaybe (configShowLatestPosts oldConfigVal) showLatestPosts
                              , configAbout           = fromMaybe (configAbout           oldConfigVal) about
                              , configHome            = fromMaybe (configHome            oldConfigVal) home
+                             , configModlogMaxEntries     = fromMaybe (configModlogMaxEntries     oldConfigVal) modlogMaxEntries
+                             , configModlogEntriesPerPage = fromMaybe (configModlogEntriesPerPage oldConfigVal) modlogEntriesPerPage
                              }
       void $ runDB $ replace oldConfigKey newConfig
+      addModlogEntry MsgModlogUpdateConfig 
       msgRedirect MsgConfigUpdated

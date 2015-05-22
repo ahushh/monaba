@@ -31,6 +31,7 @@
 
 
 /admin                     AdminR        GET
+/admin/modlog/#Int         ModlogR       GET 
 /admin/stick/#Text/#Int    StickR        GET
 /admin/lock/#Text/#Int     LockR         GET
 /admin/autosage/#Text/#Int AutoSageR     GET

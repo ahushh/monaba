@@ -4,6 +4,7 @@ module Handler.Admin.Group where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
+import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 groupsForm :: Html ->
              MForm Handler (FormResult ( Text -- ^ Group name
@@ -11,11 +12,12 @@ groupsForm :: Html ->
                                        , Bool -- ^ ... boards
                                        , Bool -- ^ ... users
                                        , Bool -- ^ ... config
-                                       , Bool -- ^ Permission to delete posts
-                                       , Bool -- ^ Permission to view admin panel
-                                       , Bool -- ^ Permission to manage bans
-                                       , Bool -- ^ Permission to edit any post
-                                       , Bool -- ^ Permission to use additional markup
+                                       , Bool -- ^ to delete posts
+                                       , Bool -- ^ to view admin panel
+                                       , Bool -- ^ to manage bans
+                                       , Bool -- ^ to edit any post
+                                       , Bool -- ^ to use additional markup
+                                       , Bool -- ^ to view moderation log 
                                        ), Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
@@ -28,11 +30,13 @@ groupsForm extra = do
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
   (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
   (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing    
+  (viewModlogRes   , viewModlogView  ) <- mreq checkBoxField "" Nothing 
 
-  let result = (,,,,,,,,,)     <$> nameRes        <*>
+  let result = (,,,,,,,,,,)     <$> nameRes        <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes    <*> editPostsRes   <*> aMarkupRes
+               manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
+               viewModlogRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -47,6 +51,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ManageBanP    , MsgManageBan   )
              ,(EditPostsP    , MsgEditPosts   )
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
+             ,(ViewModlogP      , MsgViewModlog      ) 
              ]
 
 getManageGroupsR :: Handler Html
@@ -73,19 +78,20 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (name        , manageThread, manageBoard, manageUsers,
                  manageConfig, deletePostsP, managePanel, manageBan  ,
-                 editPosts   , aMarkup
+                 editPosts   , aMarkup     , viewModLog
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
+                        ,(ViewModlogP  ,viewModLog  )
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions
                            }
       g <- runDB $ getBy $ GroupUniqName name
       if isJust g
-        then void $ runDB $ replace (entityKey $ fromJust g) newGroup
-        else void $ runDB $ insert newGroup
+        then (addModlogEntry $ MsgModlogUpdateGroup name) >> (void $ runDB $ replace (entityKey $ fromJust g) newGroup)
+        else (addModlogEntry $ MsgModlogAddGroup    name) >> (void $ runDB $ insert newGroup)
       msgRedirect MsgGroupAddedOrUpdated
 
 getDeleteGroupsR :: Text -> Handler ()
@@ -98,5 +104,6 @@ getDeleteGroupsR group = do
   groups <- map (groupPermissions . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   when ((ManageUsersP `notElem` groupPermissions (entityVal $ fromJust delGroup) ) || ((>1) $ length $ filter (ManageUsersP `elem`) groups)) $ do
     void $ runDB $ deleteWhere [GroupName ==. group]
+    addModlogEntry $ MsgModlogDelGroup group 
     setMessageI MsgGroupDeleted >> redirect ManageGroupsR
   setMessageI MsgYouAreTheOnlyWhoCanManageUsers >> redirect ManageGroupsR

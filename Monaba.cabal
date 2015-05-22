@@ -33,6 +33,7 @@ library
                      Handler.Admin.Config
                      Handler.Admin.Group
                      Handler.Admin.User
+                     Handler.Admin.Modlog 
                      Handler.Ajax
                      Handler.Settings
                      Handler.Captcha

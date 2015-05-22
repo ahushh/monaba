@@ -107,5 +107,12 @@ Config
     showLatestPosts Int  
     about           Textarea default=''
     home            Textarea default=''
+    modlogMaxEntries     Int default=3000
+    modlogEntriesPerPage Int default=30
 Storage
     uploadDir       Int default=1
+Modlog
+    user            Text
+    group           Text
+    date            UTCTime
+    message         Text    

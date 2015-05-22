@@ -238,6 +238,8 @@ ReplyDelay: Reply delay
 ThreadDelay: New thread delay
 AdminAboutPage: Html of about page
 AdminHomePage: Html of home page
+ModlogMaxEntriesView: Max modlog entries
+ModlogEntriesPerPage: Modlog entries per page
 ## Messages
 ConfigUpdated: Config successfully updated
 
@@ -252,6 +254,7 @@ ManagePanel :Manage Panel
 ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 EditPosts: Edit posts and view history
+ViewModlog: View moderation log 
 
 ######################################################################################
 #### Help
@@ -312,3 +315,42 @@ Style: Style
 Language: Language
 FeedIgnoredBoards: /feed/ ignored boards
 ResetDefaults: Reset defaults
+
+######################################################################################
+#### Modlogs
+######################################################################################
+Modlog: Modlog
+ModlogDate: Date
+ModlogGroup: Group
+ModlogUser: User
+ModlogMessage: Message
+
+ModlogBanAdded ip@Text reason@Text nn@Int: Banned IP #{ip} — ##{show nn} — #{reason}
+ModlogDelBan nnn@Int: Deleted ban ##{show nnn}
+
+ModlogNewBoard bn@Text: Added a new board /#{bn}/
+ModlogUpdateAllBoards: Updated all boards
+ModlogUpdateBoard bnn@Text: Updated board /#{bnn}/
+ModlogCleanAllBoards: Cleaned all boards
+ModlogCleanBoard bnnn@Text: Cleaned board /#{bnnn}/
+ModlogDeleteAllBoards: Deleted all boards
+ModlogDeleteBoard adsf@Text: Deleted board /#{adsf}/
+
+ModlogUpdateGroup ggp@Text: Updated group #{ggp}
+ModlogAddGroup gag@Text: Added group #{gag}
+ModlogDelGroup gsd@Text: Deleted group #{gsd}
+
+ModlogAddUser gag@Text: Added user #{gag}
+ModlogDelUser gag@Text: Deleted user #{gag}
+
+ModlogUpdateConfig: Updated config
+
+ModlogStickThread thr@Int board@Text: Sticked thread ##{show thr} on /#{board}/
+ModlogLockThread thr@Int board@Text: Locked thread ##{show thr} on /#{board}/
+ModlogAutosageThread thr@Int board@Text: Turned off bumping thread ##{show thr} on /#{board}/
+
+ModlogHellban uid@Text: Hellbanned user #{uid}
+ModlogUnhellban uid@Text: Unhellbanned user #{uid}
+
+ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
+ModlogRebuildPostsMessages: Rebuilt HTML of posts messages

@@ -40,8 +40,10 @@
                    L
                <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
                    A 
-               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-exchange>
+               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h>
                ]
+           $if elem ManageThreadP permissions
+               <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows>
            $if elem ManageBanP permissions
              [ #{postIp postVal} 
                <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>

@@ -135,6 +135,8 @@ Boards: Boards
 Bans: Bans
 MoveThread: Move thread
 WhichBoard: Which board?
+ChangeThread: Move post to another thread
+WhichThread: Which thread? Input 0 to create new thread
 
 ### Boards
 BoardIndexNumber: Index number
@@ -356,3 +358,4 @@ ModlogUnhellban uid@Text: Unhellbanned user #{uid}
 
 ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
 ModlogRebuildPostsMessages: Rebuilt HTML of posts messages
+NoSuchPost: No such post

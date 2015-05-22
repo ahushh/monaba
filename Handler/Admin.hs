@@ -38,6 +38,20 @@ getMoveThreadR srcBoard thread dstBoard = do
 
   redirect $ BoardNoPageR dstBoard
 
+getChangeThreadR :: Int -> Int -> Handler Html
+getChangeThreadR postKey threadLocalId = do
+  let k = (toSqlKey $ fromIntegral postKey) :: Key Post
+  mPost <- runDB $ get k
+  case mPost of
+    Nothing   -> (setMessageI MsgNoSuchPost) >> redirectUltDest HomeR
+    Just post -> do
+      let board = postBoard post
+      thr <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. threadLocalId, PostParent ==. 0] []
+      when (threadLocalId /= 0 && isNothing thr) $ (setMessageI MsgNoSuchThread) >> (redirectUltDest $ BoardNoPageR board)
+      replies <- runDB $ selectList [PostBoard ==. board, PostParent ==. postLocalId post] []
+      forM_ ((Entity k post):replies) $ \(Entity k' _) -> runDB $ update k' [PostParent =. threadLocalId]
+      redirect $ BoardNoPageR board
+
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do

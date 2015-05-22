@@ -1342,6 +1342,11 @@ function moveThread(board, thread) {
     window.location.href = "/admin/move/"+board+"/"+thread+"/"+destBoard;
 }
 
+function changeThread(postId) {
+    var destThread = prompt(#{toJSON $ msgrender MsgWhichThread});
+    window.location.href = "/admin/changethread/"+postId+"/"+destThread;
+}
+
 function fadeIn(el,n,callback) {
     el.style.opacity = 0;
 

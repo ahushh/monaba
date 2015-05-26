@@ -15,6 +15,7 @@ import           System.Directory                (copyFile, doesFileExist, doesD
 import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
 import qualified Graphics.ImageMagick.MagickWand as IM
+import           Control.Monad.Trans.Resource    (release)
 import           System.FilePath                 ((</>))
 import           System.Process                  (readProcess)
 import           System.Posix                    (FileOffset())
@@ -60,7 +61,7 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
           -- make thumbnail
           let thumbpath = thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
           void $ liftIO $ readProcess "/usr/bin/ffmpeg" ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
-          (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize)
+          (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False
           -- get video info
           info' <- liftIO $ readProcess "/usr/bin/exiftool" ["-t",uploadPath] []
           let info   = parseExifInfo info'
@@ -165,6 +166,17 @@ getImageResolution filepath = withMagickWandGenesis $ do
   height <- getImageHeight w
   return (width, height)
 
+-- -- | Resizes an image file and saves the result to a new file.
+-- resizeImage :: FilePath           -- ^ Source image file
+--             -> FilePath           -- ^ Destination image file
+--             -> ImageResolution    -- ^ The maximum dimensions of the output file
+--             -> IO ImageResolution -- ^ The size of the output file
+-- resizeImage from to maxSz = do
+--   void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
+--   void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
+--   outSz <- liftIO $ getImageResolution to
+--   return outSz
+
 calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
 calcResolution (inW,inH) (outW,outH)
     | inAspect >  outAspect = (outW, round (fromIntegral outW / inAspect))
@@ -177,18 +189,34 @@ calcResolution (inW,inH) (outW,outH)
 resizeImage :: FilePath           -- ^ Source image file
             -> FilePath           -- ^ Destination image file
             -> ImageResolution    -- ^ The maximum dimensions of the output file
+            -> Bool               -- ^ Is a gif or not
             -> IO ImageResolution -- ^ The size of the output file
-resizeImage from to maxSz = withMagickWandGenesis $ do
+resizeImage from to maxSz gif = withMagickWandGenesis $ do
   (_,w) <- magickWand
   readImage w (fromText $ pack from)
   width  <- getImageWidth w
   height <- getImageHeight w
   let inSz                    = (width, height)
       outSz@(width', height') = calcResolution inSz maxSz
-  IM.resizeImage w width' height' lanczosFilter 1
-  setImageCompressionQuality w 95
-  writeImages w (fromText $ pack to) True
-  return outSz
+  if gif
+    then do
+      (pointer, images) <- coalesceImages w
+      (_,w1) <- magickWand
+      n <- getNumberImages images
+      forM_ [1..(n-1)] $ \i -> localGenesis $ do
+        images `setIteratorIndex` i
+        (_,image) <- getImage images
+        IM.resizeImage w width' height' lanczosFilter 1
+        addImage w1 image
+      resetIterator w1
+      release pointer
+      writeImages w1 (fromText $ pack to) True
+      return outSz
+    else do
+      IM.resizeImage w width' height' lanczosFilter 1
+      setImageCompressionQuality w 95
+      writeImages w (fromText $ pack to) True
+      return outSz
 
 -- | Make a thumbnail for an image file
 makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
@@ -201,7 +229,7 @@ makeThumbImg thumbSize filepath fileext hashsum (width, height) = do
   unlessM (doesDirectoryExist (thumbDirectory </> hashsum)) $
     createDirectory (thumbDirectory </> hashsum)
   if height > thumbSize || width > thumbSize
-    then resizeImage filepath thumbpath (thumbSize,thumbSize)
+    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif")
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)
 

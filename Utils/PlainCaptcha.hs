@@ -18,6 +18,7 @@ pick :: [a] -> IO a
 pick xs = (xs!!) <$> randomRIO (0, length xs - 1)
 ------------------------------------------------------------------------------------------------
 chars = ['a'..'x']++['A'..'X']++['0'..'9']
+colors = ["red","blue","green","black","yellow"]
 
 makeCaptcha :: String    -> -- ^ Path to captcha
               IO String   -- ^ captcha value
@@ -28,21 +29,22 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
 
   let len    = 5
       space  = 10.0 :: Double   -- space between characters in px
-      height = 25              -- image height
-      fSize  = 20              -- font size
+      height = 30              -- image height
+      fSize  = 25              -- font size
   -- Create a transparent image
   -- pw `setColor` "none"
   pw `setColor` "white"
   newImage w (truncate space*(len+2)) height pw
   -- Set text color and size
-  pw `setColor` "black"
   dw `setFontSize` fSize
   dw `setTextAntialias` True
   -- Add the text
   text <- forM [1..len] $ \i -> do
-    x    <- liftIO (randomRIO (-5.0,3.0) :: IO Double)
-    y    <- liftIO (randomRIO (-1.0,1.0) :: IO Double)
+    x    <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
+    y    <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
     char <- liftIO $ pick chars
+    color <- liftIO $ pick colors
+    dw `setColor` color
     drawAnnotation dw (x+space*(fromIntegral i)) ((fSize :: Double)+y) (pack $ char:[])
     return $ toLower char
   drawImage w dw

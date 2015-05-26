@@ -123,6 +123,7 @@ library
                  , yesod-auth-hashdb
                  , random
                  , imagemagick
+                 , resourcet
 
 executable         Captcha
     if flag(library-only)

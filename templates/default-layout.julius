@@ -1338,13 +1338,14 @@ function setConfigIfNull(k,v) {
 // ---------------------------------------------------------
 function moveThread(board, thread) {
     var destBoard = prompt(#{toJSON $ msgrender MsgWhichBoard});
-    console.log("/admin/move/"+board+"/"+thread+"/"+destBoard);
-    window.location.href = "/admin/move/"+board+"/"+thread+"/"+destBoard;
+    if (destBoard)
+        window.location.href = "/admin/move/"+board+"/"+thread+"/"+destBoard;
 }
 
 function changeThread(postId) {
     var destThread = prompt(#{toJSON $ msgrender MsgWhichThread});
-    window.location.href = "/admin/changethread/"+postId+"/"+destThread;
+    if (destThread)
+        window.location.href = "/admin/changethread/"+postId+"/"+destThread;
 }
 
 function fadeIn(el,n,callback) {

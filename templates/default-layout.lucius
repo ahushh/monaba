@@ -25,6 +25,12 @@ hr {
    clear: left;
 }
 
+.online-counter {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
 .fa {
    cursor: pointer;
 }

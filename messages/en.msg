@@ -278,6 +278,7 @@ SupportedLanguages: Supported languages for tag [code=<language>]
 ######################################################################################
 #### Ajax, popups, refmap, ...
 ######################################################################################
+Online: Online:
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
 

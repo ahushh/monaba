@@ -36,6 +36,12 @@ import Text.Blaze.Html as Import (preEscapedToHtml)
 import Data.List (sortBy)
 import Control.Monad (mplus)
 
+import qualified Data.Map as Map
+import Data.Time (UTCTime)
+import           Control.Concurrent.STM.TVar
+-- import           Control.Concurrent.STM.TChan
+-- import           Control.Concurrent.STM (atomically)
+
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -47,6 +53,8 @@ data App = App
     , httpManager :: Manager
     , persistConfig :: Settings.PersistConf
     , appLogger :: Logger
+    , sseClients :: TVar (Map.Map Text UTCTime)
+    -- , sseChan :: TChan (Text, Text)
     }
 
 instance HasHttpManager App where

@@ -1,3 +1,25 @@
+function isEventSourceSupported() {
+    return typeof(EventSource) !== "undefined";
+    // return typeof(EventSource) !== "undefined";
+}
+if (isEventSourceSupported()) {
+    var online = document.createElement("div");
+    online.className = "online-counter";
+    document.body.appendChild(online);
+    var src = new EventSource("@{OnlineR}");
+    src.onopen  = function()      { console.log("Eventsource opened."); };
+    src.onclose = function()      { console.log("Eventsource closed."); };
+    src.onmessage = function(msg) {
+        console.log(msg.data);
+    };
+    src.onerror = function(e) {
+        console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+    };
+    src.addEventListener('online', function(msg) {
+        online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
+    });
+}
+
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {

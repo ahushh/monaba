@@ -24,6 +24,11 @@ import Network.Wai.Logger (clockDateCacher)
 import Data.Default (def)
 import Yesod.Core.Types (loggerSet, Logger (Logger))
 
+import qualified Data.Map as Map
+-- import           Control.Concurrent.STM.TChan
+-- import           Control.Concurrent.STM (atomically)
+import           Control.Concurrent.STM.TVar
+
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
 import Handler.Home
@@ -33,6 +38,7 @@ import Handler.Board
 import Handler.Edit
 import Handler.Feed
 import Handler.Delete
+import Handler.EventSource
 import Handler.Admin
 import Handler.Admin.Ban
 import Handler.Admin.Board
@@ -83,7 +89,8 @@ makeFoundation conf = do
 
     loggerSet' <- newStdoutLoggerSet defaultBufSize
     (getter, _) <- clockDateCacher
-
+    clients <- newTVarIO Map.empty
+    -- chan <- atomically newBroadcastTChan
     let logger = Yesod.Core.Types.Logger loggerSet' getter
         mkFoundation p = App
             { settings = conf
@@ -92,6 +99,8 @@ makeFoundation conf = do
             , httpManager = manager
             , persistConfig = dbconf
             , appLogger = logger
+            , sseClients = clients
+            -- , sseChan    = chan
             }
         tempFoundation = mkFoundation $ error "connPool forced in tempFoundation"
         logFunc = messageLoggerSource tempFoundation logger

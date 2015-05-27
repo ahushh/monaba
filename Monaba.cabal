@@ -27,6 +27,7 @@ library
                      Handler.Feed
                      Handler.Posting
                      Handler.Delete
+                     Handler.EventSource
                      Handler.Admin
                      Handler.Admin.Ban
                      Handler.Admin.Board
@@ -124,10 +125,14 @@ library
                  , random
                  , imagemagick
                  , resourcet
+                 , yesod-eventsource
+                 , stm
+                 , blaze-builder
+                 , base64-bytestring
 
 executable         Captcha
-    -- if flag(library-only)
-        -- Buildable: False
+    if flag(library-only)
+        Buildable: False
 
     main-is:           PlainCaptcha.hs
     hs-source-dirs:    Utils

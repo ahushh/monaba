@@ -81,6 +81,7 @@ getDeleteR = do
           requestIds   = map helper xs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
+      -- when nopasreq $ addModlogEntry MsgModlogDeletePosts $ T.intercalate "," $ map (postLocalId $ 
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
         _  -> deletePosts posts onlyfiles >> redirectUltDest HomeR

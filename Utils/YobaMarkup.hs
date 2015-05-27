@@ -3,6 +3,7 @@ module Utils.YobaMarkup
        (
          doYobaMarkup
        , fixReferences
+       , makeExternalRef
        ) where
 
 import           Import
@@ -44,6 +45,15 @@ geshi :: String
 geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
+-------------------------------------------------------------------------------------------------------------------
+-- Parse only external referency
+-------------------------------------------------------------------------------------------------------------------
+makeExternalRef :: Text -> Int -> Handler Text
+makeExternalRef board post = let parsed = parse (many $ try extref) "yoba markup" $ T.concat [">>/",board,"/",showText post]
+                             in case parsed of
+                               Right xs -> unTextarea <$> processMarkup xs "nope" 0
+                               Left err -> return $ pack $ show err
+
 -------------------------------------------------------------------------------------------------------------------
 -- Fix post referencies after thread moving
 -------------------------------------------------------------------------------------------------------------------

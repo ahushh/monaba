@@ -5,7 +5,7 @@ import           Import
 import           Yesod.Auth
 import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
-import           Utils.YobaMarkup     (fixReferences, doYobaMarkup) 
+import           Utils.YobaMarkup     (fixReferences, doYobaMarkup, makeExternalRef)
 -------------------------------------------------------------------------------------------------------------
 getMoveThreadR :: Text -> Int -> Text -> Handler Html
 getMoveThreadR srcBoard thread dstBoard = do
@@ -35,6 +35,10 @@ getMoveThreadR srcBoard thread dstBoard = do
   fixedOpMsg     <- liftIO $ fixReferences srcBoard (zip oldIds newIds) (Textarea $ postRawMessage $ entityVal opPost)
   opMsgFormatted <- doYobaMarkup (Just fixedOpMsg) dstBoard 0
   runDB $ update (entityKey opPost) [PostMessage =. opMsgFormatted, PostRawMessage =. unTextarea fixedOpMsg]
+  
+  from <- makeExternalRef srcBoard thread
+  to   <- makeExternalRef dstBoard thread
+  addModlogEntry $ MsgModlogMoveThread from to
 
   redirect $ BoardNoPageR dstBoard
 
@@ -50,6 +54,12 @@ getChangeThreadR postKey threadLocalId = do
       when (threadLocalId /= 0 && isNothing thr) $ (setMessageI MsgNoSuchThread) >> (redirectUltDest $ BoardNoPageR board)
       replies <- runDB $ selectList [PostBoard ==. board, PostParent ==. postLocalId post] []
       forM_ ((Entity k post):replies) $ \(Entity k' _) -> runDB $ update k' [PostParent =. threadLocalId]
+
+      from <- makeExternalRef (postBoard post) (postParent post)
+      to   <- makeExternalRef (postBoard post) threadLocalId
+      p    <- makeExternalRef (postBoard post) (postLocalId post)
+      addModlogEntry $ MsgModlogChangeThread from to p
+
       redirect $ BoardNoPageR board
 
 -------------------------------------------------------------------------------------------------------------
@@ -70,19 +80,31 @@ getStickR :: Text -> Int -> Handler Html
 getStickR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> addModlogEntry (MsgModlogStickThread thread board) >> runDB (update pId [PostSticked =. not (postSticked p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> do
+      t <- makeExternalRef board thread
+      addModlogEntry $ MsgModlogStickThread t
+      runDB $ update pId [PostSticked =. not (postSticked p)]
+      redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
 getLockR :: Text -> Int -> Handler Html
 getLockR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> addModlogEntry (MsgModlogLockThread thread board) >> runDB (update pId [PostLocked =. not (postLocked p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> do
+      t <- makeExternalRef board thread
+      addModlogEntry $ MsgModlogLockThread t
+      runDB $ update pId [PostLocked =. not (postLocked p)]
+      redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
 getAutoSageR :: Text -> Int -> Handler Html
 getAutoSageR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   case maybePost of
-    Just (Entity pId p) -> addModlogEntry (MsgModlogAutosageThread thread board) >> runDB (update pId [PostAutosage =. not (postAutosage p)]) >> redirectUltDest AdminR
+    Just (Entity pId p) -> do
+      t <- makeExternalRef board thread
+      addModlogEntry $ MsgModlogAutosageThread t
+      runDB $ update pId [PostAutosage =. not (postAutosage p)]
+      redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR

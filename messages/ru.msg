@@ -353,15 +353,19 @@ ModlogDelUser gag@Text: Удален пользователь #{gag}
 
 ModlogUpdateConfig: Обновлен конфиг
 
-ModlogStickThread thr@Int board@Text: Прикреплен тред ##{show thr} /#{board}/
-ModlogLockThread thr@Int board@Text: Закрыт тред ##{show thr} /#{board}/
-ModlogAutosageThread thr@Int board@Text: Отключен бамп треда ##{show thr} /#{board}/
+ModlogStickThread thr1@Text: Прикреплен тред #{thr1}
+ModlogLockThread thr1@Text: Закрыт постинг в треде #{thr1}
+ModlogAutosageThread thr1@Text: Отключен бамп треда #{thr1}
 
 ModlogHellban uid@Text: Премодерируются все сообщения пользователя #{uid}
 ModlogUnhellban uid@Text: Пользователь снят с премодерации #{uid}
 
 ModlogRebuildPostsMessagesOn board@Text: Обновлены HTML сообщения в постах на борде /#{board}/
 ModlogRebuildPostsMessages: Обновлены HTML сообщения в постах на борде
+
+ModlogMoveThread from@Text to@Text: Перемещен тред из #{from} в #{to}
+ModlogChangeThread from@Text to@Text p@Text: Перемещен #{p} пост из треда #{from} в тред #{to}
+
 NoSuchPost: Нет такого поста
 
 ######################################################################################

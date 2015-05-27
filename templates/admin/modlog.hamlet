@@ -11,6 +11,6 @@
           <td> #{myFormatTime timeZone $ modlogDate entry}
           <td> #{modlogUser entry}
           <td> #{modlogGroup entry}
-          <td> #{modlogMessage entry}
+          <td> #{preEscapedToHtml $ modlogMessage entry}
 
 ^{paginationWidget page pages ModlogR}

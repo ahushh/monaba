@@ -351,15 +351,19 @@ ModlogDelUser gag@Text: Deleted user #{gag}
 
 ModlogUpdateConfig: Updated config
 
-ModlogStickThread thr@Int board@Text: Sticked thread ##{show thr} on /#{board}/
-ModlogLockThread thr@Int board@Text: Locked thread ##{show thr} on /#{board}/
-ModlogAutosageThread thr@Int board@Text: Turned off bumping thread ##{show thr} on /#{board}/
+ModlogStickThread thr1@Text: Sticked thread #{thr1}
+ModlogLockThread thr1@Text: Locked thread #{thr1}
+ModlogAutosageThread thr1@Text: Turned off bumping thread #{thr1}
 
 ModlogHellban uid@Text: Hellbanned user #{uid}
 ModlogUnhellban uid@Text: Unhellbanned user #{uid}
 
 ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
 ModlogRebuildPostsMessages: Rebuilt HTML of posts messages
+
+ModlogMoveThread from@Text to@Text: Move thread from #{from} to #{to}
+ModlogChangeThread from@Text to@Text p@Text: Move #{p} from thread #{from} to #{to}
+
 NoSuchPost: No such post
 
 ######################################################################################

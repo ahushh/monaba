@@ -126,8 +126,8 @@ library
                  , resourcet
 
 executable         Captcha
-    if flag(library-only)
-        Buildable: False
+    -- if flag(library-only)
+        -- Buildable: False
 
     main-is:           PlainCaptcha.hs
     hs-source-dirs:    Utils

@@ -13,7 +13,7 @@ captchaExt = ".png"
 makeCaptcha :: String -> Handler Text
 makeCaptcha path = do
   captcha <- extraCaptcha <$> getExtra
-  liftIO $ pack <$> readProcess (unpack captcha) [path] ""
+  liftIO $ (T.strip . pack) <$> readProcess (unpack captcha) [path] ""
 
 getCaptchaR :: Handler Html
 getCaptchaR = do

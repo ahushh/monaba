@@ -17,8 +17,8 @@ import           System.Environment             (getArgs)
 pick :: [a] -> IO a
 pick xs = (xs!!) <$> randomRIO (0, length xs - 1)
 ------------------------------------------------------------------------------------------------
-chars = ['a'..'x']++['A'..'X']++['0'..'9']
-colors = ["red","blue","green","black","yellow"]
+colors = ["AliceBlue","AntiqueWhite","aqua","aquamarine","azure","beige","bisque","black","BlanchedAlmond","blue","BlueViolet","brown","burlywood","CadetBlue","chartreuse","chocolate","coral","CornflowerBlue","cornsilk","crimson","cyan","DarkBlue","DarkCyan","DarkGoldenrod","DarkGray","DarkGreen","DarkGrey","DarkKhaki","DarkMagenta","DarkOliveGreen","DarkOrange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","firebrick","FloralWhite","ForestGreen","fractal","freeze","fuchsia","gainsboro","GhostWhite","gold","goldenrod","gray","gray","green","green","GreenYellow","grey","honeydew","HotPink","IndianRed","indigo","ivory","khaki","lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenrod","LightGoldenrodYellow","LightGray","LightGreen","LightGrey","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","lime","LimeGreen","linen","magenta","maroon","maroon","matte","MediumAquamarine","MediumBlue","MediumForestGreen","MediumGoldenRod","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","moccasin","NavajoWhite","navy","NavyBlue","none","OldLace","olive","OliveDrab","opaque","orange","OrangeRed","orchid","PaleGoldenrod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","peru","pink","plum","PowderBlue","purple","purple","red","RosyBrown","RoyalBlue","SaddleBrown","salmon","SandyBrown","SeaGreen","seashell","sienna","silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","snow","SpringGreen","SteelBlue","tan","teal","thistle","tomato","transparent","turquoise","violet","VioletRed","wheat","white","WhiteSmoke","yellow","YellowGreen"]
+chars = filter (`notElem`"Il") $ ['a'..'x']++['A'..'X']++['1'..'9']
 
 makeCaptcha :: String    -> -- ^ Path to captcha
               IO String   -- ^ captcha value
@@ -28,41 +28,25 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
   pw     <- pixelWand
 
   let len    = 5
-      space  = 10.0 :: Double   -- space between characters in px
+      space  = 12.0 :: Double   -- space between characters in px
       height = 30              -- image height
       fSize  = 25              -- font size
-  -- Create a transparent image
-  -- pw `setColor` "none"
-  pw `setColor` "white"
   newImage w (truncate space*(len+2)) height pw
-  -- Set text color and size
   dw `setFontSize` fSize
-  dw `setTextAntialias` True
-  -- Add the text
+  w `addNoiseImage` randomNoise
+  blurImage w 0 1
   text <- forM [1..len] $ \i -> do
-    x    <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
-    y    <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
-    char <- liftIO $ pick chars
-    color <- liftIO $ pick colors
-    dw `setColor` color
+    x      <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
+    y      <- liftIO (randomRIO (-2.0,2.0) :: IO Double)
+    char   <- liftIO $ pick chars
+    color  <- liftIO $ pick colors
+    pw `setColor` color
+    dw `setStrokeColor` pw
     drawAnnotation dw (x+space*(fromIntegral i)) ((fSize :: Double)+y) (pack $ char:[])
     return $ toLower char
   drawImage w dw
-  -- Trim the image down to include only the text
   trimImage w 0
-  -- Draw the white shadow
-  resetImagePage w Nothing
-  (_,cloneW) <- cloneMagickWand w
-  pw `setColor` "grey"
-  w `setImageBackgroundColor` pw
-  shadowImage w 25 3 1 1
-  compositeImage w cloneW overCompositeOp 5 5
-  (_,w') <- magickWand
-  pw `setColor` "none"
-  width  <- getImageWidth w
-  newImage w' width height pw
-  compositeImage w' w overCompositeOp 0 0
-  writeImage w' $ Just $ fromText $ pack path
+  writeImage w $ Just $ fromText $ pack path
   return text
 ------------------------------------------------------------------------------------------------
 main = do

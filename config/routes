@@ -17,6 +17,7 @@
 /help/markup         HelpMarkupR   GET
 
 /online              OnlineR       GET
+/event               EventR        GET
 
 /ajax/postform/#Text              AjaxGetPostFormR  GET
 /ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET

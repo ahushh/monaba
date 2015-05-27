@@ -25,8 +25,8 @@ import Data.Default (def)
 import Yesod.Core.Types (loggerSet, Logger (Logger))
 
 import qualified Data.Map as Map
--- import           Control.Concurrent.STM.TChan
--- import           Control.Concurrent.STM (atomically)
+import           Control.Concurrent.STM.TChan
+import           Control.Concurrent.STM (atomically)
 import           Control.Concurrent.STM.TVar
 
 -- Import all relevant handler modules here.
@@ -90,7 +90,7 @@ makeFoundation conf = do
     loggerSet' <- newStdoutLoggerSet defaultBufSize
     (getter, _) <- clockDateCacher
     clients <- newTVarIO Map.empty
-    -- chan <- atomically newBroadcastTChan
+    chan <- atomically newBroadcastTChan
     let logger = Yesod.Core.Types.Logger loggerSet' getter
         mkFoundation p = App
             { settings = conf
@@ -100,7 +100,7 @@ makeFoundation conf = do
             , persistConfig = dbconf
             , appLogger = logger
             , sseClients = clients
-            -- , sseChan    = chan
+            , sseChan    = chan
             }
         tempFoundation = mkFoundation $ error "connPool forced in tempFoundation"
         logFunc = messageLoggerSource tempFoundation logger

@@ -1,25 +1,3 @@
-function isEventSourceSupported() {
-    return typeof(EventSource) !== "undefined";
-    // return typeof(EventSource) !== "undefined";
-}
-if (isEventSourceSupported()) {
-    var online = document.createElement("div");
-    online.className = "online-counter";
-    document.body.appendChild(online);
-    var src = new EventSource("@{OnlineR}");
-    src.onopen  = function()      { console.log("Eventsource opened."); };
-    src.onclose = function()      { console.log("Eventsource closed."); };
-    src.onmessage = function(msg) {
-        console.log(msg.data);
-    };
-    src.onerror = function(e) {
-        console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
-    };
-    src.addEventListener('online', function(msg) {
-        online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
-    });
-}
-
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
@@ -29,6 +7,44 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 };
+
+function isEventSourceSupported() {
+    return getConfig("eventsource") && typeof(EventSource) !== "undefined";
+}
+//-----------------------------------------------------------------
+// EventSource
+//-----------------------------------------------------------------
+var eventsource = null;
+if (isEventSourceSupported()) {
+    // eventsource = new EventSource("@{EventR}");
+    // eventsource.onopen  = function()      { console.log("Eventsource opened."); };
+    // eventsource.onclose = function()      { console.log("Eventsource closed."); };
+    // eventsource.onmessage = function(msg) {
+    //     console.log("Eventsource message: "+msg.data);
+    // };
+    // eventsource.onerror = function(e) {
+    //     console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+    // };
+}
+//-----------------------------------------------------------------
+// Online users counter
+//-----------------------------------------------------------------
+(function() {
+    if (isEventSourceSupported()) {
+        var online = document.createElement("div");
+        online.className = "online-counter";
+        document.body.appendChild(online);
+        var src = new EventSource("@{OnlineR}");
+        src.onopen  = function()      { console.log("Online: Eventsource opened."); };
+        src.onclose = function()      { console.log("Online: Eventsource closed."); };
+        src.onerror = function(e) {
+            console.log("Online: Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+        };
+        src.addEventListener('online', function(msg) {
+            online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
+        });
+    }
+})();
 //-----------------------------------------------------------------
 // New posts counter
 //-----------------------------------------------------------------
@@ -51,7 +67,19 @@ Array.prototype.contains = function(obj) {
         });
     };
     updateStats();
-    window.setInterval(updateStats, getConfig("board_stats_update"));
+    // if (isEventSourceSupported()) {
+    //     eventsource.addEventListener("new-post", function(msg) {
+    //         var board = msg.data;
+    //         var boardLink = document.getElementById("board-link-"+board);
+    //         if (boardLink == null) return;
+    //         var n = boardLink.innerHTML.match(/ \+(\d+)/);
+    //         var newPosts = 1;
+    //         if (n && n[1]) newPosts += +n[1];
+    //         boardLink.innerHTML = "/"+board+"/ +"+newPosts;
+    //     });
+    // } else {
+        window.setInterval(updateStats, getConfig("board_stats_update"));
+    // }
 })();
 //-----------------------------------------------------------------
 var Monaba = {
@@ -69,6 +97,7 @@ applyCSSSettings();
 
 function loadConfig() {
     setConfigIfNull("mathjax", true);
+    setConfigIfNull("eventsource", true);
     setConfigIfNull("board_stats_update", 30000);
     setConfigIfNull("animation_speed", 300);
     setConfigIfNull("popup_message_display_time", 2000);
@@ -96,6 +125,7 @@ function loadConfig() {
 
 function resetConfig() {
     setConfig("mathjax", true);
+    setConfig("eventsource", true);
     setConfig("board_stats_update", 30000);
     setConfig("animation_speed", 300);
     setConfig("popup_message_display_time", 2000);

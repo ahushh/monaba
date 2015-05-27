@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     table.appendChild(tbody);
 
     var opts = [["checkbox", "mathjax"],
+                ["checkbox", "eventsource"],
                 ["number", "board_stats_update"],
                 ["number", "animation_speed"],
                 ["number", "popup_message_display_time"],

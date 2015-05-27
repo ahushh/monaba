@@ -48,7 +48,7 @@ postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = d
       urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard), (msgrender MsgToFeed, ToFeed)]
       passInput    lbl = lbl { fsAttrs = [("autocomplete","off")] }
-      captchaInput lbl = lbl { fsAttrs = [("placeholder",msgrender MsgCaptcha)] }
+      captchaInput lbl = lbl { fsAttrs = [("class", "captcha-input"),("placeholder",msgrender MsgCaptcha)] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
       nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName ),("placeholder",msgrender MsgName)] }
       subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",showText maxLenOfPostTitle),

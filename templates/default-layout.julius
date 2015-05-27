@@ -303,6 +303,9 @@ function refreshCaptcha() {
     var captcha = document.getElementById("captcha");
     if (captcha != null)
         captcha.src = "@{CaptchaR}" + "?" + new Date().getTime();
+    var captchaInput = document.getElementsByClassName("captcha-input");
+    if (captchaInput)
+        captchaInput[0].value = "";
 }
 
 function clearPostFormFields() {
@@ -319,6 +322,9 @@ function clearPostFormFields() {
     }
     var textarea = postform.getElementsByTagName("textarea")[0];
     textarea.value = "";
+    var captchaInput = document.getElementsByClassName("captcha-input");
+    if (captchaInput)
+        captchaInput[0].value = "";
 }
 
 function generatePassword(n) {

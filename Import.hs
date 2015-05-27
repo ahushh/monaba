@@ -54,6 +54,7 @@ import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append, length)
+import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
 -- Constants
 -------------------------------------------------------------------------------------------------------------------
@@ -352,3 +353,46 @@ getCountry ip = do
   dbPath <- unpack . extraGeoIPCityPath <$> getExtra
   geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= flip geoLocateByIPAddress (encodeUtf8 ip)
   return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
+-------------------------------------------------------------------------------------------------------------------
+-- Board stats
+-------------------------------------------------------------------------------------------------------------------
+getBoardStats :: Handler [(Text,Int,Int)]
+getBoardStats = do
+  mgroup     <- getMaybeGroup =<< maybeAuth
+  maybeStats <- lookupSession "board-stats"
+  case maybeStats of
+    Just s  -> return $ readText s
+    Nothing -> do
+      posterId <- getPosterId
+      boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      hiddenThreads <- getAllHiddenThreads
+      stats  <- runDB $ forM boards $ \b -> do
+                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostPosterId !=. posterId
+                                         ,PostParent /<-. concatMap (map fst . snd) (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
+                  return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
+      saveBoardStats stats
+      return stats
+  where ignoreBoards' group (Entity _ b)
+          | boardHidden b ||
+            ( (isJust (boardViewAccess b) && isNothing group) ||
+              (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+            ) = Nothing
+          | otherwise = Just $ boardName b
+
+saveBoardStats :: [(Text,Int,Int)] -> Handler ()
+saveBoardStats stats = do
+  deleteSession "board-stats"
+  setSession "board-stats" $ showText stats
+
+cleanBoardStats :: Text -> Handler ()
+cleanBoardStats board = do
+  hiddenThreads <- getAllHiddenThreads
+  oldStats <- getBoardStats
+  newStats <- forM oldStats $ \s@(b,_,_) ->
+    if b == board
+    then do
+      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False
+                                      ,PostParent /<-. concatMap (map fst . snd) (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
+      return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
+    else return s
+  saveBoardStats newStats

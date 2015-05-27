@@ -60,6 +60,7 @@ getBoardR board page = do
   numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
   posterId        <- getPosterId
   hiddenThreads   <- map fst <$> getHiddenThreads board
+  cleanBoardStats board
   let numberFiles       = boardNumberFiles       boardVal
       maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
@@ -168,6 +169,7 @@ postBoardR board _ = do
           Nothing    -> deleteSession "name"
         deleteSession "message"
         deleteSession "post-title"
+        cleanBoardStats board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)

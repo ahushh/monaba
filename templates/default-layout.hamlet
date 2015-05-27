@@ -10,13 +10,13 @@ $maybe msg <- mmsg
 <div .board-list>
     [ <a title="_{MsgFeed}" href=@{FeedR}>/feed/</a> ] 
     $forall Entity _ b <- sortBoards (widgetHelperFilterBoards boards "" group)
-      [ <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
+      [ <a class=board-link data-board=#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 
     $forall c <- filter ((/=)"") categories
       $with bs <- sortBoards (widgetHelperFilterBoards boards c group)
         $if not (null bs)
           [ 
           $forall Entity _ b <- bs
-            <a title="#{boardTitle b}" href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> 
+            <a title="#{boardTitle b}" class=board-link data-board=#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> 
           ] 
 
 ^{widget}

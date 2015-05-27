@@ -28,7 +28,31 @@ Array.prototype.contains = function(obj) {
         }
     }
     return false;
-}
+};
+//-----------------------------------------------------------------
+// New posts counter
+//-----------------------------------------------------------------
+(function() {
+    var updateStats = function() {
+        httpRequest({
+            action: "@{AjaxBoardStatsR}",
+            headers: { 'Accept': 'application/json' },
+            onload: function(request) {
+                if (request.status >= 200 && request.status < 400) {
+                    var data = JSON.parse(request.responseText);
+                    var boards = document.getElementsByClassName("board-link");
+                    for (var i = 0; i < boards.length; i++) {
+                        var board = boards[i].dataset.board;
+                        var newPosts = data[board] ? " +"+data[board] : "";
+                        boards[i].innerHTML = "/"+board+"/"+newPosts;
+                    }
+                }
+            }
+        });
+    };
+    updateStats();
+    window.setInterval(updateStats, getConfig("board_stats_update"));
+})();
 //-----------------------------------------------------------------
 var Monaba = {
     zindex: 10,
@@ -45,6 +69,7 @@ applyCSSSettings();
 
 function loadConfig() {
     setConfigIfNull("mathjax", true);
+    setConfigIfNull("board_stats_update", 30000);
     setConfigIfNull("animation_speed", 300);
     setConfigIfNull("popup_message_display_time", 2000);
     setConfigIfNull("popup_post_delay_before_displaying", 500);
@@ -71,6 +96,7 @@ function loadConfig() {
 
 function resetConfig() {
     setConfig("mathjax", true);
+    setConfig("board_stats_update", 30000);
     setConfig("animation_speed", 300);
     setConfig("popup_message_display_time", 2000);
     setConfig("popup_post_delay_before_displaying", 500);

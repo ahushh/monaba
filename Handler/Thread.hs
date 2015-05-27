@@ -161,6 +161,7 @@ postThreadR board thread = do
         -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"
+        cleanBoardStats board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl

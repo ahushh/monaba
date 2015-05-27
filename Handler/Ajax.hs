@@ -149,3 +149,18 @@ getAjaxUnhideThreadR board threadId = do
   selectRep $ do
     provideRep $ bareLayout [whamlet|ok|]
     provideJson $ object [("ok", "showed")]
+---------------------------------------------------------------------------------------------------------
+-- Board stats
+---------------------------------------------------------------------------------------------------------
+getAjaxBoardStatsR :: Handler TypedContent
+getAjaxBoardStatsR = do
+  diff       <- getBoardStats
+  posterId   <- getPosterId
+  hiddenThreads <- getAllHiddenThreads
+  newDiff <- runDB $ forM diff $ \(board, lastId, _) -> do
+    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId
+                     ,PostDeleted ==. False, PostParent /<-. concatMap (map fst . snd) (filter ((==board).fst) hiddenThreads)]
+    return (board, lastId, newPosts)
+  saveBoardStats newDiff
+  selectRep $ 
+    provideJson $ object $ map (\(b,_,n) -> b .= n) newDiff

@@ -259,6 +259,7 @@ ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 EditPosts: Edit posts and view history
 ViewModlog: View moderation log 
+ViewIPAndID: View poster's IP and ID
 
 ######################################################################################
 #### Help
@@ -360,3 +361,12 @@ ModlogUnhellban uid@Text: Unhellbanned user #{uid}
 ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
 ModlogRebuildPostsMessages: Rebuilt HTML of posts messages
 NoSuchPost: No such post
+
+######################################################################################
+#### Admin search posts
+######################################################################################
+Search: Search
+AdminSearchUID: Search posts with this user ID
+AdminSearchIP: Search posts with this IP
+PostsByUserID: Posts by user ID
+PostsByIP: Posts by IP

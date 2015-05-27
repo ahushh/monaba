@@ -232,6 +232,10 @@ instance Yesod App where
       ManageGroupsR{} -> isAuthorized' [ManageUsersP]
       UsersDeleteR{}  -> isAuthorized' [ManageUsersP]
       ModlogR{}       -> isAuthorized' [ViewModlogP] 
+      AdminSearchIPR{}       -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchIPNoPageR{} -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]
+      AdminSearchUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP]
 
       ConfigR{}       -> isAuthorized' [ManageConfigP]
       _               -> return Authorized

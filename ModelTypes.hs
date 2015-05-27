@@ -37,6 +37,7 @@ data Permission = ManageThreadP
                 | EditPostsP
                 | ViewModlogP
                 | AdditionalMarkupP
+                | ViewIPAndIDP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 data Ternary = Enabled | Disabled | Required

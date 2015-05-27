@@ -1,0 +1,9 @@
+^{adminNavbarWidget muser permissions}
+<h2 style=text-align:center> UID: #{posterId}
+<div .feed>
+  <form .delete-form method=get action=@{DeleteR}>
+    $forall (e, files) <- postsAndFiles
+      ^{postWidget muser e files False False True True True permissions timeZone maxLenOfFileName}
+    ^{deleteWidget permissions}
+
+^{paginationWidget page pages (AdminSearchUIDR posterId)}

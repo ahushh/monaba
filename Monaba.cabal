@@ -34,7 +34,8 @@ library
                      Handler.Admin.Config
                      Handler.Admin.Group
                      Handler.Admin.User
-                     Handler.Admin.Modlog 
+                     Handler.Admin.Modlog
+                     Handler.Admin.Search
                      Handler.Ajax
                      Handler.Settings
                      Handler.Captcha

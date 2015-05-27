@@ -53,6 +53,11 @@
 /admin/boards/clean/#ManageBoardAction/#Text  CleanBoardR   GET
 /admin/boards/rebuild/#ManageBoardAction/#Text  RebuildPostsMessagesOnBoardR   GET
 
+/admin/search/ip/#Text/#Int             AdminSearchIPR              GET
+/admin/search/ip/#Text                  AdminSearchIPNoPageR        GET
+/admin/search/uid/#Text/#Int            AdminSearchUIDR             GET
+/admin/search/uid/#Text                 AdminSearchUIDNoPageR       GET
+
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET
 /admin/users               UsersR        GET POST

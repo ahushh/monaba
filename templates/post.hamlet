@@ -45,10 +45,11 @@
            $if elem ManageThreadP permissions
                <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows>
            $if elem ManageBanP permissions
-             [ #{postIp postVal} 
-               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
-                 B 
-             ]
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>B 
+           $if elem ViewIPAndIDP permissions
+             <a title="_{MsgAdminSearchUID}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
+             /
+             <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
        $if showParent
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/

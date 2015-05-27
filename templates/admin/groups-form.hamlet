@@ -34,4 +34,7 @@
         <tr>
             <td>_{MsgViewModlog           }
             <td>^{fvInput viewModlogView  }
+        <tr>
+            <td>_{MsgViewIPAndID          }
+            <td>^{fvInput viewIPAndIDView }
     <input type=submit value=_{MsgGroupAddOrUpdate}>

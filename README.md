@@ -3,6 +3,33 @@ Monaba
 
 Wakaba-like imageboard written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
 
+Features
+------
+* Multiple file attachment
+* Webm support
+* AJAX posting
+* Online user counter
+* Answer map and previews
+* Thread and image expanding
+* Thread hiding
+* Post deletion and editing by user
+* Prooflabes as replacement of tripcodes
+* Kusaba-like formatting with code highlighting and LaTeX support
+* Custom CAPTCHA
+* Internationalization
+* Country flag support
+* Switchable stylesheets
+* YouTube, vimeo, coub embedding
+* Works fine with JavaScript disabled
+* Administration
+    - Banning by IP
+    - Thread moderation by OP
+    - Flexible account system with customizable groups and permissions
+    - Ability to stick and lock threads and to put on auto-sage
+    - Moving threads between boards
+    - Changing post's parent
+    - Modlog which allows to view previous actions
+
 Dependencies
 ------
 * GHC >= 7.6
@@ -84,7 +111,7 @@ Open another terminal and fill database with default values:
 
      psql -U postgres monabas_production < init-db.sql
 
-You are done. Open [http://localhost:3000](http://localhost:3000) and navigate to manage page and use "admin" both for username and for password to log in.
+Default login/password: admin
 
 Configuring Nginx for serving uploaded files
 ------

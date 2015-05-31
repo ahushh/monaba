@@ -328,7 +328,7 @@ function refreshCaptcha() {
     if (captcha != null)
         captcha.src = "@{CaptchaR}" + "?" + new Date().getTime();
     var captchaInput = document.getElementsByClassName("captcha-input");
-    if (captchaInput)
+    if (captchaInput.length)
         captchaInput[0].value = "";
 }
 

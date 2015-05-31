@@ -164,3 +164,10 @@ getAjaxBoardStatsR = do
   saveBoardStats newDiff
   selectRep $ 
     provideJson $ object $ map (\(b,_,n) -> b .= n) newDiff
+
+getAjaxBoardStatsReadR :: Handler TypedContent
+getAjaxBoardStatsReadR = do
+  cleanAllBoardsStats
+  selectRep $ do
+    provideRep $ bareLayout [whamlet|ok|]
+    provideJson $ object [("ok","marked as read")]

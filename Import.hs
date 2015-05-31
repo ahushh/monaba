@@ -384,6 +384,18 @@ saveBoardStats stats = do
   deleteSession "board-stats"
   setSession "board-stats" $ showText stats
 
+cleanAllBoardsStats :: Handler ()
+cleanAllBoardsStats = do
+  mgroup <- getMaybeGroup =<< maybeAuth
+  boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+  forM_ boards cleanBoardStats
+  where ignoreBoards' group (Entity _ b)
+          | boardHidden b ||
+            ( (isJust (boardViewAccess b) && isNothing group) ||
+              (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+            ) = Nothing
+          | otherwise = Just $ boardName b
+  
 cleanBoardStats :: Text -> Handler ()
 cleanBoardStats board = do
   hiddenThreads <- getAllHiddenThreads

@@ -57,10 +57,34 @@ if (isEventSourceSupported()) {
                 if (request.status >= 200 && request.status < 400) {
                     var data = JSON.parse(request.responseText);
                     var boards = document.getElementsByClassName("board-link");
+                    var unread = false;
                     for (var i = 0; i < boards.length; i++) {
                         var board = boards[i].dataset.board;
                         var newPosts = data[board] ? " +"+data[board] : "";
                         boards[i].innerHTML = "/"+board+"/"+newPosts;
+                        if (data[board]) unread = true;
+                    }
+                    if (unread) {
+                        var unreadElem = document.getElementById("mark-as-read");
+                        if (unreadElem == null) {
+                            var boardList = document.getElementsByClassName("board-list")[0];
+                            unreadElem = document.createElement("span");
+                            unreadElem.id = "mark-as-read";
+                            var i = document.createElement("i");
+                            i.title = #{toJSON $ msgrender MsgMarkAsRead};
+                            i.className = "fa fa-check-square-o";
+                            i.onclick = function() {
+                                httpRequest({
+                                    action: "@{AjaxBoardStatsReadR}",
+                                    onload: function(request) {
+                                        boardList.removeChild(unreadElem);
+                                        updateStats();
+                                    }
+                                });
+                            };
+                            unreadElem.appendChild(i);
+                            boardList.appendChild(unreadElem);
+                        }
                     }
                 }
             }

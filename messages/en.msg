@@ -302,6 +302,7 @@ PostMessageIsTooLong: Message is too long.
 ExpandPost: Show full.
 ShrinkPost: Shrink message.
 
+MarkAsRead: Mark as read
 ######################################################################################
 #### Thread hiding
 ######################################################################################

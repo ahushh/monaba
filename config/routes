@@ -30,6 +30,7 @@
 /ajax/hide/thread/#Text/#Int/#Int AjaxHideThreadR   GET
 /ajax/unhide/thread/#Text/#Int    AjaxUnhideThreadR GET
 /ajax/board/stats                 AjaxBoardStatsR   GET
+/ajax/board/stats/read            AjaxBoardStatsReadR GET
 /jsonfrommsg/#Text                JsonFromMsgR      GET
 
 

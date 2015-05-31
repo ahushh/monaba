@@ -347,7 +347,7 @@ function clearPostFormFields() {
     var textarea = postform.getElementsByTagName("textarea")[0];
     textarea.value = "";
     var captchaInput = document.getElementsByClassName("captcha-input");
-    if (captchaInput)
+    if (captchaInput.length)
         captchaInput[0].value = "";
 }
 

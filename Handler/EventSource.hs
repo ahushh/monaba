@@ -26,6 +26,7 @@ import           Data.List (sortBy)
 -------------------------------------------------------------------------------------------------------------------
 getOnlineR :: Handler TypedContent
 getOnlineR = do
+  chan <- sseChan <$> getYesod
   now  <- liftIO getCurrentTime
   ip   <- pack <$> getIp
   clientsRef <- sseClients <$> getYesod
@@ -39,6 +40,7 @@ getOnlineR = do
         when (isNothing client) $ liftIO $ atomically $ modifyTVar' clientsRef (Map.insert ip now)
         clients <- liftIO $ readTVarIO clientsRef
         yield $ ServerEvent (Just $ fromText "online") Nothing [fromText $ (showText $ Map.size clients)]
+        liftIO $ atomically $ writeTChan chan ("ping", "ping")
         liftIO $ threadDelay (1000000*3) -- 3 seconds
 
 getEventR :: Handler TypedContent
@@ -49,3 +51,8 @@ getEventR = do
     forever $ do
       (name, content) <- liftIO $ atomically $ readTChan chan'
       yield $ ServerEvent (Just $ fromText name) Nothing [fromText content]
+
+sendNewPostES :: Text -> Handler ()
+sendNewPostES board = do
+  chan <- sseChan <$> getYesod
+  liftIO $ atomically $ writeTChan chan ("new-post", board)

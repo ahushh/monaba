@@ -16,15 +16,15 @@ function isEventSourceSupported() {
 //-----------------------------------------------------------------
 var eventsource = null;
 if (isEventSourceSupported()) {
-    // eventsource = new EventSource("@{EventR}");
-    // eventsource.onopen  = function()      { console.log("Eventsource opened."); };
-    // eventsource.onclose = function()      { console.log("Eventsource closed."); };
-    // eventsource.onmessage = function(msg) {
-    //     console.log("Eventsource message: "+msg.data);
-    // };
-    // eventsource.onerror = function(e) {
-    //     console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
-    // };
+    eventsource = new EventSource("@{EventR}");
+    eventsource.onopen  = function()      { console.log("Eventsource opened."); };
+    eventsource.onclose = function()      { console.log("Eventsource closed."); };
+    eventsource.onmessage = function(msg) {
+        console.log("Eventsource message: "+msg.data);
+    };
+    eventsource.onerror = function(e) {
+        console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+    };
 }
 //-----------------------------------------------------------------
 // Online users counter
@@ -49,6 +49,28 @@ if (isEventSourceSupported()) {
 // New posts counter
 //-----------------------------------------------------------------
 (function() {
+    var updateUnread = function() {
+        var unreadElem = document.getElementById("mark-as-read");
+        if (unreadElem == null) {
+            var boardList = document.getElementsByClassName("board-list")[0];
+            unreadElem = document.createElement("span");
+            unreadElem.id = "mark-as-read";
+            var i = document.createElement("i");
+            i.title = #{toJSON $ msgrender MsgMarkAsRead};
+            i.className = "fa fa-check-square-o";
+            i.onclick = function() {
+                httpRequest({
+                    action: "@{AjaxBoardStatsReadR}",
+                    onload: function(request) {
+                        boardList.removeChild(unreadElem);
+                        updateStats();
+                    }
+                });
+            };
+            unreadElem.appendChild(i);
+            boardList.appendChild(unreadElem);
+        }
+    };
     var updateStats = function() {
         httpRequest({
             action: "@{AjaxBoardStatsR}",
@@ -64,46 +86,28 @@ if (isEventSourceSupported()) {
                         boards[i].innerHTML = "/"+board+"/"+newPosts;
                         if (data[board]) unread = true;
                     }
-                    if (unread) {
-                        var unreadElem = document.getElementById("mark-as-read");
-                        if (unreadElem == null) {
-                            var boardList = document.getElementsByClassName("board-list")[0];
-                            unreadElem = document.createElement("span");
-                            unreadElem.id = "mark-as-read";
-                            var i = document.createElement("i");
-                            i.title = #{toJSON $ msgrender MsgMarkAsRead};
-                            i.className = "fa fa-check-square-o";
-                            i.onclick = function() {
-                                httpRequest({
-                                    action: "@{AjaxBoardStatsReadR}",
-                                    onload: function(request) {
-                                        boardList.removeChild(unreadElem);
-                                        updateStats();
-                                    }
-                                });
-                            };
-                            unreadElem.appendChild(i);
-                            boardList.appendChild(unreadElem);
-                        }
-                    }
+                    if (unread) updateUnread();
                 }
             }
         });
     };
     updateStats();
-    // if (isEventSourceSupported()) {
-    //     eventsource.addEventListener("new-post", function(msg) {
-    //         var board = msg.data;
-    //         var boardLink = document.getElementById("board-link-"+board);
-    //         if (boardLink == null) return;
-    //         var n = boardLink.innerHTML.match(/ \+(\d+)/);
-    //         var newPosts = 1;
-    //         if (n && n[1]) newPosts += +n[1];
-    //         boardLink.innerHTML = "/"+board+"/ +"+newPosts;
-    //     });
-    // } else {
-        window.setInterval(updateStats, getConfig("board_stats_update"));
-    // }
+    if (isEventSourceSupported()) {
+       eventsource.addEventListener("new-post", function(msg) {
+           var currentBoard = document.location.pathname.substr(1);
+           var board = msg.data;
+           if (currentBoard == board) return;
+           var boardLink = document.getElementById("board-link-"+board);
+           if (boardLink == null) return;
+           var n = boardLink.innerHTML.match(/ \+(\d+)/);
+           var newPosts = 1;
+           if (n && n[1]) newPosts += +n[1];
+           boardLink.innerHTML = "/"+board+"/ +"+newPosts;
+           updateUnread();
+       });
+    } else {
+       window.setInterval(updateStats, getConfig("board_stats_update"));
+    }
 })();
 //-----------------------------------------------------------------
 var Monaba = {

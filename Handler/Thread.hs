@@ -11,6 +11,7 @@ import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Posting
 import           Handler.Captcha    (checkCaptcha)
+import           Handler.EventSource (sendNewPostES)
 import           Text.Blaze.Html.Renderer.String
 -------------------------------------------------------------------------------------------------------------------
 -- Костыли-костылики...
@@ -162,6 +163,7 @@ postThreadR board thread = do
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board
+        sendNewPostES board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl

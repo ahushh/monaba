@@ -7,6 +7,7 @@ import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Posting
 import           Handler.Captcha (checkCaptcha)
+import           Handler.EventSource (sendNewPostES)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
@@ -170,6 +171,7 @@ postBoardR board _ = do
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board
+        sendNewPostES board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)

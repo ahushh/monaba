@@ -26,20 +26,20 @@ import           Data.List (sortBy)
 -------------------------------------------------------------------------------------------------------------------
 getOnlineR :: Handler TypedContent
 getOnlineR = do
-  now        <- liftIO getCurrentTime
-  posterId   <- getPosterId
+  now  <- liftIO getCurrentTime
+  ip   <- pack <$> getIp
   clientsRef <- sseClients <$> getYesod
   repEventSource $ \_ -> bracketP (return ())
     (\_ -> liftIO $  do
-      atomically $ modifyTVar' clientsRef (Map.delete posterId)
+      atomically $ modifyTVar' clientsRef (Map.delete ip)
     )
     $ \_ -> forever $ do
         clients <- liftIO $ readTVarIO clientsRef
-        let client = Map.lookup posterId clients
-        when (isNothing client) $ liftIO $ atomically $ modifyTVar' clientsRef (Map.insert posterId now)
+        let client = Map.lookup ip clients
+        when (isNothing client) $ liftIO $ atomically $ modifyTVar' clientsRef (Map.insert ip now)
         clients <- liftIO $ readTVarIO clientsRef
         yield $ ServerEvent (Just $ fromText "online") Nothing [fromText $ (showText $ Map.size clients)]
-        liftIO $ threadDelay (1000000*3) -- 2 seconds
+        liftIO $ threadDelay (1000000*3) -- 3 seconds
 
 getEventR :: Handler TypedContent
 getEventR = do

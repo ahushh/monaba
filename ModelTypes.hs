@@ -7,7 +7,7 @@ module ModelTypes
        ) where
 
 import Prelude
-import Data.Text (pack, unpack, Text)
+import Data.Text (unpack, Text)
 import Control.Monad (mzero)
 import Control.Applicative ((<$>), (<*>))
 import Yesod

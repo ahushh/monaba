@@ -7,8 +7,7 @@ import           Yesod.Auth
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
-import           System.Directory   (removeFile, removeDirectory, getDirectoryContents)
-import           System.FilePath    ((</>))
+import           System.Directory   (removeFile)--, removeDirectory, getDirectoryContents)
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -90,7 +89,7 @@ getDeleteR = do
 
 deleteFiles :: [Key Post] -> Handler ()
 deleteFiles idsToRemove = do  
-  let removeDirIfEmpty d = whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents d)) $ liftIO (removeDirectory d)
+  -- let removeDirIfEmpty d = whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents d)) $ liftIO (removeDirectory d)
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
@@ -107,7 +106,7 @@ deleteFiles idsToRemove = do
       _  -> do
         liftIO $ removeFile $ attachedfilePath f
         when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath ts ft fe hs
-  runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
+        runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board
 ---------------------------------------------------------------------------------------------

@@ -7,7 +7,6 @@ module Utils.YobaMarkup
        ) where
 
 import           Import
-import           Prelude
 import           Yesod.Auth
 import           Text.HTML.TagSoup  (escapeHTML)
 import           Text.Parsec hiding (newline)

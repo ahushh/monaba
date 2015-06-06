@@ -53,7 +53,7 @@ import           System.Random           (randomIO, randomRIO)
 import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
-import qualified Data.Text               as T (concat, toLower, append, length)
+import qualified Data.Text               as T (concat, toLower, append)
 import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
 -- Constants
@@ -221,7 +221,7 @@ postWidget :: Maybe (Entity User)      ->
              Int                      -> -- ^ Time offset in seconds
              Int                      -> -- ^ Max file name length
              Widget
-postWidget muser ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset maxLenOfFileName = 
+postWidget _ ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset maxLenOfFileName = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost

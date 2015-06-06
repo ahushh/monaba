@@ -40,7 +40,6 @@ import qualified Data.Map as Map
 import Data.Time (UTCTime)
 import           Control.Concurrent.STM.TVar
 import           Control.Concurrent.STM.TChan
-import           Control.Concurrent.STM (atomically)
 
 -- | The site argument for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application

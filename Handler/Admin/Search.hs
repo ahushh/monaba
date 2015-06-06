@@ -4,7 +4,6 @@ module Handler.Admin.Search where
 import           Import
 import           Yesod.Auth
 import qualified Data.Text  as T
-import           Data.Maybe (mapMaybe)
 -------------------------------------------------------------------------------------------------------------
 getAdminSearchIPNoPageR :: Text -> Handler Html
 getAdminSearchIPNoPageR = flip getAdminSearchIPR 0

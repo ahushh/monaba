@@ -11,7 +11,7 @@ import           Control.Monad                   (mplus)
 import           Data.Ratio
 import           Data.Text                       (isPrefixOf)
 import           Text.Printf
-import           System.Directory                (copyFile, doesFileExist, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
+import           System.Directory                (copyFile, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
 import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
 import qualified Graphics.ImageMagick.MagickWand as IM
@@ -97,9 +97,9 @@ saveFile file hashsum = do
   if sameName
     then do
       runDB $ updateWhere ([]::[Filter Storage]) [StorageUploadDir +=. 1]
-      dirExists <- liftIO $ doesDirectoryExist (uploadDirectory </> show (n+1))
-      liftIO $ createDirectory (uploadDirectory </> show (n+1))
-      let path = uploadDirectory </> show (n+1) </> (unpack $ fileName file)
+      dirExists' <- liftIO $ doesDirectoryExist (uploadDirectory </> show (n+1))
+      unless dirExists' $ liftIO $ createDirectory (uploadDirectory </> show (n+1))
+      let path = uploadDirectory </> show (n+1) </> fn
       liftIO $ fileMove file path
       return path
     else do
@@ -108,11 +108,11 @@ saveFile file hashsum = do
         then do
           cd <- liftIO $ getCurrentDirectory
           let oldPath = cd ++ "/" ++ (attachedfilePath . entityVal . fromJust $ fileExists)
-              path    = uploadDirectory </> show n </> (unpack $ fileName file)
+              path    = uploadDirectory </> show n </> fn
           liftIO $ createSymbolicLink oldPath path
           return path
         else do
-          let path = uploadDirectory </> show n </> (unpack $ fileName file)
+          let path = uploadDirectory </> show n </> fn
           liftIO $ fileMove file path
           return path
 -------------------------------------------------------------------------------------------------------------------

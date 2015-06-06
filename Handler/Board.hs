@@ -62,8 +62,8 @@ getBoardR board page = do
   posterId        <- getPosterId
   hiddenThreads   <- map fst <$> getHiddenThreads board
   cleanBoardStats board
-  let numberFiles       = boardNumberFiles       boardVal
-      maxMessageLength  = boardMaxMsgLength      boardVal
+  -- let numberFiles       = boardNumberFiles       boardVal
+  let maxMessageLength  = boardMaxMsgLength      boardVal
       threadsPerPage    = boardThreadsPerPage    boardVal
       previewsPerThread = boardPreviewsPerThread boardVal
       title             = boardTitle             boardVal

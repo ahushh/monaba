@@ -90,7 +90,6 @@ postThreadR board thread = do
       bumpLimit        = boardBumpLimit        boardVal
       replyFile        = boardReplyFile        boardVal
       enableCaptcha    = boardEnableCaptcha    boardVal
-      showPostDate     = boardShowPostDate     boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
       threadUrl        = ThreadR board thread
       boardUrl         = BoardNoPageR board

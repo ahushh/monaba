@@ -31,6 +31,10 @@ Features
     - Changing post's parent
     - Modlog which allows to view previous actions
 
+Limitations
+-----------
+* Quite slow :(
+
 Dependencies
 ------
 * GHC >= 7.6

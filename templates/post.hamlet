@@ -50,6 +50,20 @@
              <a title="_{MsgAdminSearchUID}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
              /
              <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
+           $if elem HellBanP permissions
+               $if postHellbanned postVal
+                  <i title=_{MsgPostIsVisibleOnlyForAuthor} title=_{MsgPostIsVisibleOnlyForAuthor} .fa .fa-eye-slash>
+               <a title="_{MsgHellbanning}" onclick="toggleInline( document.querySelector('#p#{sPostId} .hb-container') )">HB
+               <span .hb-container style="display:none">
+                 [ 
+                 <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral postId) "none" True}>Hellban
+                 <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral postId) "one" False}>Hide
+                 <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral postId) "one" True}>Hide && Hellban
+                 <a title="_{MsgHideAllAndHellban}" href=@{HellBanDoR (fromIntegral postId) "all" True}>Hide all && Hellban
+                 <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral postId) "show"}>Show
+                 <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral postId) "both"}>&&
+                 <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral postId) "unban"}>Unhellban
+                 ]
        $if showParent
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/

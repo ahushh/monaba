@@ -38,6 +38,7 @@ data Permission = ManageThreadP
                 | ViewModlogP
                 | AdditionalMarkupP
                 | ViewIPAndIDP
+                | HellBanP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 data Ternary = Enabled | Disabled | Required

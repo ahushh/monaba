@@ -63,6 +63,7 @@ Post json
     deletedByOp  Bool 
     posterId     Text 
     lastModified UTCTime Maybe 
+    hellbanned   Bool default=false
     -- form's values
     message      Textarea
     rawMessage   Text
@@ -115,4 +116,7 @@ Modlog
     user            Text
     group           Text
     date            UTCTime
-    message         Text    
+    message         Text
+Hellban
+    uid         Text
+    ip          Text

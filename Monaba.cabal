@@ -30,6 +30,7 @@ library
                      Handler.EventSource
                      Handler.Admin
                      Handler.Admin.Ban
+                     Handler.Admin.Hellban
                      Handler.Admin.Board
                      Handler.Admin.Config
                      Handler.Admin.Group

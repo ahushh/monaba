@@ -31,14 +31,18 @@ getAjaxFeedOffsetR offset = do
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   -------------------------------------------------------------------------------------------------------------------      
+  posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getLiveBoards
-  let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
-      boards' = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
+  let boardsWhereShowDate = map boardName $ filter boardShowPostDate    $ map entityVal boards
+      boards'             = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
-  posts     <- runDB $ selectList [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
-                                 [Desc PostDate, LimitTo showPosts, OffsetBy offset]
+  let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
+      selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False] ||.
+                       [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
+      selectPosts    = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+  posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy offset]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
@@ -68,14 +72,18 @@ getAjaxNewFeedR lastPostId = do
       group       = (groupName . entityVal) <$> mgroup
       lastPostDate= postDate lastPost
   -------------------------------------------------------------------------------------------------------------------      
+  posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getLiveBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boards'                = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
-  posts     <- runDB $ selectList [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDate >. lastPostDate, PostDeleted ==. False]
-                                 [Desc PostDate]
+  let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostDate >. lastPostDate]
+      selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False, PostDate >. lastPostDate] ||.
+                       [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId, PostDate >. lastPostDate]
+      selectPosts    = if elem HellBanP permissions then selectPostsAll else selectPostsHB
+  posts     <- runDB $ selectList selectPosts [Desc PostDate]
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------

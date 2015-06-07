@@ -68,6 +68,7 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   mBanner          <- chooseBanner
+  posterId         <- getPosterId
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardTitleVal, if T.null pagetitle then "" else titleDelimiter, pagetitle]
@@ -84,7 +85,8 @@ postThreadR board thread = do
 
   maybeParent <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []
   -------------------------------------------------------------------------------------------------------     
-  let defaultName      = boardDefaultName      boardVal
+  let permissions      = getPermissions mgroup
+      defaultName      = boardDefaultName      boardVal
       allowedTypes     = boardAllowedTypes     boardVal
       thumbSize        = boardThumbSize        boardVal
       bumpLimit        = boardBumpLimit        boardVal
@@ -111,12 +113,14 @@ postThreadR board thread = do
         setSession "message"    (maybe     "" unTextarea message)
         setSession "post-title" (fromMaybe "" title)
         ------------------------------------------------------------------------------------------------------
+        posterId  <- getPosterId
         ip        <- pack <$> getIp
         now       <- liftIO getCurrentTime
         country   <- getCountry ip
-        posterId  <- getPosterId
+        hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
         ------------------------------------------------------------------------------------------------------
         checkBan ip $ \m -> trickyRedirect "error" m threadUrl
+        unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
         when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
         ------------------------------------------------------------------------------------------------------
@@ -146,6 +150,7 @@ postThreadR board thread = do
                            , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = (pack . show . userGroup . entityVal) <$> muser
+                           , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            }
@@ -162,7 +167,7 @@ postThreadR board thread = do
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board
-        sendNewPostES board
+        unless hellbanned $ sendNewPostES board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl

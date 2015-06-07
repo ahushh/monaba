@@ -45,6 +45,11 @@
 
 /admin/ban/#Text/#Text     BanByIpR      GET POST
 
+/admin/hellban                     HellBanNoPageR GET
+/admin/hellban/#Int                HellBanR       GET
+/admin/hellban/do/#Int/#Text/#Bool HellBanDoR     GET
+/admin/hellban/undo/#Int/#Text     HellBanUndoR   GET
+
 /admin/bandelete/#Int           BanDeleteR    GET
 /admin/boards/new               NewBoardsR    POST
 /admin/boards/update/#Text      UpdateBoardsR POST
@@ -58,6 +63,9 @@
 /admin/search/ip/#Text                  AdminSearchIPNoPageR        GET
 /admin/search/uid/#Text/#Int            AdminSearchUIDR             GET
 /admin/search/uid/#Text                 AdminSearchUIDNoPageR       GET
+/admin/search/hellbanned/uid/#Text/#Int AdminSearchHBUIDR           GET
+/admin/search/hellbanned/uid/#Text      AdminSearchHBUIDNoPageR     GET
+
 
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET

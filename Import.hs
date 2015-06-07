@@ -249,6 +249,10 @@ bareLayout widget = do
 -------------------------------------------------------------------------------------------------------------------
 -- Access checkers
 -------------------------------------------------------------------------------------------------------------------
+checkHellbanned :: Post -> [Permission] -> Text -> Bool
+checkHellbanned post permissions posterId = not (postHellbanned post) ||
+                                            elem HellBanP permissions ||
+                                            (postPosterId post) == posterId
 checkAccessToReply :: Maybe (Entity Group) -> Board -> Bool
 checkAccessToReply mgroup boardVal =
   let group  = (groupName . entityVal) <$> mgroup
@@ -367,7 +371,7 @@ getBoardStats = do
       boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
       hiddenThreads <- getAllHiddenThreads
       stats  <- runDB $ forM boards $ \b -> do
-                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostPosterId !=. posterId
+                  lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostPosterId !=. posterId, PostHellbanned ==. False
                                          ,PostParent /<-. concatMap (map fst . snd) (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
                   return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
       saveBoardStats stats
@@ -403,7 +407,7 @@ cleanBoardStats board = do
   newStats <- forM oldStats $ \s@(b,_,_) ->
     if b == board
     then do
-      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False
+      lastPost <- runDB $ selectFirst [PostBoard ==. b, PostDeleted ==. False, PostHellbanned ==. False
                                       ,PostParent /<-. concatMap (map fst . snd) (filter ((==b).fst) hiddenThreads)] [Desc PostLocalId]
       return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
     else return s

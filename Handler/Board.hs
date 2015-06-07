@@ -29,23 +29,35 @@ selectThreadsAndPreviews :: Text  -> -- ^ Board name
                                     , Int
                                     )]
 selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads =
-  let selectThreads = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads]
-                      [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+  let selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads]
+                                    [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreadsHB  = selectList ( [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads, PostHellbanned ==. False] ||.
+                                      [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                    ) [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
+      selectThreads = if elem HellBanP permissions then selectThreadsAll else selectThreadsHB
       --------------------------------------------------------------------------------------------------
       selectFiles  pId = selectList [AttachedfileParentId ==. pId] []
       --------------------------------------------------------------------------------------------------
-      selectPreviews t
-        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False
-                                             ,PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
+      selectPreviews   = if elem HellBanP permissions then selectPreviewsAll else selectPreviewsHB
+      selectPreviewsHB t
+        | previewsPerThread > 0 = selectList ( [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False, PostParent ==. postLocalId t, PostHellbanned ==. False] ||.
+                                               [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False, PostParent ==. postLocalId t, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                             ) [Desc PostDate, LimitTo previewsPerThread]
+        | otherwise             = return []
+      selectPreviewsAll t
+        | previewsPerThread > 0 = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostDeleted ==. False, PostParent ==. postLocalId t] [Desc PostDate, LimitTo previewsPerThread]
         | otherwise             = return []
       --------------------------------------------------------------------------------------------------
-      countPosts t = count [PostDeletedByOp ==. False, PostDeleted ==. False, PostBoard ==. board, PostParent ==. postLocalId t]
+      countPostsAll t = [PostDeletedByOp ==. False, PostDeleted ==. False, PostBoard ==. board, PostParent ==. postLocalId t]
+      countPostsHB  t = [PostDeletedByOp ==. False, PostDeleted ==. False, PostBoard ==. board, PostParent ==. postLocalId t, PostHellbanned ==. False] ||. 
+                        [PostDeletedByOp ==. False, PostDeleted ==. False, PostBoard ==. board, PostParent ==. postLocalId t, PostHellbanned ==. True, PostPosterId ==. posterId]
+      countPosts t = if elem HellBanP permissions then countPostsAll t else countPostsHB t
   in runDB $ selectThreads >>= mapM (\th@(Entity tId t) -> do
        threadFiles      <- selectFiles tId
        previewsAndFiles <- selectPreviews t >>= mapM (\pr -> do
          previewFiles <- selectFiles $ entityKey pr
          return (pr, previewFiles))
-       postsInThread <- countPosts t
+       postsInThread <- count (countPosts t)
        return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
 --------------------------------------------------------------------------------------------------------- 
 getBoardR :: Text -> Int -> Handler Html
@@ -58,7 +70,7 @@ getBoardR board page = do
       hasAccessToReply     = checkAccessToReply mgroup boardVal
       permissions          = getPermissions mgroup
   ------------------------------------------------------------------------------------------------------- 
-  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False]
+  numberOfThreads <- runDB $ count [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostHellbanned ==. False]
   posterId        <- getPosterId
   hiddenThreads   <- map fst <$> getHiddenThreads board
   cleanBoardStats board
@@ -125,6 +137,7 @@ postBoardR board _ = do
         now      <- liftIO getCurrentTime
         country  <- getCountry ip
         posterId <- getPosterId
+        hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
         -------------------------------------------------------------------------------------------------------
         checkBan ip $ \m -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
@@ -156,6 +169,7 @@ postBoardR board _ = do
                            , postDeleted      = False
                            , postDeletedByOp  = False
                            , postOwner        = showText . userGroup . entityVal <$> muser
+                           , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }
@@ -171,7 +185,7 @@ postBoardR board _ = do
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board
-        sendNewPostES board
+        unless hellbanned $ sendNewPostES board
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)

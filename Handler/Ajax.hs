@@ -8,17 +8,19 @@ import qualified Data.Text as T (concat)
 -- Get multiple posts
 ---------------------------------------------------------------------------------------------------------
 getPostsHelper :: YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
+                 YesodDB App [Entity Post] -> -- ^ Post selector: selectList [...] [...]
                  Text -> -- ^ Board name
                  Int  -> -- ^ Thread internal ID
                  Text -> -- ^ Error string
                  Handler TypedContent
-getPostsHelper selectPosts board thread errorString = do
+getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   let permissions   = getPermissions   mgroup
       geoIpEnabled  = boardEnableGeoIp boardVal
+      selectPosts   = if elem HellBanP permissions then selectPostsAll else selectPostsHB 
       selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
       showPostDate    = boardShowPostDate boardVal
   postsAndFiles <- reverse <$> runDB selectPosts >>= mapM (\p -> do
@@ -42,40 +44,58 @@ getPostsHelper selectPosts board thread errorString = do
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
 getAjaxDeletedPostsR :: Text -> Int -> Handler TypedContent
-getAjaxDeletedPostsR board thread = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostDeletedByOp ==. True, PostBoard ==. board,
-                                  PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
-        errorString = "No such posts"
+getAjaxDeletedPostsR board thread = do
+  posterId <- getPosterId
+  let selectPostsAll = selectList [PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
+      selectPostsHB  = selectList ([PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                   [PostDeletedByOp ==. True, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                  ) [Desc PostDate]
+      errorString    = "No such posts"
+  getPostsHelper selectPostsAll selectPostsHB board thread errorString
 
 getAjaxAllPostsR :: Text -> Int -> Handler TypedContent
-getAjaxAllPostsR board thread = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
-                                  PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
-        errorString = "No posts in this thread"
+getAjaxAllPostsR board thread = do
+  posterId <- getPosterId                                
+  let selectPostsAll = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False] [Desc PostDate]
+      selectPostsHB  = selectList ([PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                   [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                  ) [Desc PostDate]
+      errorString    = "No posts in this thread"
+  getPostsHelper selectPostsAll selectPostsHB board thread errorString
 
 getAjaxNewPostsR :: Text -> Int -> Int -> Handler TypedContent
-getAjaxNewPostsR board thread postId = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
-                                  PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False] [Desc PostDate]
-        errorString = "No new posts"
+getAjaxNewPostsR board thread postId = do
+  posterId <- getPosterId
+  let selectPostsAll = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False] [Desc PostDate]
+      selectPostsHB  = selectList ([PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                   [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostLocalId >. postId, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                  ) [Desc PostDate]
+      errorString    = "No new posts"
+  getPostsHelper selectPostsAll selectPostsHB board thread errorString
 
 getAjaxLastPostsR :: Text -> Int -> Int -> Handler TypedContent
-getAjaxLastPostsR board thread postCount = getPostsHelper selectPosts board thread errorString
-  where selectPosts = selectList [PostDeletedByOp ==. False, PostBoard ==. board,
-                                  PostParent ==. thread, PostDeleted ==. False] [Desc PostDate, LimitTo postCount]
-        errorString = "No such posts"
+getAjaxLastPostsR board thread postCount = do
+  posterId <- getPosterId
+  let selectPostsAll = selectList [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False] [Desc PostDate, LimitTo postCount]
+      selectPostsHB  = selectList ([PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. False] ||.
+                                     [PostDeletedByOp ==. False, PostBoard ==. board, PostParent ==. thread, PostDeleted ==. False, PostHellbanned ==. True, PostPosterId ==. posterId]
+                                  ) [Desc PostDate, LimitTo postCount]
+      errorString    = "No such posts"
+  getPostsHelper selectPostsAll selectPostsHB board thread errorString
 ---------------------------------------------------------------------------------------------------------
 -- Get single post
 ---------------------------------------------------------------------------------------------------------
 getAjaxPostByIdR :: Int -> Handler TypedContent
 getAjaxPostByIdR postId = do
-  let postKey = toSqlKey $ fromIntegral postId
+  let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
   maybePost <- runDB $ get postKey
   muser     <- maybeAuth
   mgroup    <- getMaybeGroup muser
   let permissions  = getPermissions   mgroup
       post         = Entity postKey (fromJust maybePost)
+  posterId <- getPosterId
   when (isNothing maybePost) notFound
+  unless (checkHellbanned (entityVal post) permissions posterId) $ notFound
 
   let board = postBoard $ entityVal post
   boardVal <- getBoardVal404 board
@@ -102,8 +122,10 @@ getAjaxPostR board postId = do
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
       showPostDate    = boardShowPostDate boardVal
+  posterId  <- getPosterId
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
   when (isNothing maybePost) notFound
+  unless (checkHellbanned (entityVal $ fromJust maybePost) permissions posterId) $ notFound
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
@@ -158,7 +180,7 @@ getAjaxBoardStatsR = do
   posterId   <- getPosterId
   hiddenThreads <- getAllHiddenThreads
   newDiff <- runDB $ forM diff $ \(board, lastId, _) -> do
-    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId
+    newPosts <- count [PostBoard ==. board, PostLocalId >. lastId, PostPosterId !=. posterId, PostHellbanned ==. False
                      ,PostDeleted ==. False, PostParent /<-. concatMap (map fst . snd) (filter ((==board).fst) hiddenThreads)]
     return (board, lastId, newPosts)
   saveBoardStats newDiff

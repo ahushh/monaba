@@ -41,6 +41,7 @@ import Handler.Delete
 import Handler.EventSource
 import Handler.Admin
 import Handler.Admin.Ban
+import Handler.Admin.Hellban 
 import Handler.Admin.Board
 import Handler.Admin.Config
 import Handler.Admin.Group

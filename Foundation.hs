@@ -225,6 +225,13 @@ instance Yesod App where
       UpdateBoardsR{} -> isAuthorized' [ManageBoardP]
       AllBoardsR{}    -> isAuthorized' [ManageBoardP]
 
+      HellBanNoPageR{}  -> isAuthorized' [HellBanP]
+      HellBanR{}        -> isAuthorized' [HellBanP]
+      HellBanDoR{}      -> isAuthorized' [HellBanP]
+
+      AdminSearchHBUIDR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchHBUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
+
       DeleteBoardR{}  -> isAuthorized' [ManageBoardP]
       CleanBoardR{}   -> isAuthorized' [ManageBoardP]
       UsersR{}        -> isAuthorized' [ManageUsersP]

@@ -22,6 +22,7 @@ Features
 * YouTube, vimeo, coub embedding
 * Works fine with JavaScript disabled
 * Administration
+    - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning)
     - Banning by IP
     - Thread moderation by OP
     - Flexible account system with customizable groups and permissions

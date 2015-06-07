@@ -37,4 +37,8 @@
         <tr>
             <td>_{MsgViewIPAndID          }
             <td>^{fvInput viewIPAndIDView }
+        <tr>
+            <td>_{MsgHellbanning          }
+            <td>^{fvInput hellbanningView }
+
     <input type=submit value=_{MsgGroupAddOrUpdate}>

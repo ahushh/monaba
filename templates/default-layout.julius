@@ -108,6 +108,23 @@ if (isEventSourceSupported()) {
     } else {
        window.setInterval(updateStats, getConfig("board_stats_update"));
     }
+    // Clean new posts counter on /feed/ refreshing
+    var refreshFeed = document.getElementById("refresh-feed");
+    if (refreshFeed != null) {
+        refreshFeed.addEventListener("refresh", function() {
+            var unreadElem = document.getElementById("mark-as-read");
+            var boardList = document.getElementsByClassName("board-list")[0];
+            if (unreadElem != null) {
+                httpRequest({
+                    action: "@{AjaxBoardStatsReadR}",
+                    onload: function(request) {
+                        boardList.removeChild(unreadElem);
+                        updateStats();
+                    }
+                });
+            }
+        });
+    }
 })();
 //-----------------------------------------------------------------
 var Monaba = {

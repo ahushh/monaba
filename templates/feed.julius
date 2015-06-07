@@ -1,3 +1,5 @@
+var refreshFeedEvent = new CustomEvent("refresh", {});
+
 document.addEventListener("DOMContentLoaded", function(event) {
     fillPasswords();
     makeRefmap();
@@ -23,6 +25,7 @@ function refreshFeed() {
             if (ajxl != null) toggleInline(ajxl);
         },
         onloadOk: function(request) {
+            document.getElementById("refresh-feed").dispatchEvent(refreshFeedEvent);
             var data = request.responseText;
             if (/post/.test(data)) {
                 var posts = parseDOMElements(data);

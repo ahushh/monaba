@@ -86,7 +86,8 @@ insertFiles files thumbSize postId = forM_ files (\formfile ->
 
 saveFile :: FileInfo -> String -> Handler FilePath
 saveFile file hashsum = do
-  let fn = sanitizeFileName $ unpack $ fileName file
+  -- let fn = sanitizeFileName $ unpack $ fileName file
+  let fn = unpack $ fileName file
   n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
   dirExists'  <- liftIO $ doesDirectoryExist uploadDirectory
   unless dirExists' $ liftIO $ createDirectory uploadDirectory

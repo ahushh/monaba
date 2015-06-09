@@ -57,6 +57,9 @@ getThreadR board thread = do
       opPostFiles     = reverse $ snd $ head allPosts
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
+  posterId <- getPosterId
+  unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
+  -------------------------------------------------------------------------------------------------------
   maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
   maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
   (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName False boardVal muser
@@ -68,7 +71,6 @@ getThreadR board thread = do
   noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   mBanner          <- chooseBanner
-  posterId         <- getPosterId
   defaultLayout $ do
     setUltDestCurrent
     setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardTitleVal, if T.null pagetitle then "" else titleDelimiter, pagetitle]

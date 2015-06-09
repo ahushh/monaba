@@ -4,7 +4,7 @@ After=local-fs.target network.target postgresql.service
     
 [Service]
 WorkingDirectory=/your/path/to/Monaba/
-ExecStart=/your/path/to/Monaba/dist/build/Monaba/Monaba production
+ExecStart=/your/path/to/Monaba/dist/build/Monaba/Monaba config/settings.yml
     
 [Install]
 WantedBy=multi-user.target

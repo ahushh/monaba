@@ -2,7 +2,7 @@
  
 path="/home/user/Monaba"
 command="/home/user/Monaba/dist/build/Monaba/Monaba"
-command_args="production"
+command_args="config/settings.yml"
 user="user"
 group="user"
 name="monaba"

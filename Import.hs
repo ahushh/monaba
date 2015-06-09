@@ -39,7 +39,7 @@ import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
 import Text.Blaze.Html      as Import (preEscapedToHtml)
 import ModelTypes           as Import 
 -------------------------------------------------------------------------------------------------------------------
-import           Control.Applicative     (liftA2)
+import           Control.Applicative     (liftA2, (<|>))
 import           Data.Char               (toLower, isPrint)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Geolocation.GeoIP
@@ -339,15 +339,16 @@ getAllHiddenPostsIds boards = do
 -------------------------------------------------------------------------------------------------------------------
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------
--- | Gets IP from X-Real-IP or remote-host header
+-- | Gets IP from X-Real-IP/CF-Connecting-I or remote-host header
 getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
-  maybeIp <- getIpFromHeader
-  case maybeIp of
-    Just ip -> return $ B.toString ip
-    Nothing -> getIpFromHost
-  where getIpFromHeader = lookup "X-Real-IP" . requestHeaders <$> waiRequest
-        getIpFromHost = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+  realIp <- getIpReal
+  cfIp   <- getIpCF
+  hostIp <- getIpFromHost
+  return $ fromJust ((B.toString <$> cfIp) <|> (B.toString <$> realIp) <|> Just hostIp)
+  where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
+        getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
+        getIpFromHost  = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
 -------------------------------------------------------------------------------------------------------------------
 -- Geo IP
 -------------------------------------------------------------------------------------------------------------------  

@@ -51,9 +51,7 @@ Installation
     git clone https://github.com/ahushh/Monaba
     cd Monaba
 
-Setup PostgreSQL `user` and `password` in config/postgresql.yml
-
-Application root, port, site name and other settings you can change in `config/settings.yml`
+Main config file `config/settings.yml`
 
 **Download GeoIPCity:**
 
@@ -80,11 +78,9 @@ Set your path to GeSHi in `highlight.php`
 
     cabal update
     cabal sandbox init
-    cabal install yesod-bin && cabal install --only-dependencies # this takes a while, be patient
+    cabal install yesod-bin --force-reinstall && cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
     cabal clean && cabal configure && cabal build # and this too
     cp dist/build/Captcha/Captcha Captcha
-
-You may also want to change meta tags such as `description` and `keywords` in `templates/default-layout-wrapper.hamlet`. Do it before building.
 
 *If you get an error during installation of dependencies*
 
@@ -110,7 +106,7 @@ Create a database:
 
 Run the application to initialize database schema:
 
-    ./dist/build/Monaba/Monaba production
+    ./dist/build/Monaba/Monaba config/settings.yml
 
 Open another terminal and fill database with default values:
 

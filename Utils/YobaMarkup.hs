@@ -7,14 +7,12 @@ module Utils.YobaMarkup
        ) where
 
 import           Import
-import           Yesod.Auth
+import           System.Process
 import           Text.HTML.TagSoup  (escapeHTML)
 import           Text.Parsec hiding (newline)
 import           Text.Parsec.Text
-import           System.Process
-import           Control.Monad      (foldM)
-import qualified Data.Text     as T (concat, append)
 import           Text.Shakespeare.Text
+import qualified Data.Text     as T (concat, append)
 -------------------------------------------------------------------------------------------------------------------
 type CodeLang = Text
 data Expr = Bold          [Expr] -- [b]bold[/b]
@@ -48,7 +46,7 @@ php = "/usr/bin/php"
 -- Parse only external referency
 -------------------------------------------------------------------------------------------------------------------
 makeExternalRef :: Text -> Int -> Handler Text
-makeExternalRef board post = let parsed = parse (many $ try extref) "yoba markup" $ T.concat [">>/",board,"/",showText post]
+makeExternalRef board post = let parsed = parse (many $ try extref) "yoba markup" $ T.concat [">>/",board,"/",tshow post]
                              in case parsed of
                                Right xs -> unTextarea <$> processMarkup xs "nope" 0
                                Left err -> return $ pack $ show err
@@ -77,8 +75,8 @@ processFixRefs xs oldBoard ids = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     f acc (InnerRef postId) = do
       if postId `elem` oldIds
-        then return $ acc <> ">>"  <> (showText $ fromJust $ lookup postId ids)
-        else return $ acc <> ">>/" <> oldBoard <> "/" <> (showText postId)
+        then return $ acc <> ">>"  <> (tshow $ fromJust $ lookup postId ids)
+        else return $ acc <> ">>/" <> oldBoard <> "/" <> (tshow postId)
     ----------------------------------------------------------------------------------------------------------
     -- Don't think there is a need to implement the following
     ----------------------------------------------------------------------------------------------------------
@@ -88,8 +86,8 @@ processFixRefs xs oldBoard ids = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel postId) = do
       if postId `elem` oldIds
-        then return $ acc <> "##"  <> (showText $ fromJust $ lookup postId ids)
-        else return $ acc <> "##/" <> oldBoard <> "/" <> (showText postId)
+        then return $ acc <> "##"  <> (tshow $ fromJust $ lookup postId ids)
+        else return $ acc <> "##/" <> oldBoard <> "/" <> (tshow postId)
     f acc _ = return acc
 
 fixReferences :: Text -> [(Int,Int)] -> Textarea -> IO Textarea
@@ -185,7 +183,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       case maybePost of
         Just (Entity pKey pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board parent p (">>" <> p) (showText $ fromSqlKey pKey)
+          return $ refHtml acc board parent p (">>" <> p) (tshow $ fromSqlKey pKey)
         Nothing              -> return $ acc <> ">>" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ExternalRef board' postId) = do
@@ -194,7 +192,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
       case maybePost of
         Just (Entity pKey pVal) -> do
           let parent = pack $ show $ postParent pVal
-          return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p) (showText $ fromSqlKey pKey)
+          return $ refHtml acc board' parent p (">>/" <> board' <> "/" <> p) (tshow $ fromSqlKey pKey)
         Nothing              -> return $ acc <> ">>/" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
     f acc (ProofLabel    postId) = do
@@ -206,7 +204,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board parent p ("##" <> p) (showText $ fromSqlKey pKey)
+              link'     = refHtml "" board parent p ("##" <> p) (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> p
     ----------------------------------------------------------------------------------------------------------
@@ -219,7 +217,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p) (showText $ fromSqlKey pKey)
+              link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p) (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> board' <> "/" <> p
     ----------------------------------------------------------------------------------------------------------
@@ -232,7 +230,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
               spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
-              link'     = refHtml "" board parent t "##OP" (showText $ fromSqlKey pKey)
+              link'     = refHtml "" board parent t "##OP" (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##OP"
     ----------------------------------------------------------------------------------------------------------

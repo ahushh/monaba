@@ -5,11 +5,11 @@ $maybe banner <- mBanner
         <img src="#{img}">
 
 $if T.null pagetitle
-    <div id="board-header"> #{nameOfTheBoard} — #{boardTitleVal}
+    <div id="board-header"> #{appSiteName} — #{boardTitleVal}
     $if not $ T.null boardSummaryVal
         <div id="board-summary">#{boardSummaryVal}
 $else
-    <div id="board-header"> #{nameOfTheBoard} — #{boardTitleVal}
+    <div id="board-header"> #{appSiteName} — #{boardTitleVal}
     $if not $ T.null boardSummaryVal
         <div id="board-summary">#{boardSummaryVal}
     <div id="board-subtitle">#{pagetitle}
@@ -25,11 +25,11 @@ $if hasAccessToReply
         ^{postFormWidget}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}" data-board=#{board}>
-        ^{postWidget muser eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
+        ^{postWidget eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions}
     
         $forall (eReply, files) <- repliesAndFiles
           $if checkHellbanned (entityVal eReply) permissions posterId
-            ^{postWidget muser eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
+            ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions}
     <i .icon-thread-refresh .fa .fa-refresh>
     <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]

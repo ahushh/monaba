@@ -12,17 +12,16 @@ stanzas:
 
     # Name of your executable. You are unlikely to need to change this.
     # Note that all file paths are relative to the keter.yml file.
-    exec: ../dist/build/yoba/yoba
+    exec: ../dist/build/Monaba/Monaba
 
     # Command line options passed to your application.
-    args:
-      - production
+    args: []
 
     hosts:
       # You can specify one or more hostnames for your application to respond
       # to. The primary hostname will be used for generating your application
       # root.
-      - www.yoba.com
+      - www.Monaba.com
 
     # Enable to force Keter to redirect to https
     # Can be added to any stanza
@@ -31,7 +30,7 @@ stanzas:
   # Static files.
   - type: static-files
     hosts:
-      - static.yoba.com
+      - static.Monaba.com
     root: ../static
 
     # Uncomment to turn on directory listings.
@@ -41,9 +40,9 @@ stanzas:
   - type: redirect
 
     hosts:
-      - yoba.com
+      - Monaba.com
     actions:
-      - host: www.yoba.com
+      - host: www.Monaba.com
         # secure: false
         # port: 80
 

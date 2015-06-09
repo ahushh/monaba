@@ -1,8 +1,6 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Ajax where
 
 import           Import
-import           Yesod.Auth
 import qualified Data.Text as T (concat)
 ---------------------------------------------------------------------------------------------------------
 -- Get multiple posts
@@ -27,8 +25,6 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
     files <- selectFiles p
     return (p, files))
   t <- runDB $ count [PostBoard ==. board, PostLocalId ==. thread, PostParent ==. 0, PostDeleted ==. False]
-  timeZone <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   case () of
     _ | t == 0              -> selectRep $ do
           provideRep  $ bareLayout [whamlet|No such thread|]
@@ -39,7 +35,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget muser post files True True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
+                                   ^{postWidget post files True True False geoIpEnabled showPostDate permissions}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -103,12 +99,10 @@ getAjaxPostByIdR postId = do
   let geoIpEnabled    = boardEnableGeoIp boardVal
       showPostDate    = boardShowPostDate boardVal
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  timeZone <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal post) == 0
-                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
-                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -129,12 +123,10 @@ getAjaxPostR board postId = do
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  timeZone <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
-                       else postWidget muser post files False True False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -151,7 +143,7 @@ getAjaxHideThreadR board threadId postId = do
          zs = filter ((/=board).fst) xs
          new = pack $ show ((board, (threadId,postId):ys):zs)
      in setSession "hidden-threads" new
-   Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[(",showText threadId,",",showText postId,")])]"]
+   Nothing -> setSession "hidden-threads" $ T.concat ["[(",board,",[(",tshow threadId,",",tshow postId,")])]"]
   selectRep $ do
     provideRep $ bareLayout [whamlet|ok|]
     provideJson $ object [("ok", "hidden")]

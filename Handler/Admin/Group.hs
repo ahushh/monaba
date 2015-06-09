@@ -1,10 +1,8 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin.Group where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
+import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------
 groupsForm :: Html ->
              MForm Handler (FormResult ( Text -- ^ Group name
@@ -62,16 +60,10 @@ showPermission p = fromJust $ lookup p xs
 
 getManageGroupsR :: Handler Html
 getManageGroupsR = do
-  muser       <- maybeAuth
-  permissions <- getPermissions <$> getMaybeGroup muser
-
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])
   (formWidget, _) <- generateFormPost groupsForm
-
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgGroups]
+    defaultTitleMsg MsgGroups
     $(widgetFile "admin/groups")
   
 postManageGroupsR :: Handler Html

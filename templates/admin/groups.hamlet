@@ -1,4 +1,4 @@
-^{adminNavbarWidget muser permissions}
+^{adminNavbarWidget}
 ^{formWidget}
 $forall g <- groups
     <table .admin-table style=display:inline >

@@ -1,20 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Handler.Admin.Search where
 
-import           Import
-import           Yesod.Auth
-import qualified Data.Text  as T
+import Import
 -------------------------------------------------------------------------------------------------------------
 getAdminSearchIPNoPageR :: Text -> Handler Html
 getAdminSearchIPNoPageR = flip getAdminSearchIPR 0
 
 getAdminSearchIPR :: Text -> Int -> Handler Html
 getAdminSearchIPR ip page = do
-  muser                <- maybeAuth
-  (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
-  -------------------------------------------------------------------------------------------------------------------
-  showPosts <- getConfig configShowLatestPosts
-  boards    <- runDB $ selectList ([]::[Filter Board]) []
+  permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  group       <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  showPosts   <- getConfig configShowLatestPosts
+  boards      <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. False, PostIp ==. ip]
   let boards'     = mapMaybe (ignoreBoards group) boards
       selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostIp ==. ip]
@@ -23,22 +20,17 @@ getAdminSearchIPR ip page = do
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  timeZone         <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]
+    defaultTitleMsg MsgPostsByUserID
     $(widgetFile "admin/search/ip")
 -------------------------------------------------------------------------------------------------------------
 uidSearchHelper :: Bool -> Text -> Int -> Handler Html
 uidSearchHelper onlyHellbanned posterId page = do
-  muser                <- maybeAuth
-  (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
-  -------------------------------------------------------------------------------------------------------------------
-  showPosts <- getConfig configShowLatestPosts
-  boards    <- runDB $ selectList ([]::[Filter Board]) []
+  permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  group       <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  showPosts   <- getConfig configShowLatestPosts
+  boards      <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count (if onlyHellbanned then [PostDeleted ==. False, PostPosterId ==. posterId, PostHellbanned ==. True] else [PostDeleted ==. False, PostPosterId ==. posterId])
   let boards'        = mapMaybe (ignoreBoards group) boards
       selectPostsAll = [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId]
@@ -49,13 +41,9 @@ uidSearchHelper onlyHellbanned posterId page = do
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  timeZone         <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgPostsByUserID]
+    defaultTitleMsg MsgPostsByUserID
     $(widgetFile "admin/search/uid")
 
 getAdminSearchUIDNoPageR :: Text -> Handler Html

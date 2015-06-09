@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module ModelTypes
        (
          Permission(..)
@@ -52,6 +51,7 @@ instance ToJSON FileType where
 
 instance FromJSON FileType where
   parseJSON (String x) = return $ read $ unpack x
+  parseJSON _          = return FileUndetected
 
 derivePersistField "Permission"
 derivePersistField "FileType"

@@ -1,11 +1,9 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
 module Handler.Edit where
  
 import           Import
-import qualified Data.Text       as T
-import           Yesod.Auth
 import           Handler.Posting
-import           Utils.YobaMarkup        (doYobaMarkup)
+import           Utils.YobaMarkup (doYobaMarkup)
+import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do
@@ -70,10 +68,8 @@ getEditHistoryR postId = do
 
   let history = reverse $ zip (historyDates $ entityVal h) (historyMessages $ entityVal h)
 
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  timeZone        <- getTimeZone
+  timeZone <- getTimeZone
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgEditingHistory]
+    defaultTitleMsg MsgEditingHistory
     $(widgetFile "edit-history")

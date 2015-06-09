@@ -2,12 +2,10 @@
 module Utils.File where
 
 import           Import
-import           Prelude                         as P
 import           Data.Digest.OpenSSL.MD5         (md5sum)
 import           Data.Conduit                    (($$))
 import qualified Data.ByteString                 as BS
 import qualified Data.Conduit.List               as CL
-import           Control.Monad                   (mplus)
 import           Data.Ratio
 import           Data.Text                       (isPrefixOf)
 import           Text.Printf
@@ -98,8 +96,8 @@ saveFile file hashsum = do
   if sameName
     then do
       runDB $ updateWhere ([]::[Filter Storage]) [StorageUploadDir +=. 1]
-      dirExists' <- liftIO $ doesDirectoryExist (uploadDirectory </> show (n+1))
-      unless dirExists' $ liftIO $ createDirectory (uploadDirectory </> show (n+1))
+      dirExists'' <- liftIO $ doesDirectoryExist (uploadDirectory </> show (n+1))
+      unless dirExists'' $ liftIO $ createDirectory (uploadDirectory </> show (n+1))
       let path = uploadDirectory </> show (n+1) </> fn
       liftIO $ fileMove file path
       return path
@@ -150,7 +148,7 @@ parseExifInfo :: String -> [(String,String)]
 parseExifInfo = filter f2 . map f1 . lines
   where f1 x = let k  = takeWhile (/='\t') x
                    v' = dropWhile (/='\t') x
-                   v  = if length v' > 0 then P.tail v' else ""
+                   v  = if length v' > 0 then tail v' else ""
                in (k,v)
         f2 (x,y) = x /= y && x /= "" && y /= ""
 

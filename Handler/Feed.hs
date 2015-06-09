@@ -1,9 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Handler.Feed where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text  as T
 import           Handler.Posting (chooseBanner, postForm, editForm)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
@@ -16,10 +13,8 @@ getAjaxGetPostFormR board = do
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   unless (checkAccessToReply mgroup boardVal) notFound
-  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
   let maxMessageLength = boardMaxMsgLength boardVal
-  (formWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName False boardVal muser
+  (formWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
   bareLayout [whamlet|<form .quick-post-form #post-form method=post enctype=#{formEnctype} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
                         ^{formWidget}
                      |]
@@ -34,7 +29,7 @@ getAjaxFeedOffsetR offset = do
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  ignoredBoards <- getLiveBoards
+  ignoredBoards <- getFeedBoards
   let boardsWhereShowDate = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boards'             = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
@@ -49,16 +44,14 @@ getAjaxFeedOffsetR offset = do
   geoIpEnabled'' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled''
   -------------------------------------------------------------------------------------------------------------------
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
-  nameOfTheBoard   <- extraSiteName <$> getExtra
+  AppSettings{..}  <- appSettings <$> getYesod
   msgrender        <- getMessageRender
-  timeZone         <- getTimeZone  
   mBanner          <- chooseBanner
   (editFormWidget, _) <- generateFormPost editForm
   if offset == 0
      then defaultLayout $ do
             setUltDestCurrent
-            setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgFeed]
+            defaultTitleMsg MsgFeed
             $(widgetFile "feed")
     else bareLayout $(widgetFile "feed")
   
@@ -67,7 +60,6 @@ getAjaxNewFeedR lastPostId = do
   lastPost <- runDB $ get404 $ toSqlKey $ fromIntegral lastPostId
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
-  timeZone <- getTimeZone
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
       lastPostDate= postDate lastPost
@@ -75,7 +67,7 @@ getAjaxNewFeedR lastPostId = do
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
-  ignoredBoards <- getLiveBoards
+  ignoredBoards <- getFeedBoards
   let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
       boards'                = mapMaybe (ignoreBoards group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
@@ -90,7 +82,7 @@ getAjaxNewFeedR lastPostId = do
   geoIpEnabled'' <- runDB $ mapM (getBy . BoardUniqName) $ nub $ map (postBoard . entityVal) posts
   let geoIpEnabled = map (boardName . entityVal) $ filter (boardEnableGeoIp . entityVal) $ catMaybes geoIpEnabled''
   -------------------------------------------------------------------------------------------------------------------
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  AppSettings{..}  <- appSettings <$> getYesod
   msgrender        <- getMessageRender
   (editFormWidget, _) <- generateFormPost editForm
   let offset  = -1 :: Int

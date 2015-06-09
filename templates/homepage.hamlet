@@ -1,9 +1,9 @@
 <div #main-title>
-    <h1>#{nameOfTheBoard}
+    <h1>#{appSiteName}
 <div #home-container>
     <div #board-list-full>
         $forall c <- boardCategories
-          $with bs <- widgetHelperFilterBoards boards c group
+          $with bs <- filterBoards boards c group
             $if not (null bs)
               <div .board-category>#{c}
               $forall Entity _ b <- sortBoards bs
@@ -14,7 +14,7 @@
         <div #latest-news>
             <div #news-title>_{MsgNews}
             $forall (Entity pKey t, eFiles) <- newsAndFiles
-                $if not $ t == entityVal (fst $ P.head newsAndFiles)
+                $if not $ t == entityVal (fst $ head newsAndFiles)
                     <hr>
                 <div .news id=p#{fromSqlKey pKey}>
                     <div .title>

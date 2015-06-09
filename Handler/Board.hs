@@ -1,8 +1,6 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
 module Handler.Board where
 
 import           Import
-import           Yesod.Auth
 import qualified Data.Text       as T
 import           Handler.Delete  (deletePosts)
 import           Handler.Posting
@@ -85,19 +83,15 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
-  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName True boardVal muser
+  AppSettings{..}   <- appSettings <$> getYesod
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm True boardVal muser
   (editFormWidget, _)           <- generateFormPost editForm
-  nameOfTheBoard   <- extraSiteName <$> getExtra
   msgrender        <- getMessageRender
-  timeZone         <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
   mBanner          <- chooseBanner
   defaultLayout $ do
     setUltDestCurrent
-    let p = if page > 0 then T.concat [" (", showText page, ") "] else ""
-    setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, title, p]
+    let p = if page > 0 then T.concat [" (", tshow page, ") "] else ""
+      in defaultTitleReverse (title <> p)
     $(widgetFile "board")
     
 postBoardR :: Text -> Int -> Handler Html
@@ -117,7 +111,7 @@ postBoardR board _ = do
       enableCaptcha    = boardEnableCaptcha boardVal
       showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------       
-  ((result, _),   _) <- runFormPost $ postForm 0 0 True boardVal muser
+  ((result, _),   _) <- runFormPost $ postForm True boardVal muser
   case result of
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
@@ -148,16 +142,15 @@ postBoardR board _ = do
         ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted  <- doYobaMarkup message board 0
-        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+        AppSettings{..}   <- appSettings <$> getYesod
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
                            , postParentTitle  = ""
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         = if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName) name
+                           , postTitle        = maybe ("" :: Text) (T.take appMaxLenOfPostTitle) title
+                           , postName         = if forcedAnon then defaultName else maybe defaultName (T.take appMaxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Just now
@@ -168,7 +161,7 @@ postBoardR board _ = do
                            , postAutosage     = False
                            , postDeleted      = False
                            , postDeletedByOp  = False
-                           , postOwner        = showText . userGroup . entityVal <$> muser
+                           , postOwner        = tshow . userGroup . entityVal <$> muser
                            , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing

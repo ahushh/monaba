@@ -1,9 +1,6 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
 module Handler.Delete where
 
 import           Import
-import qualified Prelude            as P (head, tail)
-import           Yesod.Auth
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
@@ -32,13 +29,10 @@ getDeletedByOpR board thread = do
     return (post, file)
   let allPosts = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
   ------------------------------------------------------------------------------------------------------- 
-  nameOfTheBoard <- extraSiteName <$> getExtra
-  msgrender      <- getMessageRender
-  timeZone       <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  AppSettings{..}  <- appSettings <$> getYesod
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgDeletedPosts]
+    defaultTitleMsg MsgDeletedPosts
     $(widgetFile "deleted")
 
 getDeleteR :: Handler Html
@@ -52,7 +46,7 @@ getDeleteR = do
   case reverse query of
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
-      let xs = if fst (P.head zs) == "onlyfiles" then P.tail zs else zs
+      let xs = if fst (head zs) == "onlyfiles" then tail zs else zs
       thread   <- runDB $ get ((toSqlKey . fromIntegral $ ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
@@ -75,8 +69,8 @@ getDeleteR = do
 
     ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
-      let onlyfiles    = fst (P.head zs) == "onlyfiles"
-          xs           = if onlyfiles then P.tail zs else zs
+      let onlyfiles    = fst (head zs) == "onlyfiles"
+          xs           = if onlyfiles then tail zs else zs
           requestIds   = map helper xs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])

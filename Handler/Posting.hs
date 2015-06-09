@@ -1,4 +1,3 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Posting where
 
 import           Import
@@ -13,9 +12,7 @@ data GoBackTo = ToThread | ToBoard | ToFeed
 -------------------------------------------------------------------------------------------------------------------
 -- Forms
 -------------------------------------------------------------------------------------------------------------------
-postForm :: Int   -> -- ^ The maximium length of post title
-           Int   -> -- ^ The maximium length of poster name
-           Bool  -> -- ^ Is a new thread
+postForm :: Bool  -> -- ^ Is a new thread
            Board -> -- ^ Board value
            Maybe (Entity User) -> -- ^ User
            Html                -> -- ^ Extra token
@@ -29,7 +26,7 @@ postForm :: Int   -> -- ^ The maximium length of post title
                                      , Maybe Bool     -- ^ No bump
                                      )
                          , Widget)
-postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = do
+postForm isNewThread boardVal muser extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -37,6 +34,7 @@ postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = d
   deleteSession "message"
   deleteSession "post-title"
   msgrender   <- getMessageRender
+  AppSettings{..} <- appSettings <$> getYesod
 
   let maxMessageLength = boardMaxMsgLength  boardVal
       numberFiles      = boardNumberFiles   boardVal
@@ -50,8 +48,8 @@ postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = d
       passInput    lbl = lbl { fsAttrs = [("autocomplete","off")] }
       captchaInput lbl = lbl { fsAttrs = [("class", "captcha-input"),("placeholder",msgrender MsgCaptcha)] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
-      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",showText maxLenOfPostName ),("placeholder",msgrender MsgName)] }
-      subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",showText maxLenOfPostTitle),
+      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",tshow appMaxLenOfPostName ),("placeholder",msgrender MsgName)] }
+      subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",tshow appMaxLenOfPostTitle),
                                           if isNewThread then ("placeholder",msgrender MsgThreadSubject) else ("placeholder",msgrender MsgPostSubject)]++
                                          [("required","required") | boardRequiredThreadTitle boardVal && isNewThread] }
   ----------------------------------------------------------------------------------------------------------------
@@ -60,7 +58,7 @@ postForm maxLenOfPostTitle maxLenOfPostName isNewThread boardVal muser extra = d
   (messageRes  , messageView ) <- mopt myMessageField         (msgInput     "") ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          (passInput    "") Nothing
   (captchaRes  , captchaView ) <- mopt textField              (captchaInput "") Nothing
-  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> readText x :: GoBackTo) lastGoback)
+  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> tread x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>

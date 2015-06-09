@@ -1,9 +1,7 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, MultiWayIf #-}
+{-# LANGUAGE MultiWayIf #-}
 module Handler.Thread where
  
 import           Import
-import           Yesod.Auth
-import           Prelude            (head)
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
@@ -14,12 +12,13 @@ import           Handler.Captcha    (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
 import           Text.Blaze.Html.Renderer.String
 -------------------------------------------------------------------------------------------------------------------
--- Костыли-костылики...
 getJsonFromMsgR :: Text -> Handler TypedContent
 getJsonFromMsgR status = do
-  msg <- getMessage
-  selectRep $
-    provideJson $ object [(status, toJSON $ renderHtml $ fromJust msg)]
+  mMsg      <- getMessage
+  msgrender <- getMessageRender
+  case mMsg of
+    Just msg -> selectRep $ provideJson $ object [(status, toJSON $ renderHtml msg)]
+    Nothing  -> selectRep $ provideJson $ object [(status, toJSON $ msgrender MsgUnknownError)]
 -------------------------------------------------------------------------------------------------------------------
 selectThread :: Text -> Int -> Handler [(Entity Post, [Entity Attachedfile])]
 selectThread board thread = do
@@ -60,20 +59,16 @@ getThreadR board thread = do
   posterId <- getPosterId
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
-  maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-  maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
-  (postFormWidget, formEnctype) <- generateFormPost $ postForm maxLenOfPostTitle maxLenOfPostName False boardVal muser
+  (postFormWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
   (editFormWidget, _)           <- generateFormPost editForm
-  nameOfTheBoard            <- extraSiteName <$> getExtra
-  msgrender                 <- getMessageRender
-  timeZone                  <- getTimeZone
 
-  noDeletedPosts   <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
-  mBanner          <- chooseBanner
+  noDeletedPosts  <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
+  mBanner         <- chooseBanner
+  msgrender       <- getMessageRender
+  AppSettings{..} <- appSettings <$> getYesod
   defaultLayout $ do
     setUltDestCurrent
-    setTitle $ toHtml $ T.concat $ reverse [nameOfTheBoard, titleDelimiter, boardTitleVal, if T.null pagetitle then "" else titleDelimiter, pagetitle]
+    defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
 postThreadR :: Text -> Int -> Handler Html
@@ -98,7 +93,7 @@ postThreadR board thread = do
       threadUrl        = ThreadR board thread
       boardUrl         = BoardNoPageR board
   -------------------------------------------------------------------------------------------------------         
-  ((result, _), _) <- runFormPost $ postForm 0 0 False boardVal muser
+  ((result, _), _) <- runFormPost $ postForm False boardVal muser
   case result of
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
@@ -129,8 +124,7 @@ postThreadR board thread = do
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" MsgPostingTooFast threadUrl
         ------------------------------------------------------------------------------------------------------
         messageFormatted  <- doYobaMarkup message board thread
-        maxLenOfPostTitle <- extraMaxLenOfPostTitle <$> getExtra
-        maxLenOfPostName  <- extraMaxLenOfPostName  <$> getExtra
+        AppSettings{..}   <- appSettings <$> getYesod
         lastPost          <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost)
             newPost = Post { postBoard        = board
@@ -139,8 +133,8 @@ postThreadR board thread = do
                            , postParentTitle  = postTitle $ entityVal $ fromJust $ maybeParent
                            , postMessage      = messageFormatted
                            , postRawMessage   = maybe "" unTextarea message
-                           , postTitle        = maybe ("" :: Text) (T.take maxLenOfPostTitle) title
-                           , postName         =  if forcedAnon then defaultName else maybe defaultName (T.take maxLenOfPostName) name
+                           , postTitle        = maybe ("" :: Text) (T.take appMaxLenOfPostTitle) title
+                           , postName         =  if forcedAnon then defaultName else maybe defaultName (T.take appMaxLenOfPostName) name
                            , postDate         = now
                            , postPassword     = pswd
                            , postBumped       = Nothing

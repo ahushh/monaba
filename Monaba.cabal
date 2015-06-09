@@ -1,5 +1,5 @@
 name:              Monaba
-version:           2.3.0
+version:           2.4.0
 cabal-version:     >= 1.8
 build-type:        Simple
 
@@ -12,13 +12,16 @@ Flag library-only
     Default:       False
 
 library
+    hs-source-dirs: ., app
     exposed-modules: Application
                      Foundation
                      Import
+                     Import.NoFoundation
                      Model
+                     ModelTypes
                      Settings
                      Settings.StaticFiles
-                     Settings.Development
+                     Handler.Common
                      Handler.Home
                      Handler.Help
                      Handler.Thread
@@ -42,7 +45,6 @@ library
                      Handler.Captcha
                      Utils.File
                      Utils.YobaMarkup
-                     ModelTypes
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -64,6 +66,9 @@ library
                 NoMonomorphismRestriction
                 DeriveDataTypeable
                 ViewPatterns
+                TupleSections
+                RecordWildCards
+                ExistentialQuantification
 
     build-depends: base                          >= 4          && < 5
                  , yesod                         >= 1.4.1      && < 1.5
@@ -131,20 +136,7 @@ library
                  , stm
                  , blaze-builder
                  , base64-bytestring
-
-executable         Captcha
-    if flag(library-only)
-        Buildable: False
-
-    main-is:           PlainCaptcha.hs
-    hs-source-dirs:    Utils
-    build-depends:     base
-                     , transformers
-                     , random
-                     , imagemagick
-                     , text
-                     , system-filepath
-    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+                 , mtl
 
 
 executable         Monaba
@@ -153,18 +145,31 @@ executable         Monaba
 
     main-is:           main.hs
     hs-source-dirs:    app
-    build-depends:     base
-                     , Monaba
-                     , yesod
-
+    build-depends:     base, Monaba
 
     ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
 
 test-suite test
     type:              exitcode-stdio-1.0
-    main-is:           main.hs
+    main-is:           Spec.hs
     hs-source-dirs:    test
     ghc-options:       -Wall
+
+    extensions: TemplateHaskell
+                QuasiQuotes
+                OverloadedStrings
+                NoImplicitPrelude
+                CPP
+                MultiParamTypeClasses
+                TypeFamilies
+                GADTs
+                GeneralizedNewtypeDeriving
+                FlexibleContexts
+                EmptyDataDecls
+                NoMonomorphismRestriction
+                DeriveDataTypeable
+                ViewPatterns
+                TupleSections
 
     build-depends: base
                  , Monaba

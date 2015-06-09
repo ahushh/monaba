@@ -1,12 +1,9 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin.User where
 
 import           Import
-import           Yesod.Auth
 import           Yesod.Auth.HashDB (setPassword)
-import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
-
+import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------
 -- Users
 -------------------------------------------------------------------------------------------------------------
@@ -26,17 +23,11 @@ usersForm groups extra = do
 
 getUsersR :: Handler Html
 getUsersR = do
-  muser       <- maybeAuth
-  permissions <- getPermissions <$> getMaybeGroup muser
-
   groups <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   (formWidget, _) <- generateFormPost $ usersForm groups
-
   users           <- runDB $ selectList ([]::[Filter User ]) []
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgUsers]
+    defaultTitleMsg MsgUsers
     $(widgetFile "admin/users")
 
 postUsersR :: Handler Html
@@ -95,15 +86,9 @@ newPasswordForm extra = do
 
 getAccountR :: Handler Html
 getAccountR = do
-  muser       <- maybeAuth
-  permissions <- getPermissions <$> getMaybeGroup muser
-
   (formWidget, _) <- generateFormPost newPasswordForm
-
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgAccount]
+    defaultTitleMsg MsgAccount
     $(widgetFile "admin/account")
                  
 postNewPasswordR :: Handler Html

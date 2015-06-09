@@ -12,7 +12,7 @@
         <span .reply-title>#{postTitle $ postVal}
         <span .poster-name>#{postName $ postVal}
         $if showPostDate
-            <span .time>#{myFormatTime tOffset $ postDate postVal}
+            <span .time>#{myFormatTime timeZone $ postDate postVal}
         $if isThread
             <div .thread-status>
                 $if postSticked postVal
@@ -77,7 +77,7 @@
               $with fi <- makeFileInfo file
                 <div class=#{c}>
                   <div .file-name>
-                      <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName maxLenOfFileName $ attachedfileName file}
+                      <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
                   <div .file-info> #{fi}
                   $if attachedfileThumbWidth file == -1
                       <img src="#{tp}" .thumb title="#{fi}">
@@ -97,4 +97,4 @@
         <div .message>#{m}
     $maybe lm <- postLastModified postVal
         <span .last-modified>
-            <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime tOffset lm}
+            <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime timeZone lm}

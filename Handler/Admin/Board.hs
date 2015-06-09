@@ -2,19 +2,13 @@
 module Handler.Admin.Board where
 
 import           Import
-import           Yesod.Auth
 import qualified Data.Text         as T
 import           Handler.Delete    (deletePosts)
-import           Control.Monad     (mplus)
 import           Utils.YobaMarkup  (doYobaMarkup)
 import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 getManageBoardsR :: ManageBoardAction -> Text -> Handler Html
 getManageBoardsR action board = do
-  muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  let permissions = getPermissions mgroup
-
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
@@ -22,10 +16,8 @@ getManageBoardsR action board = do
   (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups -- oops, ignored formEnctype
 
   boards          <- runDB $ selectList ([]::[Filter Board]) []
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgBoardManagement]
+    defaultTitleMsg MsgBoardManagement
     $(widgetFile "admin/boards")
 -------------------------------------------------------------------------------------------------------------    
 updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board

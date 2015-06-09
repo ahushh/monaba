@@ -1,4 +1,4 @@
-^{adminNavbarWidget muser permissions}
+^{adminNavbarWidget}
 <h2 style=text-align:center> UID: #{posterId}
 $if onlyHellbanned
     <div style=text-align:center>
@@ -10,7 +10,7 @@ $else
 <div .feed>
   <form .delete-form method=get action=@{DeleteR}>
     $forall (e, files) <- postsAndFiles
-      ^{postWidget muser e files False False True True True permissions timeZone maxLenOfFileName}
+      ^{postWidget e files False False True True True permissions}
     ^{deleteWidget permissions}
 
 $if onlyHellbanned

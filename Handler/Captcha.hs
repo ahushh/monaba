@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Handler.Captcha where
  
 import Import
@@ -12,7 +11,7 @@ captchaExt = ".png"
 
 makeCaptcha :: String -> Handler Text
 makeCaptcha path = do
-  captcha <- extraCaptcha <$> getExtra
+  captcha <- appCaptcha . appSettings <$> getYesod
   liftIO $ (T.strip . pack) <$> readProcess (unpack captcha) [path] ""
 
 getCaptchaR :: Handler Html
@@ -21,7 +20,7 @@ getCaptchaR = do
   let path = captchaFilePath (unpack $ fromJust oldCId) ++ captchaExt
     in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
   cId <- liftIO (abs <$> randomIO :: IO Int)
-  setSession "captchaId" (showText cId)
+  setSession "captchaId" (tshow cId)
   value <- makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
   setSession "captchaValue" value
   sendFile typePng $ captchaFilePath (show cId) ++ captchaExt

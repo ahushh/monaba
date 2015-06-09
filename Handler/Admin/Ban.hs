@@ -1,10 +1,8 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin.Ban where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
+import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------
 banByIpForm :: Text -> -- ^ IP adress
               Text -> -- ^ Board name
@@ -26,17 +24,11 @@ banByIpForm ip board extra = do
                                           
 getBanByIpR :: Text -> Text -> Handler Html
 getBanByIpR board ip = do
-  muser       <- maybeAuth
-  permissions <- getPermissions <$> getMaybeGroup muser
-  timeZone   <- getTimeZone
-
+  timeZone        <- getTimeZone
   (formWidget, _) <- generateFormPost $ banByIpForm ip board
-  
   bans            <- runDB $ selectList ([]::[Filter Ban]) []
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgBanManagement]
+    defaultTitleMsg MsgBanManagement
     $(widgetFile "admin/ban")
 
 postBanByIpR :: Text -> Text -> Handler Html

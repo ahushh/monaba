@@ -1,25 +1,18 @@
 module Handler.Admin.Modlog where
 
-import           Import
-import           Yesod.Auth
-import qualified Data.Text       as T
----------------------------------------------------------------------------------------------------------
+import Import
+
 getModlogR :: Int -> Handler Html
 getModlogR page = do
-  muser          <- maybeAuth
-  permissions    <- getPermissions <$> getMaybeGroup muser
   logEntryCount  <- runDB $ count ([]::[Filter Modlog])
   perPage        <- getConfig configModlogEntriesPerPage
   entries        <- runDB $ selectList ([]::[Filter Modlog]) [Desc ModlogDate, LimitTo perPage, OffsetBy $ page*perPage]
-  nameOfTheBoard <- extraSiteName <$> getExtra
-  msgrender      <- getMessageRender
   timeZone       <- getTimeZone
   let pages = listPages perPage logEntryCount
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgModlog]
+    defaultTitleMsg MsgModlog
     $(widgetFile "admin/modlog")
 
----------------------------------------------------------------------------------------------------------
 addModlogEntry :: AppMessage -> Handler ()
 addModlogEntry msg = do
   muser     <- maybeAuth

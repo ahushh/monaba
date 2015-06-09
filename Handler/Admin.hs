@@ -1,11 +1,16 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (fixReferences, doYobaMarkup, makeExternalRef)
+-------------------------------------------------------------------------------------------------------------
+getAdminR :: Handler Html
+getAdminR = do
+  defaultLayout $ do
+    defaultTitleMsg MsgManagement
+    $(widgetFile "admin")
+-------------------------------------------------------------------------------------------------------------
+-- Thread management
 -------------------------------------------------------------------------------------------------------------
 getMoveThreadR :: Text -> Int -> Text -> Handler Html
 getMoveThreadR srcBoard thread dstBoard = do
@@ -62,20 +67,6 @@ getChangeThreadR postKey threadLocalId = do
 
       redirect $ BoardNoPageR board
 
--------------------------------------------------------------------------------------------------------------
-getAdminR :: Handler Html
-getAdminR = do
-  muser           <- maybeAuth
-  permissions     <- getPermissions <$> getMaybeGroup muser
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
-  defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgManagement]
-    $(widgetFile "admin")
-
--------------------------------------------------------------------------------------------------------------
--- Thread management
--------------------------------------------------------------------------------------------------------------
 getStickR :: Text -> Int -> Handler Html
 getStickR board thread = do
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. thread] []

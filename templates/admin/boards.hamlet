@@ -1,4 +1,4 @@
-^{adminNavbarWidget muser permissions}
+^{adminNavbarWidget}
 $if not (action == NewBoard)
     <a href=@{CleanBoardR  action board} onclick="return confirm('_{MsgCleanBoardConfirm}')">_{MsgCleanBoard}
     |

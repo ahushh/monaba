@@ -1,28 +1,41 @@
-Default: &defaults
-  host: "*4" # any IPv4 host
-  port: 3000
-  approot: "http://localhost" # your domain
-  copyright: " " # footer
-  #analytics: UA-YOURCODE
-  sitename: "Monaba"
-  geoipcitypath: "/usr/share/GeoIP/GeoIPCity.dat"
-  timezone: 14400 # default time offset in seconds
-  stylesheet: Chaos # default stylesheet
-  maxLenOfPostTitle: 60
-  maxLenOfPostName: 20
-  captcha: "./Captcha"
-  maxLenOfFileName: 20
+# Values formatted like "_env:ENV_VAR_NAME:default_value" can be overridden by the specified environment variable.
+# See https://github.com/yesodweb/yesod/wiki/Configuration#overriding-configuration-values-with-environment-variables
 
-Development:
-  <<: *defaults
+static-dir:     "_env:STATIC_DIR:static"
+host:           "_env:HOST:*4" # any IPv4 host
+port:           "_env:PORT:3000"
+approot:        "_env:APPROOT:http://localhost"
+ip-from-header: "_env:IP_FROM_HEADER:false"
 
-Testing:
-  <<: *defaults
+# Optional values with the following production defaults.
+# In development, they default to the inverse.
+#
+# development: false
+# detailed-logging: false
+# should-log-all: false
+# reload-templates: false
+# mutable-static: false
+# skip-combining: false
 
-Staging:
-  <<: *defaults
+database:
+  user:     "_env:PGUSER:postgres"
+  password: "_env:PGPASS:postgres"
+  host:     "_env:PGHOST:localhost"
+  port:     "_env:PGPORT:5432"
+  database: "_env:PGDATABASE:monabas"
+  poolsize: "_env:PGPOOLSIZE:100"
 
-Production:
-  approot: "http://haibane.ru"
-  sitename: "Хайбане.ru"
-  <<: *defaults
+footer: Insert copyright statement here
+#analytics: UA-YOURCODE
+
+sitename:          "Monaba"
+geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
+timezone:          14400 # default time offset in seconds
+stylesheet:        Chaos # default stylesheet
+maxLenOfPostTitle: 60
+maxLenOfPostName:  20
+maxLenOfFileName:  20
+captcha:           "./Captcha"
+metaKeywords:      "haskell,yesod"
+metaDescription:   "haskell imageboard"
+titleDelimiter:    " / "

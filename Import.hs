@@ -1,44 +1,13 @@
-{-# LANGUAGE ExistentialQuantification, TupleSections #-}
-
 module Import
     ( module Import
     ) where
 
-import           Prelude              as Import hiding (head, init, last,
-                                                 readFile, tail, writeFile)
-import           Yesod                as Import hiding (Route (..))
+import Foundation            as Import
+import Import.NoFoundation   as Import
 
-import           Control.Applicative  as Import (pure, (<$>), (<*>))
-import           Data.Text            as Import (Text, unpack, pack)
- 
-import           Foundation           as Import
-import           Model                as Import
-import           Settings             as Import
-import           Settings.Development as Import
-import           Settings.StaticFiles as Import
-
-#if __GLASGOW_HASKELL__ >= 704
-import           Data.Monoid          as Import
-                                                 (Monoid (mappend, mempty, mconcat),
-                                                 (<>))
-#else
-import           Data.Monoid          as Import
-                                                 (Monoid (mappend, mempty, mconcat))
-
-infixr 5 <>
-(<>) :: Monoid m => m -> m -> m
-(<>) = mappend
-#endif
--------------------------------------------------------------------------------------------------------------------
-import Control.Arrow        as Import (second, first, (&&&), (***))
-import Control.Monad        as Import (unless, when, forM, forM_, void, join)
-import Data.List            as Import (nub, intercalate)
-import Data.Maybe           as Import (fromMaybe, fromJust, isJust, isNothing, catMaybes, mapMaybe)
-import Data.Time            as Import (UTCTime, getCurrentTime, utctDayTime, diffUTCTime)
+import Control.Arrow        as Import (first, second, (&&&), (***))
 import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
-import Text.Blaze.Html      as Import (preEscapedToHtml)
-import ModelTypes           as Import 
--------------------------------------------------------------------------------------------------------------------
+
 import           Control.Applicative     (liftA2, (<|>))
 import           Data.Char               (toLower, isPrint)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
@@ -50,16 +19,14 @@ import           Network.Wai
 import           System.FilePath         ((</>))
 import           System.Locale           (defaultTimeLocale)
 import           System.Random           (randomIO, randomRIO)
-import           Text.HTML.TagSoup      (parseTagsOptions, parseOptionsFast, Tag(TagText))
+import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append)
-import           Yesod.Auth              (maybeAuth)
 -------------------------------------------------------------------------------------------------------------------
 -- Constants
 -------------------------------------------------------------------------------------------------------------------
-titleDelimiter :: Text
-titleDelimiter = " / "
+staticDir = "static"
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
@@ -75,11 +42,11 @@ whenM = (. flip when) . (>>=)
 unlessM :: Monad m => m Bool -> m () -> m ()
 unlessM = (. flip unless) . (>>=)
 
-showText :: Show a => a -> Text
-showText = pack . show
+tshow :: Show a => a -> Text
+tshow = pack . show
 
-readText :: Read a => Text -> a
-readText = read . unpack
+tread :: Read a => Text -> a
+tread = read . unpack
 
 pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
 pair f g x = (f x, g x)
@@ -206,11 +173,23 @@ truncateFileName maxLen s = if len > maxLen then result else s
         left     = reverse $ drop (halfExc + 2) $ reverse $ fst splitted
         right    = drop (halfExc + 2) $ snd splitted
         result   = left ++ "[..]" ++ right
+
+defaultTitleMsg title = do
+  AppSettings{..} <- appSettings <$> getYesod
+  msgrender       <- getMessageRender
+  setTitle $ toHtml $ T.concat [appSiteName, appTitleDelimiter, msgrender title]
+
+defaultTitle title = do
+  AppSettings{..} <- appSettings <$> getYesod
+  setTitle $ toHtml $ T.concat [appSiteName, appTitleDelimiter, title]
+
+defaultTitleReverse title = do
+  AppSettings{..} <- appSettings <$> getYesod
+  setTitle $ toHtml $ T.concat $ reverse [appSiteName, appTitleDelimiter, title]
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
-postWidget :: Maybe (Entity User)      ->
-             Entity Post              -> 
+postWidget :: Entity Post              -> 
              [Entity Attachedfile]    -> 
              Bool                     -> -- ^ Are we in a thread
              Bool                     -> -- ^ Have access to post
@@ -218,10 +197,8 @@ postWidget :: Maybe (Entity User)      ->
              Bool                     -> -- ^ If geo ip enabled
              Bool                     -> -- ^ Show post date
              [Permission]             -> -- ^ List of the all permissions
-             Int                      -> -- ^ Time offset in seconds
-             Int                      -> -- ^ Max file name length
              Widget
-postWidget _ ePost eFiles inThread canPost showParent geoIp showPostDate permissions tOffset maxLenOfFileName = 
+postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissions = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost
@@ -232,15 +209,20 @@ postWidget _ ePost eFiles inThread canPost showParent geoIp showPostDate permiss
       board          = postBoard $ entityVal ePost
       isThread       = sThreadLocalId == "0"
       pClass         = (if isThread then "op-post" else "reply-post") :: Text
-  in $(widgetFile "post")
+  in do
+    timeZone        <- handlerToWidget getTimeZone
+    AppSettings{..} <- handlerToWidget $ appSettings <$> getYesod
+    $(widgetFile "post")
 
 paginationWidget page pages route = $(widgetFile "pagination")
 
 deleteWidget :: [Permission] -> Widget
 deleteWidget permissions = $(widgetFile "delete")
 
-adminNavbarWidget :: Maybe (Entity User) -> [Permission] -> Widget
-adminNavbarWidget _ permissionsW = $(widgetFile "admin/navbar")
+adminNavbarWidget :: Widget
+adminNavbarWidget = do
+  permissions <- handlerToWidget $ ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html
 bareLayout widget = do
@@ -288,9 +270,9 @@ getBoardVal404 board = runDB (getBy $ BoardUniqName board) >>= maybe notFound (r
 
 getTimeZone :: Handler Int
 getTimeZone = do
-  defaultZone <- extraTimezone <$> getExtra
+  defaultZone <- appTimezone . appSettings <$> getYesod
   timezone    <- lookupSession "timezone"
-  return $ maybe defaultZone readText timezone
+  return $ maybe defaultZone tread timezone
 
 getPosterId :: Handler Text
 getPosterId = do
@@ -308,11 +290,11 @@ getConfig f = f . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Confi
 getConfigEntity :: Handler Config
 getConfigEntity = entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
 
-getLiveBoards :: Handler [Text]
-getLiveBoards = do
+getFeedBoards :: Handler [Text]
+getFeedBoards = do
   bs <- lookupSession "feed-ignore-boards"
   case bs of
-   Just xs -> return $ readText xs
+   Just xs -> return $ tread xs
    Nothing -> setSession "feed-ignore-boards" "[]" >> return []
 
 getHiddenThreads :: Text -> Handler [(Int,Int)]
@@ -355,7 +337,7 @@ getIp = do
 getCountry :: Text ->                      -- ^ IP adress
              Handler (Maybe (Text,Text)) -- ^ (country code, country name)
 getCountry ip = do
-  dbPath <- unpack . extraGeoIPCityPath <$> getExtra
+  dbPath   <- unpack . appGeoIPCityPath . appSettings <$> getYesod
   geoIpRes <- liftIO $ openGeoDB memory_cache dbPath >>= flip geoLocateByIPAddress (encodeUtf8 ip)
   return $ ((decodeUtf8 . geoCountryCode) &&& (decodeUtf8 . geoCountryName)) <$> geoIpRes
 -------------------------------------------------------------------------------------------------------------------
@@ -363,13 +345,13 @@ getCountry ip = do
 -------------------------------------------------------------------------------------------------------------------
 getBoardStats :: Handler [(Text,Int,Int)]
 getBoardStats = do
-  mgroup     <- getMaybeGroup =<< maybeAuth
+  mgroup     <- (fmap $ userGroup . entityVal) <$> maybeAuth
   maybeStats <- lookupSession "board-stats"
   case maybeStats of
-    Just s  -> return $ readText s
+    Just s  -> return $ tread s
     Nothing -> do
       posterId <- getPosterId
-      boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      boards <- mapMaybe (ignoreBoards' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
       hiddenThreads <- getAllHiddenThreads
       stats  <- runDB $ forM boards $ \b -> do
                   lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostPosterId !=. posterId, PostHellbanned ==. False
@@ -387,12 +369,12 @@ getBoardStats = do
 saveBoardStats :: [(Text,Int,Int)] -> Handler ()
 saveBoardStats stats = do
   deleteSession "board-stats"
-  setSession "board-stats" $ showText stats
+  setSession "board-stats" $ tshow stats
 
 cleanAllBoardsStats :: Handler ()
 cleanAllBoardsStats = do
-  mgroup <- getMaybeGroup =<< maybeAuth
-  boards <- mapMaybe (ignoreBoards' $ fmap (groupName . entityVal) mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+  mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  boards <- mapMaybe (ignoreBoards' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   forM_ boards cleanBoardStats
   where ignoreBoards' group (Entity _ b)
           | boardHidden b ||

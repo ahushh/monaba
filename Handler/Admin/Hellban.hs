@@ -1,8 +1,6 @@
 module Handler.Admin.Hellban where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text  as T
 import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------
 getHellBanNoPageR :: Handler Html
@@ -10,9 +8,8 @@ getHellBanNoPageR = getHellBanR 0
 
 getHellBanR :: Int -> Handler Html
 getHellBanR page = do
-  muser                <- maybeAuth
-  (permissions, group) <- pair getPermissions ((groupName . entityVal)<$>) <$> getMaybeGroup muser
-  -------------------------------------------------------------------------------------------------------------------
+  permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  group       <- (fmap $ userGroup . entityVal) <$> maybeAuth
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. False, PostHellbanned ==. True]
@@ -23,12 +20,9 @@ getHellBanR page = do
   postFiles <- forM posts $ \e -> runDB $ selectList [AttachedfileParentId ==. entityKey e] []
   let postsAndFiles = zip posts postFiles
   -------------------------------------------------------------------------------------------------------------------
-  nameOfTheBoard   <- extraSiteName <$> getExtra
-  msgrender        <- getMessageRender
-  timeZone         <- getTimeZone
-  maxLenOfFileName <- extraMaxLenOfFileName <$> getExtra
+  AppSettings{..}  <- appSettings <$> getYesod
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgHellbanning]
+    defaultTitleMsg MsgHellbanning
     $(widgetFile "admin/hellban")
 -- ------------------------------------------------------------------------------------------------------------
 getHellBanDoR :: Int  -> -- ^ Post internal ID

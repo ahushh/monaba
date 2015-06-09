@@ -1,10 +1,8 @@
-{-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin.Config where
 
 import           Import
-import           Yesod.Auth
-import qualified Data.Text         as T
 import           Handler.Admin.Modlog (addModlogEntry) 
+import qualified Data.Text as T (intercalate, splitOn)
 -------------------------------------------------------------------------------------------------------------
 configForm :: Config ->
              Html   ->
@@ -48,16 +46,10 @@ configForm config extra = do
   
 getConfigR :: Handler Html
 getConfigR = do
-  muser       <- maybeAuth
-  permissions <- getPermissions <$> getMaybeGroup muser
-
   configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
   (formWidget, _) <- generateFormPost $ configForm configVal
-
-  nameOfTheBoard  <- extraSiteName <$> getExtra
-  msgrender       <- getMessageRender
   defaultLayout $ do
-    setTitle $ toHtml $ T.concat [nameOfTheBoard, titleDelimiter, msgrender MsgConfig]
+    defaultTitleMsg MsgConfig
     $(widgetFile "admin/config")
 
 postConfigR :: Handler Html

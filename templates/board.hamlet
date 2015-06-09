@@ -4,7 +4,7 @@ $maybe banner <- mBanner
       <a href="#{url}">
         <img src="#{img}">
 
-<div id="board-header"> #{nameOfTheBoard} — #{title}
+<div id="board-header"> #{appSiteName} — #{title}
 $if not $ T.null summary
     <div id="board-summary">#{summary}
 $if hasAccessToNewThread
@@ -20,7 +20,7 @@ $else
     <form .delete-form method=get action=@{DeleteR}>
         $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
             <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}">
-                ^{postWidget muser eOpPost opPostFiles False hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
+                ^{postWidget eOpPost opPostFiles False hasAccessToReply False geoIpEnabled showPostDate permissions}
                 $if omitted > 0
                     <div .omitted>
                         _{MsgPostsOmitted omitted} <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}</a>
@@ -28,7 +28,7 @@ $else
                     <div style="display:none" .truncate-thread>
                         _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost },'#{board}',false)>_{MsgTruncateThread}</a>
                 $forall (ePreview, previewFiles)  <- ps
-                    ^{postWidget muser ePreview previewFiles False hasAccessToReply False geoIpEnabled showPostDate permissions timeZone maxLenOfFileName}
+                    ^{postWidget ePreview previewFiles False hasAccessToReply False geoIpEnabled showPostDate permissions}
                 <div style="display:none" .truncate-thread-after>
                     _{MsgThreadIsExpanded} <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},'#{board}',true)>_{MsgTruncateThread}</a>
         ^{deleteWidget permissions}

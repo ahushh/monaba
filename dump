@@ -1,0 +1,2326 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: bar; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE bar (
+    id integer NOT NULL,
+    desu character varying NOT NULL,
+    yoba character varying
+);
+
+
+ALTER TABLE bar OWNER TO postgres;
+
+--
+-- Name: bar_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE bar_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bar_id_seq OWNER TO postgres;
+
+--
+-- Name: bar_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE bar_id_seq OWNED BY bar.id;
+
+
+--
+-- Name: email; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE email (
+    id integer NOT NULL,
+    email character varying NOT NULL,
+    "user" bigint,
+    verkey character varying
+);
+
+
+ALTER TABLE email OWNER TO postgres;
+
+--
+-- Name: email_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE email_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE email_id_seq OWNER TO postgres;
+
+--
+-- Name: email_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE email_id_seq OWNED BY email.id;
+
+
+--
+-- Name: foo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE foo (
+    id integer NOT NULL,
+    desu character varying NOT NULL,
+    yoba character varying
+);
+
+
+ALTER TABLE foo OWNER TO postgres;
+
+--
+-- Name: foo_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE foo_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE foo_id_seq OWNER TO postgres;
+
+--
+-- Name: foo_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE foo_id_seq OWNED BY foo.id;
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE "user" (
+    id integer NOT NULL,
+    ident character varying NOT NULL,
+    password character varying
+);
+
+
+ALTER TABLE "user" OWNER TO postgres;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_id_seq OWNER TO postgres;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE user_id_seq OWNED BY "user".id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY bar ALTER COLUMN id SET DEFAULT nextval('bar_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY email ALTER COLUMN id SET DEFAULT nextval('email_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY foo ALTER COLUMN id SET DEFAULT nextval('foo_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY "user" ALTER COLUMN id SET DEFAULT nextval('user_id_seq'::regclass);
+
+
+--
+-- Data for Name: bar; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY bar (id, desu, yoba) FROM stdin;
+1	bar1	\N
+2	bar2	\N
+3	bar3	\N
+4	bar4	\N
+5	bar5	\N
+6	bar6	\N
+7	bar7	\N
+8	bar8	\N
+9	bar9	\N
+10	bar10	\N
+11	bar11	\N
+12	bar12	\N
+13	bar13	\N
+14	bar14	\N
+15	bar15	\N
+16	bar16	\N
+17	bar17	\N
+18	bar18	\N
+19	bar19	\N
+20	bar20	\N
+21	bar21	\N
+22	bar22	\N
+23	bar23	\N
+24	bar24	\N
+25	bar25	\N
+26	bar26	\N
+27	bar27	\N
+28	bar28	\N
+29	bar29	\N
+30	bar30	\N
+31	bar31	\N
+32	bar32	\N
+33	bar33	\N
+34	bar34	\N
+35	bar35	\N
+36	bar36	\N
+37	bar37	\N
+38	bar38	\N
+39	bar39	\N
+40	bar40	\N
+41	bar41	\N
+42	bar42	\N
+43	bar43	\N
+44	bar44	\N
+45	bar45	\N
+46	bar46	\N
+47	bar47	\N
+48	bar48	\N
+49	bar49	\N
+50	bar50	\N
+51	bar51	\N
+52	bar52	\N
+53	bar53	\N
+54	bar54	\N
+55	bar55	\N
+56	bar56	\N
+57	bar57	\N
+58	bar58	\N
+59	bar59	\N
+60	bar60	\N
+61	bar61	\N
+62	bar62	\N
+63	bar63	\N
+64	bar64	\N
+65	bar65	\N
+66	bar66	\N
+67	bar67	\N
+68	bar68	\N
+69	bar69	\N
+70	bar70	\N
+71	bar71	\N
+72	bar72	\N
+73	bar73	\N
+74	bar74	\N
+75	bar75	\N
+76	bar76	\N
+77	bar77	\N
+78	bar78	\N
+79	bar79	\N
+80	bar80	\N
+81	bar81	\N
+82	bar82	\N
+83	bar83	\N
+84	bar84	\N
+85	bar85	\N
+86	bar86	\N
+87	bar87	\N
+88	bar88	\N
+89	bar89	\N
+90	bar90	\N
+91	bar91	\N
+92	bar92	\N
+93	bar93	\N
+94	bar94	\N
+95	bar95	\N
+96	bar96	\N
+97	bar97	\N
+98	bar98	\N
+99	bar99	\N
+100	bar100	\N
+101	bar101	\N
+102	bar102	\N
+103	bar103	\N
+104	bar104	\N
+105	bar105	\N
+106	bar106	\N
+107	bar107	\N
+108	bar108	\N
+109	bar109	\N
+110	bar110	\N
+111	bar111	\N
+112	bar112	\N
+113	bar113	\N
+114	bar114	\N
+115	bar115	\N
+116	bar116	\N
+117	bar117	\N
+118	bar118	\N
+119	bar119	\N
+120	bar120	\N
+121	bar121	\N
+122	bar122	\N
+123	bar123	\N
+124	bar124	\N
+125	bar125	\N
+126	bar126	\N
+127	bar127	\N
+128	bar128	\N
+129	bar129	\N
+130	bar130	\N
+131	bar131	\N
+132	bar132	\N
+133	bar133	\N
+134	bar134	\N
+135	bar135	\N
+136	bar136	\N
+137	bar137	\N
+138	bar138	\N
+139	bar139	\N
+140	bar140	\N
+141	bar141	\N
+142	bar142	\N
+143	bar143	\N
+144	bar144	\N
+145	bar145	\N
+146	bar146	\N
+147	bar147	\N
+148	bar148	\N
+149	bar149	\N
+150	bar150	\N
+151	bar151	\N
+152	bar152	\N
+153	bar153	\N
+154	bar154	\N
+155	bar155	\N
+156	bar156	\N
+157	bar157	\N
+158	bar158	\N
+159	bar159	\N
+160	bar160	\N
+161	bar161	\N
+162	bar162	\N
+163	bar163	\N
+164	bar164	\N
+165	bar165	\N
+166	bar166	\N
+167	bar167	\N
+168	bar168	\N
+169	bar169	\N
+170	bar170	\N
+171	bar171	\N
+172	bar172	\N
+173	bar173	\N
+174	bar174	\N
+175	bar175	\N
+176	bar176	\N
+177	bar177	\N
+178	bar178	\N
+179	bar179	\N
+180	bar180	\N
+181	bar181	\N
+182	bar182	\N
+183	bar183	\N
+184	bar184	\N
+185	bar185	\N
+186	bar186	\N
+187	bar187	\N
+188	bar188	\N
+189	bar189	\N
+190	bar190	\N
+191	bar191	\N
+192	bar192	\N
+193	bar193	\N
+194	bar194	\N
+195	bar195	\N
+196	bar196	\N
+197	bar197	\N
+198	bar198	\N
+199	bar199	\N
+200	bar200	\N
+201	bar201	\N
+202	bar202	\N
+203	bar203	\N
+204	bar204	\N
+205	bar205	\N
+206	bar206	\N
+207	bar207	\N
+208	bar208	\N
+209	bar209	\N
+210	bar210	\N
+211	bar211	\N
+212	bar212	\N
+213	bar213	\N
+214	bar214	\N
+215	bar215	\N
+216	bar216	\N
+217	bar217	\N
+218	bar218	\N
+219	bar219	\N
+220	bar220	\N
+221	bar221	\N
+222	bar222	\N
+223	bar223	\N
+224	bar224	\N
+225	bar225	\N
+226	bar226	\N
+227	bar227	\N
+228	bar228	\N
+229	bar229	\N
+230	bar230	\N
+231	bar231	\N
+232	bar232	\N
+233	bar233	\N
+234	bar234	\N
+235	bar235	\N
+236	bar236	\N
+237	bar237	\N
+238	bar238	\N
+239	bar239	\N
+240	bar240	\N
+241	bar241	\N
+242	bar242	\N
+243	bar243	\N
+244	bar244	\N
+245	bar245	\N
+246	bar246	\N
+247	bar247	\N
+248	bar248	\N
+249	bar249	\N
+250	bar250	\N
+251	bar251	\N
+252	bar252	\N
+253	bar253	\N
+254	bar254	\N
+255	bar255	\N
+256	bar256	\N
+257	bar257	\N
+258	bar258	\N
+259	bar259	\N
+260	bar260	\N
+261	bar261	\N
+262	bar262	\N
+263	bar263	\N
+264	bar264	\N
+265	bar265	\N
+266	bar266	\N
+267	bar267	\N
+268	bar268	\N
+269	bar269	\N
+270	bar270	\N
+271	bar271	\N
+272	bar272	\N
+273	bar273	\N
+274	bar274	\N
+275	bar275	\N
+276	bar276	\N
+277	bar277	\N
+278	bar278	\N
+279	bar279	\N
+280	bar280	\N
+281	bar281	\N
+282	bar282	\N
+283	bar283	\N
+284	bar284	\N
+285	bar285	\N
+286	bar286	\N
+287	bar287	\N
+288	bar288	\N
+289	bar289	\N
+290	bar290	\N
+291	bar291	\N
+292	bar292	\N
+293	bar293	\N
+294	bar294	\N
+295	bar295	\N
+296	bar296	\N
+297	bar297	\N
+298	bar298	\N
+299	bar299	\N
+300	bar300	\N
+301	bar301	\N
+302	bar302	\N
+303	bar303	\N
+304	bar304	\N
+305	bar305	\N
+306	bar306	\N
+307	bar307	\N
+308	bar308	\N
+309	bar309	\N
+310	bar310	\N
+311	bar311	\N
+312	bar312	\N
+313	bar313	\N
+314	bar314	\N
+315	bar315	\N
+316	bar316	\N
+317	bar317	\N
+318	bar318	\N
+319	bar319	\N
+320	bar320	\N
+321	bar321	\N
+322	bar322	\N
+323	bar323	\N
+324	bar324	\N
+325	bar325	\N
+326	bar326	\N
+327	bar327	\N
+328	bar328	\N
+329	bar329	\N
+330	bar330	\N
+331	bar331	\N
+332	bar332	\N
+333	bar333	\N
+334	bar334	\N
+335	bar335	\N
+336	bar336	\N
+337	bar337	\N
+338	bar338	\N
+339	bar339	\N
+340	bar340	\N
+341	bar341	\N
+342	bar342	\N
+343	bar343	\N
+344	bar344	\N
+345	bar345	\N
+346	bar346	\N
+347	bar347	\N
+348	bar348	\N
+349	bar349	\N
+350	bar350	\N
+351	bar351	\N
+352	bar352	\N
+353	bar353	\N
+354	bar354	\N
+355	bar355	\N
+356	bar356	\N
+357	bar357	\N
+358	bar358	\N
+359	bar359	\N
+360	bar360	\N
+361	bar361	\N
+362	bar362	\N
+363	bar363	\N
+364	bar364	\N
+365	bar365	\N
+366	bar366	\N
+367	bar367	\N
+368	bar368	\N
+369	bar369	\N
+370	bar370	\N
+371	bar371	\N
+372	bar372	\N
+373	bar373	\N
+374	bar374	\N
+375	bar375	\N
+376	bar376	\N
+377	bar377	\N
+378	bar378	\N
+379	bar379	\N
+380	bar380	\N
+381	bar381	\N
+382	bar382	\N
+383	bar383	\N
+384	bar384	\N
+385	bar385	\N
+386	bar386	\N
+387	bar387	\N
+388	bar388	\N
+389	bar389	\N
+390	bar390	\N
+391	bar391	\N
+392	bar392	\N
+393	bar393	\N
+394	bar394	\N
+395	bar395	\N
+396	bar396	\N
+397	bar397	\N
+398	bar398	\N
+399	bar399	\N
+400	bar400	\N
+401	bar401	\N
+402	bar402	\N
+403	bar403	\N
+404	bar404	\N
+405	bar405	\N
+406	bar406	\N
+407	bar407	\N
+408	bar408	\N
+409	bar409	\N
+410	bar410	\N
+411	bar411	\N
+412	bar412	\N
+413	bar413	\N
+414	bar414	\N
+415	bar415	\N
+416	bar416	\N
+417	bar417	\N
+418	bar418	\N
+419	bar419	\N
+420	bar420	\N
+421	bar421	\N
+422	bar422	\N
+423	bar423	\N
+424	bar424	\N
+425	bar425	\N
+426	bar426	\N
+427	bar427	\N
+428	bar428	\N
+429	bar429	\N
+430	bar430	\N
+431	bar431	\N
+432	bar432	\N
+433	bar433	\N
+434	bar434	\N
+435	bar435	\N
+436	bar436	\N
+437	bar437	\N
+438	bar438	\N
+439	bar439	\N
+440	bar440	\N
+441	bar441	\N
+442	bar442	\N
+443	bar443	\N
+444	bar444	\N
+445	bar445	\N
+446	bar446	\N
+447	bar447	\N
+448	bar448	\N
+449	bar449	\N
+450	bar450	\N
+451	bar451	\N
+452	bar452	\N
+453	bar453	\N
+454	bar454	\N
+455	bar455	\N
+456	bar456	\N
+457	bar457	\N
+458	bar458	\N
+459	bar459	\N
+460	bar460	\N
+461	bar461	\N
+462	bar462	\N
+463	bar463	\N
+464	bar464	\N
+465	bar465	\N
+466	bar466	\N
+467	bar467	\N
+468	bar468	\N
+469	bar469	\N
+470	bar470	\N
+471	bar471	\N
+472	bar472	\N
+473	bar473	\N
+474	bar474	\N
+475	bar475	\N
+476	bar476	\N
+477	bar477	\N
+478	bar478	\N
+479	bar479	\N
+480	bar480	\N
+481	bar481	\N
+482	bar482	\N
+483	bar483	\N
+484	bar484	\N
+485	bar485	\N
+486	bar486	\N
+487	bar487	\N
+488	bar488	\N
+489	bar489	\N
+490	bar490	\N
+491	bar491	\N
+492	bar492	\N
+493	bar493	\N
+494	bar494	\N
+495	bar495	\N
+496	bar496	\N
+497	bar497	\N
+498	bar498	\N
+499	bar499	\N
+500	bar500	\N
+501	bar501	\N
+502	bar502	\N
+503	bar503	\N
+504	bar504	\N
+505	bar505	\N
+506	bar506	\N
+507	bar507	\N
+508	bar508	\N
+509	bar509	\N
+510	bar510	\N
+511	bar511	\N
+512	bar512	\N
+513	bar513	\N
+514	bar514	\N
+515	bar515	\N
+516	bar516	\N
+517	bar517	\N
+518	bar518	\N
+519	bar519	\N
+520	bar520	\N
+521	bar521	\N
+522	bar522	\N
+523	bar523	\N
+524	bar524	\N
+525	bar525	\N
+526	bar526	\N
+527	bar527	\N
+528	bar528	\N
+529	bar529	\N
+530	bar530	\N
+531	bar531	\N
+532	bar532	\N
+533	bar533	\N
+534	bar534	\N
+535	bar535	\N
+536	bar536	\N
+537	bar537	\N
+538	bar538	\N
+539	bar539	\N
+540	bar540	\N
+541	bar541	\N
+542	bar542	\N
+543	bar543	\N
+544	bar544	\N
+545	bar545	\N
+546	bar546	\N
+547	bar547	\N
+548	bar548	\N
+549	bar549	\N
+550	bar550	\N
+551	bar551	\N
+552	bar552	\N
+553	bar553	\N
+554	bar554	\N
+555	bar555	\N
+556	bar556	\N
+557	bar557	\N
+558	bar558	\N
+559	bar559	\N
+560	bar560	\N
+561	bar561	\N
+562	bar562	\N
+563	bar563	\N
+564	bar564	\N
+565	bar565	\N
+566	bar566	\N
+567	bar567	\N
+568	bar568	\N
+569	bar569	\N
+570	bar570	\N
+571	bar571	\N
+572	bar572	\N
+573	bar573	\N
+574	bar574	\N
+575	bar575	\N
+576	bar576	\N
+577	bar577	\N
+578	bar578	\N
+579	bar579	\N
+580	bar580	\N
+581	bar581	\N
+582	bar582	\N
+583	bar583	\N
+584	bar584	\N
+585	bar585	\N
+586	bar586	\N
+587	bar587	\N
+588	bar588	\N
+589	bar589	\N
+590	bar590	\N
+591	bar591	\N
+592	bar592	\N
+593	bar593	\N
+594	bar594	\N
+595	bar595	\N
+596	bar596	\N
+597	bar597	\N
+598	bar598	\N
+599	bar599	\N
+600	bar600	\N
+601	bar601	\N
+602	bar602	\N
+603	bar603	\N
+604	bar604	\N
+605	bar605	\N
+606	bar606	\N
+607	bar607	\N
+608	bar608	\N
+609	bar609	\N
+610	bar610	\N
+611	bar611	\N
+612	bar612	\N
+613	bar613	\N
+614	bar614	\N
+615	bar615	\N
+616	bar616	\N
+617	bar617	\N
+618	bar618	\N
+619	bar619	\N
+620	bar620	\N
+621	bar621	\N
+622	bar622	\N
+623	bar623	\N
+624	bar624	\N
+625	bar625	\N
+626	bar626	\N
+627	bar627	\N
+628	bar628	\N
+629	bar629	\N
+630	bar630	\N
+631	bar631	\N
+632	bar632	\N
+633	bar633	\N
+634	bar634	\N
+635	bar635	\N
+636	bar636	\N
+637	bar637	\N
+638	bar638	\N
+639	bar639	\N
+640	bar640	\N
+641	bar641	\N
+642	bar642	\N
+643	bar643	\N
+644	bar644	\N
+645	bar645	\N
+646	bar646	\N
+647	bar647	\N
+648	bar648	\N
+649	bar649	\N
+650	bar650	\N
+651	bar651	\N
+652	bar652	\N
+653	bar653	\N
+654	bar654	\N
+655	bar655	\N
+656	bar656	\N
+657	bar657	\N
+658	bar658	\N
+659	bar659	\N
+660	bar660	\N
+661	bar661	\N
+662	bar662	\N
+663	bar663	\N
+664	bar664	\N
+665	bar665	\N
+666	bar666	\N
+667	bar667	\N
+668	bar668	\N
+669	bar669	\N
+670	bar670	\N
+671	bar671	\N
+672	bar672	\N
+673	bar673	\N
+674	bar674	\N
+675	bar675	\N
+676	bar676	\N
+677	bar677	\N
+678	bar678	\N
+679	bar679	\N
+680	bar680	\N
+681	bar681	\N
+682	bar682	\N
+683	bar683	\N
+684	bar684	\N
+685	bar685	\N
+686	bar686	\N
+687	bar687	\N
+688	bar688	\N
+689	bar689	\N
+690	bar690	\N
+691	bar691	\N
+692	bar692	\N
+693	bar693	\N
+694	bar694	\N
+695	bar695	\N
+696	bar696	\N
+697	bar697	\N
+698	bar698	\N
+699	bar699	\N
+700	bar700	\N
+701	bar701	\N
+702	bar702	\N
+703	bar703	\N
+704	bar704	\N
+705	bar705	\N
+706	bar706	\N
+707	bar707	\N
+708	bar708	\N
+709	bar709	\N
+710	bar710	\N
+711	bar711	\N
+712	bar712	\N
+713	bar713	\N
+714	bar714	\N
+715	bar715	\N
+716	bar716	\N
+717	bar717	\N
+718	bar718	\N
+719	bar719	\N
+720	bar720	\N
+721	bar721	\N
+722	bar722	\N
+723	bar723	\N
+724	bar724	\N
+725	bar725	\N
+726	bar726	\N
+727	bar727	\N
+728	bar728	\N
+729	bar729	\N
+730	bar730	\N
+731	bar731	\N
+732	bar732	\N
+733	bar733	\N
+734	bar734	\N
+735	bar735	\N
+736	bar736	\N
+737	bar737	\N
+738	bar738	\N
+739	bar739	\N
+740	bar740	\N
+741	bar741	\N
+742	bar742	\N
+743	bar743	\N
+744	bar744	\N
+745	bar745	\N
+746	bar746	\N
+747	bar747	\N
+748	bar748	\N
+749	bar749	\N
+750	bar750	\N
+751	bar751	\N
+752	bar752	\N
+753	bar753	\N
+754	bar754	\N
+755	bar755	\N
+756	bar756	\N
+757	bar757	\N
+758	bar758	\N
+759	bar759	\N
+760	bar760	\N
+761	bar761	\N
+762	bar762	\N
+763	bar763	\N
+764	bar764	\N
+765	bar765	\N
+766	bar766	\N
+767	bar767	\N
+768	bar768	\N
+769	bar769	\N
+770	bar770	\N
+771	bar771	\N
+772	bar772	\N
+773	bar773	\N
+774	bar774	\N
+775	bar775	\N
+776	bar776	\N
+777	bar777	\N
+778	bar778	\N
+779	bar779	\N
+780	bar780	\N
+781	bar781	\N
+782	bar782	\N
+783	bar783	\N
+784	bar784	\N
+785	bar785	\N
+786	bar786	\N
+787	bar787	\N
+788	bar788	\N
+789	bar789	\N
+790	bar790	\N
+791	bar791	\N
+792	bar792	\N
+793	bar793	\N
+794	bar794	\N
+795	bar795	\N
+796	bar796	\N
+797	bar797	\N
+798	bar798	\N
+799	bar799	\N
+800	bar800	\N
+801	bar801	\N
+802	bar802	\N
+803	bar803	\N
+804	bar804	\N
+805	bar805	\N
+806	bar806	\N
+807	bar807	\N
+808	bar808	\N
+809	bar809	\N
+810	bar810	\N
+811	bar811	\N
+812	bar812	\N
+813	bar813	\N
+814	bar814	\N
+815	bar815	\N
+816	bar816	\N
+817	bar817	\N
+818	bar818	\N
+819	bar819	\N
+820	bar820	\N
+821	bar821	\N
+822	bar822	\N
+823	bar823	\N
+824	bar824	\N
+825	bar825	\N
+826	bar826	\N
+827	bar827	\N
+828	bar828	\N
+829	bar829	\N
+830	bar830	\N
+831	bar831	\N
+832	bar832	\N
+833	bar833	\N
+834	bar834	\N
+835	bar835	\N
+836	bar836	\N
+837	bar837	\N
+838	bar838	\N
+839	bar839	\N
+840	bar840	\N
+841	bar841	\N
+842	bar842	\N
+843	bar843	\N
+844	bar844	\N
+845	bar845	\N
+846	bar846	\N
+847	bar847	\N
+848	bar848	\N
+849	bar849	\N
+850	bar850	\N
+851	bar851	\N
+852	bar852	\N
+853	bar853	\N
+854	bar854	\N
+855	bar855	\N
+856	bar856	\N
+857	bar857	\N
+858	bar858	\N
+859	bar859	\N
+860	bar860	\N
+861	bar861	\N
+862	bar862	\N
+863	bar863	\N
+864	bar864	\N
+865	bar865	\N
+866	bar866	\N
+867	bar867	\N
+868	bar868	\N
+869	bar869	\N
+870	bar870	\N
+871	bar871	\N
+872	bar872	\N
+873	bar873	\N
+874	bar874	\N
+875	bar875	\N
+876	bar876	\N
+877	bar877	\N
+878	bar878	\N
+879	bar879	\N
+880	bar880	\N
+881	bar881	\N
+882	bar882	\N
+883	bar883	\N
+884	bar884	\N
+885	bar885	\N
+886	bar886	\N
+887	bar887	\N
+888	bar888	\N
+889	bar889	\N
+890	bar890	\N
+891	bar891	\N
+892	bar892	\N
+893	bar893	\N
+894	bar894	\N
+895	bar895	\N
+896	bar896	\N
+897	bar897	\N
+898	bar898	\N
+899	bar899	\N
+900	bar900	\N
+901	bar901	\N
+902	bar902	\N
+903	bar903	\N
+904	bar904	\N
+905	bar905	\N
+906	bar906	\N
+907	bar907	\N
+908	bar908	\N
+909	bar909	\N
+910	bar910	\N
+911	bar911	\N
+912	bar912	\N
+913	bar913	\N
+914	bar914	\N
+915	bar915	\N
+916	bar916	\N
+917	bar917	\N
+918	bar918	\N
+919	bar919	\N
+920	bar920	\N
+921	bar921	\N
+922	bar922	\N
+923	bar923	\N
+924	bar924	\N
+925	bar925	\N
+926	bar926	\N
+927	bar927	\N
+928	bar928	\N
+929	bar929	\N
+930	bar930	\N
+931	bar931	\N
+932	bar932	\N
+933	bar933	\N
+934	bar934	\N
+935	bar935	\N
+936	bar936	\N
+937	bar937	\N
+938	bar938	\N
+939	bar939	\N
+940	bar940	\N
+941	bar941	\N
+942	bar942	\N
+943	bar943	\N
+944	bar944	\N
+945	bar945	\N
+946	bar946	\N
+947	bar947	\N
+948	bar948	\N
+949	bar949	\N
+950	bar950	\N
+951	bar951	\N
+952	bar952	\N
+953	bar953	\N
+954	bar954	\N
+955	bar955	\N
+956	bar956	\N
+957	bar957	\N
+958	bar958	\N
+959	bar959	\N
+960	bar960	\N
+961	bar961	\N
+962	bar962	\N
+963	bar963	\N
+964	bar964	\N
+965	bar965	\N
+966	bar966	\N
+967	bar967	\N
+968	bar968	\N
+969	bar969	\N
+970	bar970	\N
+971	bar971	\N
+972	bar972	\N
+973	bar973	\N
+974	bar974	\N
+975	bar975	\N
+976	bar976	\N
+977	bar977	\N
+978	bar978	\N
+979	bar979	\N
+980	bar980	\N
+981	bar981	\N
+982	bar982	\N
+983	bar983	\N
+984	bar984	\N
+985	bar985	\N
+986	bar986	\N
+987	bar987	\N
+988	bar988	\N
+989	bar989	\N
+990	bar990	\N
+991	bar991	\N
+992	bar992	\N
+993	bar993	\N
+994	bar994	\N
+995	bar995	\N
+996	bar996	\N
+997	bar997	\N
+998	bar998	\N
+999	bar999	\N
+1000	bar1000	\N
+\.
+
+
+--
+-- Name: bar_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('bar_id_seq', 1000, true);
+
+
+--
+-- Data for Name: email; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY email (id, email, "user", verkey) FROM stdin;
+\.
+
+
+--
+-- Name: email_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('email_id_seq', 1, false);
+
+
+--
+-- Data for Name: foo; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY foo (id, desu, yoba) FROM stdin;
+1	foo1	\N
+2	foo2	\N
+3	foo3	\N
+4	foo4	\N
+5	foo5	\N
+6	foo6	\N
+7	foo7	\N
+8	foo8	\N
+9	foo9	\N
+10	foo10	\N
+11	foo11	\N
+12	foo12	\N
+13	foo13	\N
+14	foo14	\N
+15	foo15	\N
+16	foo16	\N
+17	foo17	\N
+18	foo18	\N
+19	foo19	\N
+20	foo20	\N
+21	foo21	\N
+22	foo22	\N
+23	foo23	\N
+24	foo24	\N
+25	foo25	\N
+26	foo26	\N
+27	foo27	\N
+28	foo28	\N
+29	foo29	\N
+30	foo30	\N
+31	foo31	\N
+32	foo32	\N
+33	foo33	\N
+34	foo34	\N
+35	foo35	\N
+36	foo36	\N
+37	foo37	\N
+38	foo38	\N
+39	foo39	\N
+40	foo40	\N
+41	foo41	\N
+42	foo42	\N
+43	foo43	\N
+44	foo44	\N
+45	foo45	\N
+46	foo46	\N
+47	foo47	\N
+48	foo48	\N
+49	foo49	\N
+50	foo50	\N
+51	foo51	\N
+52	foo52	\N
+53	foo53	\N
+54	foo54	\N
+55	foo55	\N
+56	foo56	\N
+57	foo57	\N
+58	foo58	\N
+59	foo59	\N
+60	foo60	\N
+61	foo61	\N
+62	foo62	\N
+63	foo63	\N
+64	foo64	\N
+65	foo65	\N
+66	foo66	\N
+67	foo67	\N
+68	foo68	\N
+69	foo69	\N
+70	foo70	\N
+71	foo71	\N
+72	foo72	\N
+73	foo73	\N
+74	foo74	\N
+75	foo75	\N
+76	foo76	\N
+77	foo77	\N
+78	foo78	\N
+79	foo79	\N
+80	foo80	\N
+81	foo81	\N
+82	foo82	\N
+83	foo83	\N
+84	foo84	\N
+85	foo85	\N
+86	foo86	\N
+87	foo87	\N
+88	foo88	\N
+89	foo89	\N
+90	foo90	\N
+91	foo91	\N
+92	foo92	\N
+93	foo93	\N
+94	foo94	\N
+95	foo95	\N
+96	foo96	\N
+97	foo97	\N
+98	foo98	\N
+99	foo99	\N
+100	foo100	\N
+101	foo101	\N
+102	foo102	\N
+103	foo103	\N
+104	foo104	\N
+105	foo105	\N
+106	foo106	\N
+107	foo107	\N
+108	foo108	\N
+109	foo109	\N
+110	foo110	\N
+111	foo111	\N
+112	foo112	\N
+113	foo113	\N
+114	foo114	\N
+115	foo115	\N
+116	foo116	\N
+117	foo117	\N
+118	foo118	\N
+119	foo119	\N
+120	foo120	\N
+121	foo121	\N
+122	foo122	\N
+123	foo123	\N
+124	foo124	\N
+125	foo125	\N
+126	foo126	\N
+127	foo127	\N
+128	foo128	\N
+129	foo129	\N
+130	foo130	\N
+131	foo131	\N
+132	foo132	\N
+133	foo133	\N
+134	foo134	\N
+135	foo135	\N
+136	foo136	\N
+137	foo137	\N
+138	foo138	\N
+139	foo139	\N
+140	foo140	\N
+141	foo141	\N
+142	foo142	\N
+143	foo143	\N
+144	foo144	\N
+145	foo145	\N
+146	foo146	\N
+147	foo147	\N
+148	foo148	\N
+149	foo149	\N
+150	foo150	\N
+151	foo151	\N
+152	foo152	\N
+153	foo153	\N
+154	foo154	\N
+155	foo155	\N
+156	foo156	\N
+157	foo157	\N
+158	foo158	\N
+159	foo159	\N
+160	foo160	\N
+161	foo161	\N
+162	foo162	\N
+163	foo163	\N
+164	foo164	\N
+165	foo165	\N
+166	foo166	\N
+167	foo167	\N
+168	foo168	\N
+169	foo169	\N
+170	foo170	\N
+171	foo171	\N
+172	foo172	\N
+173	foo173	\N
+174	foo174	\N
+175	foo175	\N
+176	foo176	\N
+177	foo177	\N
+178	foo178	\N
+179	foo179	\N
+180	foo180	\N
+181	foo181	\N
+182	foo182	\N
+183	foo183	\N
+184	foo184	\N
+185	foo185	\N
+186	foo186	\N
+187	foo187	\N
+188	foo188	\N
+189	foo189	\N
+190	foo190	\N
+191	foo191	\N
+192	foo192	\N
+193	foo193	\N
+194	foo194	\N
+195	foo195	\N
+196	foo196	\N
+197	foo197	\N
+198	foo198	\N
+199	foo199	\N
+200	foo200	\N
+201	foo201	\N
+202	foo202	\N
+203	foo203	\N
+204	foo204	\N
+205	foo205	\N
+206	foo206	\N
+207	foo207	\N
+208	foo208	\N
+209	foo209	\N
+210	foo210	\N
+211	foo211	\N
+212	foo212	\N
+213	foo213	\N
+214	foo214	\N
+215	foo215	\N
+216	foo216	\N
+217	foo217	\N
+218	foo218	\N
+219	foo219	\N
+220	foo220	\N
+221	foo221	\N
+222	foo222	\N
+223	foo223	\N
+224	foo224	\N
+225	foo225	\N
+226	foo226	\N
+227	foo227	\N
+228	foo228	\N
+229	foo229	\N
+230	foo230	\N
+231	foo231	\N
+232	foo232	\N
+233	foo233	\N
+234	foo234	\N
+235	foo235	\N
+236	foo236	\N
+237	foo237	\N
+238	foo238	\N
+239	foo239	\N
+240	foo240	\N
+241	foo241	\N
+242	foo242	\N
+243	foo243	\N
+244	foo244	\N
+245	foo245	\N
+246	foo246	\N
+247	foo247	\N
+248	foo248	\N
+249	foo249	\N
+250	foo250	\N
+251	foo251	\N
+252	foo252	\N
+253	foo253	\N
+254	foo254	\N
+255	foo255	\N
+256	foo256	\N
+257	foo257	\N
+258	foo258	\N
+259	foo259	\N
+260	foo260	\N
+261	foo261	\N
+262	foo262	\N
+263	foo263	\N
+264	foo264	\N
+265	foo265	\N
+266	foo266	\N
+267	foo267	\N
+268	foo268	\N
+269	foo269	\N
+270	foo270	\N
+271	foo271	\N
+272	foo272	\N
+273	foo273	\N
+274	foo274	\N
+275	foo275	\N
+276	foo276	\N
+277	foo277	\N
+278	foo278	\N
+279	foo279	\N
+280	foo280	\N
+281	foo281	\N
+282	foo282	\N
+283	foo283	\N
+284	foo284	\N
+285	foo285	\N
+286	foo286	\N
+287	foo287	\N
+288	foo288	\N
+289	foo289	\N
+290	foo290	\N
+291	foo291	\N
+292	foo292	\N
+293	foo293	\N
+294	foo294	\N
+295	foo295	\N
+296	foo296	\N
+297	foo297	\N
+298	foo298	\N
+299	foo299	\N
+300	foo300	\N
+301	foo301	\N
+302	foo302	\N
+303	foo303	\N
+304	foo304	\N
+305	foo305	\N
+306	foo306	\N
+307	foo307	\N
+308	foo308	\N
+309	foo309	\N
+310	foo310	\N
+311	foo311	\N
+312	foo312	\N
+313	foo313	\N
+314	foo314	\N
+315	foo315	\N
+316	foo316	\N
+317	foo317	\N
+318	foo318	\N
+319	foo319	\N
+320	foo320	\N
+321	foo321	\N
+322	foo322	\N
+323	foo323	\N
+324	foo324	\N
+325	foo325	\N
+326	foo326	\N
+327	foo327	\N
+328	foo328	\N
+329	foo329	\N
+330	foo330	\N
+331	foo331	\N
+332	foo332	\N
+333	foo333	\N
+334	foo334	\N
+335	foo335	\N
+336	foo336	\N
+337	foo337	\N
+338	foo338	\N
+339	foo339	\N
+340	foo340	\N
+341	foo341	\N
+342	foo342	\N
+343	foo343	\N
+344	foo344	\N
+345	foo345	\N
+346	foo346	\N
+347	foo347	\N
+348	foo348	\N
+349	foo349	\N
+350	foo350	\N
+351	foo351	\N
+352	foo352	\N
+353	foo353	\N
+354	foo354	\N
+355	foo355	\N
+356	foo356	\N
+357	foo357	\N
+358	foo358	\N
+359	foo359	\N
+360	foo360	\N
+361	foo361	\N
+362	foo362	\N
+363	foo363	\N
+364	foo364	\N
+365	foo365	\N
+366	foo366	\N
+367	foo367	\N
+368	foo368	\N
+369	foo369	\N
+370	foo370	\N
+371	foo371	\N
+372	foo372	\N
+373	foo373	\N
+374	foo374	\N
+375	foo375	\N
+376	foo376	\N
+377	foo377	\N
+378	foo378	\N
+379	foo379	\N
+380	foo380	\N
+381	foo381	\N
+382	foo382	\N
+383	foo383	\N
+384	foo384	\N
+385	foo385	\N
+386	foo386	\N
+387	foo387	\N
+388	foo388	\N
+389	foo389	\N
+390	foo390	\N
+391	foo391	\N
+392	foo392	\N
+393	foo393	\N
+394	foo394	\N
+395	foo395	\N
+396	foo396	\N
+397	foo397	\N
+398	foo398	\N
+399	foo399	\N
+400	foo400	\N
+401	foo401	\N
+402	foo402	\N
+403	foo403	\N
+404	foo404	\N
+405	foo405	\N
+406	foo406	\N
+407	foo407	\N
+408	foo408	\N
+409	foo409	\N
+410	foo410	\N
+411	foo411	\N
+412	foo412	\N
+413	foo413	\N
+414	foo414	\N
+415	foo415	\N
+416	foo416	\N
+417	foo417	\N
+418	foo418	\N
+419	foo419	\N
+420	foo420	\N
+421	foo421	\N
+422	foo422	\N
+423	foo423	\N
+424	foo424	\N
+425	foo425	\N
+426	foo426	\N
+427	foo427	\N
+428	foo428	\N
+429	foo429	\N
+430	foo430	\N
+431	foo431	\N
+432	foo432	\N
+433	foo433	\N
+434	foo434	\N
+435	foo435	\N
+436	foo436	\N
+437	foo437	\N
+438	foo438	\N
+439	foo439	\N
+440	foo440	\N
+441	foo441	\N
+442	foo442	\N
+443	foo443	\N
+444	foo444	\N
+445	foo445	\N
+446	foo446	\N
+447	foo447	\N
+448	foo448	\N
+449	foo449	\N
+450	foo450	\N
+451	foo451	\N
+452	foo452	\N
+453	foo453	\N
+454	foo454	\N
+455	foo455	\N
+456	foo456	\N
+457	foo457	\N
+458	foo458	\N
+459	foo459	\N
+460	foo460	\N
+461	foo461	\N
+462	foo462	\N
+463	foo463	\N
+464	foo464	\N
+465	foo465	\N
+466	foo466	\N
+467	foo467	\N
+468	foo468	\N
+469	foo469	\N
+470	foo470	\N
+471	foo471	\N
+472	foo472	\N
+473	foo473	\N
+474	foo474	\N
+475	foo475	\N
+476	foo476	\N
+477	foo477	\N
+478	foo478	\N
+479	foo479	\N
+480	foo480	\N
+481	foo481	\N
+482	foo482	\N
+483	foo483	\N
+484	foo484	\N
+485	foo485	\N
+486	foo486	\N
+487	foo487	\N
+488	foo488	\N
+489	foo489	\N
+490	foo490	\N
+491	foo491	\N
+492	foo492	\N
+493	foo493	\N
+494	foo494	\N
+495	foo495	\N
+496	foo496	\N
+497	foo497	\N
+498	foo498	\N
+499	foo499	\N
+500	foo500	\N
+501	foo501	\N
+502	foo502	\N
+503	foo503	\N
+504	foo504	\N
+505	foo505	\N
+506	foo506	\N
+507	foo507	\N
+508	foo508	\N
+509	foo509	\N
+510	foo510	\N
+511	foo511	\N
+512	foo512	\N
+513	foo513	\N
+514	foo514	\N
+515	foo515	\N
+516	foo516	\N
+517	foo517	\N
+518	foo518	\N
+519	foo519	\N
+520	foo520	\N
+521	foo521	\N
+522	foo522	\N
+523	foo523	\N
+524	foo524	\N
+525	foo525	\N
+526	foo526	\N
+527	foo527	\N
+528	foo528	\N
+529	foo529	\N
+530	foo530	\N
+531	foo531	\N
+532	foo532	\N
+533	foo533	\N
+534	foo534	\N
+535	foo535	\N
+536	foo536	\N
+537	foo537	\N
+538	foo538	\N
+539	foo539	\N
+540	foo540	\N
+541	foo541	\N
+542	foo542	\N
+543	foo543	\N
+544	foo544	\N
+545	foo545	\N
+546	foo546	\N
+547	foo547	\N
+548	foo548	\N
+549	foo549	\N
+550	foo550	\N
+551	foo551	\N
+552	foo552	\N
+553	foo553	\N
+554	foo554	\N
+555	foo555	\N
+556	foo556	\N
+557	foo557	\N
+558	foo558	\N
+559	foo559	\N
+560	foo560	\N
+561	foo561	\N
+562	foo562	\N
+563	foo563	\N
+564	foo564	\N
+565	foo565	\N
+566	foo566	\N
+567	foo567	\N
+568	foo568	\N
+569	foo569	\N
+570	foo570	\N
+571	foo571	\N
+572	foo572	\N
+573	foo573	\N
+574	foo574	\N
+575	foo575	\N
+576	foo576	\N
+577	foo577	\N
+578	foo578	\N
+579	foo579	\N
+580	foo580	\N
+581	foo581	\N
+582	foo582	\N
+583	foo583	\N
+584	foo584	\N
+585	foo585	\N
+586	foo586	\N
+587	foo587	\N
+588	foo588	\N
+589	foo589	\N
+590	foo590	\N
+591	foo591	\N
+592	foo592	\N
+593	foo593	\N
+594	foo594	\N
+595	foo595	\N
+596	foo596	\N
+597	foo597	\N
+598	foo598	\N
+599	foo599	\N
+600	foo600	\N
+601	foo601	\N
+602	foo602	\N
+603	foo603	\N
+604	foo604	\N
+605	foo605	\N
+606	foo606	\N
+607	foo607	\N
+608	foo608	\N
+609	foo609	\N
+610	foo610	\N
+611	foo611	\N
+612	foo612	\N
+613	foo613	\N
+614	foo614	\N
+615	foo615	\N
+616	foo616	\N
+617	foo617	\N
+618	foo618	\N
+619	foo619	\N
+620	foo620	\N
+621	foo621	\N
+622	foo622	\N
+623	foo623	\N
+624	foo624	\N
+625	foo625	\N
+626	foo626	\N
+627	foo627	\N
+628	foo628	\N
+629	foo629	\N
+630	foo630	\N
+631	foo631	\N
+632	foo632	\N
+633	foo633	\N
+634	foo634	\N
+635	foo635	\N
+636	foo636	\N
+637	foo637	\N
+638	foo638	\N
+639	foo639	\N
+640	foo640	\N
+641	foo641	\N
+642	foo642	\N
+643	foo643	\N
+644	foo644	\N
+645	foo645	\N
+646	foo646	\N
+647	foo647	\N
+648	foo648	\N
+649	foo649	\N
+650	foo650	\N
+651	foo651	\N
+652	foo652	\N
+653	foo653	\N
+654	foo654	\N
+655	foo655	\N
+656	foo656	\N
+657	foo657	\N
+658	foo658	\N
+659	foo659	\N
+660	foo660	\N
+661	foo661	\N
+662	foo662	\N
+663	foo663	\N
+664	foo664	\N
+665	foo665	\N
+666	foo666	\N
+667	foo667	\N
+668	foo668	\N
+669	foo669	\N
+670	foo670	\N
+671	foo671	\N
+672	foo672	\N
+673	foo673	\N
+674	foo674	\N
+675	foo675	\N
+676	foo676	\N
+677	foo677	\N
+678	foo678	\N
+679	foo679	\N
+680	foo680	\N
+681	foo681	\N
+682	foo682	\N
+683	foo683	\N
+684	foo684	\N
+685	foo685	\N
+686	foo686	\N
+687	foo687	\N
+688	foo688	\N
+689	foo689	\N
+690	foo690	\N
+691	foo691	\N
+692	foo692	\N
+693	foo693	\N
+694	foo694	\N
+695	foo695	\N
+696	foo696	\N
+697	foo697	\N
+698	foo698	\N
+699	foo699	\N
+700	foo700	\N
+701	foo701	\N
+702	foo702	\N
+703	foo703	\N
+704	foo704	\N
+705	foo705	\N
+706	foo706	\N
+707	foo707	\N
+708	foo708	\N
+709	foo709	\N
+710	foo710	\N
+711	foo711	\N
+712	foo712	\N
+713	foo713	\N
+714	foo714	\N
+715	foo715	\N
+716	foo716	\N
+717	foo717	\N
+718	foo718	\N
+719	foo719	\N
+720	foo720	\N
+721	foo721	\N
+722	foo722	\N
+723	foo723	\N
+724	foo724	\N
+725	foo725	\N
+726	foo726	\N
+727	foo727	\N
+728	foo728	\N
+729	foo729	\N
+730	foo730	\N
+731	foo731	\N
+732	foo732	\N
+733	foo733	\N
+734	foo734	\N
+735	foo735	\N
+736	foo736	\N
+737	foo737	\N
+738	foo738	\N
+739	foo739	\N
+740	foo740	\N
+741	foo741	\N
+742	foo742	\N
+743	foo743	\N
+744	foo744	\N
+745	foo745	\N
+746	foo746	\N
+747	foo747	\N
+748	foo748	\N
+749	foo749	\N
+750	foo750	\N
+751	foo751	\N
+752	foo752	\N
+753	foo753	\N
+754	foo754	\N
+755	foo755	\N
+756	foo756	\N
+757	foo757	\N
+758	foo758	\N
+759	foo759	\N
+760	foo760	\N
+761	foo761	\N
+762	foo762	\N
+763	foo763	\N
+764	foo764	\N
+765	foo765	\N
+766	foo766	\N
+767	foo767	\N
+768	foo768	\N
+769	foo769	\N
+770	foo770	\N
+771	foo771	\N
+772	foo772	\N
+773	foo773	\N
+774	foo774	\N
+775	foo775	\N
+776	foo776	\N
+777	foo777	\N
+778	foo778	\N
+779	foo779	\N
+780	foo780	\N
+781	foo781	\N
+782	foo782	\N
+783	foo783	\N
+784	foo784	\N
+785	foo785	\N
+786	foo786	\N
+787	foo787	\N
+788	foo788	\N
+789	foo789	\N
+790	foo790	\N
+791	foo791	\N
+792	foo792	\N
+793	foo793	\N
+794	foo794	\N
+795	foo795	\N
+796	foo796	\N
+797	foo797	\N
+798	foo798	\N
+799	foo799	\N
+800	foo800	\N
+801	foo801	\N
+802	foo802	\N
+803	foo803	\N
+804	foo804	\N
+805	foo805	\N
+806	foo806	\N
+807	foo807	\N
+808	foo808	\N
+809	foo809	\N
+810	foo810	\N
+811	foo811	\N
+812	foo812	\N
+813	foo813	\N
+814	foo814	\N
+815	foo815	\N
+816	foo816	\N
+817	foo817	\N
+818	foo818	\N
+819	foo819	\N
+820	foo820	\N
+821	foo821	\N
+822	foo822	\N
+823	foo823	\N
+824	foo824	\N
+825	foo825	\N
+826	foo826	\N
+827	foo827	\N
+828	foo828	\N
+829	foo829	\N
+830	foo830	\N
+831	foo831	\N
+832	foo832	\N
+833	foo833	\N
+834	foo834	\N
+835	foo835	\N
+836	foo836	\N
+837	foo837	\N
+838	foo838	\N
+839	foo839	\N
+840	foo840	\N
+841	foo841	\N
+842	foo842	\N
+843	foo843	\N
+844	foo844	\N
+845	foo845	\N
+846	foo846	\N
+847	foo847	\N
+848	foo848	\N
+849	foo849	\N
+850	foo850	\N
+851	foo851	\N
+852	foo852	\N
+853	foo853	\N
+854	foo854	\N
+855	foo855	\N
+856	foo856	\N
+857	foo857	\N
+858	foo858	\N
+859	foo859	\N
+860	foo860	\N
+861	foo861	\N
+862	foo862	\N
+863	foo863	\N
+864	foo864	\N
+865	foo865	\N
+866	foo866	\N
+867	foo867	\N
+868	foo868	\N
+869	foo869	\N
+870	foo870	\N
+871	foo871	\N
+872	foo872	\N
+873	foo873	\N
+874	foo874	\N
+875	foo875	\N
+876	foo876	\N
+877	foo877	\N
+878	foo878	\N
+879	foo879	\N
+880	foo880	\N
+881	foo881	\N
+882	foo882	\N
+883	foo883	\N
+884	foo884	\N
+885	foo885	\N
+886	foo886	\N
+887	foo887	\N
+888	foo888	\N
+889	foo889	\N
+890	foo890	\N
+891	foo891	\N
+892	foo892	\N
+893	foo893	\N
+894	foo894	\N
+895	foo895	\N
+896	foo896	\N
+897	foo897	\N
+898	foo898	\N
+899	foo899	\N
+900	foo900	\N
+901	foo901	\N
+902	foo902	\N
+903	foo903	\N
+904	foo904	\N
+905	foo905	\N
+906	foo906	\N
+907	foo907	\N
+908	foo908	\N
+909	foo909	\N
+910	foo910	\N
+911	foo911	\N
+912	foo912	\N
+913	foo913	\N
+914	foo914	\N
+915	foo915	\N
+916	foo916	\N
+917	foo917	\N
+918	foo918	\N
+919	foo919	\N
+920	foo920	\N
+921	foo921	\N
+922	foo922	\N
+923	foo923	\N
+924	foo924	\N
+925	foo925	\N
+926	foo926	\N
+927	foo927	\N
+928	foo928	\N
+929	foo929	\N
+930	foo930	\N
+931	foo931	\N
+932	foo932	\N
+933	foo933	\N
+934	foo934	\N
+935	foo935	\N
+936	foo936	\N
+937	foo937	\N
+938	foo938	\N
+939	foo939	\N
+940	foo940	\N
+941	foo941	\N
+942	foo942	\N
+943	foo943	\N
+944	foo944	\N
+945	foo945	\N
+946	foo946	\N
+947	foo947	\N
+948	foo948	\N
+949	foo949	\N
+950	foo950	\N
+951	foo951	\N
+952	foo952	\N
+953	foo953	\N
+954	foo954	\N
+955	foo955	\N
+956	foo956	\N
+957	foo957	\N
+958	foo958	\N
+959	foo959	\N
+960	foo960	\N
+961	foo961	\N
+962	foo962	\N
+963	foo963	\N
+964	foo964	\N
+965	foo965	\N
+966	foo966	\N
+967	foo967	\N
+968	foo968	\N
+969	foo969	\N
+970	foo970	\N
+971	foo971	\N
+972	foo972	\N
+973	foo973	\N
+974	foo974	\N
+975	foo975	\N
+976	foo976	\N
+977	foo977	\N
+978	foo978	\N
+979	foo979	\N
+980	foo980	\N
+981	foo981	\N
+982	foo982	\N
+983	foo983	\N
+984	foo984	\N
+985	foo985	\N
+986	foo986	\N
+987	foo987	\N
+988	foo988	\N
+989	foo989	\N
+990	foo990	\N
+991	foo991	\N
+992	foo992	\N
+993	foo993	\N
+994	foo994	\N
+995	foo995	\N
+996	foo996	\N
+997	foo997	\N
+998	foo998	\N
+999	foo999	\N
+1000	foo1000	\N
+\.
+
+
+--
+-- Name: foo_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('foo_id_seq', 1000, true);
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY "user" (id, ident, password) FROM stdin;
+\.
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('user_id_seq', 1, false);
+
+
+--
+-- Name: bar_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY bar
+    ADD CONSTRAINT bar_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY email
+    ADD CONSTRAINT email_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: foo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY foo
+    ADD CONSTRAINT foo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: unique_email; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY email
+    ADD CONSTRAINT unique_email UNIQUE (email);
+
+
+--
+-- Name: unique_user; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT unique_user UNIQUE (ident);
+
+
+--
+-- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: email_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY email
+    ADD CONSTRAINT email_user_fkey FOREIGN KEY ("user") REFERENCES "user"(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

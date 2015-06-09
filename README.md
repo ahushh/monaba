@@ -102,7 +102,7 @@ Running
 
 Create a database:
 
-    psql -U postgres -c 'create database monabas_production';
+    psql -U postgres -c 'create database monabas';
 
 Run the application to initialize database schema:
 
@@ -110,7 +110,7 @@ Run the application to initialize database schema:
 
 Open another terminal and fill database with default values:
 
-     psql -U postgres monabas_production < init-db.sql
+     psql -U postgres monabas < init-db.sql
 
 Default login/password: admin
 

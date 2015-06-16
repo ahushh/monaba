@@ -29,9 +29,9 @@ selectThread board thread = do
               (post E.^. PostDeleted     ) E.==. (E.val False ) E.&&.
              ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
-    E.orderBy [E.asc (post E.^. PostId)]
     return (post, file)
-  return $ map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+  let t = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+  return $ (filter (\((Entity _ p1),_) -> postParent p1 == 0) t) ++ (filter (\((Entity _ p1),_) -> postParent p1 /= 0) t)
 
 getThreadR :: Text -> Int -> Handler Html
 getThreadR board thread = do

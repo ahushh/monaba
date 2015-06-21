@@ -53,6 +53,8 @@ Installation
 
 Main config file `config/settings.yml`
 
+The maximum files size is hard coded and can be changed in Foundation.hs
+
 **Download GeoIPCity:**
 
     wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz

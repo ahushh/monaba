@@ -31,12 +31,12 @@ footer: Insert copyright statement here
 
 sitename:          "Monaba"
 geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
-timezone:          14400 # default time offset in seconds
-stylesheet:        Chaos # default stylesheet
+timezone:          14400 # default time offset in seconds, see Handler/Settings.hs for list of timezones and offsets
+stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayuri, Nox)
 maxLenOfPostTitle: 60
 maxLenOfPostName:  20
-maxLenOfFileName:  20
-captcha:           "./Captcha"
+maxLenOfFileName:  40
+captcha:           "./Captcha" # takes a path to captcha image (must generate a png file) as the first argument and prints captcha text to STDIN
 metaKeywords:      "haskell,yesod"
 metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "

@@ -1,6 +1,6 @@
 $if not $ page == 0
     <a id=next-page href=@{route $ page - 1}>_{MsgPrevious}#
-    &nbsp;
+    &nbsp;&nbsp;
 <span #pages-list>
   $forall (i,p) <- enumerate pages
     $if p == page

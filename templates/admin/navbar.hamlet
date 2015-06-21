@@ -7,17 +7,17 @@
         | 
     $if elem ManageBanP permissions
         <a href=@{BanByIpR "" ""}>_{MsgBans} #
-        |
+        | 
     $if elem ManageBoardP permissions
         <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards} #
         | 
     $if elem ManageUsersP permissions
         <a href=@{UsersR}>_{MsgUsers} #
-        |
+        | 
     $if elem ManageUsersP permissions
         <a href=@{ManageGroupsR}>_{MsgGroups} #
-        |
+        | 
     $if elem ManageConfigP permissions
         <a href=@{ConfigR}>_{MsgConfig} #
-        |
+        | 
     <a href=@{AccountR}>_{MsgAccount}

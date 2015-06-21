@@ -6,9 +6,11 @@ Wakaba-like imageboard written in Haskell and powered by Yesod. [Demo board](htt
 Features
 ------
 * Multiple file attachment
-* Webm support
-* AJAX posting
+* Webm and audio support
+* AJAX posting and quick reply
+* Feed page
 * Online user counter
+* New posts counter
 * Answer map and previews
 * Thread and image expanding
 * Thread hiding
@@ -30,6 +32,7 @@ Features
     - Moving threads between boards
     - Changing post's parent
     - Modlog which allows to view previous actions
+    - Post search by ID and UID
 
 Limitations
 -----------
@@ -53,7 +56,7 @@ Installation
 
 Main config file `config/settings.yml`
 
-The maximum files size is hard coded and can be changed in Foundation.hs
+The maximum files size is hard coded and can be changed in `Foundation.hs`
 
 **Download GeoIPCity:**
 

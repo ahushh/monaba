@@ -71,7 +71,7 @@ extractFileExt = map toLower . reverse . takeWhile (/='.') . reverse
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
 geoIconPath :: String -> Text -> Text
-geoIconPath staticDir code = pack $  staticDir </> "geoicons" </> (unpack $ (T.toLower code) <> ".png")
+geoIconPath staticDir code = pack $  "/" </> staticDir </> "geoicons" </> (unpack $ (T.toLower code) <> ".png")
 
 captchaFilePath :: String -> String -> String
 captchaFilePath staticDir file = staticDir </> "captcha" </> file

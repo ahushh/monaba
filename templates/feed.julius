@@ -47,8 +47,10 @@ function refreshFeed() {
 
 function showQuickPostForm(postId) {
     var postform = document.getElementById('post-form');    
-    if (postform)
+    if (postform) {
+        var previousMessage = postform.getElementsByTagName("textarea")[0].value;
         postform.parentNode.removeChild(postform);
+    }
     var post  = document.getElementById(postId);
     var board = post.dataset.board;
     var threadLocalId = post.dataset.threadLocalId;
@@ -57,6 +59,7 @@ function showQuickPostForm(postId) {
         action: '/ajax/postform/'+board,
         onloadOk: function(request) {
             var postform = parseDOMElement(request.responseText);
+            postform.getElementsByTagName("textarea")[0].value = previousMessage || '';
             initDragAndDrop(postform);
             insertAfter(postform, post);
             insert('>>'+post.dataset.postLocalId+'\n','post-form');

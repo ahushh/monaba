@@ -16,14 +16,15 @@ makeCaptcha path = do
 
 getCaptchaR :: Handler Html
 getCaptchaR = do
+  AppSettings{..} <- appSettings <$> getYesod
   oldCId <- lookupSession "captchaId"
-  let path = captchaFilePath (unpack $ fromJust oldCId) ++ captchaExt
+  let path = captchaFilePath appStaticDir (unpack $ fromJust oldCId) ++ captchaExt
     in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
   cId <- liftIO (abs <$> randomIO :: IO Int)
   setSession "captchaId" (tshow cId)
-  value <- makeCaptcha $ captchaFilePath (show cId) ++ captchaExt
+  value <- makeCaptcha $ captchaFilePath appStaticDir (show cId) ++ captchaExt
   setSession "captchaValue" value
-  sendFile typePng $ captchaFilePath (show cId) ++ captchaExt
+  sendFile typePng $ captchaFilePath appStaticDir (show cId) ++ captchaExt
 
 checkCaptcha :: Maybe Text -> Handler () -> Handler ()
 checkCaptcha mCaptcha wrongCaptchaRedirect = do
@@ -31,9 +32,10 @@ checkCaptcha mCaptcha wrongCaptchaRedirect = do
   mCaptchaId    <- lookupSession "captchaId"
   deleteSession "captchaValue"
   deleteSession "captchaId"
+  AppSettings{..} <- appSettings <$> getYesod
   case mCaptchaId of
    Just cId -> do
-     let path = captchaFilePath (unpack cId) ++ captchaExt
+     let path = captchaFilePath appStaticDir (unpack cId) ++ captchaExt
      whenM (liftIO $ doesFileExist path) $
        liftIO $ removeFile path
      when (mCaptchaValue /= (T.toLower <$> mCaptcha)) wrongCaptchaRedirect

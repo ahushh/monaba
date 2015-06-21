@@ -83,6 +83,7 @@ getDeleteR = do
 
 deleteFiles :: [Key Post] -> Handler ()
 deleteFiles idsToRemove = do  
+  AppSettings{..} <- appSettings <$> getYesod
   -- let removeDirIfEmpty d = whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents d)) $ liftIO (removeDirectory d)
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   forM_ files $ \(Entity fId f) -> do
@@ -96,10 +97,10 @@ deleteFiles idsToRemove = do
         filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
           when (ft `elem` thumbFileTypes) $ do
-            void $ liftIO $ removeFile $ thumbFilePath ts ft fe hs
+            void $ liftIO $ removeFile $ thumbFilePath appStaticDir ts ft fe hs
       _  -> do
         liftIO $ removeFile $ attachedfilePath f
-        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath ts ft fe hs
+        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appStaticDir ts ft fe hs
         runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board

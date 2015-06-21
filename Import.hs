@@ -24,10 +24,6 @@ import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append)
 -------------------------------------------------------------------------------------------------------------------
--- Constants
--------------------------------------------------------------------------------------------------------------------
-staticDir = "static"
--------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
 -- | Takes a random element from list
@@ -74,14 +70,14 @@ extractFileExt = map toLower . reverse . takeWhile (/='.') . reverse
 -------------------------------------------------------------------------------------------------------------------
 -- Paths
 -------------------------------------------------------------------------------------------------------------------
-geoIconPath :: Text -> Text
-geoIconPath code = T.concat ["/static/geoicons/", T.toLower code, ".png"]
+geoIconPath :: String -> Text -> Text
+geoIconPath staticDir code = pack $  staticDir </> "geoicons" </> (unpack $ (T.toLower code) <> ".png")
 
 uploadDirectory :: FilePath
 uploadDirectory = "upload"
 
-captchaFilePath :: String -> String
-captchaFilePath file = staticDir </> "captcha" </> file
+captchaFilePath :: String -> String -> String
+captchaFilePath staticDir file = staticDir </> "captcha" </> file
 -- Thumbnails
 choseFileIcon :: FileType -> String
 choseFileIcon ft = case ft of
@@ -97,11 +93,11 @@ thumbIconExt = "png"
 thumbDirectory :: FilePath
 thumbDirectory = uploadDirectory </> "thumb"
 
-thumbUrlPath :: Int -> FileType -> String -> String -> FilePath
-thumbUrlPath size filetype fileext hashsum = "/" </> (thumbFilePath size filetype fileext hashsum)
+thumbUrlPath :: String -> Int -> FileType -> String -> String -> FilePath
+thumbUrlPath staticDir size filetype fileext hashsum = "/" </> (thumbFilePath staticDir size filetype fileext hashsum)
 
-thumbFilePath :: Int -> FileType -> String -> String -> FilePath
-thumbFilePath size filetype fileext hashsum
+thumbFilePath :: String -> Int -> FileType -> String -> String -> FilePath
+thumbFilePath staticDir size filetype fileext hashsum
   | filetype == FileVideo           = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ ".png")
   | filetype `elem` thumbFileTypes = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ "." ++ fileext)
   | otherwise                      = staticDir </> "fileicons" </> ((choseFileIcon filetype) ++ "." ++ thumbIconExt)

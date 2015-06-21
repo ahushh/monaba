@@ -79,18 +79,20 @@ editForm extra = do
 -- Helpers
 -------------------------------------------------------------------------------------------------------------------
 chooseBanner :: Handler (Maybe (String, String))
-chooseBanner = liftIO $ do
-  unlessM (doesDirectoryExist (staticDir </> "banners")) $ createDirectory (staticDir </> "banners")
-  boards   <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (staticDir </> "banners")
-  mBoard   <- pick boards
-  case mBoard of
-   Just board -> do
-     banners <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (staticDir </> "banners" </> board)
-     mBanner <- pick banners
-     case mBanner of
-      Just banner -> return $ Just ("/" ++ staticDir </> "banners" </> board </> banner, "/" ++ board)
-      Nothing -> return Nothing
-   Nothing -> return Nothing
+chooseBanner = do
+  AppSettings{..} <- appSettings <$> getYesod
+  liftIO $ do
+    unlessM (doesDirectoryExist (appStaticDir </> "banners")) $ createDirectory (appStaticDir </> "banners")
+    boards   <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (appStaticDir </> "banners")
+    mBoard   <- pick boards
+    case mBoard of
+     Just board -> do
+       banners <- filter (\b->b/="."&&b/="..") <$> getDirectoryContents (appStaticDir </> "banners" </> board)
+       mBanner <- pick banners
+       case mBanner of
+        Just banner -> return $ Just ("/" ++ appStaticDir </> "banners" </> board </> banner, "/" ++ board)
+        Nothing -> return Nothing
+     Nothing -> return Nothing
 
 checkBan :: Text -> (AppMessage -> HandlerT App IO ()) -> HandlerT App IO ()
 checkBan ip redirectSomewhere = do

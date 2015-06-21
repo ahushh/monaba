@@ -8,7 +8,7 @@
           <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread>
         $if geoIp
             $maybe GeoCountry code name <- postCountry postVal
-                <img src=#{geoIconPath code} title=#{name}>
+                <img src=#{geoIconPath appStaticDir code} title=#{name}>
         <span .reply-title>#{postTitle $ postVal}
         <span .poster-name>#{postName $ postVal}
         $if showPostDate
@@ -72,7 +72,7 @@
 
     $forall Entity _ file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-          $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
+          $with tp <- thumbUrlPath appStaticDir (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
             $with up <- attachedfilePath file
               $with fi <- makeFileInfo file
                 <div class=#{c}>

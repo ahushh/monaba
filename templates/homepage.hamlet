@@ -23,7 +23,7 @@
                             <time>#{myFormatTime timeZone $ postDate t}
                     $forall Entity _ file <- eFiles
                         $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-                           $with tp <- thumbUrlPath (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
+                           $with tp <- thumbUrlPath appStaticDir (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
                              $with up <- attachedfilePath file
                                $with fi <- makeFileInfo file
                                  <div class=#{c}>

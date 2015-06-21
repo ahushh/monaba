@@ -11,20 +11,7 @@ $newline never
     <title>#{pageTitle pc}
     <link rel=stylesheet type=text/css href=@{StaticR css_font_awesome_min_css}>
     $maybe s <- stylesheet
-      $if s == "Ash"
-          <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>
-      $elseif s == "Futaba"
-          <link rel=stylesheet type=text/css title=Futaba href=@{StaticR stylesheets_futaba_css}>
-      $elseif s == "Chaos"
-          <link rel=stylesheet type=text/css title=Chaos href=@{StaticR stylesheets_chaos_css}>
-      $elseif s == "Chaosfm"
-          <link rel=stylesheet type=text/css title=Chaosfm href=@{StaticR stylesheets_chaosfm_css}>
-      $elseif s == "Mayuri"
-          <link rel=stylesheet type=text/css title=Mayuri href=@{StaticR stylesheets_mayuri_css}>
-      $elseif s == "Nox"
-          <link rel=stylesheet type=text/css title=Nox href=@{StaticR stylesheets_nox_css}>
-    $nothing
-      <link rel=stylesheet type=text/css title=Ash href=@{StaticR stylesheets_ash_css}>
+      <link rel=stylesheet type=text/css title=#{s} href=#{stylesheetPath s}>
 
     <meta name="description" content=#{appMetaDescription $ appSettings master}>
     <meta name="keywords" content=#{appMetaKeywords $ appSettings master}>

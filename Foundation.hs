@@ -16,6 +16,7 @@ import qualified Network.Wai as WAI (Request(..))
 import           Network.HTTP.Types (mkStatus)
 import           Network.HTTP.Client.Conduit (Manager, HasHttpManager (getHttpManager))
 import           GHC.Word (Word64)
+import           System.FilePath ((</>))
 
 maxFileSize :: Word64
 maxFileSize = 25 -- in MB
@@ -106,7 +107,8 @@ instance Yesod App where
         boards     <- runDB $ selectList ([]::[Filter Board]) []
         categories <- (maybe [] (configBoardCategories . entityVal)) <$> runDB (selectFirst ([]::[Filter Config]) [])
         stylesheet <- flip mplus (Just $ appStylesheet $ appSettings master) <$> lookupSession "stylesheet"
-        let uGroup  = (userGroup . entityVal) <$> muser
+        let stylesheetPath s = "/" </> appStaticDir (appSettings master) </> "stylesheets" </> (unpack s ++ ".css")
+            uGroup           = (userGroup . entityVal) <$> muser
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and

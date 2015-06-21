@@ -3,6 +3,9 @@ module Handler.Settings where
  
 import           Import
 import qualified Data.Text  as T
+import           Data.List (sort)
+import           System.FilePath ((</>))
+import           System.Directory (getDirectoryContents)
 import           Data.Foldable as Foldable (forM_)
 import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
@@ -12,6 +15,10 @@ settingsForm :: [(Text,Text)] -> -- ^ All boards
                MForm Handler (FormResult (Int, Text, Maybe Text, Maybe [Text]), Widget)
 settingsForm allBoards ignoredBoards extra = do
   AppSettings{..} <- appSettings <$> getYesod
+
+  let stylesheetsPath = appStaticDir </> "stylesheets"
+  stylesheets <- liftIO ((map ((pack &&& pack). takeWhile ((/=)'.')) . filter (\f -> f/="."&&f/="..") . sort) <$> getDirectoryContents stylesheetsPath)
+
   oldTimeZone <- lookupSession "timezone"
   oldStyle    <- lookupSession "stylesheet"
   (timezoneRes , timezoneView) <- mreq (selectFieldList timezones  ) "" (Just $ maybe appTimezone (read . unpack) oldTimeZone)
@@ -52,9 +59,6 @@ getSettingsR = do
 -------------------------------------------------------------------------------------------------------------------
 langs :: [(Text, Text)]
 langs = [("English", "en"), ("Русский","ru")]
-
-stylesheets :: [(Text, Text)]
-stylesheets = map (\x -> (x,x)) ["Ash","Futaba","Chaos","Chaosfm","Mayuri","Nox"]
 
 timezones :: [(Text, Int)]
 timezones = [("[UTC -11:00] Pacific/Midway",-39600)

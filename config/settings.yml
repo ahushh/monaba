@@ -32,7 +32,7 @@ footer: Insert copyright statement here
 sitename:          "Monaba"
 geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
 timezone:          14400 # default time offset in seconds, see Handler/Settings.hs for list of timezones and offsets
-stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayuri, Nox)
+stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayuri, Nox or whatever you put into static/stylesheets directory)
 maxLenOfPostTitle: 60
 maxLenOfPostName:  20
 maxLenOfFileName:  40

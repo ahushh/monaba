@@ -73,9 +73,6 @@ extractFileExt = map toLower . reverse . takeWhile (/='.') . reverse
 geoIconPath :: String -> Text -> Text
 geoIconPath staticDir code = pack $  staticDir </> "geoicons" </> (unpack $ (T.toLower code) <> ".png")
 
-uploadDirectory :: FilePath
-uploadDirectory = "upload"
-
 captchaFilePath :: String -> String -> String
 captchaFilePath staticDir file = staticDir </> "captcha" </> file
 -- Thumbnails
@@ -91,15 +88,15 @@ thumbIconExt :: String
 thumbIconExt = "png"
 
 thumbDirectory :: FilePath
-thumbDirectory = uploadDirectory </> "thumb"
+thumbDirectory = "thumb"
 
-thumbUrlPath :: String -> Int -> FileType -> String -> String -> FilePath
-thumbUrlPath staticDir size filetype fileext hashsum = "/" </> (thumbFilePath staticDir size filetype fileext hashsum)
+thumbUrlPath :: String -> String -> Int -> FileType -> String -> String -> FilePath
+thumbUrlPath uploadDir staticDir size filetype fileext hashsum = "/" </> (thumbFilePath uploadDir staticDir size filetype fileext hashsum)
 
-thumbFilePath :: String -> Int -> FileType -> String -> String -> FilePath
-thumbFilePath staticDir size filetype fileext hashsum
-  | filetype == FileVideo           = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ ".png")
-  | filetype `elem` thumbFileTypes = thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ "." ++ fileext)
+thumbFilePath :: String -> String -> Int -> FileType -> String -> String -> FilePath
+thumbFilePath uploadDir staticDir size filetype fileext hashsum
+  | filetype == FileVideo           = uploadDir </> thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ ".png")
+  | filetype `elem` thumbFileTypes = uploadDir </> thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ "." ++ fileext)
   | otherwise                      = staticDir </> "fileicons" </> ((choseFileIcon filetype) ++ "." ++ thumbIconExt)
 
 -------------------------------------------------------------------------------------------------------------------

@@ -249,3 +249,22 @@ pre {
 #main-image {
    opacity: 0.4;
 }
+
+.op-post .spoiler {
+    color: black;
+    background-color: black;
+}
+
+.feed .op-post .spoiler, .reply-post .spoiler {
+    color: #050505;
+    background-color: #050505;
+}
+
+.feed .op-post .spoiler:hover, .spoiler:hover {
+    color:white;
+}
+
+.feed .op-post.highlighted-post .spoiler, .reply-post.highlighted-post .spoiler {
+    color: #181818;
+    background-color: #181818;
+}

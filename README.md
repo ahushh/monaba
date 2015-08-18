@@ -34,31 +34,32 @@ Features
     - Modlog which allows to view previous actions
     - Post search by ID and UID
 
-Limitations
------------
-* Quite slow :(
-
 Dependencies
 ------
-* GHC >= 7.6
 * Postgresql >= 9.1
-* cabal-install >= 1.18
 * PHP5 to use GeSHi for code highlighting
 * Imagemagick library
-* ffmpeg
+* ffmpeg/libav
 * exiftool
 
+Required for builiding from source:
+
+* GHC >= 7.6
+* cabal-install >= 1.18
+
 Installation
------
+======
 
     git clone https://github.com/ahushh/Monaba
     cd Monaba
 
 Main config file `config/settings.yml`
 
-The maximum files size is hard coded and can be changed in `Foundation.hs`
+The maximum files size is hard coded and can be changed in `Foundation.hs` before building. Default value is 25 MB.
 
-**Download GeoIPCity:**
+Default login/password: admin
+
+### Download GeoIPCity
 
     wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
     gzip -d GeoLiteCity.dat.gz
@@ -66,7 +67,7 @@ The maximum files size is hard coded and can be changed in `Foundation.hs`
 
 Or it can be installed from repositories. You can change the path in `config/settings.yml`
 
-**Download GeSHi:**
+### Download GeSHi
 
     wget http://sourceforge.net/projects/geshi/files/geshi/GeSHi%201.0.8.11/GeSHi-1.0.8.11.tar.gz
     tar -zxvf GeSHi-1.0.8.11.tar.gz
@@ -74,18 +75,28 @@ Or it can be installed from repositories. You can change the path in `config/set
 
 Set your path to GeSHi in `highlight.php`
 
-**Sample list of required packages (apt based distros):**
+### Using libav instead of ffmpeg
 
-    apt-get install ghc php5 imagemagick libmagickwand-dev libmagickcore-dev postgresql
-    apt-get install cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1
+`sudo ln -s /usr/bin/avconv /usr/bin/ffmpeg`
 
-**Building executable file:**
+## Using binary packages
+
+Download dist.7z of the latest verions of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
+
+If it's not working or outdated, try manual build.
+
+## Building manually
+
+Sample list of required packages for debian (probably outdated and not full):
+
+    apt-get install ghc cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev
+
+### Building executable files
 
     cabal update
     cabal sandbox init
     cabal install yesod-bin --force-reinstall && cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
     cabal clean && cabal configure && cabal build # and this too
-    cp dist/build/Captcha/Captcha Captcha
 
 *If you get an error during installation of dependencies*
 
@@ -102,8 +113,7 @@ Set your path to GeSHi in `highlight.php`
     cabal sandbox add-source nano-md5-0.1.2
     cabal install --only-dependencies
 
-Running
-------
+## Setup database
 
 Create a database:
 
@@ -113,19 +123,17 @@ Run the application to initialize database schema:
 
     ./dist/build/Monaba/Monaba config/settings.yml
 
-Open another terminal and fill database with default values:
+Wait until it finish (a few seconds) then stop with Ctrl+C
+
+Fill the database with default values:
 
      psql -U postgres monabas < init-db.sql
 
-Default login/password: admin
-
-Configuring Nginx for serving uploaded files
-------
+## Configuring Nginx for serving uploaded files
 
 See `extra/nginx.conf`
 
-Deployment
-------
+## Init scripts
 
 init.d script for gentoo: `extra/monaba`
 

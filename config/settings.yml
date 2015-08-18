@@ -5,7 +5,7 @@ upload-dir:     "upload"
 static-dir:     "_env:STATIC_DIR:static"
 host:           "_env:HOST:*4" # any IPv4 host
 port:           "_env:PORT:3000"
-approot:        "_env:APPROOT:http://localhost"
+approot:        "_env:APPROOT:http://localhost" # change to your domain
 ip-from-header: "_env:IP_FROM_HEADER:false"
 
 # Optional values with the following production defaults.
@@ -36,7 +36,7 @@ stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayu
 maxLenOfPostTitle: 60
 maxLenOfPostName:  20
 maxLenOfFileName:  40
-captcha:           "./Captcha" # takes a path to captcha image (must generate a png file) as the first argument and prints captcha text to STDIN
+captcha:           "dist/build/Monaba/Captcha" # takes a path to captcha image (must generate a png file) as the first argument and prints captcha text to STDIN
 metaKeywords:      "haskell,yesod"
 metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "

@@ -65,6 +65,8 @@ data AppSettings = AppSettings
     , appMetaKeywords        :: Text
     , appMetaDescription     :: Text
     , appTitleDelimiter      :: Text
+    , appFfmpeg              :: Text
+    , appExiftool            :: Text
     }
 
 instance FromJSON AppSettings where
@@ -103,6 +105,9 @@ instance FromJSON AppSettings where
         appMetaKeywords           <- o .: "metaKeywords"
         appMetaDescription        <- o .: "metaDescription"
         appTitleDelimiter         <- o .: "titleDelimiter"
+
+        appFfmpeg                 <- o .: "ffmpeg"
+        appExiftool               <- o .: "exiftool"
 
         return AppSettings {..}
 

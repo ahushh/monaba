@@ -75,10 +75,6 @@ Or it can be installed from repositories. You can change the path in `config/set
 
 Set your path to GeSHi in `highlight.php`
 
-### Using libav instead of ffmpeg
-
-`sudo ln -s /usr/bin/avconv /usr/bin/ffmpeg`
-
 ## Using binary packages
 
 Download dist.7z of the latest verions of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 

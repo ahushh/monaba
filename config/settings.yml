@@ -40,3 +40,5 @@ captcha:           "dist/build/Monaba/Captcha" # takes a path to captcha image (
 metaKeywords:      "haskell,yesod"
 metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "
+ffmpeg:            "/usr/bin/ffmpeg"
+exiftool:          "/usr/bin/exiftool"

@@ -23,7 +23,7 @@ import           System.Posix.Files              (createSymbolicLink, getFileSta
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
                Int      -> -- ^ Thumbnail height and width
                Key Post -> -- ^ Post key
-               HandlerT App IO ()
+               Handler ()
 insertFiles []    _           _    = return ()
 insertFiles files thumbSize postId = do
   AppSettings{..} <- appSettings <$> getYesod
@@ -60,10 +60,10 @@ insertFiles files thumbSize postId = do
             liftIO $ unlessM (doesDirectoryExist $ appUploadDir </> thumbDirectory) $ createDirectory (appUploadDir </> thumbDirectory)
             -- make thumbnail
             let thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
-            void $ liftIO $ readProcess "/usr/bin/ffmpeg" ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
+            void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
             (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False
             -- get video info
-            info' <- liftIO $ readProcess "/usr/bin/exiftool" ["-t",uploadPath] []
+            info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
             let info   = parseExifInfo info'
                 width  = fromMaybe "0" $ lookup "Image Width" info
                 height = fromMaybe "0" $ lookup "Image Height" info
@@ -73,7 +73,7 @@ insertFiles files thumbSize postId = do
                                             , attachedfileThumbHeight = thumbH
                                             }
           FileAudio -> do
-            info' <- liftIO $ readProcess "/usr/bin/exiftool" ["-t",uploadPath] []
+            info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
             let info      = parseExifInfo info'
                 bitrate1  = lookup "Audio Bitrate" info
                 bitrate2  = lookup "Nominal Bitrate" info

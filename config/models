@@ -2,7 +2,6 @@ Group
     name             Text
     GroupUniqName    name
     permissions      [Permission]
-    deriving         Typeable
     deriving         Eq
     deriving         Ord
     deriving         Show
@@ -12,7 +11,6 @@ User
     group            Text
     password         Text
     salt             Text
-    deriving         Typeable
 Board
     index             Int default=0
     name              Text
@@ -45,7 +43,6 @@ Board
     showPostDate      Bool default=true
     enableForcedAnon  Bool default=false
     requiredThreadTitle Bool default=false
-    deriving          Typeable
 Post json
     board        Text
     localId      Int
@@ -70,7 +67,6 @@ Post json
     title        Text
     name         Text
     password     Text
-    deriving     Typeable
     deriving     Eq
     deriving     Ord
     deriving     Show
@@ -84,20 +80,18 @@ Attachedfile json
     hashsum      String
     name         String
     extension    String
-    type         FileType
+    filetype     FileType
     path         FilePath default=''
     size         String
     thumbSize    Int   -- just thumbSize from Board table
     thumbWidth   Int      
     thumbHeight  Int      
     info         String
-    deriving     Typeable
 Ban
     ip           Text
     reason       Text
     expires      UTCTime Maybe
     board        Text Maybe
-    deriving     Typeable
 Config
     replyDelay      Int
     threadDelay     Int 

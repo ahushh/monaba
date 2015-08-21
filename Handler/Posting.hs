@@ -119,7 +119,7 @@ isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedType
 isFileAllowed _            _                      = True
 
 noMessage :: Maybe Textarea -> Bool
-noMessage message = maybe True (T.null . T.filter (`notElem`" \r\n\t") . unTextarea) message
+noMessage message = maybe True (T.null . T.filter (`notElem`(" \r\n\t"::String)) . unTextarea) message
 
 noFiles :: forall a. [FormResult (Maybe a)] -> Bool
 noFiles files = all (\(FormSuccess f) -> isNothing f) files
@@ -143,10 +143,10 @@ makeThreadtitle ePost =
       pt     = postTitle $ entityVal ePost
       pm     = stripTags $ unTextarea $ postMessage $ entityVal ePost
       pagetitle | not $ T.null pt                                 = pt
-                | not $ T.null $ T.filter (`notElem`" \r\n\t") pm = if T.length pm > maxLen
-                                                                    then flip T.append "…" $ T.take maxLen pm
-                                                                    else pm
-                | otherwise                                     = ""
+                | not $ T.null $ T.filter (`notElem`(" \r\n\t"::String)) pm = if T.length pm > maxLen
+                                                                              then flip T.append "…" $ T.take maxLen pm
+                                                                              else pm
+                | otherwise                                              = ""
   in pagetitle
 -------------------------------------------------------------------------------------------------------------------
 -- | Check if ban expired

@@ -88,7 +88,7 @@ deleteFiles idsToRemove = do
   files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
   forM_ files $ \(Entity fId f) -> do
     sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
-    let ft = attachedfileType f
+    let ft = attachedfileFiletype f
         fe = attachedfileExtension f
         hs = attachedfileHashsum f
         ts = attachedfileThumbSize f

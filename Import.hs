@@ -17,7 +17,7 @@ import           Data.Time               (addUTCTime, secondsToDiffTime)
 import           Data.Time.Format        (formatTime)
 import           Network.Wai
 import           System.FilePath         ((</>))
-import           System.Locale           (defaultTimeLocale)
+import           Data.Time.Format        (defaultTimeLocale)
 import           System.Random           (randomIO, randomRIO)
 import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
 import qualified Data.ByteString.UTF8    as B
@@ -60,7 +60,7 @@ thumbFileTypes :: [FileType]
 thumbFileTypes = [FileVideo, FileImage, FileSource, FileDoc]
 
 sanitizeFileName :: String -> String
-sanitizeFileName = filter (\x -> x `notElem` "\\/" && isPrint x)
+sanitizeFileName = filter (\x -> x `notElem` ("\\/"::String) && isPrint x)
 
 fileExt :: FileInfo -> String
 fileExt = map toLower . reverse . takeWhile (/='.') . reverse . sanitizeFileName . unpack . fileName
@@ -323,7 +323,7 @@ getIp = do
   return $ fromJust ((B.toString <$> cfIp) <|> (B.toString <$> realIp) <|> Just hostIp)
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
-        getIpFromHost  = takeWhile (not . (`elem` ":")) . show . remoteHost . reqWaiRequest <$> getRequest
+        getIpFromHost  = takeWhile (not . (`elem` (":"::String))) . show . remoteHost . reqWaiRequest <$> getRequest
 -------------------------------------------------------------------------------------------------------------------
 -- Geo IP
 -------------------------------------------------------------------------------------------------------------------  

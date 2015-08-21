@@ -23,21 +23,21 @@
                             <time>#{myFormatTime timeZone $ postDate t}
                     $forall Entity _ file <- eFiles
                         $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-                           $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileType file) (attachedfileExtension file) (attachedfileHashsum file)
+                           $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
                              $with up <- attachedfilePath file
                                $with fi <- makeFileInfo file
                                  <div class=#{c}>
                                    $if attachedfileThumbWidth file == -1
                                        <img src="#{tp}" .thumb title="#{fi}">
-                                   $elseif attachedfileType file == FileVideo
+                                   $elseif attachedfileFiletype file == FileVideo
                                        <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileType file == FileAudio
+                                   $elseif attachedfileFiletype file == FileAudio
                                        <audio controls>
                                          <source src="/#{up}">
                                        <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileType file == FileImage
+                                   $elseif attachedfileFiletype file == FileImage
                                        <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileType file == FileFlash
+                                   $elseif attachedfileFiletype file == FileFlash
                                        <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
                                    $else
                                        <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">

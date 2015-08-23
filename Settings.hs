@@ -67,6 +67,7 @@ data AppSettings = AppSettings
     , appTitleDelimiter      :: Text
     , appFfmpeg              :: Text
     , appExiftool            :: Text
+    , appAnimatedThumbs      :: Bool
     }
 
 instance FromJSON AppSettings where
@@ -108,6 +109,7 @@ instance FromJSON AppSettings where
 
         appFfmpeg                 <- o .: "ffmpeg"
         appExiftool               <- o .: "exiftool"
+        appAnimatedThumbs         <- o .: "animatedThumbs"
 
         return AppSettings {..}
 

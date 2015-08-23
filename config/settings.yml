@@ -42,3 +42,4 @@ metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "
 ffmpeg:            "/usr/bin/ffmpeg"
 exiftool:          "/usr/bin/exiftool"
+animatedThumbs:    false

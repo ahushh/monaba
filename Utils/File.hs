@@ -51,7 +51,7 @@ insertFiles files thumbSize postId = do
         case filetype of
           FileImage -> do
             (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath
-            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir uploadPath fileext hashsum (imgW, imgH)
+            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs
             void $ runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
                                             , attachedfileThumbWidth  = thumbW
                                             , attachedfileThumbHeight = thumbH
@@ -61,7 +61,7 @@ insertFiles files thumbSize postId = do
             -- make thumbnail
             let thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
             void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
-            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False
+            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False
             -- get video info
             info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
             let info   = parseExifInfo info'
@@ -192,8 +192,9 @@ resizeImage :: FilePath           -- ^ Source image file
             -> FilePath           -- ^ Destination image file
             -> ImageResolution    -- ^ The maximum dimensions of the output file
             -> Bool               -- ^ Is a gif or not
+            -> Bool               -- ^ Animated thumbnails
             -> IO ImageResolution -- ^ The size of the output file
-resizeImage from to maxSz gif = withMagickWandGenesis $ do
+resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
   (_,w) <- magickWand
   readImage w (fromText $ pack from)
   width  <- getImageWidth w
@@ -204,7 +205,7 @@ resizeImage from to maxSz gif = withMagickWandGenesis $ do
     then do
       (pointer, images) <- coalesceImages w
       (_,w1) <- magickWand
-      n <- getNumberImages images
+      n <- if animatedThumbs then getNumberImages images else return 2
       forM_ [1..(n-1)] $ \i -> localGenesis $ do
         images `setIteratorIndex` i
         (_,image) <- getImage images
@@ -227,12 +228,13 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                String          ->  -- ^ File extentions
                String          ->  -- ^ Hashsum of source file
                ImageResolution ->  -- ^ Width and height of the source file
+               Bool            ->  -- ^ Animated thumbnails
                IO ImageResolution -- ^ Width and height of the destination file
-makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) = do
+makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs = do
   unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory </> hashsum)) $
     createDirectory (appUploadDir </> thumbDirectory </> hashsum)
   if height > thumbSize || width > thumbSize
-    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif")
+    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)
 

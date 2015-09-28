@@ -15,90 +15,72 @@ footer {
 body {
     padding: 8px;
 }
-
 a {
     text-decoration: none;    
     cursor: pointer;
 }
-
 hr {
-   clear: left;
+    clear: left;
 }
-
 .online-counter {
     position: fixed;
     bottom: 0;
     right: 0;
 }
-
 .fa {
-   cursor: pointer;
+    cursor: pointer;
 }
-
 .thread {
     height: auto;
     overflow: visible;
     clear: both;
 }
-
 .multi-file {
     vertical-align: top; 
     display: inline-block;
     margin: 7px;
 }
-
 .file {
     margin: 7px 14px 7px 7px;
     float: left;
 }
-
-
 .thumb {
-   margin: 6px;
-   cursor: pointer;
-   display: block;
+    margin: 6px;
+    cursor: pointer;
+    display: block;
 }
-
 .image-loading {
-   opacity: 0.7;
+    opacity: 0.7;
 }
-
 #message {
     font-weight: bold;
     margin: 5px;
     padding: 5px;
     text-align: center;
 }
-
 .board-list {
     text-align: left;
-   margin-bottom: 20px;
+    margin-bottom: 20px;
 }
-
 .poster-name {
     font-weight: bolder;
 }
-
 .poster-name-admin {
     font-weight: bolder;
     color: red;
 }
-
 .poster-name-mod {
     font-weight: bolder;
     color: #d77d31;
 }
-
 .op-post {
     word-wrap: break-word;
 }
-
 .reply-post, .feed .op-post {
-   display: table;
-   overflow: hidden;
-   word-wrap: break-word;
+    display: table;
+    overflow: hidden;
+    word-wrap: break-word;
 }
-
 .popup-post {
     position: absolute;
     display: block;
@@ -107,323 +89,265 @@ hr {
     overflow: hidden;
     word-wrap: break-word;
 }
-
 .popup-post .icon-edit-post, .popup-post .icon-reply, .popup-post .last-modified, .popup-post .icon-del-post, .popup-post .icon-hide-thread {
-   display: none;
+    display: none;
 }
-
 .close-popup-container {
-   margin-left: 2px;  
-   float:left;
-   clear: left;
+    margin-left: 2px;  
+    float:left;
+    clear: left;
 }
-
 .banner {
-   text-align: center;
+    text-align: center;
 }
-
 #board-header {
     text-align: center;
     font-size: 2em;
 }
-
 #board-summary {
-   text-align: center;
-   font-size: 1.5em;
+    text-align: center;
+    font-size: 1.5em;
 }
-
 #board-subtitle {
     text-align: center;
     margin-top: 7px;
     font-size: 0.9em;
 }
-
 #thread-header {
-  text-align: center;
+    text-align: center;
 }
-
 .thread-status {
-  display: inline;
+    display: inline;
 }
-
 .admin-table {
-  border-collapse: collapse;
-  font-size: 0.8em;
-  margin: 7px;
+    border-collapse: collapse;
+    font-size: 0.8em;
+    margin: 7px;
 }
-
 .admin-table td, .admin-table th {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 5px;
-  padding-right: 8px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    padding-right: 8px;
 }
-
 .admin-table input {
     width: 100%;
 }
-
-.pLabelTrue, .pLabelTrue a {
+.post-label-true, .post-label-true a {
     color: green;
 }
-
-.pLabelFalse, .pLabelFalse a {
+.post-label-false, .post-label-false a {
     color: red;
 }
-
 .popup_message_text {
-   display: inline;
+    display: inline;
 }
-
 .close_popup_message {
-   cursor: pointer;
-   display: inline;
-   vertical-align: top;
+    cursor: pointer;
+    display: inline;
+    vertical-align: top;
 }
-
 .popup_message {
-   /* display: inline-block;     */
-   float: right;
-   clear: both;
-   text-align: right;
-   margin: 3px 0;
-   word-wrap: break-word;
-   padding: 10px 10px;
+    /* display: inline-block;     */
+    float: right;
+    clear: both;
+    text-align: right;
+    margin: 3px 0;
+    word-wrap: break-word;
+    padding: 10px 10px;
 }
-
 #popup_message_container {
-   max-width: 90%;
-   right: 10px;
-   position: fixed;
-   top: 10px;
+    max-width: 90%;
+    right: 10px;
+    position: fixed;
+    top: 10px;
 }
-
 .refmap-list {
     font-size: 75%;
     font-style: italic;
 }
-
 .show-plain-form {
     display:none;
     text-align: center;
 }
-
 .board-list {
     text-align: left;
 }
-
 #control-panel {
     float: right;
     text-align: right;
 }
-
 .mark-to-delete input[type=checkbox] {
     display:none;
 }
-
 #close-edit-form {
     float:right;
     margin: 3px 5px;
 }
-
 .last-modified {
     font-size: 0.7em;
     float:right;
 }
-
 .hist-date {
     text-align: center;
     font-weight: bold;
-   margin: 10px;
+    margin: 10px;
 }
-
 .hist-msg {
     word-wrap: break-word;
     width: 50%;
     margin: 0 auto;
 }
-
 #edit-history-header {
     text-align: center;
 }
-
 .file-name {
-   margin: 2px;
+    margin: 2px;
 }
-
 .file-info {
-   font-style: italic;
-   margin: 2px;
+    font-style: italic;
+    margin: 2px;
 }
-
 .quote {
     color: green;
 }
-
 .spoiler {
     color: black;
     background-color: black;
 }
-
 .spoiler:hover {
-   color:white;
+    color:white;
 }
-
 iframe {
     border: 0px;
 }
-
 .focused {
     text-decoration: underline;
 }
-
 ul {
     list-style-position: inside;
     margin: 0;
     padding: 0 0 0 15px;
 }
-
 .message {
     padding: 8px 10px;
 }
-
 .expand-post {
     padding: 3px 0 0 8px;
 }
-
 .shrink-post {
     padding-left: 8px;
 }
-
 .expand-post, .shrink-post {
     color: #666666;
 }
-
 .markup-wrapper {
     margin:0 auto;
     width:90%;
     padding: 5px;
 }
-
 .abbreviated {
     max-height: 250px;
     overflow:hidden;
 }
-
 #delete-container {
     clear: both;
 }
-
 // post form
 .no-js #board-info {
-   display: block;
+    display: block;
 }
 .no-js .close-post-form {
-   display: none;
+    display: none;
 }
-
 .no-js #attach-file {
-   display: none;
+    display: none;
 }
-
 .no-js input[type="file"] {
-   display: block;
+    display: block;
 }
-
 .js input[type="file"] {
-   visibility: none;
-   position: absolute;
-   left: -999999px;
+    visibility: none;
+    position: absolute;
+    left: -999999px;
 }
-
 #attach-file {
-   cursor:pointer;
-   margin: 5px 0;
+    cursor:pointer;
+    margin: 5px 0;
 }
-
 #attach-file.inactive {
-   opacity: 0.5;
+    opacity: 0.5;
 }
-
 #attachment-thumbs {
-}
 
+}
 .attachment-thumb {
-   display: inline-block;
-   width: 15%;
-   margin: 5px;
+    display: inline-block;
+    width: 15%;
+    margin: 5px;
 }
-
 .attachment-thumb img {
-   width: 100%;
-   margin: 1px;
-   vertical-align: top;
+    width: 100%;
+    margin: 1px;
+    vertical-align: top;
 }
-
 .drag-here {
     border: 2px dashed grey !important;
 }
-
 #post-form-inputs {
-}
 
+}
 #post-form textarea {
-   width: 99%;
-   height: 150px;
-   min-height: 150px;
-   max-width: 900px;
+    width: 99%;
+    height: 150px;
+    min-height: 150px;
+    max-width: 900px;
 }
-
 .plain-post-form {
-   border: 0px;
+    border: 0px;
 }
-
 .quick-post-form {
-   text-align: left;
-   display: table;
+    text-align: left;
+    display: table;
 }
-
 @media all and (max-width:1024px) {
-   .reply-post, .feed .op-post {
-       min-width: 40%;
-   }
-   .quick-post-form {
-      margin: 5px 0 0;
-      width: 100%;
-   }
-   .plain-post-form {
-      width: 90%;
-      margin: 10px 5%;
-   }
-   .text-reply {
-       display: inline-block;
-   }
+    .reply-post, .feed .op-post {
+        min-width: 40%;
+    }
+    .quick-post-form {
+        margin: 5px 0 0;
+        width: 100%;
+    }
+    .plain-post-form {
+        width: 90%;
+        margin: 10px 5%;
+    }
+    .text-reply {
+        display: inline-block;
+    }
 }
-
 @media all and (min-width:1024px) {
-   .container {
-      width: 70%;
-      margin: auto;
-   }
-   .quick-post-form {
-      margin: 5px 0 0;
-   }
-   .plain-post-form {
-      width: 80%;
-      margin: 10px 10%;
-   }
-   .text-reply {
-       display: none;
-   }
+    .container {
+        width: 70%;
+        margin: auto;
+    }
+    .quick-post-form {
+        margin: 5px 0 0;
+    }
+    .plain-post-form {
+        width: 80%;
+        margin: 10px 10%;
+    }
+    .text-reply {
+        display: none;
+    }
 }
-
 @media all and (min-width:1600px) {
-   .container {
-      width: 55%;
-      margin: auto;
-   }
+    .container {
+        width: 55%;
+        margin: auto;
+    }
 }
-
 .close-post-form {
-   text-align: center;
+    text-align: center;
 }

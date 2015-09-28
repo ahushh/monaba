@@ -85,19 +85,19 @@
       <tr>
         <td>##OP
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelTrue">##OP</span> // _{MsgIfYouAreOp}
+        <td><span class="post-label-true">##OP</span> // _{MsgIfYouAreOp}
       <tr>
         <td>##OP
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelFalse">##OP</span> // _{MsgIfYouAreNotOp}
+        <td><span class="post-label-false">##OP</span> // _{MsgIfYouAreNotOp}
       <tr>
         <td>##1231
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelTrue"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
+        <td><span class="post-label-true"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostBelongs}
       <tr>
         <td>##123
         <td>&nbsp;→&nbsp;
-        <td><span class="pLabelFalse"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
+        <td><span class="post-label-false"><a href="/b/123/#123">##123</a></span> // _{MsgIfPostDoesntBelong}
     <hr>
 
     <p style=text-align:center><strong>_{MsgLatex}</strong>

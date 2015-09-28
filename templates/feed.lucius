@@ -3,7 +3,7 @@
 }
 
 #go-back-block {
-   display: none;
+    display: none;
 }
 
 .thread-parent {

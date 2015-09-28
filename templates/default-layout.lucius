@@ -95,7 +95,6 @@ hr {
 
 .reply-post, .feed .op-post {
    display: table;
-   min-width: 40%;
    overflow: hidden;
    word-wrap: break-word;
 }
@@ -369,7 +368,7 @@ ul {
 }
 
 #post-form textarea {
-   width: 100%;
+   width: 99%;
    height: 150px;
    min-height: 150px;
    max-width: 900px;
@@ -385,6 +384,9 @@ ul {
 }
 
 @media all and (max-width:1024px) {
+   .reply-post, .feed .op-post {
+       min-width: 40%;
+   }
    .quick-post-form {
       margin: 5px 0 0;
       width: 100%;
@@ -393,16 +395,32 @@ ul {
       width: 90%;
       margin: 10px 5%;
    }
+   .text-reply {
+       display: inline-block;
+   }
 }
 
 @media all and (min-width:1024px) {
+   .container {
+      width: 70%;
+      margin: auto;
+   }
    .quick-post-form {
       margin: 5px 0 0;
-      width: 65%;
    }
    .plain-post-form {
-      width: 60%;
-      margin: 10px 20%;
+      width: 80%;
+      margin: 10px 10%;
+   }
+   .text-reply {
+       display: none;
+   }
+}
+
+@media all and (min-width:1600px) {
+   .container {
+      width: 55%;
+      margin: auto;
    }
 }
 

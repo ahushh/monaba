@@ -28,6 +28,8 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>##{sPostLocalId}#
         $if canPost
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right>
+            <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .text-reply>
+              _{MsgReplyIcon}
         <span .cpanel>
            $if isThread
              $if not inThread
@@ -65,6 +67,7 @@
                  <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral postId) "unban"}>Unhellban
                  ]
        $if showParent
+         &nbsp;
          $if isThread
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
          $else

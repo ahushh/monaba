@@ -162,7 +162,7 @@ function loadConfig() {
     setConfigIfNull("url_video_height", 270);
     setConfigIfNull("flash_height", 400);
     setConfigIfNull("flash_width", 400);
-    setConfigIfNull("css_wide_posts", false);
+    setConfigIfNull("css_wide_posts", true);
     setConfigIfNull("css_side_margin", 0);
     setConfigIfNull("css_hide_files_names", false);
     setConfigIfNull("css_hide_files_info", false);
@@ -190,7 +190,7 @@ function resetConfig() {
     setConfig("url_video_height", 270);
     setConfig("flash_height", 400);
     setConfig("flash_width", 400);
-    setConfig("css_wide_posts", false);
+    setConfig("css_wide_posts", true);
     setConfig("css_side_margin", 0);
     setConfig("css_hide_files_names", false);
     setConfig("css_hide_files_info", false);
@@ -201,7 +201,7 @@ function applyCSSSettings() {
     document.head.appendChild(style);
     var index = 0;
     var side_margin = getConfig("css_side_margin");
-    if (side_margin) {
+    if (side_margin && side_margin != 0) {
         var width = 100 - side_margin*2;
         style.sheet.insertRule(".container { width: "+width+"%; margin: auto; }", index);
         index++;

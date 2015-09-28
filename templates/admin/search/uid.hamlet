@@ -14,6 +14,6 @@ $else
     ^{deleteWidget permissions}
 
 $if onlyHellbanned
-  ^{paginationWidget page pages (AdminSearchUIDR posterId)}
-$else
   ^{paginationWidget page pages (AdminSearchHBUIDR posterId)}
+$else
+  ^{paginationWidget page pages (AdminSearchUIDR posterId)}

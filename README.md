@@ -18,7 +18,7 @@ Features
 * Prooflabes as replacement of tripcodes
 * Kusaba-like formatting with code highlighting and LaTeX support
 * Custom CAPTCHA
-* Internationalization
+* Internationalization (English, Русский, Português Brasil)
 * Country flag support
 * Switchable stylesheets
 * YouTube, vimeo, coub embedding
@@ -44,8 +44,8 @@ Dependencies
 
 Required for builiding from source:
 
-* GHC >= 7.6
-* cabal-install >= 1.18
+* GHC >= 7.10
+* cabal-install >= 1.20
 
 Installation
 ======

@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections, OverloadedStrings #-}
 module Handler.Settings where
- 
+
 import           Import
 import qualified Data.Text  as T
 import           Data.List (sort)
@@ -58,7 +58,7 @@ getSettingsR = do
 
 -------------------------------------------------------------------------------------------------------------------
 langs :: [(Text, Text)]
-langs = [("English", "en"), ("Русский","ru")]
+langs = [("English", "en"), ("Русский","ru"), ("Português Brasil", "br")]
 
 timezones :: [(Text, Int)]
 timezones = [("[UTC -11:00] Pacific/Midway",-39600)

@@ -130,7 +130,7 @@ instance Yesod App where
       StickR{}        -> isAuthorized' [ManageThreadP]
       LockR{}         -> isAuthorized' [ManageThreadP]
       AutoSageR{}     -> isAuthorized' [ManageThreadP]
-      MoveThreadR{}   -> isAuthorized' [ManageThreadP] 
+      MoveThreadR{}   -> isAuthorized' [ManageThreadP]
 
       BanByIpR{}      -> isAuthorized' [ManageBanP]
       ManageBoardsR{} -> isAuthorized' [ManageBoardP]
@@ -150,7 +150,7 @@ instance Yesod App where
       UsersR{}        -> isAuthorized' [ManageUsersP]
       ManageGroupsR{} -> isAuthorized' [ManageUsersP]
       UsersDeleteR{}  -> isAuthorized' [ManageUsersP]
-      ModlogR{}       -> isAuthorized' [ViewModlogP] 
+      ModlogR{}       -> isAuthorized' [ViewModlogP]
       AdminSearchIPR{}       -> isAuthorized' [ViewIPAndIDP]
       AdminSearchIPNoPageR{} -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]

@@ -109,13 +109,14 @@ listPages elemsPerPage numberOfElems =
           | numberOfElems > 0 && numberOfElems `mod` elemsPerPage == 0 = x - 1
           | otherwise                                                = x
 
-ignoreBoards :: Maybe Text -> Entity Board -> Maybe Text
-ignoreBoards group (Entity _ b)
-  | boardHidden b ||
-    ( (isJust (boardViewAccess b) && isNothing group) ||
-      (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-    ) = Just $ boardName b
-  | otherwise = Nothing
+getIgnoredBoard :: Maybe Text -> Entity Board -> Maybe Text
+getIgnoredBoard group board@(Entity _ b) = if isBoardHidden group board then Just $ boardName b else Nothing
+
+isBoardHidden :: Maybe Text -> Entity Board -> Bool
+isBoardHidden group (Entity _ b) = boardHidden b ||
+                                   ( (isJust (boardViewAccess b) && isNothing group) ||
+                                     (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+                                   )
 
 -- | Remove all HTML tags
 stripTags :: Text -> Text
@@ -344,7 +345,7 @@ getBoardStats = do
     Just s  -> return $ tread s
     Nothing -> do
       posterId <- getPosterId
-      boards <- mapMaybe (ignoreBoards' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+      boards <- map (boardName . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
       hiddenThreads <- getAllHiddenThreads
       stats  <- runDB $ forM boards $ \b -> do
                   lastPost <- selectFirst [PostBoard ==. b, PostDeleted ==. False, PostPosterId !=. posterId, PostHellbanned ==. False
@@ -352,12 +353,6 @@ getBoardStats = do
                   return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
       saveBoardStats stats
       return stats
-  where ignoreBoards' group (Entity _ b)
-          | boardHidden b ||
-            ( (isJust (boardViewAccess b) && isNothing group) ||
-              (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-            ) = Nothing
-          | otherwise = Just $ boardName b
 
 saveBoardStats :: [(Text,Int,Int)] -> Handler ()
 saveBoardStats stats = do
@@ -367,14 +362,8 @@ saveBoardStats stats = do
 cleanAllBoardsStats :: Handler ()
 cleanAllBoardsStats = do
   mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
-  boards <- mapMaybe (ignoreBoards' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+  boards <- map (boardName . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   forM_ boards cleanBoardStats
-  where ignoreBoards' group (Entity _ b)
-          | boardHidden b ||
-            ( (isJust (boardViewAccess b) && isNothing group) ||
-              (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-            ) = Nothing
-          | otherwise = Just $ boardName b
   
 cleanBoardStats :: Text -> Handler ()
 cleanBoardStats board = do

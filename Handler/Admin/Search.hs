@@ -13,7 +13,7 @@ getAdminSearchIPR ip page = do
   showPosts   <- getConfig configShowLatestPosts
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. False, PostIp ==. ip]
-  let boards'     = mapMaybe (ignoreBoards group) boards
+  let boards'     = mapMaybe (getIgnoredBoard group) boards
       selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostIp ==. ip]
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]
@@ -32,7 +32,7 @@ uidSearchHelper onlyHellbanned posterId page = do
   showPosts   <- getConfig configShowLatestPosts
   boards      <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count (if onlyHellbanned then [PostDeleted ==. False, PostPosterId ==. posterId, PostHellbanned ==. True] else [PostDeleted ==. False, PostPosterId ==. posterId])
-  let boards'        = mapMaybe (ignoreBoards group) boards
+  let boards'        = mapMaybe (getIgnoredBoard group) boards
       selectPostsAll = [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId]
       selectPostsHB  = [PostBoard /<-. boards', PostDeleted ==. False, PostPosterId ==. posterId, PostHellbanned ==. True]
       selectPosts    = if onlyHellbanned then selectPostsHB else selectPostsAll

@@ -31,7 +31,8 @@ settingsForm allBoards ignoredBoards extra = do
 
 postSettingsR :: Handler TypedContent
 postSettingsR = do
-  allBoards <- map ((boardTitle &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  mgroup        <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  allBoards     <- map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   ignoredBoards <- getFeedBoards
   ((result, _), _) <- runFormPost $ settingsForm  allBoards ignoredBoards
   case result of
@@ -47,7 +48,8 @@ postSettingsR = do
 
 getSettingsR :: Handler Html
 getSettingsR = do
-  allBoards       <- map ((boardTitle &&& boardName) . entityVal) <$> runDB (selectList ([]::[Filter Board]) [])
+  mgroup          <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  allBoards       <- map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   ignoredBoards   <- getFeedBoards
   (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards
   hiddenThreads   <- getAllHiddenThreads

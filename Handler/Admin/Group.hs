@@ -1,24 +1,11 @@
+{-# OPTIONS_GHC -O0 #-}
 module Handler.Admin.Group where
 
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------
-groupsForm :: Html ->
-             MForm Handler (FormResult ( Text -- ^ Group name
-                                       , Bool -- ^ Permission to manage threads
-                                       , Bool -- ^ ... boards
-                                       , Bool -- ^ ... users
-                                       , Bool -- ^ ... config
-                                       , Bool -- ^ to delete posts
-                                       , Bool -- ^ to view admin panel
-                                       , Bool -- ^ to manage bans
-                                       , Bool -- ^ to edit any post
-                                       , Bool -- ^ to use additional markup
-                                       , Bool -- ^ to view moderation log 
-                                       , Bool -- ^ to view ip and uid
-                                       , Bool -- ^ to use hellbanning 
-                                       ), Widget)
+groupsForm :: Html -> MForm Handler (FormResult GroupConfigurationForm, Widget)
 groupsForm extra = do
   (nameRes         , nameView        ) <- mreq textField     "" Nothing
   (manageThreadRes , manageThreadView) <- mreq checkBoxField "" Nothing
@@ -34,7 +21,7 @@ groupsForm extra = do
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing 
 
-  let result = (,,,,,,,,,,,,)  <$> nameRes        <*>
+  let result = GroupConfigurationForm <$> nameRes <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
                manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
@@ -74,10 +61,9 @@ postManageGroupsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess (name        , manageThread, manageBoard, manageUsers,
-                 manageConfig, deletePostsP, managePanel, manageBan  ,
-                 editPosts   , aMarkup     , viewModLog , viewIPAndID,
-                 hellbanning
+    FormSuccess (GroupConfigurationForm name manageThread manageBoard manageUsers
+                 manageConfig  deletePostsP managePanel manageBan editPosts
+                 aMarkup viewModLog  viewIPAndID hellbanning
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)

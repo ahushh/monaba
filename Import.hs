@@ -23,6 +23,54 @@ import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Ta
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append)
+
+-------------------------------------------------------------------------------------------------------------------
+data GroupConfigurationForm = GroupConfigurationForm
+                              Text -- ^ Group name
+                              Bool -- ^ Permission to manage threads
+                              Bool -- ^ ... boards
+                              Bool -- ^ ... users
+                              Bool -- ^ ... config
+                              Bool -- ^ to delete posts
+                              Bool -- ^ to view admin panel
+                              Bool -- ^ to manage bans
+                              Bool -- ^ to edit any post
+                              Bool -- ^ to use additional markup
+                              Bool -- ^ to view moderation log 
+                              Bool -- ^ to view ip and uid
+                              Bool -- ^ to use hellbanning 
+
+data BoardConfigurationForm = BoardConfigurationForm
+                              (Maybe Text)   -- ^ Name
+                              (Maybe Text)   -- ^ Board title
+                              (Maybe Int)    -- ^ Bump limit
+                              (Maybe Int)    -- ^ Number of files
+                              (Maybe Text)   -- ^ Allowed file types
+                              (Maybe Text)   -- ^ Default name
+                              (Maybe Int )   -- ^ The maximum message length
+                              (Maybe Int )   -- ^ Thumbnail size
+                              (Maybe Int )   -- ^ Threads per page
+                              (Maybe Int )   -- ^ Previews post per thread
+                              (Maybe Int )   -- ^ Thread limit
+                              (Maybe Text)   -- ^ OP file
+                              (Maybe Text)   -- ^ Reply file
+                              (Maybe Text)   -- ^ Is hidden (Enable,Disable,DoNotChange)
+                              (Maybe Text)   -- ^ Enable captcha (Enable,Disable,DoNotChange)
+                              (Maybe Text)   -- ^ Category
+                              (Maybe [Text]) -- ^ View access
+                              (Maybe [Text]) -- ^ Reply access
+                              (Maybe [Text]) -- ^ Thread access
+                              (Maybe Text  ) -- ^ Allow OP moderate his/her thread
+                              (Maybe Text  ) -- ^ Extra rules
+                              (Maybe Text  ) -- ^ Enable geo IP
+                              (Maybe Text  ) -- ^ Enable OP editing
+                              (Maybe Text  ) -- ^ Enable post editing
+                              (Maybe Text  ) -- ^ Show or not editing history
+                              (Maybe Text  ) -- ^ Show or not post date
+                              (Maybe Text  ) -- ^ Summary
+                              (Maybe Text  ) -- ^ Enable forced anonymity (no name input)
+                              (Maybe Text  ) -- ^ Required thread title
+                              (Maybe Int   ) -- ^ Index
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------

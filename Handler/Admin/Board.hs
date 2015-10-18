@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -O0 #-}
 {-# LANGUAGE TupleSections, OverloadedStrings, ExistentialQuantification #-}
 module Handler.Admin.Board where
 
@@ -12,9 +13,7 @@ getManageBoardsR action board = do
   maybeBoard  <- runDB $ selectFirst [BoardName ==. board] []
   groups      <- map ((\x -> (x,x)) . groupName . entityVal) <$> runDB (selectList ([]::[Filter Group]) [])
   bCategories <- map (id &&& id) <$> getConfig configBoardCategories
-
   (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups -- oops, ignored formEnctype
-
   boards          <- runDB $ selectList ([]::[Filter Board]) []
   defaultLayout $ do
     defaultTitleMsg MsgBoardManagement
@@ -25,38 +24,7 @@ updateBoardForm :: Maybe (Entity Board) -> -- ^ Selected board
                   [(Text,Text)]        -> -- ^ Board categories
                   [(Text,Text)]        -> -- ^ User groups
                   Html                 -> -- ^ Extra
-                  MForm Handler (FormResult ( Maybe Text   -- ^ Name
-                                            , Maybe Text   -- ^ Board title
-                                            , Maybe Int    -- ^ Bump limit
-                                            , Maybe Int    -- ^ Number of files
-                                            , Maybe Text   -- ^ Allowed file types
-                                            , Maybe Text   -- ^ Default name
-                                            , Maybe Int    -- ^ The maximum message length
-                                            , Maybe Int    -- ^ Thumbnail size
-                                            , Maybe Int    -- ^ Threads per page
-                                            , Maybe Int    -- ^ Previews post per thread
-                                            , Maybe Int    -- ^ Thread limit
-                                            , Maybe Text   -- ^ OP file
-                                            , Maybe Text   -- ^ Reply file
-                                            , Maybe Text   -- ^ Is hidden (Enable,Disable,DoNotChange)
-                                            , Maybe Text   -- ^ Enable captcha (Enable,Disable,DoNotChange)
-                                            , Maybe Text   -- ^ Category
-                                            , Maybe [Text] -- ^ View access
-                                            , Maybe [Text] -- ^ Reply access
-                                            , Maybe [Text] -- ^ Thread access
-                                            , Maybe Text   -- ^ Allow OP moderate his/her thread
-                                            , Maybe Text   -- ^ Extra rules
-                                            , Maybe Text   -- ^ Enable geo IP
-                                            , Maybe Text   -- ^ Enable OP editing
-                                            , Maybe Text   -- ^ Enable post editing
-                                            , Maybe Text   -- ^ Show or not editing history
-                                            , Maybe Text   -- ^ Show or not post date
-                                            , Maybe Text   -- ^ Summary
-                                            , Maybe Text   -- ^ Enable forced anonymity (no name input)
-                                            , Maybe Text   -- ^ Required thread title
-                                            , Maybe Int    -- ^ Index
-                                            )
-                                , Widget)
+                  MForm Handler (FormResult BoardConfigurationForm, Widget)
 updateBoardForm board action bCategories groups extra = do
   msgrender   <- getMessageRender
   let helper :: forall a. (Board -> a) -> a -> Maybe (Maybe a)
@@ -109,7 +77,7 @@ updateBoardForm board action bCategories groups extra = do
   (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper' boardEnableForcedAnon "Disable")
   (requiredThreadTitleRes, requiredThreadTitleView ) <- mopt (selectFieldList onoff) "" (helper' boardRequiredThreadTitle "Disable")
   (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex 0)
-  let result = (,,,,,,,,,,,,,,,,,,,,,,,,,,,,,) <$>
+  let result = BoardConfigurationForm <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
                maxMsgLengthRes      <*> thumbSizeRes       <*> threadsPerPageRes <*>
@@ -134,12 +102,12 @@ postNewBoardsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bEnableForcedAnon, bRequiredThreadTitle, bIndex
+    FormSuccess ( BoardConfigurationForm bName   bTitle            bBumpLimit           bNumberFiles     bAllowedTypes
+                 bDefaultName      bMaxMsgLen    bThumbSize        bThreadsPerPage      bPrevPerThread
+                 bThreadLimit      bOpFile       bReplyFile        bIsHidden            bEnableCaptcha
+                 bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
+                 bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
+                 bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -192,12 +160,12 @@ postAllBoardsR = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( _                , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bEnableForcedAnon, bRequiredThreadTitle, bIndex
+    FormSuccess ( BoardConfigurationForm  _      bTitle            bBumpLimit           bNumberFiles     bAllowedTypes
+                 bDefaultName      bMaxMsgLen    bThumbSize        bThreadsPerPage      bPrevPerThread
+                 bThreadLimit      bOpFile       bReplyFile        bIsHidden            bEnableCaptcha
+                 bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
+                 bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
+                 bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -250,12 +218,12 @@ postUpdateBoardsR board = do
     FormFailure [] -> msgRedirect MsgBadFormData
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
-    FormSuccess ( bName            , bTitle       , bBumpLimit       , bNumberFiles    , bAllowedTypes
-                , bDefaultName     , bMaxMsgLen   , bThumbSize       , bThreadsPerPage , bPrevPerThread
-                , bThreadLimit     , bOpFile      , bReplyFile       , bIsHidden       , bEnableCaptcha
-                , bCategory        , bViewAccess  , bReplyAccess     , bThreadAccess   , bOpModeration
-                , bExtraRules      , bEnableGeoIp , bOpEditing       , bPostEditing    , bShowEditHistory
-                , bShowPostDate    , bSummary     , bEnableForcedAnon, bRequiredThreadTitle, bIndex
+    FormSuccess ( BoardConfigurationForm bName   bTitle            bBumpLimit           bNumberFiles     bAllowedTypes
+                 bDefaultName      bMaxMsgLen    bThumbSize        bThreadsPerPage      bPrevPerThread
+                 bThreadLimit      bOpFile       bReplyFile        bIsHidden            bEnableCaptcha
+                 bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
+                 bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
+                 bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -349,7 +317,6 @@ getRebuildPostsMessagesOnBoardR action board = case action of
     addModlogEntry $ MsgModlogRebuildPostsMessages
     msgRedirect MsgBoardsUpdated
   where msgRedirect msg = setMessageI msg >> redirect (ManageBoardsR AllBoards "")
-
 -------------------------------------------------------------------------------------------------------------
 chooseManageBoarUrl :: ManageBoardAction -> Maybe Text -> Route App
 chooseManageBoarUrl NewBoard    _     = NewBoardsR

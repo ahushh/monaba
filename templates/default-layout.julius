@@ -1211,8 +1211,8 @@ function makeRefmap(postSelector) {
                 if (! Monaba.refMap[refId]) {
                     Monaba.refMap[refId] = [];
                 }
-                var link = "/"+board+"/"+threadId+"#"+localId;
-                var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"showPopupPost(this, event,"+postId+","+localId+",'"+board+"')\" onclick='highlightPost("+postId+")' href='"+link+"'>>>"+localId+"</a>";
+                var link = "/"+board+"/"+threadId+"#p"+postId;
+                var postUrl = "<a data-post-id="+postId+" data-post-local-id="+localId+" data-board='"+board+"' data-thread-local-id="+threadId+" onmouseover=\"showPopupPost(this, event,"+postId+","+localId+",'"+board+"')\" onclick='highlightPost(\"p"+postId+"\")' href='"+link+"'>>>"+localId+"</a>";
                 if (! Monaba.refMap[refId].contains(postUrl))
                     Monaba.refMap[refId].push(postUrl);
             }

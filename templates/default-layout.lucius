@@ -351,3 +351,6 @@ ul {
 .close-post-form {
     text-align: center;
 }
+.new-posts-number {
+    font-size: 0.8em;
+}

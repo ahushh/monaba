@@ -131,8 +131,8 @@ if (isEventSourceSupported()) {
                     var unread = false;
                     for (var i = 0; i < boards.length; i++) {
                         var board = boards[i].dataset.board;
-                        var newPosts = data[board] ? " +"+data[board] : "";
-                        boards[i].innerHTML = "/"+board+"/"+newPosts;
+                        var newPosts = data[board] ? "+"+data[board] : "";
+                        boards[i].innerHTML = "/"+board+"/ <span class='new-posts-number'>"+newPosts+"</span>";
                         if (data[board]) unread = true;
                     }
                     if (unread) updateUnread();
@@ -148,10 +148,10 @@ if (isEventSourceSupported()) {
            if (currentBoard == board) return;
            var boardLink = document.getElementById("board-link-"+board);
            if (boardLink == null) return;
-           var n = boardLink.innerHTML.match(/ \+(\d+)/);
+           var n = boardLink.innerHTML.match(/<span class='new-posts-number'>\+(\d+)<\/span>/);
            var newPosts = 1;
            if (n && n[1]) newPosts += +n[1];
-           boardLink.innerHTML = "/"+board+"/ +"+newPosts;
+           boardLink.innerHTML = "/"+board+"/ <span class='new-posts-number'>+"+newPosts+"</span>";
            updateUnread();
        });
     } else {

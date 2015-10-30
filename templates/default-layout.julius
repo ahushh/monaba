@@ -15,27 +15,28 @@ function getUpdateTitle() {
     var visibilityChange = getVisibilityChange();
 
     var blinkingFavicon = false;
-    var normalIcon = document.getElementById("favicon").cloneNode(true);
-    var noIcon     = document.getElementById("favicon").cloneNode(true);
+    var normalIcon = document.getElementById("favicon").cloneNode();
+    var noIcon     = document.getElementById("favicon").cloneNode();
     noIcon.href='data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=';
     var blinkFavicon = function() {
         if (document[hidden] && !blinkingFavicon) {
             var t = true;
             blinkingFavicon = setInterval(function() {
-                favicon.parentNode.replaceChild(t ? noIcon : normalIcon, favicon);
+                var favicon = document.getElementById("favicon");
+                favicon.parentNode.replaceChild(t ? noIcon.cloneNode() : normalIcon.cloneNode(), favicon);
                 t = !t;
             }, 500);
         } else if (!document[hidden] && blinkingFavicon) {
             clearInterval(blinkingFavicon);
             blinkingFavicon = false;
-            document.getElementById("favicon").parentNode.replaceChild(normalIcon, favicon);
+            var favicon = document.getElementById("favicon");
+            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
         }
     };
 
     var updateTitle = function(n) {
         blinkFavicon();
         var t = /\[(\d+)\] (.+)/.exec(document.title);
-        var normalIcon = document.getElementById("favicon").cloneNode(true);
         if (document[hidden]) {
             if (t)
                 document.title = "["+((+t[1])+n)+ "] " + t[2];
@@ -52,7 +53,8 @@ function getUpdateTitle() {
             if (t) document.title = t[2];
             clearInterval(blinkingFavicon);
             blinkingFavicon = false;
-            document.getElementById("favicon").parentNode.replaceChild(normalIcon, favicon);
+            var favicon = document.getElementById("favicon");
+            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
         }
     });
     return updateTitle;
@@ -377,6 +379,19 @@ function initAudioPlayer(post) {
     for (var i = 0; i < toRemove.length; i++)
         toRemove[i].parentNode.removeChild( toRemove[i] );
 }
+ 
+function initPostsAutoload(refresh) {
+    var interval = getConfig("posts_autoload_interval");
+    if (!interval || interval == 0) return;
+    setInterval(refresh, interval);
+    var c = document.getElementsByClassName("posts-auto-load-countdown")[0];
+    c.innerHTML = interval/1000;
+    setInterval(function() {
+        var x = +c.innerHTML;
+        c.innerHTML = x == 0 ? interval/1000 : x - 1;
+    }, 1000);
+}
+
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------

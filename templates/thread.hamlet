@@ -33,7 +33,7 @@ $if hasAccessToReply
     <i .icon-thread-refresh .fa .fa-refresh>
     <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a>
-    <span .posts-auto-load-counter>
+    <span .posts-auto-load-countdown>
     ]
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 

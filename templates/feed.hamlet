@@ -12,7 +12,7 @@ $if offset == 0
           <i .icon-thread-refresh .fa .fa-refresh>
           <a>
             _{MsgGetNewPosts}
-          <span .posts-auto-load-counter>
+          <span .posts-auto-load-countdown>
         ]
       $forall (e, files) <- postsAndFiles
         $with geoIpEnabled' <- elem (postBoard (entityVal e)) geoIpEnabled

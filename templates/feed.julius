@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
     initMathjax();
-    initPostsAutoload();
+    initPostsAutoload(function(){ refreshFeed(true, getUpdateTitle() ); });
 });
 
 function refreshFeed(nopopup, updateTitle) {
@@ -30,7 +30,7 @@ function refreshFeed(nopopup, updateTitle) {
             var data = request.responseText;
             if (/post/.test(data)) {
                 var posts = parseDOMElements(data);
-                var n = posts.length;
+                var n = posts.length - 1;
                 var rf     = document.getElementById('refresh-feed');
                 var parent = rf.parentNode;
                 for (var i = posts.length-1; i >= 0; i--) {
@@ -130,19 +130,4 @@ function loadPreviousPosts(baseOffset) {
             document.getElementById('load-previous-posts').dataset.offset = +offset+baseOffset;
         }
     });
-}
- 
-function initPostsAutoload() {
-    var interval = getConfig("posts_autoload_interval");
-    if (!interval || interval == 0) return;
-    var updateTitle = getUpdateTitle();
-    setInterval(function() {
-        refreshFeed(true, updateTitle);
-    }, interval);
-    var c = document.getElementsByClassName("posts-auto-load-counter")[0];
-    c.innerHTML = interval/1000;
-    setInterval(function() {
-        var x = +c.innerHTML;
-        c.innerHTML = x == 0 ? interval/1000 : x - 1;
-    }, 1000);
 }

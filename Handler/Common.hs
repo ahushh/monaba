@@ -9,7 +9,7 @@ import Import
 
 getFaviconR :: Handler TypedContent
 getFaviconR = return $ TypedContent "image/x-icon"
-                     $ toContent $(embedFile "config/favicon.ico")
+                     $ toContent $(embedFile "config/favicon.png")
 
 getRobotsR :: Handler TypedContent
 getRobotsR = return $ TypedContent typePlain

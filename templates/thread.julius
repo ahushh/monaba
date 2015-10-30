@@ -72,4 +72,10 @@ function initPostsAutoload() {
     setInterval(function() {
         refreshThread(#{toJSON board},#{toJSON $ postLocalId $ entityVal eOpPost}, true, updateTitle);
     }, interval);
+    var c = document.getElementsByClassName("posts-auto-load-counter")[0];
+    c.innerHTML = interval/1000;
+    setInterval(function() {
+        var x = +c.innerHTML;
+        c.innerHTML = x == 0 ? interval/1000 : x - 1;
+    }, 1000);
 }

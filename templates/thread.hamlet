@@ -32,7 +32,9 @@ $if hasAccessToReply
             ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions}
     <i .icon-thread-refresh .fa .fa-refresh>
     <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
-    [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a> ]
+    [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a>
+    <span .posts-auto-load-counter>
+    ]
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 
     <div #delete-container>

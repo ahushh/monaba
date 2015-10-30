@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
     initMathjax();
+    initPostsAutoload();
 
     var postform = document.getElementById('post-form');
     initDragAndDrop(postform);
@@ -62,4 +63,13 @@ function showPlainPostForm() {
     insertAfter(pf, spf);
     spf.style.display = 'none';
     pf.style.display = 'block';
+}
+
+function initPostsAutoload() {
+    var interval = getConfig("posts_autoload_interval");
+    if (!interval || interval == 0) return;
+    var updateTitle = getUpdateTitle();
+    setInterval(function() {
+        refreshThread(#{toJSON board},#{toJSON $ postLocalId $ entityVal eOpPost}, true, updateTitle);
+    }, interval);
 }

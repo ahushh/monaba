@@ -7,9 +7,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
     initSymbolCounter('edit-form');
     initMathjax();
+    initPostsAutoload();
 });
 
-function refreshFeed() {
+function refreshFeed(nopopup, updateTitle) {
     var allPosts = document.querySelectorAll(".op-post, .reply-post");
     var lastPost = allPosts[0];
     if (! lastPost) return;
@@ -38,8 +39,9 @@ function refreshFeed() {
                 makeRefmap();
                 initPopupsCache();
                 refreshMathjax();
+                if (updateTitle) updateTitle();
             } else {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
+                if (!nopopup) popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
             }
         }
     });
@@ -129,3 +131,11 @@ function loadPreviousPosts(baseOffset) {
     });
 }
  
+function initPostsAutoload() {
+    var interval = getConfig("posts_autoload_interval");
+    if (!interval || interval == 0) return;
+    var updateTitle = getUpdateTitle();
+    setInterval(function() {
+        refreshFeed(true, updateTitle);
+    }, interval);
+}

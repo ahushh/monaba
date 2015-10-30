@@ -7,13 +7,62 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 };
+//-----------------------------------------------------------------
+// Favicon blinking and title updating
+//-----------------------------------------------------------------
+function getUpdateTitle() {
+    var hidden = getHidden();
+    var visibilityChange = getVisibilityChange();
 
-function isEventSourceSupported() {
-    return getConfig("eventsource") && typeof(EventSource) !== "undefined";
+    var blinkingFavicon = false;
+    var normalIcon = document.getElementById("favicon").cloneNode(true);
+    var noIcon     = document.getElementById("favicon").cloneNode(true);
+    noIcon.href='data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=';
+    var blinkFavicon = function() {
+        if (document[hidden] && !blinkingFavicon) {
+            var t = true;
+            blinkingFavicon = setInterval(function() {
+                favicon.parentNode.replaceChild(t ? noIcon : normalIcon, favicon);
+                t = !t;
+            }, 500);
+        } else if (!document[hidden] && blinkingFavicon) {
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            document.getElementById("favicon").parentNode.replaceChild(normalIcon, favicon);
+        }
+    };
+
+    var updateTitle = function() {
+        blinkFavicon();
+        var t = /\[(\d+)\] (.+)/.exec(document.title);
+        var normalIcon = document.getElementById("favicon").cloneNode(true);
+        if (document[hidden]) {
+            if (t)
+                document.title = "["+((+t[1])+1)+ "] " + t[2];
+            else
+                document.title = "[1] " + document.title;
+        } else {
+            if (t) document.title = t[2];
+        }
+    };
+
+    document.addEventListener(visibilityChange, function() {
+        if (!document[hidden]) {
+            var t = /\[(\d+)\] (.+)/.exec(document.title);
+            if (t) document.title = t[2];
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            document.getElementById("favicon").parentNode.replaceChild(normalIcon, favicon);
+        }
+    });
+    return updateTitle;
 }
 //-----------------------------------------------------------------
 // EventSource
 //-----------------------------------------------------------------
+function isEventSourceSupported() {
+    return getConfig("eventsource") && typeof(EventSource) !== "undefined";
+}
 var eventsource = null;
 if (isEventSourceSupported()) {
     eventsource = new EventSource("@{EventR}");
@@ -141,6 +190,7 @@ loadConfig();
 applyCSSSettings();
 
 function loadConfig() {
+    setConfigIfNull("posts_autoload_interval", 30000);
     setConfigIfNull("mathjax", true);
     setConfigIfNull("eventsource", true);
     setConfigIfNull("board_stats_update", 30000);
@@ -169,6 +219,7 @@ function loadConfig() {
 }
 
 function resetConfig() {
+    setConfig("posts_autoload_interval", 30000);
     setConfig("mathjax", true);
     setConfig("eventsource", true);
     setConfig("board_stats_update", 30000);
@@ -1342,7 +1393,7 @@ function closePopupPost(post) {
 //-----------------------------------------------------------------
 // threads
 //-----------------------------------------------------------------
-function refreshThread(board, threadLocalId) {
+function refreshThread(board, threadLocalId, nopopup, updateTitle) {
     var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply-post");
     var lastPost = allPosts[ allPosts.length - 1 ];
     if (! lastPost) {
@@ -1372,10 +1423,11 @@ function refreshThread(board, threadLocalId) {
                 makeRefmap();
                 initPopupsCache();
                 refreshMathjax();
+                if (updateTitle) updateTitle();
             } else if (data == "No such thread ") {
-                popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popup_message_display_time"));
+                if (!nopopup) popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popup_message_display_time"));
             } else if (data == "No new posts ") {
-                popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
+                if (!nopopup) popupMessage( #{toJSON $ msgrender MsgNoNewPosts}, getConfig("popup_message_display_time"));
             }
         }
     });
@@ -1461,6 +1513,36 @@ function setConfig(k,v) {
 function setConfigIfNull(k,v) {
     var a = getConfig(k);
     if (a == null) return setConfig(k,v);
+}
+// ---------------------------------------------------------
+//  Visibility API
+// ---------------------------------------------------------
+function getHidden() {
+    var hidden;
+    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        hidden = "hidden";
+    } else if (typeof document.mozHidden !== "undefined") {
+        hidden = "mozHidden";
+    } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+    }
+    return hidden;
+}
+
+function getVisibilityChange() {
+    var visibilityChange; 
+    if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+        visibilityChange = "visibilitychange";
+    } else if (typeof document.mozHidden !== "undefined") {
+        visibilityChange = "mozvisibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+        visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        visibilityChange = "webkitvisibilitychange";
+    }
+    return visibilityChange;
 }
 // ---------------------------------------------------------
 // Misc

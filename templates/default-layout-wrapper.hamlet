@@ -13,6 +13,7 @@ $newline never
     $maybe s <- stylesheet
       <link rel=stylesheet type=text/css title=#{s} href=#{stylesheetPath s}>
 
+    <link #favicon href="@{FaviconR}" rel="shortcut icon">
     <meta name="description" content=#{appMetaDescription $ appSettings master}>
     <meta name="keywords" content=#{appMetaKeywords $ appSettings master}>
     <meta name="viewport" content="width=device-width,initial-scale=1">

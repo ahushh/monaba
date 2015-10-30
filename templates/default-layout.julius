@@ -32,15 +32,15 @@ function getUpdateTitle() {
         }
     };
 
-    var updateTitle = function() {
+    var updateTitle = function(n) {
         blinkFavicon();
         var t = /\[(\d+)\] (.+)/.exec(document.title);
         var normalIcon = document.getElementById("favicon").cloneNode(true);
         if (document[hidden]) {
             if (t)
-                document.title = "["+((+t[1])+1)+ "] " + t[2];
+                document.title = "["+((+t[1])+n)+ "] " + t[2];
             else
-                document.title = "[1] " + document.title;
+                document.title = "["+n+"] " + document.title;
         } else {
             if (t) document.title = t[2];
         }
@@ -1415,6 +1415,7 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
             var data = request.responseText;
             if (/reply/.test(data)) {
                 var posts = parseDOMElements(data);
+                var n = posts.length;
                 var thr   = document.getElementById("thread-"+threadLocalId+"-"+board);
                 for (var i = 0; i < posts.length; i++) {
                     initOnePost(posts[i]);
@@ -1423,7 +1424,7 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
                 makeRefmap();
                 initPopupsCache();
                 refreshMathjax();
-                if (updateTitle) updateTitle();
+                if (updateTitle) updateTitle(n);
             } else if (data == "No such thread ") {
                 if (!nopopup) popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popup_message_display_time"));
             } else if (data == "No new posts ") {

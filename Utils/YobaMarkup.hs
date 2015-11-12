@@ -203,7 +203,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
-              spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
+              spanClass = if posterId == posterId' then "post-label-true" else "post-label-false"
               link'     = refHtml "" board parent p ("##" <> p) (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> p
@@ -216,7 +216,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
-              spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
+              spanClass = if posterId == posterId' then "post-label-true" else "post-label-false"
               link'     = refHtml "" board' parent p ("##/" <> board' <> "/" <> p) (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##" <> board' <> "/" <> p
@@ -229,7 +229,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
         Just (Entity pKey pVal) -> do
           let posterId' = postPosterId pVal
               parent    = pack $ show (postParent pVal)
-              spanClass = if posterId == posterId' then "pLabelTrue" else "pLabelFalse"
+              spanClass = if posterId == posterId' then "post-label-true" else "post-label-false"
               link'     = refHtml "" board parent t "##OP" (tshow $ fromSqlKey pKey)
           return $ acc <> "<span class='" <> spanClass <> "'>" <> link' <> "</span>"
         Nothing              -> return $ acc <> "##OP"

@@ -494,8 +494,8 @@ function clearFile(fileId) {
 }
 
 function closePostForm() {
-    document.getElementById('show-plain-form-bottom').style.display = 'block';
-    document.getElementById('show-plain-form').style.display = 'block';
+    var a = document.getElementById('show-plain-form-bottom'); if (a) a.style.display = 'block';
+    var b = document.getElementById('show-plain-form');        if (b) b.style.display = 'block';
     document.getElementById('post-form').style.display = 'none';
 }
 
@@ -664,6 +664,11 @@ function makePostFormData(postform) {
 }
 
 function initPostForm() {
+    var pi = document.querySelectorAll("input[type='password']")[0];
+    pi.oninput = function() {
+        set_cookie('password', pi.value);
+    };
+
     if (getItem("hideRules"))
          hideRules();
     else

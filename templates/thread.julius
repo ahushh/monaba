@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
             data: formData,
             onloadstart: function() {
                 pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
-                savePassword();
             },
             onloadBefore: function() {
                 refreshCaptcha();

@@ -8,7 +8,7 @@ $maybe banner <- mBanner
 $if not $ T.null summary
     <div id="board-summary">#{summary}
 $if hasAccessToNewThread
-    <div .show-plain-form>
+    <div #show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
 $with na <- not hasAccessToNewThread 
   <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>

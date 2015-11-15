@@ -503,7 +503,6 @@ function closePostForm() {
 function insert(text, parentId) {
     var parent = document.getElementById(parentId);
     if (!parent) {
-        console.log("insert(text,parentId): parentId = '"+parentId+"' not found");
         return;
     }
     var textarea = parent.querySelector('textarea');
@@ -513,10 +512,16 @@ function insert(text, parentId) {
     } else if(textarea.setSelectionRange) { // Firefox
         var start = textarea.selectionStart;
         var end   = textarea.selectionEnd;
-        textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
-        textarea.setSelectionRange(start + text.length, start + text.length);
+            console.log(start);
+            console.log(end);
+        if (start == 0 && end == 0) {
+            textarea.value += text;
+        } else {
+            textarea.value = textarea.value.substr(0, start) + text + textarea.value.substr(end);
+            textarea.setSelectionRange(start + text.length, start + text.length);
+        }
     } else {
-        textarea.value += text + " ";
+        textarea.value += text;
     }
     textarea.focus();
     // $(textarea).trigger('autosize.resize');

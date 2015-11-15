@@ -301,7 +301,6 @@ ul {
     width: 99%;
     height: 150px;
     min-height: 150px;
-    max-width: 900px;
 }
 .plain-post-form {
     border: 0px;

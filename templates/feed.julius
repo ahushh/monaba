@@ -80,6 +80,7 @@ function showQuickPostForm(postId) {
                     data: formData,
                     onloadstart: function() {
                         pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                        savePassword();
                     },
                     onloadBefore: function() {
                         refreshCaptcha();

@@ -83,7 +83,7 @@ function truncateThread(threadLocalId,board,scrollToThreadBottom) {
 }
 
 function showQuickPostForm(postId) {
-    var spf = document.getElementsByClassName('show-plain-form')[0];
+    var spf = document.getElementById('show-plain-form');
     if (spf) spf.style.display = 'block';
 
     var subjectInput = document.getElementsByClassName("subject-input")[0];
@@ -147,7 +147,7 @@ function showPlainPostForm() {
 
     var pf = document.getElementById('post-form');
     pf.className = "plain-post-form";
-    var spf = document.getElementsByClassName('show-plain-form')[0];
+    var spf = document.getElementById('show-plain-form');
     insertAfter(pf, spf);
     spf.style.display = 'none';
     pf.style.display = 'block';

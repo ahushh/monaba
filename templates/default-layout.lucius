@@ -166,8 +166,11 @@ hr {
     font-size: 75%;
     font-style: italic;
 }
-.show-plain-form {
+#show-plain-form {
     display:none;
+    text-align: center;
+}
+#show-plain-form-bottom {
     text-align: center;
 }
 .board-list {

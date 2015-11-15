@@ -19,7 +19,7 @@ $else
     <div #thread-header> _{MsgThreadHeaderNumber thread} [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 
 $if hasAccessToReply
-    <div .show-plain-form>
+    <div #show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
         ^{postFormWidget}
@@ -30,6 +30,11 @@ $if hasAccessToReply
         $forall (eReply, files) <- repliesAndFiles
           $if checkHellbanned (entityVal eReply) permissions posterId
             ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions}
+
+    $if hasAccessToReply
+        <div #show-plain-form-bottom>
+            [ <a onclick="showPlainPostForm(true);">_{MsgReply}</a> ]
+
     <i .icon-thread-refresh .fa .fa-refresh>
     <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
     [ <a class=get-new-posts-btn onclick=refreshThread('#{board}',#{show $ postLocalId $ entityVal eOpPost});>_{MsgGetNewPosts}</a>
@@ -51,6 +56,7 @@ $if hasAccessToReply
             <label :nopas:style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
         <input type=submit value=_{MsgDeleteBtn}>
+
 
 <div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
     ^{editFormWidget}

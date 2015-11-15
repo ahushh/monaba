@@ -494,9 +494,8 @@ function clearFile(fileId) {
 }
 
 function closePostForm() {
-    Array.prototype.forEach.call(document.querySelectorAll('.show-plain-form'), function(el, i) {
-        el.style.display = 'block';
-    });
+    document.getElementById('show-plain-form-bottom').style.display = 'block';
+    document.getElementById('show-plain-form').style.display = 'block';
     document.getElementById('post-form').style.display = 'none';
 }
 

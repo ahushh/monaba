@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             data: formData,
             onloadstart: function() {
                 pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                savePassword();
             },
             onloadBefore: function() {
                 refreshCaptcha();
@@ -47,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 function showQuickPostForm(postId) {
+    closePostForm();
     var p = document.getElementById(postId);
     var pf = document.getElementById('post-form');
     pf.className = "quick-post-form";
@@ -56,10 +58,10 @@ function showQuickPostForm(postId) {
     // document.getElementById("go-back-block").style.display = 'none';
 } 
 
-function showPlainPostForm() {
+function showPlainPostForm(bottom) {
     var pf = document.getElementById('post-form');
     pf.className = "plain-post-form";
-    var spf = document.getElementsByClassName('show-plain-form')[0];
+    var spf = document.getElementById(bottom ? 'show-plain-form-bottom' : 'show-plain-form');
     insertAfter(pf, spf);
     spf.style.display = 'none';
     pf.style.display = 'block';

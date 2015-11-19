@@ -42,22 +42,31 @@
                    L
                <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
                    A 
-               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h>
                ]
            $if elem ManageThreadP permissions
+               [
+               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h>
                <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows>
+               ] 
            $if elem ManageBanP permissions
                <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>B 
            $if elem ViewIPAndIDP permissions
-             <a title="_{MsgAdminSearchUID}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
-             /
-             <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
+             [
+             <a title="IP & UID" onclick="toggleInline( document.querySelector('#p#{sPostId} .id-container') )">IP & UID
+             <a title="IP & UID global" onclick="toggleInlineSelector('.id-container')">(G)
+             <span .id-container style="display:none">
+               : 
+               <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
+               /
+               <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
+             ]
            $if elem HellBanP permissions
+               [ 
                $if postHellbanned postVal
                   <i title=_{MsgPostIsVisibleOnlyForAuthor} title=_{MsgPostIsVisibleOnlyForAuthor} .fa .fa-eye-slash>
                <a title="_{MsgHellbanning}" onclick="toggleInline( document.querySelector('#p#{sPostId} .hb-container') )">HB
                <span .hb-container style="display:none">
-                 [ 
+                 : 
                  <a title="_{MsgHellbanPoster}" href=@{HellBanDoR (fromIntegral postId) "none" True}>Hellban
                  <a title="_{MsgHellbanHide}" href=@{HellBanDoR (fromIntegral postId) "one" False}>Hide
                  <a title="_{MsgHideAndHellban}" href=@{HellBanDoR (fromIntegral postId) "one" True}>Hide && Hellban
@@ -65,7 +74,7 @@
                  <a title="_{MsgHellbanShowPost}" href=@{HellBanUndoR (fromIntegral postId) "show"}>Show
                  <a title="_{MsgHellbanShowAndUnban}" href=@{HellBanUndoR (fromIntegral postId) "both"}>&&
                  <a title="_{MsgHellbanUnbanUser}" href=@{HellBanUndoR (fromIntegral postId) "unban"}>Unhellban
-                 ]
+               ]
        $if showParent
          &nbsp;
          $if isThread

@@ -1687,6 +1687,16 @@ function toggleBlock(el) {
     }
 }
 
+function toggleInlineSelector(sel) {
+    Array.prototype.forEach.call(document.querySelectorAll(sel), function(el,i) {
+        if (el.style.display == 'none') {
+            el.style.display = 'inline-block';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+}
+
 function toggleInline(el) {
     if (el.style.display == 'none') {
         el.style.display = 'inline-block';

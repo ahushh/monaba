@@ -114,7 +114,9 @@ if (isEventSourceSupported()) {
                     action: "@{AjaxBoardStatsReadR}",
                     onload: function(request) {
                         boardList.removeChild(unreadElem);
-                        updateStats();
+                        var ns = document.querySelectorAll('.new-posts-number');
+                        for (var i = 0; i < ns.length; i++)
+                            removeElement( ns[i] );
                     }
                 });
             };
@@ -157,7 +159,8 @@ if (isEventSourceSupported()) {
            updateUnread();
        });
     } else {
-       window.setInterval(updateStats, getConfig("board_stats_update"));
+        if (getConfig("board_stats_update"))
+            window.setInterval(updateStats, getConfig("board_stats_update"));
     }
     // Clean new posts counter on /feed/ refreshing
     var refreshFeed = document.getElementById("refresh-feed");
@@ -170,7 +173,6 @@ if (isEventSourceSupported()) {
                     action: "@{AjaxBoardStatsReadR}",
                     onload: function(request) {
                         boardList.removeChild(unreadElem);
-                        updateStats();
                     }
                 });
             }

@@ -100,6 +100,20 @@ if (isEventSourceSupported()) {
 // New posts counter
 //-----------------------------------------------------------------
 (function() {
+    var readStats = function() {
+                httpRequest({
+                    action: "@{AjaxBoardStatsReadR}",
+                    onload: function(request) {
+                        var unreadElem = document.getElementById("mark-as-read");
+                        var boardList = document.getElementsByClassName("board-list")[0];
+                        boardList.removeChild(unreadElem);
+                        var ns = document.querySelectorAll('.new-posts-number');
+                        for (var i = 0; i < ns.length; i++)
+                            removeElement( ns[i] );
+                    }
+                });
+            };
+
     var updateUnread = function() {
         var unreadElem = document.getElementById("mark-as-read");
         if (unreadElem == null) {
@@ -109,17 +123,7 @@ if (isEventSourceSupported()) {
             var i = document.createElement("i");
             i.title = #{toJSON $ msgrender MsgMarkAsRead};
             i.className = "fa fa-check-square-o";
-            i.onclick = function() {
-                httpRequest({
-                    action: "@{AjaxBoardStatsReadR}",
-                    onload: function(request) {
-                        boardList.removeChild(unreadElem);
-                        var ns = document.querySelectorAll('.new-posts-number');
-                        for (var i = 0; i < ns.length; i++)
-                            removeElement( ns[i] );
-                    }
-                });
-            };
+            i.onclick = readStats;
             unreadElem.appendChild(i);
             boardList.appendChild(unreadElem);
         }
@@ -169,12 +173,7 @@ if (isEventSourceSupported()) {
             var unreadElem = document.getElementById("mark-as-read");
             var boardList = document.getElementsByClassName("board-list")[0];
             if (unreadElem != null) {
-                httpRequest({
-                    action: "@{AjaxBoardStatsReadR}",
-                    onload: function(request) {
-                        boardList.removeChild(unreadElem);
-                    }
-                });
+                readStats();
             }
         });
     }

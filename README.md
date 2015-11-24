@@ -91,7 +91,7 @@ Sample list of required packages for debian (probably outdated and not full):
 
     cabal update
     cabal sandbox init
-    cabal install yesod-bin --force-reinstall && cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
+    cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
     cabal clean && cabal configure && cabal build # and this too
 
 *If you get an error during installation of dependencies*

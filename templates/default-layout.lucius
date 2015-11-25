@@ -22,6 +22,9 @@ a {
 hr {
     clear: left;
 }
+pre {
+    overflow-x: auto;
+}
 .online-counter {
     position: fixed;
     bottom: 0;

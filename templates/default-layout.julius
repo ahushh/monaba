@@ -707,19 +707,20 @@ function initPostForm() {
 }
 
 function initDragAndDrop(postform) {
-    postform.addEventListener("dragenter", function(e) {
+    var af = postform.querySelector("#attach-file");
+    af.addEventListener("dragenter", function(e) {
         addClass(postform, "drag-here");
         e.stopPropagation();
         e.preventDefault();
     }, false);
-    postform.addEventListener("dragover", function(e) {
+    af.addEventListener("dragover", function(e) {
         e.stopPropagation();
         e.preventDefault();
     }, false);
-    postform.addEventListener("dragleave", function(e) {
+    af.addEventListener("dragleave", function(e) {
         removeClass(postform, "drag-here");
     }, false);
-    postform.ondrop = function(e) {
+    af.ondrop = function(e) {
         removeClass(postform, "drag-here");
         e.stopPropagation();
         e.preventDefault();

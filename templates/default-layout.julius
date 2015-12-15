@@ -670,6 +670,7 @@ function makePostFormData(postform) {
 }
 
 function initPostForm() {
+    var pf = document.getElementById("post-form");
     var pi = document.querySelectorAll("input[type='password']")[0];
     pi.oninput = function() {
         set_cookie('password', pi.value);
@@ -704,6 +705,11 @@ function initPostForm() {
         };
         fInput.click();
     };
+    var textarea = pf.querySelector("textarea");
+    textarea.addEventListener('keydown', function(e) {
+        if (e.keyCode == 13 && e.shiftKey)
+            pf.querySelector("input[type='submit']").click();
+    });
 }
 
 function initDragAndDrop(postform) {

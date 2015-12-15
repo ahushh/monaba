@@ -359,3 +359,17 @@ ul {
 .new-posts-number {
     font-size: 0.8em;
 }
+ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+.dropdown-menu li ul {
+    display: none;
+}
+.dropdown-menu li:hover ul {
+    display: inline-block;
+    position: absolute;
+    font-weight: bold;
+}

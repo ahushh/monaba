@@ -90,6 +90,21 @@
                 <div class=#{c}>
                   <div .file-name>
                       <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
+                      $if attachedfileFiletype file == FileImage
+                        <ul .dropdown-menu>
+                          <li>
+                            <i title=_{MsgImageSource} .fa .fa-search>
+                            <ul>
+                              <li>
+                                <a title=Google target=_blank href="//google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
+                              <li>
+                                <a title=Yandex target=_blank href="//yandex.ru/images/search?rpt=imageview&img_url=#{appRoot}/#{up}">Y
+                              <li>
+                                <a title=TinEye target=_blank href="//tineye.com/search/?url=#{appRoot}/#{up}">T
+                              <li>
+                                <a title=SauceNAO target=_blank href="//saucenao.com/search.php?url=#{appRoot}/#{up}">S
+                              <li>
+                                <a title=Iqdb target=_blank href="//iqdb.org/?url=#{appRoot}/#{up}">Iq
                   <div .file-info> #{fi}
                   $if attachedfileThumbWidth file == -1
                       <img src="#{tp}" .thumb title="#{fi}">

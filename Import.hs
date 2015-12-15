@@ -105,7 +105,7 @@ addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) 
 -- Files
 -------------------------------------------------------------------------------------------------------------------
 thumbFileTypes :: [FileType]
-thumbFileTypes = [FileVideo, FileImage, FileSource, FileDoc]
+thumbFileTypes = [FileVideo, FileImage] --, FileSource, FileDoc] TODO: thumbnails for docs and source files
 
 sanitizeFileName :: String -> String
 sanitizeFileName = filter (\x -> x `notElem` ("\\/"::String) && isPrint x)

@@ -87,15 +87,14 @@ insertFiles files thumbSize postId = do
 saveFile :: FileInfo -> String -> Handler FilePath
 saveFile file hashsum = do
   AppSettings{..} <- appSettings <$> getYesod
-  -- let fn = sanitizeFileName $ unpack $ fileName file
-  let fn = unpack $ fileName file
+  let fn = sanitizeFileName $ unpack $ fileName file
   n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
   dirExists'  <- liftIO $ doesDirectoryExist appUploadDir
   unless dirExists' $ liftIO $ createDirectory appUploadDir
   dirExists  <- liftIO $ doesDirectoryExist (appUploadDir </> show n)
   unless dirExists $ liftIO $ createDirectory (appUploadDir </> show n)
   files <- liftIO $ getDirectoryContents (appUploadDir </> show n)
-  let sameName = (>0) $ length $ filter ((==) $ unpack $ fileName file) files
+  let sameName = (>0) $ length $ filter ((==) fn) files
   if sameName
     then do
       runDB $ updateWhere ([]::[Filter Storage]) [StorageUploadDir +=. 1]
@@ -231,8 +230,8 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                Bool            ->  -- ^ Animated thumbnails
                IO ImageResolution -- ^ Width and height of the destination file
 makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs = do
-  unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory </> hashsum)) $
-    createDirectory (appUploadDir </> thumbDirectory </> hashsum)
+  unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory)) $
+    createDirectory (appUploadDir </> thumbDirectory)
   if height > thumbSize || width > thumbSize
     then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs
     else copyFile filepath thumbpath >> return (width, height)

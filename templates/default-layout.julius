@@ -707,7 +707,7 @@ function initPostForm() {
     };
     var textarea = pf.querySelector("textarea");
     textarea.addEventListener('keydown', function(e) {
-        if (e.keyCode == 13 && e.shiftKey)
+        if (e.keyCode == 13 && e.ctrlKey)
             pf.querySelector("input[type='submit']").click();
     });
 }
@@ -828,7 +828,12 @@ function showEditForm(postId) {
     var ps = document.querySelector('#edit-form input[type=password]');
     var hd = document.querySelector('#edit-form input[type=hidden]');
     var pt = document.querySelector('#edit-form input[type=number]');
-    document.getElementById('edit-button').onclick = function() {
+    var bt = document.getElementById('edit-button');
+    ta.addEventListener('keydown', function(e) {
+        if (e.keyCode == 13 && e.ctrlKey)
+            bt.click();
+    });
+    bt.onclick = function() {
         var obj = {};
         obj[ ta.name ] = ta.value;
         obj[ ps.name ] = ps.value;

@@ -48,7 +48,8 @@ $if hasAccessToReply
           <input type=checkbox name=onlyfiles value=1>
         $if opModeration
             <label>
-                <input type=checkbox name=opmoderation value=#{show $ fromSqlKey $ entityKey eOpPost}>_{MsgOpModeration}
+                _{MsgOpModeration}
+                <input type=checkbox name=opmoderation value=#{show $ fromSqlKey $ entityKey eOpPost}>
             $if not noDeletedPosts
                 [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a>
                 \ ]

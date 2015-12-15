@@ -8,6 +8,22 @@ Array.prototype.contains = function(obj) {
     return false;
 };
 //-----------------------------------------------------------------
+// Top/bottom buttons
+//-----------------------------------------------------------------
+(function() {
+    var buttons = document.createElement("div");
+    buttons.className = "scroll-buttons";
+    var top = document.createElement("i");
+    top.className = 'fa fa-chevron-up scroll-top';
+    top.onclick = function() { scroll(0,0); };
+    var bottom = document.createElement("i");
+    bottom.className = 'fa fa-chevron-down scroll-bottom';
+    bottom.onclick = function() { scroll(0,document.body.scrollHeight); };
+    buttons.appendChild(top);
+    buttons.appendChild(bottom);
+    document.body.appendChild(buttons);
+})();
+//-----------------------------------------------------------------
 // Favicon blinking and title updating
 //-----------------------------------------------------------------
 function getUpdateTitle() {

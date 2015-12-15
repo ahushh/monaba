@@ -373,3 +373,14 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     position: absolute;
     font-weight: bold;
 }
+.scroll-buttons {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 3px;
+}
+.scroll-top, .scroll-bottom {
+    display: block;
+    font-size: 2em;
+                 
+}

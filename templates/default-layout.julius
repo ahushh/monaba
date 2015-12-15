@@ -915,6 +915,17 @@ function addVideoPlayer(post) {
             thumb.style.display = 'none';
             video.appendChild(source);
             thumb.parentNode.appendChild( video );
+
+            var close = document.createElement("a");
+            close.innerHTML = #{toJSON $ msgrender MsgCloseIcon}+" ✖";
+            close.style.display = 'block';
+            close.style['text-align'] = 'right';
+            close.onclick = function() {
+                thumb.style.display = 'block';
+                video.parentNode.removeChild(video);
+                close.parentNode.removeChild(close);
+            };
+            insertAfter(close, video);
         };
     });
 }

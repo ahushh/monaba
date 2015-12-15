@@ -1,0 +1,158 @@
+#message {
+	font-size:1.5em;
+	color:#1de9b6;
+	border:none;
+}
+#home-content img,.banner {
+	display:none;
+}
+html,body {
+	background-attachment:fixed;
+	background-image:url(https://i.imgur.com/nGfpIaA.png);
+	background-size:contain;
+	background-position:right;
+	background-repeat:no-repeat;
+	background-color:#009688;
+	color:#e0f2f1;
+	font-family:Century Gothic,sans-serif;
+	font-size:1em;
+	padding:10px;
+}
+form {
+	font-size:0.9em;
+}
+textarea,input,select {
+	border:none;
+	background-color:#00796b;
+	color:#e0f2f1;
+	font-family:Century Gothic,sans-serif;
+	font-size:small;
+}
+input[type=submit]:hover {
+	background-color:#00796b;
+}
+input[type=submit] {
+	border:none;
+}
+.time {
+	font-size:0.8em;
+	color:#e0f2f1;
+}
+a {
+	color:#e0f2f1;
+	padding:0px;
+}
+a:hover {
+	color:#1de9b6;
+}
+footer {
+	font-family:Century Gothic,sans-serif;
+	font-size:12px;
+	text-align:center;
+}
+.reflink {
+	font-size:85%;
+	font-weight:bold;
+}
+.file-info {
+	color:#e0f2f1;
+	font-size:0.8em;
+	text-decoration:none;
+}
+.file-name {
+	font-size:0.8em;
+}
+.reply-post,.feed .op-post {
+	background-color:#00796b;
+	margin:3px;
+	padding:5px;
+}
+.popup-post {
+	background-color:#00796b;
+	margin:3px;
+	padding:5px;
+}
+.reply-post.highlighted-post,.feed .op-post.highlighted-post {
+	background-color:#00695c;
+}
+.op-post.highlighted-post {
+	background-color:#00796b;
+}
+.thread {
+	margin:2px;
+	padding:10px 2px;
+}
+.reply-title {
+	color:#18ffff;
+	font-size:1em;
+	font-weight:bold;
+}
+hr {
+	border:none;
+}
+table {
+	border-style:none;
+}
+table td {
+	border-style:none;
+}
+#delete-container {
+	text-align:right;
+}
+pre {
+	background-color:#00695c;
+	padding:10px;
+}
+.board-category {
+	font-weight:bold;
+}
+#news-title {
+	font-weight:bold;
+}
+.popup_message {
+	background-color:#00796b;
+	color:#e0f2f1;
+}
+.quick-post-form {
+	padding:3px;
+}
+.hist-msg {
+	background-color:#00796b;
+	margin:3px;
+	padding:5px;
+}
+.admin-navbar {
+	background-color:#00796b;
+	padding:3px;
+	margin-bottom:10px;
+}
+.show-plain-form {
+	margin-bottom:10px;
+}
+.expand-post {
+	color:#e0f2f1;
+}
+.quote {
+	color:#aeea00!important;
+}
+.symbol-counter {
+	color:#aeea00!important;
+}
+.file-info {
+	display:none;
+}
+#main-image {
+	opacity:0.4;
+}
+.spoiler {
+	color:#00695c!important;
+	background-color:#00695c!important;
+}
+.op-post .spoiler {
+	color:#00796b!important;
+	background-color:#00796b!important;
+}
+.spoiler:hover {
+	color:#e0f2f1!important;
+	background-color:transparent!important;
+}

@@ -96,7 +96,7 @@
                             <i title=_{MsgImageSource} .fa .fa-search>
                             <ul>
                               <li>
-                                <a title=Google target=_blank href="//google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
+                                <a title=Google target=_blank href="//www.google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
                               <li>
                                 <a title=Yandex target=_blank href="//yandex.ru/images/search?rpt=imageview&img_url=#{appRoot}/#{up}">Y
                               <li>

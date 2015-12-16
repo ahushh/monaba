@@ -268,3 +268,6 @@ pre {
     color: #181818;
     background-color: #181818;
 }
+.dropdown-menu ul li {
+    background-color: #050505;
+}

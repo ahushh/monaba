@@ -134,3 +134,6 @@ input::-moz-placeholder {
 footer {
    text-align:center;
 }
+.dropdown-menu ul li {
+    background-color: #252525;
+}

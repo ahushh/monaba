@@ -215,3 +215,7 @@ pre {
    border: 1px solid grey;
    padding: 0 3px;
 }
+
+.dropdown-menu ul li {
+    background-color: #f0e0d6;
+}

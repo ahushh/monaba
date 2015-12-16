@@ -156,3 +156,6 @@ pre {
 	color:#e0f2f1!important;
 	background-color:transparent!important;
 }
+.dropdown-menu ul li {
+    background-color: #00796b;
+}

@@ -366,13 +366,18 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     display: inline;
 }
 .dropdown-menu li ul {
-    display: none;
-}
-.dropdown-menu li:hover ul {
-    display: inline-block;
     position: absolute;
-    font-weight: bold;
+    visibility: none;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
 }
+.dropdown-menu:hover li ul {
+    font-size: 1.1em;
+    font-weight: bold;
+    visibility: visible;
+    opacity: 1;
+}
+
 .scroll-buttons {
     position: fixed;
     top: 50%;

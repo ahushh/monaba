@@ -1,7 +1,10 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Handler.Ajax where
 
 import           Import
 import qualified Data.Text as T (concat)
+import qualified Data.Map as M
+import           Utils.YobaMarkup   (doYobaMarkup)
 ---------------------------------------------------------------------------------------------------------
 -- Get multiple posts
 ---------------------------------------------------------------------------------------------------------
@@ -185,3 +188,14 @@ getAjaxBoardStatsReadR = do
   selectRep $ do
     provideRep $ bareLayout [whamlet|ok|]
     provideJson $ object [("ok","marked as read")]
+---------------------------------------------------------------------------------------------------------
+-- Post preview
+---------------------------------------------------------------------------------------------------------
+postAjaxPostPreviewR :: Handler Html
+postAjaxPostPreviewR = do
+  value <- requireJsonBody
+  let message = Textarea <$> M.lookup ("msg" :: Text) value
+      board   = fromMaybe "error " $ M.lookup ("board" :: Text) value
+      thread  = maybe (0::Int) tread $ M.lookup ("thread" :: Text) value
+  messageFormatted <- doYobaMarkup message board thread
+  bareLayout [whamlet|#{preEscapedToHtml $ unTextarea messageFormatted}|]

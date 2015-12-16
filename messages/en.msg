@@ -396,3 +396,4 @@ DisplayOnlyHellbanned: Display only hellbanned posts
 DisplayAllPosts: Display all posts
 ######################################################################################
 ImageSource: Source
+PostPreview: Preview

@@ -5,6 +5,9 @@
   ^{fvInput passwordView}#
   ^{fvInput subjectView}#
   <input type=submit value=_{MsgSubmitBtn}>#
+  &nbsp;
+  <a>
+    <i title="_{MsgPostPreview}" .fa .fa-eye .preview-toggle onclick="previewToggle()">
   ^{fvInput messageView}
   <div .markup-buttons>
        <a onclick="insertTag('[b]','[/b]','post-form');countSymbols('post-form')">

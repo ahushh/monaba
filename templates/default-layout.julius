@@ -828,6 +828,41 @@ function hideRules() {
     document.getElementsByClassName("show-rules")[0].style.display = 'inline';
     document.getElementById("board-info").style.display = 'none';
 }
+
+function previewToggle() {
+    var postform = document.getElementById('post-form');
+    var textarea = postform.querySelector("textarea");
+    var preview = document.createElement("div");
+    preview.id = "post-preview";
+    preview.style.height = textarea.offsetHeight + 'px';
+    preview.style.width = textarea.offsetWidth + 'px';
+
+    if (textarea.style.display == 'none') {
+        textarea.style.display = 'inline';
+        textarea.parentNode.removeChild( document.getElementById('post-preview') );
+        return;
+    }
+
+    var thread = 0, board;
+    var action = postform.action.split('/');
+    if (postform.className == 'plain-post-form') {
+        board = action[ action.length - 1 ];
+    } else {
+        thread = action[ action.length - 1 ];
+        board = action[ action.length - 2 ];
+    }
+    httpRequest({
+        method: 'POST',
+        action: "@{AjaxPostPreviewR}",
+        headers: { 'Accept': 'application/json' },
+        data: JSON.stringify({ board: board, thread: thread.toString(), msg: textarea.value }),
+        onloadOk: function(request) {
+            preview.innerHTML = request.responseText;
+            insertAfter(preview, textarea);
+            textarea.style.display = 'none';
+        }
+    });
+}
 //-----------------------------------------------------------------
 // Edit form
 //-----------------------------------------------------------------

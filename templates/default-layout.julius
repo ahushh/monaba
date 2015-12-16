@@ -235,6 +235,7 @@ function loadConfig() {
     setConfigIfNull("css_side_margin", 0);
     setConfigIfNull("css_hide_files_names", false);
     setConfigIfNull("css_hide_files_info", false);
+    setConfigIfNull("css_custom", "");
 }
 
 function resetConfig() {
@@ -264,6 +265,7 @@ function resetConfig() {
     setConfig("css_side_margin", 0);
     setConfig("css_hide_files_names", false);
     setConfig("css_hide_files_info", false);
+    setConfig("css_custom", "");
 }
 
 function applyCSSSettings() {
@@ -290,6 +292,13 @@ function applyCSSSettings() {
     if (hide_files_info) {
         style.sheet.insertRule(".file-info { display: none; }", index);
         index++;
+    }
+    var custom = getConfig("css_custom");
+    if (custom) {
+        var css = document.createElement("style");
+        css.type = "text/css";
+        css.innerHTML = custom;
+        document.body.appendChild(css);
     }
 }
 

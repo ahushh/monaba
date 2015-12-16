@@ -33,14 +33,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["number", "css_side_margin"],
                 ["checkbox", "css_hide_files_names"],
                 ["checkbox", "css_hide_files_info"],
+                ["text", "css_custom"],
                ];
     opts.forEach(function(x, i) {
         var tr  = document.createElement("tr");
         var td1 = document.createElement("td");
         var td2 = document.createElement("td");
-        var input = document.createElement("input");
-        var opt = "cnf_"+x[1];
         var type = x[0];
+        var input = type == 'text' ? document.createElement('textarea') : document.createElement("input");
+        var opt = "cnf_"+x[1];
         td1.innerHTML = x[1];
         var e = function() { setItem(opt, type == "checkbox" ? this.checked : this.value) };
         input.oninput = e; input.onchange = e;

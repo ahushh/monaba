@@ -22,7 +22,7 @@ function expandThread(board, threadLocalId) {
     var newReplies = [];
     var origReplies = thread.getElementsByClassName("reply-post");
     for (var i = 0; i < origReplies.length; i++)
-        newReplies.push( origReplies[i].cloneNode(true) );
+        newReplies.push( origReplies[i] );
     Monaba['expThreads'][threadLocalId] = newReplies;
 
     toggleInline(ajxl);

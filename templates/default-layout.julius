@@ -1426,6 +1426,7 @@ function cachePopupPost(el) {
 
     post.onclick = function() { post.style['z-index'] = Monaba.zindex + 1; Monaba.zindex += 1; };
     Monaba.postCache[postId] = post;
+    initOnePost(post);
     return post;
 }
 

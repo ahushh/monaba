@@ -538,8 +538,6 @@ function insert(text, parentId) {
     } else if(textarea.setSelectionRange) { // Firefox
         var start = textarea.selectionStart;
         var end   = textarea.selectionEnd;
-            console.log(start);
-            console.log(end);
         if (start == 0 && end == 0) {
             textarea.value += text;
         } else {
@@ -1096,7 +1094,6 @@ function addYoutubeVideoPlayer(post) {
             request.open("GET","https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key="+Monaba.youtubeAPIKey+"&part=snippet,contentDetails,statistics,status",true);
             request.onload = function() {
                 var data = JSON.parse(request.responseText);
-                console.log(data);
                 addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.items[0].snippet.thumbnails.high.width,
                                     height: getConfig("url_video_height") || data.items[0].snippet.thumbnails.high.height,
                                     title:  getConfig("youtube_load_titles") && data ? data.items[0].snippet.title : url,

@@ -24,7 +24,7 @@ Features
 * YouTube, vimeo, coub embedding
 * Works fine with JavaScript disabled
 * Administration
-    - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning)
+    - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session
     - Banning by IP
     - Thread moderation by OP
     - Flexible account system with customizable groups and permissions
@@ -36,10 +36,11 @@ Features
 
 Dependencies
 ------
+* Nginx for serving uploaded files
 * Postgresql >= 9.1
 * PHP5 to use GeSHi for code highlighting
 * Imagemagick library
-* ffmpeg/libav
+* ffmpeg/libav (thumbnails for webm)
 * exiftool
 
 Required for builiding from source:
@@ -77,37 +78,26 @@ Set your path to GeSHi in `highlight.php`
 
 ## Using binary packages
 
-Download dist.7z of the latest verions of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
+Download archive of the latest verion of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
 
-If it's not working or outdated, try manual build.
+If it's not working or outdated, try to build from source.
 
-## Building manually
+## Building from source
 
 Sample list of required packages for debian (probably outdated and not full):
 
     apt-get install ghc cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev
 
-### Building executable files
+### Execute the following commands
 
     cabal update
     cabal sandbox init
-    cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
-    cabal clean && cabal configure && cabal build # and this too
-
-*If you get an error during installation of dependencies*
-
-    Data/Digest/OpenSSL/MD5.hs:49:12: Not in scope: ‘unsafePerformIO’
-    cabal: Error: some packages failed to install:
-    nano-md5-0.1.2 failed during the building phase. The exception was:
-    ExitFailure 1
-
-*this should help*
-
     cabal fetch nano-md5
     tar -zxvf ~/.cabal/packages/hackage.haskell.org/nano-md5/0.1.2/nano-md5-0.1.2.tar.gz
     patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < extra/MD5.hs.patch
     cabal sandbox add-source nano-md5-0.1.2
-    cabal install --only-dependencies
+    cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
+    cabal clean && cabal configure && cabal build # and this too
 
 ## Setup database
 

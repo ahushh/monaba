@@ -21,3 +21,4 @@ config/client_session_key.aes
 .hsenv*
 .ghci
 yesod-devel/
+nano-md5-0.1.2

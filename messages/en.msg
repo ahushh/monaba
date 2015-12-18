@@ -326,6 +326,7 @@ MarkAsRead: Mark as read
 HideThread: Hide thread
 ThreadIsHidden: Thread is hidden.
 HiddenThreads: Hidden threads
+NoHiddenThreads: No hidden threads
 ShowThread: Show thread
 
 ######################################################################################

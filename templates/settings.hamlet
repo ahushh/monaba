@@ -6,9 +6,11 @@
       <input type=submit value=_{MsgApply}>
       <span style=display:none #settings-applied>
   <div #hidden-threads-list>
-    $if not $ null hiddenThreads
-      <div #hidden-threads-title>
+    <div #hidden-threads-title>
+      $if not $ null hiddenThreads
         _{MsgHiddenThreads}:
+      $else
+        _{MsgNoHiddenThreads}
     $forall (b, ths) <- hiddenThreads
       <div .hidden-threads-board #hidden-threads-board-#{b}>
         <div #hidden-thread-board-title>

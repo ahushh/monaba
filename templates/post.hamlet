@@ -82,12 +82,12 @@
          $else
              <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>#{postParentTitle postVal} >>/#{board}/#{sThreadLocalId}
 
-    $forall Entity _ file <- eFiles
+    $forall Entity fileKey file <- eFiles
        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
           $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
             $with up <- attachedfilePath file
               $with fi <- makeFileInfo file
-                <div class=#{c}>
+                <div class=#{c} id="file-#{show $ fromIntegral $ fromSqlKey fileKey}">
                   <div .file-name>
                       <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
                       $if attachedfileFiletype file == FileImage
@@ -105,21 +105,54 @@
                                 <a title=SauceNAO target=_blank href="//saucenao.com/search.php?url=#{appRoot}/#{up}">S
                               <li>
                                 <a title=Iqdb target=_blank href="//iqdb.org/?url=#{appRoot}/#{up}">Iq
-                  <div .file-info> #{fi}
-                  $if attachedfileThumbWidth file == -1
-                      <img src="#{tp}" .thumb title="#{fi}">
-                  $elseif attachedfileFiletype file == FileVideo
-                      <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
-                  $elseif attachedfileFiletype file == FileAudio
-                      <audio controls>
-                        <source src="/#{up}">
-                      <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                  $elseif attachedfileFiletype file == FileImage
-                      <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                  $elseif attachedfileFiletype file == FileFlash
-                      <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
-                  $else
-                      <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                  <div .file-info>
+                    #{fi}
+                  $if elem ChangeFileRatingP permissions
+                    $with key <- fromIntegral $ fromSqlKey fileKey
+                     <div .rating-management>
+                       $with fRating <- tread (attachedfileRating file)
+                         $if fRating == SFW
+                             SFW&nbsp;
+                         $else
+                             <a href=@{ManageCensorshipR key SFW}>SFW
+                         $if fRating == R15
+                             R-15&nbsp;
+                         $else
+                             <a href=@{ManageCensorshipR key R15}>R-15
+                         $if fRating == R18
+                             R-18&nbsp;
+                         $else
+                             <a href=@{ManageCensorshipR key R18}>R-18
+                         $if fRating == R18G
+                             R-18G&nbsp;
+                         $else
+                             <a href=@{ManageCensorshipR key R18G}>R-18G
+                  $with fRating <- tread (attachedfileRating file)
+                    $if fRating > rating
+                      $case fRating
+                        $of R15
+                          <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                        $of R18
+                          <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                        $of R18G
+                          <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                        $of SFW
+                          Suppress warnings.
+                    $else
+                      $if attachedfileThumbWidth file == -1
+                          <img src="#{tp}" .thumb title="#{fi}">
+                      $elseif attachedfileFiletype file == FileVideo
+                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileAudio
+                          <audio controls>
+                            <source src="/#{up}">
+                          <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileImage
+                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileFlash
+                          <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
+                      $else
+                          <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
     $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
         <div .message>#{m}
     $maybe lm <- postLastModified postVal

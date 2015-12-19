@@ -21,13 +21,14 @@ import           System.Posix.Files              (createSymbolicLink, getFileSta
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
-               Int      -> -- ^ Thumbnail height and width
-               Key Post -> -- ^ Post key
-               Handler ()
-insertFiles []    _           _    = return ()
-insertFiles files thumbSize postId = do
+              [FormResult Censorship]       -> -- ^ Censorship ratings
+              Int      -> -- ^ Thumbnail height and width
+              Key Post -> -- ^ Post key
+              Handler ()
+insertFiles []    _       _         _      = return ()
+insertFiles files ratings thumbSize postId = do
   AppSettings{..} <- appSettings <$> getYesod
-  forM_ files (\formfile ->
+  forM_ (zip files ratings) (\(formfile, rating) ->
     case formfile of
       FormSuccess (Just f) -> do
         hashsum    <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
@@ -47,6 +48,7 @@ insertFiles files thumbSize postId = do
                                     , attachedfileThumbWidth  = 0
                                     , attachedfileThumbHeight = 0
                                     , attachedfileInfo        = ""
+                                    , attachedfileRating      = (\(FormSuccess r) -> tshow r) rating
                                     }
         case filetype of
           FileImage -> do

@@ -87,6 +87,7 @@ Attachedfile json
     thumbWidth   Int      
     thumbHeight  Int      
     info         String
+    rating       Text default='SFW'
 Ban
     ip           Text
     reason       Text

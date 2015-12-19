@@ -446,8 +446,17 @@ function refreshCaptcha() {
 }
 
 function clearPostFormFields() {
+    document.getElementById("attach-file").className = "";
     var at = document.getElementById("attachment-thumbs");
+    var inputsContainer = document.getElementById("post-form-inputs");
+    var ratingsInput = at.querySelectorAll(".rating-input");
+    for (var i = ratingsInput.length-1; i >= 0; i--) {
+        ratingsInput[i].dataset.used = "0";
+        ratingsInput[i].style.display = 'none';
+        insertAfter(ratingsInput[i], at);
+    }
     while (at.firstChild) at.removeChild(at.firstChild);
+
     var postform = document.getElementById('post-form');
     var inputs = postform.getElementsByTagName("input");    
     for (var i = 0; i < inputs.length; i++) {
@@ -685,10 +694,16 @@ function makePostFormData(postform) {
             formData.append(inputs[i].name, inputs[i].value);
         }
     }
+    var ratingInputs = postform.getElementsByClassName("rating-input");
+    for (var i = 0; i < ratingInputs.length; i++) {
+        if (ratingInputs[i].dataset.used == "1") {
+            formData.append(ratingInputs[i].name, ratingInputs[i].value);
+        }
+    }
     var textarea = postform.getElementsByTagName("textarea")[0];
     formData.append(textarea.name, textarea.value);
-    var select = postform.getElementsByTagName("select")[0];
-    formData.append(select.name, 1);
+    var goback = postform.getElementsByClassName("goback-input")[0];
+    formData.append(goback.name, goback.value);
     return formData;
 }
 
@@ -709,22 +724,33 @@ function initPostForm() {
         fs[i].value = '';
     }
     var af = document.getElementById("attach-file");
-
     af.onclick = function() {
         var fsNodeList = document.querySelectorAll("input[type='file']");
         var fs = [];
         for (var i = 0; i < fsNodeList.length; i++)
             if (!fsNodeList[i].value) fs.push(fsNodeList[i]);
-        if (!fs.length) return;
+        if (!fs.length) {
+            console.log("No free file inputs left");
+            return;
+        }
         if (fs.length == 1) {
             af.className = "inactive";
         }            
         var fInput = fs[0];
+        var rsNodeList = document.querySelectorAll("select.rating-input");
+        var rs = [];
+        for (var i = 0; i < rsNodeList.length; i++)
+            if (rsNodeList[i].dataset.used == "0") rs.push(rsNodeList[i]);
+        if (!rs.length) {
+            console.log("No free rating inputs left");
+            return;
+        }
+        var rInput = rs[0];
         fInput.onchange = function(event) {
             event.preventDefault();
             var files = event.target.files;
             if (files.length)
-                handleFile(files[0], fInput);
+                handleFile(files[0], fInput, rInput);
         };
         fInput.click();
     };
@@ -769,12 +795,17 @@ function initDragAndDrop(postform) {
         //     newFiles = FileListReadOnly;
         //     fs[i].files = newFiles;
         // }
-        handleFile(files[0], fs[0]);
+        var rsNodeList = document.querySelectorAll("select.rating-input");
+        var rs = [];
+        for (var i = 0; i < fsNodeList.length; i++)
+            if (!rsNodeList[i].dataset.used) rs.push(fsNodeList[i]);
+        if (!rs.length) return;
+        handleFile(files[0], fs[0],rs[0]);
         fs[0].files = files;
     };
 }
 
-function handleFile(file, fInput) {
+function handleFile(file, fInput, rInput) {
     var fts = document.getElementById("attachment-thumbs");
     var bytes = file.size;
     var fSize;
@@ -783,25 +814,26 @@ function handleFile(file, fInput) {
     }
     if (window.FileReader) {
         var div = document.createElement('div');
-        div.onclick = function() {
-            fInput.value = '';
-            fts.removeChild(div);
-            document.getElementById("attach-file").className = "";
-        };
-        div.onmouseover = function() {
-            img.style.border = '1px solid red'
-            img.style.margin = '0';
-        };
-        div.onmouseout = function() {
-            img.style.border = '';
-            img.style.margin = '1px';
-        };
         div.className = "attachment-thumb";
 
         var img = new Image();
         img.title = file.name + ", " + fSize;
         img.file = file;
+        img.onclick = function() {
+            fInput.value = '';
+            rInput.dataset.used = "0";
+            rInput.style.display = "none";
+            rInput.value = 1;
+            insertAfter(rInput, fts);
+            document.getElementById("attach-file").className = "";
+            fts.removeChild(div);
+        };
         div.appendChild(img);
+
+        rInput.dataset.used = "1";
+        rInput.style.display = "block";
+        div.appendChild(rInput);
+
         fts.appendChild(div);
         if (file.type.match('image.*')) {
             var reader = new FileReader();

@@ -102,6 +102,7 @@ function showQuickPostForm(postId) {
     var threadLocalId = /thread-(\d+)/.exec( thread.id )[1];
     var board = postform.dataset.board;
     postform.onsubmit = function(event) {
+        event.preventDefault();
         var formData = makePostFormData(postform);
         var pmsg;
         httpRequest({
@@ -127,7 +128,6 @@ function showQuickPostForm(postId) {
                 }
             }
         });
-        event.preventDefault();
     };
     var rt = postform.getElementsByClassName("reply-to");
     if (rt.length) rt[0].parentNode.removeChild( rt[0] );

@@ -40,5 +40,8 @@
         <tr>
             <td>_{MsgHellbanning          }
             <td>^{fvInput hellbanningView }
+        <tr>
+            <td>_{MsgChangeFileRating     }
+            <td>^{fvInput ratingView      }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

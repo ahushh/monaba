@@ -98,7 +98,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData threadUrl
-    FormSuccess (name, title, message, captcha, pswd, files, goback, nobump)
+    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, nobump)
       | isNothing maybeParent                             -> trickyRedirect "error" MsgNoSuchThread        boardUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
@@ -150,7 +150,7 @@ postThreadR board thread = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            }
-        void $ insertFiles files thumbSize =<< runDB (insert newPost)
+        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------
         -- bump thread if necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])

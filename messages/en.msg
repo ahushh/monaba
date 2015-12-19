@@ -261,6 +261,7 @@ EditPosts: Edit posts and view history
 ViewModlog: View moderation log 
 ViewIPAndID: View poster's IP and ID
 Hellbanning: Hellbanning
+ChangeFileRating: Change file's censorship rating
 
 ######################################################################################
 #### Hellbanning
@@ -339,6 +340,7 @@ TimeZone: Time zone
 Style: Style
 Language: Language
 FeedIgnoredBoards: /feed/ ignored boards
+MaxAllowedRating: Max allowed rating
 ResetDefaults: Reset defaults
 
 ######################################################################################

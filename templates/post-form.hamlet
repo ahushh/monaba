@@ -48,8 +48,9 @@
       <i .fa .fa-paperclip>
       _{MsgAttachFile}
     <div #attachment-thumbs>
-    $forall (i, fv) <- enumerate fileviews
+    $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
       ^{fvInput fv}
+      ^{fvInput rv}
           <!-- <i title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" .fa .fa-close .icon-close> -->
   $if enableCaptcha
     $if isNothing muser

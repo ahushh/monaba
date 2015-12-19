@@ -116,7 +116,7 @@ postBoardR board _ = do
     FormFailure []                     -> msgRedirect MsgBadFormData
     FormFailure xs                     -> msgRedirect $ MsgError $ T.intercalate "; " xs
     FormMissing                        -> msgRedirect MsgNoFormData
-    FormSuccess (name, title, message, captcha, pswd, files, goback, _)
+    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, _)
       | isNothing title && boardRequiredThreadTitle boardVal -> msgRedirect MsgThreadTitleIsRequired
       | opFile == "Disabled"&& not (noFiles files)      -> msgRedirect MsgOpFileIsDisabled
       | opFile == "Required"&& noFiles files          -> msgRedirect MsgNoFile
@@ -166,7 +166,7 @@ postBoardR board _ = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            }
-        void $ insertFiles files thumbSize =<< runDB (insert newPost)
+        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -- delete old threads
         let tl = boardThreadLimit boardVal
           in when (tl >= 0) $

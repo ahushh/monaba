@@ -395,3 +395,14 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .no-js #refresh-feed, .no-js #load-previous-posts, .no-js .preview-toggle, .no-js .icon-edit-post, .no-js .icon-reply, .no-js .get-new-posts-btn, .no-js .icon-thread-refresh, .no-js #show-plain-form-bottom, .no-js .omitted a {
     display: none;
 }
+.rating-input {
+    display: none;
+}
+.attachment-thumb img {
+    margin: 1px;
+    border: 0;
+}
+.attachment-thumb img:hover {
+    margin: 0;
+    border: 1px solid red;
+}

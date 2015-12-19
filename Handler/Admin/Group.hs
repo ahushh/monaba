@@ -20,12 +20,14 @@ groupsForm extra = do
   (viewModlogRes   , viewModlogView  ) <- mreq checkBoxField "" Nothing
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing 
+  (ratingRes       , ratingView      ) <- mreq checkBoxField "" Nothing
 
   let result = GroupConfigurationForm <$> nameRes <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
                manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
-               viewModlogRes   <*> viewIPAndIDRes <*> hellbanningRes
+               viewModlogRes   <*> viewIPAndIDRes <*> hellbanningRes <*>
+               ratingRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -43,6 +45,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ViewModlogP      , MsgViewModlog      )
              ,(ViewIPAndIDP     , MsgViewIPAndID     )
              ,(HellBanP         , MsgHellbanning     )
+             ,(ChangeFileRatingP, MsgChangeFileRating)
              ]
 
 getManageGroupsR :: Handler Html
@@ -63,12 +66,13 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (GroupConfigurationForm name manageThread manageBoard manageUsers
                  manageConfig  deletePostsP managePanel manageBan editPosts
-                 aMarkup viewModLog  viewIPAndID hellbanning
+                 aMarkup viewModLog  viewIPAndID hellbanning changeFileRating
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
                         ,(ViewModlogP  ,viewModLog  ), (ViewIPAndIDP,viewIPAndID ), (HellBanP,hellbanning)
+                        ,(ChangeFileRatingP, changeFileRating)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

@@ -22,6 +22,7 @@ postForm :: Bool  -> -- ^ Is a new thread
                                      , Maybe Text     -- ^ Captcha
                                      , Text           -- ^ Password
                                      , [FormResult (Maybe FileInfo)] -- ^ Files
+                                     , [FormResult Censorship]       -- ^ Censorship ratings
                                      , GoBackTo       -- ^ Go back to
                                      , Maybe Bool     -- ^ No bump
                                      )
@@ -45,10 +46,14 @@ postForm isNewThread boardVal muser extra = do
                                  textareaField
       urls :: [(Text, GoBackTo)]
       urls = [(msgrender MsgToThread, ToThread), (msgrender MsgToBoard, ToBoard), (msgrender MsgToFeed, ToFeed)]
+      ratings :: [(Text, Censorship)]
+      ratings = map (pack . show &&& id) [minBound..maxBound]
+      ratingInput  lbl = lbl { fsAttrs = [("class","rating-input"),("data-used","0")] }
       passInput    lbl = lbl { fsAttrs = [("autocomplete","off")] }
       captchaInput lbl = lbl { fsAttrs = [("class", "captcha-input"),("placeholder",msgrender MsgCaptcha)] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
       nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",tshow appMaxLenOfPostName ),("placeholder",msgrender MsgName)] }
+      gobackInput  lbl = lbl { fsAttrs = [("class","goback-input")] }
       subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",tshow appMaxLenOfPostTitle),
                                           if isNewThread then ("placeholder",msgrender MsgThreadSubject) else ("placeholder",msgrender MsgPostSubject)]++
                                          [("required","required") | boardRequiredThreadTitle boardVal && isNewThread] }
@@ -58,11 +63,12 @@ postForm isNewThread boardVal muser extra = do
   (messageRes  , messageView ) <- mopt myMessageField         (msgInput     "") ((Just . Textarea) <$> lastMessage)
   (passwordRes , passwordView) <- mreq passwordField          (passInput    "") Nothing
   (captchaRes  , captchaView ) <- mopt textField              (captchaInput "") Nothing
-  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls)               ""  (Just $ maybe ToBoard (\x -> tread x :: GoBackTo) lastGoback)
+  (gobackRes   , gobackView  ) <- mreq (selectFieldList urls) (gobackInput  "") (Just $ maybe ToBoard (\x -> tread x :: GoBackTo) lastGoback)
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
-  let result = (,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
-               FormSuccess fileresults <*> gobackRes  <*> nobumpRes
+  (ratingresults, ratingviews) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mreq (selectFieldList ratings) (ratingInput "") Nothing)
+  let result = (,,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
+               FormSuccess fileresults <*> FormSuccess ratingresults <*> gobackRes  <*> nobumpRes
       widget = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------

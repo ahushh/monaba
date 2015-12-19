@@ -11,9 +11,10 @@ import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
 settingsForm :: [(Text,Text)] -> -- ^ All boards
                [Text] -> -- ^ Ignored boards
+               Censorship -> -- ^ Default rating 
                Html   -> -- ^ Extra token
-               MForm Handler (FormResult (Int, Text, Maybe Text, Maybe [Text]), Widget)
-settingsForm allBoards ignoredBoards extra = do
+               MForm Handler (FormResult (Int, Text, Maybe Text, Maybe [Text], Censorship), Widget)
+settingsForm allBoards ignoredBoards oldRating extra = do
   AppSettings{..} <- appSettings <$> getYesod
 
   let stylesheetsPath = appStaticDir </> "stylesheets"
@@ -25,7 +26,8 @@ settingsForm allBoards ignoredBoards extra = do
   (styleRes    , styleView   ) <- mreq (selectFieldList stylesheets) "" (Just $ fromMaybe appStylesheet oldStyle)
   (langRes     , langView    ) <- mopt (selectFieldList langs      ) "" Nothing
   (boardResults, boardViews  ) <- mopt (multiSelectFieldList allBoards) "" (Just $ Just ignoredBoards)
-  let result = (,,,) <$> timezoneRes <*> styleRes <*> langRes <*> boardResults
+  (ratingRes   , ratingView  ) <- mreq (selectFieldList ratings    ) "" (Just oldRating)
+  let result = (,,,,) <$> timezoneRes <*> styleRes <*> langRes <*> boardResults <*> ratingRes
       widget = $(widgetFile "settings-form")
   return (result, widget)
 
@@ -34,15 +36,17 @@ postSettingsR = do
   mgroup        <- (fmap $ userGroup . entityVal) <$> maybeAuth
   allBoards     <- map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   ignoredBoards <- getFeedBoards
-  ((result, _), _) <- runFormPost $ settingsForm  allBoards ignoredBoards
+  oldRating     <- getCensorshipRating
+  ((result, _), _) <- runFormPost $ settingsForm  allBoards ignoredBoards oldRating
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
-    FormMissing                     -> trickyRedirect "error" MsgNoFormData  SettingsR
-    FormSuccess (timezone, stylesheet, lang, boards) -> do
+    FormMissing                     -> trickyRedirect "error1" MsgNoFormData  SettingsR
+    FormSuccess (timezone, stylesheet, lang, boards, rating) -> do
       setSession "timezone"   $ tshow timezone
       setSession "stylesheet" stylesheet
       setSession "feed-ignore-boards" $ tshow $ fromMaybe [] boards
+      setSession "censorship-rating" $ tshow rating
       Foldable.forM_ lang setLanguage
       trickyRedirect "ok" MsgApplied SettingsR
 
@@ -51,7 +55,8 @@ getSettingsR = do
   mgroup          <- (fmap $ userGroup . entityVal) <$> maybeAuth
   allBoards       <- map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
   ignoredBoards   <- getFeedBoards
-  (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards
+  oldRating       <- getCensorshipRating
+  (formWidget, formEnctype) <- generateFormPost $ settingsForm allBoards ignoredBoards oldRating
   hiddenThreads   <- getAllHiddenThreads
   msgrender       <- getMessageRender
   defaultLayout $ do
@@ -59,6 +64,9 @@ getSettingsR = do
     $(widgetFile "settings")
 
 -------------------------------------------------------------------------------------------------------------------
+ratings :: [(Text, Censorship)]
+ratings = map (pack . show &&& id) [minBound..maxBound]
+
 langs :: [(Text, Text)]
 langs = [("English", "en"), ("Русский","ru"), ("Português Brasil", "br")]
 

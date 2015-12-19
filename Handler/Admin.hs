@@ -99,3 +99,11 @@ getAutoSageR board thread = do
       runDB $ update pId [PostAutosage =. not (postAutosage p)]
       redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
+
+-------------------------------------------------------------------------------------------------------------
+-- Censorship management
+-------------------------------------------------------------------------------------------------------------
+getManageCensorshipR :: Int -> Censorship -> Handler Html
+getManageCensorshipR fileId rating = do
+  runDB $ update (toSqlKey $ fromIntegral fileId) [AttachedfileRating =. pack (show rating)]
+  redirectUltDest HomeR

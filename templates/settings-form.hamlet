@@ -13,3 +13,6 @@
     <tr>
       <td>_{MsgFeedIgnoredBoards}
       <td>^{fvInput boardViews}
+    <tr>
+      <td>_{MsgMaxAllowedRating}
+      <td>^{fvInput ratingView}

@@ -39,6 +39,7 @@ data GroupConfigurationForm = GroupConfigurationForm
                               Bool -- ^ to view moderation log 
                               Bool -- ^ to view ip and uid
                               Bool -- ^ to use hellbanning 
+                              Bool -- ^ to change censorship rating
 
 data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text)   -- ^ Name
@@ -253,6 +254,7 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
       pClass         = (if isThread then "op-post" else "reply-post") :: Text
   in do
     timeZone        <- handlerToWidget getTimeZone
+    rating          <- handlerToWidget getCensorshipRating
     AppSettings{..} <- handlerToWidget $ appSettings <$> getYesod
     $(widgetFile "post")
 
@@ -315,6 +317,13 @@ getTimeZone = do
   defaultZone <- appTimezone . appSettings <$> getYesod
   timezone    <- lookupSession "timezone"
   return $ maybe defaultZone tread timezone
+
+getCensorshipRating :: Handler Censorship
+getCensorshipRating = do
+  mRating <- lookupSession "censorship-rating"
+  case mRating of
+    Just rating -> return $ tread rating
+    Nothing     -> setSession "censorship-rating" "SFW" >> return SFW
 
 getPosterId :: Handler Text
 getPosterId = do

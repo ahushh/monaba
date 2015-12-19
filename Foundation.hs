@@ -42,6 +42,9 @@ instance HasHttpManager App where
 data ManageBoardAction = NewBoard | AllBoards | UpdateBoard
                        deriving (Show, Read, Eq)
 
+data Censorship = SFW | R15 | R18 | R18G
+    deriving (Show, Read, Eq, Enum, Bounded, Ord)
+
 -- i18n helpers
 omittedRus :: Int -> String
 omittedRus n
@@ -155,7 +158,7 @@ instance Yesod App where
       AdminSearchIPNoPageR{} -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP]
-
+      ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
       ConfigR{}       -> isAuthorized' [ManageConfigP]
       _               -> return Authorized
 
@@ -219,6 +222,13 @@ isAuthorized' permissions = do
             else return $ Unauthorized "Not permitted"
 
 -- Path pieces
+instance PathPiece Censorship where 
+  toPathPiece     = pack . show
+  fromPathPiece s =
+    case reads $ unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
+
 instance PathPiece ManageBoardAction where
   toPathPiece = pack . show
   fromPathPiece s =

@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var postform = document.getElementById('post-form');
     initDragAndDrop(postform);
     postform.onsubmit = function(event) {
+        event.preventDefault();
         var formData = makePostFormData(postform);
         var pmsg;
         httpRequest({
@@ -41,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 }
             }
         });
-        event.preventDefault();
     };
 
 });

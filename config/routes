@@ -78,6 +78,8 @@
 
 /admin/config              ConfigR       GET POST
 
+/admin/rating/#Int/#Censorship ManageCensorshipR GET
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST

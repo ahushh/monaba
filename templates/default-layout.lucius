@@ -370,7 +370,7 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     visibility: none;
     opacity: 0;
     transition: opacity 0.2s, visibility 0.2s;
-    display: none;
+    z-index: -9999999999;
 }
 
 .dropdown-menu:hover li ul {
@@ -378,7 +378,7 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     font-weight: bold;
     visibility: visible;
     opacity: 1;
-    display: inline;
+    z-index: 0;
 }
 
 .scroll-buttons {

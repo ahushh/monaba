@@ -370,12 +370,15 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     visibility: none;
     opacity: 0;
     transition: opacity 0.2s, visibility 0.2s;
+    display: none;
 }
+
 .dropdown-menu:hover li ul {
     font-size: 1.1em;
     font-weight: bold;
     visibility: visible;
     opacity: 1;
+    display: inline;
 }
 
 .scroll-buttons {

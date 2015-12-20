@@ -35,7 +35,7 @@ HideRules: Hide Rules
 
 ### Editing
 Edit: Edit
-PostEdited: Post successfully edited
+PostEdited: Post has been edited successfully
 PostNotYours: Wrong password or session. You can't edit this post.
 PostEditingIsDisabled: Post editing is disabled on this board
 ThreadEditingIsDisabled: OP editing is disabled on this board
@@ -44,7 +44,7 @@ EditingHistory: Editing history
 EditingHistoryIsDisabled: Editing history is disabled
 GoTo: Go to
 EditingHistoryOfPost post@Int: Editing history of post ##{show post}
-YouAlreadyEditedPost n@Int: You've already edited this post #{show n} times.
+YouAlreadyEditedPost n@Int: You havee already edited this post #{show n} times.
 
 ### Markup
 PlainText: Plain text
@@ -118,7 +118,7 @@ TypeNotAllowed: This file type isn't allowed
 NoSuchThread: No such thread
 NoSuchBoard: No such board
 LockedThread: This thread is locked and can't be posted in
-PostSent: Post successfully sent
+PostSent: Post has been submitted successfully
 PostingTooFast: You're posting too fast!
 
 ######################################################################################
@@ -182,7 +182,7 @@ AddBoardBtn: Add board
 DeleteAll: Delete all
 CleanBoard: Clean
 CleanBoardConfirm: This will delete ALL posts from the board! Are you sure you want to continue?
-DeleteBoardConfirm: Are you sure you want to delete the board?
+DeleteBoardConfirm: Are you sure you want to delete the board including ALL posts?
 RebuildPostsMessagesOnBoard: Rebuild HTML of posts messages
 ## info
 SeparateBy d@Text: Separate by '#{d}'
@@ -190,10 +190,10 @@ SeparateBySpace: Separate by space
 Optional: Optional
 ## Messages
 WrongBoardId: Wrong board ID
-BoardsUpdated: Boards successfully updated
-BoardAdded: Board successfully added
-BoardCleaned: Board successfully cleaned
-BoardDeleted: Board successfully deleted
+BoardsUpdated: Boards have been updated successfully
+BoardAdded: Board has been added successfully
+BoardCleaned: Board has been cleaned successfully
+BoardDeleted: Board has been deleted successfully
 
 ### Bans management
 Ban: Ban
@@ -205,29 +205,29 @@ BanBoard: Board
 NeverExpires: NEVER
 ## Messages
 YouAreBanned reason@Text expires@Text: You are banned! Reason: "#{reason}". Your ban expires at #{expires}
-BanAdded: Ban successfully added
-BanDeleted: Ban successfully deleted
+BanAdded: Ban has been added successfully
+BanDeleted: Ban has been deleted successfully
 
 ### Groups management
 Group: Group
 Groups: Groups
 GroupAddOrUpdate: Add/updated
-GroupAddedOrUpdated: Group added/updated
+GroupAddedOrUpdated: Group has been added/updated
 GroupDoesNotExist: Group doesn't exist
-GroupDeleted: Group deleted
+GroupDeleted: Group has been deleted
 
 ### Account
 Account: Account
 NewPassword: New password
 ## Messages
-PasswordChanged: Password successfully changed
+PasswordChanged: Password has been changed successfully
 
 ### Users management
 Users: Users
 AddNewUserOrUpdate: New user/update
 ## Messages
-UsersAddedOrUpdated: New user successfully added/updated
-UsersDeleted: User successfully deleted
+UsersAddedOrUpdated: New user has been added/updated successfully
+UsersDeleted: User has been deleted successfully
 UserDoesNotExist: User doesn't exist
 YouAreTheOnlyWhoCanManageUsers: DENIED. You are the only who can manage users.
 
@@ -240,12 +240,12 @@ NewsBoard: Board for news
 UpdateConfig: Update config
 ReplyDelay: Reply delay
 ThreadDelay: New thread delay
-AdminAboutPage: Html of about page
-AdminHomePage: Html of home page
+AdminAboutPage: HTML of about page
+AdminHomePage: HTML of home page
 ModlogMaxEntriesView: Max modlog entries
 ModlogEntriesPerPage: Modlog entries per page
 ## Messages
-ConfigUpdated: Config successfully updated
+ConfigUpdated: Config has been updated successfully
 
 ### Permissions
 Permissions: Permissions
@@ -382,8 +382,8 @@ ModlogUnhellban uid@Text: Unhellbanned user #{uid}
 ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
 ModlogRebuildPostsMessages: Rebuilt HTML of posts messages
 
-ModlogMoveThread from@Text to@Text: Move thread from #{from} to #{to}
-ModlogChangeThread from@Text to@Text p@Text: Move #{p} from thread #{from} to #{to}
+ModlogMoveThread from@Text to@Text: Moved thread from #{from} to #{to}
+ModlogChangeThread from@Text to@Text p@Text: Moved #{p} from thread #{from} to #{to}
 
 NoSuchPost: No such post
 

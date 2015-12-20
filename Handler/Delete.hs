@@ -98,6 +98,7 @@ deleteFiles idsToRemove = do
         unless (filesWithSameThumbSize > 0) $
           when (ft `elem` thumbFileTypes) $ do
             void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+        runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
       _  -> do
         liftIO $ removeFile $ attachedfilePath f
         when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs

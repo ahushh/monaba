@@ -8,193 +8,7 @@ Array.prototype.contains = function(obj) {
     return false;
 };
 //-----------------------------------------------------------------
-// Top/bottom buttons
-//-----------------------------------------------------------------
-(function() {
-    var buttons = document.createElement("div");
-    buttons.className = "scroll-buttons";
-    var top = document.createElement("i");
-    top.className = 'fa fa-chevron-up scroll-top';
-    top.onclick = function() { scroll(0,0); };
-    var bottom = document.createElement("i");
-    bottom.className = 'fa fa-chevron-down scroll-bottom';
-    bottom.onclick = function() { scroll(0,document.body.scrollHeight); };
-    buttons.appendChild(top);
-    buttons.appendChild(bottom);
-    document.body.appendChild(buttons);
-})();
-//-----------------------------------------------------------------
-// Favicon blinking and title updating
-//-----------------------------------------------------------------
-function getUpdateTitle() {
-    var hidden = getHidden();
-    var visibilityChange = getVisibilityChange();
-
-    var blinkingFavicon = false;
-    var normalIcon = document.getElementById("favicon").cloneNode();
-    var noIcon     = document.getElementById("favicon").cloneNode();
-    noIcon.href='data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=';
-    var blinkFavicon = function() {
-        if (document[hidden] && !blinkingFavicon) {
-            var t = true;
-            blinkingFavicon = setInterval(function() {
-                var favicon = document.getElementById("favicon");
-                favicon.parentNode.replaceChild(t ? noIcon.cloneNode() : normalIcon.cloneNode(), favicon);
-                t = !t;
-            }, 500);
-        } else if (!document[hidden] && blinkingFavicon) {
-            clearInterval(blinkingFavicon);
-            blinkingFavicon = false;
-            var favicon = document.getElementById("favicon");
-            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
-        }
-    };
-
-    var updateTitle = function(n) {
-        blinkFavicon();
-        var t = /\[(\d+)\] (.+)/.exec(document.title);
-        if (document[hidden]) {
-            if (t)
-                document.title = "["+((+t[1])+n)+ "] " + t[2];
-            else
-                document.title = "["+n+"] " + document.title;
-        } else {
-            if (t) document.title = t[2];
-        }
-    };
-
-    document.addEventListener(visibilityChange, function() {
-        if (!document[hidden]) {
-            var t = /\[(\d+)\] (.+)/.exec(document.title);
-            if (t) document.title = t[2];
-            clearInterval(blinkingFavicon);
-            blinkingFavicon = false;
-            var favicon = document.getElementById("favicon");
-            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
-        }
-    });
-    return updateTitle;
-}
-//-----------------------------------------------------------------
-// EventSource
-//-----------------------------------------------------------------
-function isEventSourceSupported() {
-    return getConfig("eventsource") && typeof(EventSource) !== "undefined";
-}
 var eventsource = null;
-if (isEventSourceSupported()) {
-    eventsource = new EventSource("@{EventR}");
-    eventsource.onopen  = function()      { console.log("Eventsource opened."); };
-    eventsource.onclose = function()      { console.log("Eventsource closed."); };
-    eventsource.onmessage = function(msg) {
-        console.log("Eventsource message: "+msg.data);
-    };
-    eventsource.onerror = function(e) {
-        console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
-    };
-}
-//-----------------------------------------------------------------
-// Online users counter
-//-----------------------------------------------------------------
-(function() {
-    if (isEventSourceSupported()) {
-        var online = document.createElement("div");
-        online.className = "online-counter";
-        document.body.appendChild(online);
-        var src = new EventSource("@{OnlineR}");
-        src.onopen  = function()      { console.log("Online: Eventsource opened."); };
-        src.onclose = function()      { console.log("Online: Eventsource closed."); };
-        src.onerror = function(e) {
-            console.log("Online: Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
-        };
-        src.addEventListener('online', function(msg) {
-            online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
-        });
-    }
-})();
-//-----------------------------------------------------------------
-// New posts counter
-//-----------------------------------------------------------------
-(function() {
-    var readStats = function() {
-                httpRequest({
-                    action: "@{AjaxBoardStatsReadR}",
-                    onload: function(request) {
-                        var unreadElem = document.getElementById("mark-as-read");
-                        var boardList = document.getElementsByClassName("board-list")[0];
-                        boardList.removeChild(unreadElem);
-                        var ns = document.querySelectorAll('.new-posts-number');
-                        for (var i = 0; i < ns.length; i++)
-                            removeElement( ns[i] );
-                    }
-                });
-            };
-
-    var updateUnread = function() {
-        var unreadElem = document.getElementById("mark-as-read");
-        if (unreadElem == null) {
-            var boardList = document.getElementsByClassName("board-list")[0];
-            unreadElem = document.createElement("span");
-            unreadElem.id = "mark-as-read";
-            var i = document.createElement("i");
-            i.title = #{toJSON $ msgrender MsgMarkAsRead};
-            i.className = "fa fa-check-square-o";
-            i.onclick = readStats;
-            unreadElem.appendChild(i);
-            boardList.appendChild(unreadElem);
-        }
-    };
-    var updateStats = function() {
-        httpRequest({
-            action: "@{AjaxBoardStatsR}",
-            headers: { 'Accept': 'application/json' },
-            onload: function(request) {
-                if (request.status >= 200 && request.status < 400) {
-                    var data = JSON.parse(request.responseText);
-                    var boards = document.getElementsByClassName("board-link");
-                    var unread = false;
-                    for (var i = 0; i < boards.length; i++) {
-                        var board = boards[i].dataset.board;
-                        var newPosts = data[board] ? "+"+data[board] : "";
-                        boards[i].innerHTML = "/"+board+"/ <span class='new-posts-number'>"+newPosts+"</span>";
-                        if (data[board]) unread = true;
-                    }
-                    if (unread) updateUnread();
-                }
-            }
-        });
-    };
-    updateStats();
-    if (isEventSourceSupported()) {
-       eventsource.addEventListener("new-post", function(msg) {
-           var currentBoard = document.location.pathname.substr(1);
-           var board = msg.data;
-           if (currentBoard == board) return;
-           var boardLink = document.getElementById("board-link-"+board);
-           if (boardLink == null) return;
-           var n = boardLink.innerHTML.match(/<span class='new-posts-number'>\+(\d+)<\/span>/);
-           var newPosts = 1;
-           if (n && n[1]) newPosts += +n[1];
-           boardLink.innerHTML = "/"+board+"/ <span class='new-posts-number'>+"+newPosts+"</span>";
-           updateUnread();
-       });
-    } else {
-        if (getConfig("board_stats_update"))
-            window.setInterval(updateStats, getConfig("board_stats_update"));
-    }
-    // Clean new posts counter on /feed/ refreshing
-    var refreshFeed = document.getElementById("refresh-feed");
-    if (refreshFeed != null) {
-        refreshFeed.addEventListener("refresh", function() {
-            var unreadElem = document.getElementById("mark-as-read");
-            var boardList = document.getElementsByClassName("board-list")[0];
-            if (unreadElem != null) {
-                readStats();
-            }
-        });
-    }
-})();
-//-----------------------------------------------------------------
 var Monaba = {
     zindex: 10,
     expThreads: {},
@@ -204,10 +18,148 @@ var Monaba = {
     iframelyAPIKey: 'a24983cf9554abfbd77bd2',
     youtubeAPIKey: 'AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw',
 };
-
 loadConfig();
 applyCSSSettings();
+//-----------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function(event) {
+    //-----------------------------------------------------------------
+    // EventSource
+    //-----------------------------------------------------------------
+    function isEventSourceSupported() {
+        return getConfig("eventsource") && typeof(EventSource) !== "undefined";
+    }
+    if (isEventSourceSupported()) {
+        eventsource = new EventSource("@{EventR}");
+        eventsource.onopen  = function()      { console.log("Eventsource opened."); };
+        eventsource.onclose = function()      { console.log("Eventsource closed."); };
+        eventsource.onmessage = function(msg) {
+            console.log("Eventsource message: "+msg.data);
+        };
+        eventsource.onerror = function(e) {
+            console.log("Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+        };
+    }
+    //-----------------------------------------------------------------
+    // Scroll top/bottom buttons
+    //-----------------------------------------------------------------
+    (function() {
+        var buttons = document.createElement("div");
+        buttons.className = "scroll-buttons";
+        var top = document.createElement("i");
+        top.className = 'fa fa-chevron-up scroll-top';
+        top.onclick = function() { scroll(0,0); };
+        var bottom = document.createElement("i");
+        bottom.className = 'fa fa-chevron-down scroll-bottom';
+        bottom.onclick = function() { scroll(0,document.body.scrollHeight); };
+        buttons.appendChild(top);
+        buttons.appendChild(bottom);
+        document.body.appendChild(buttons);
+    })();
+    //-----------------------------------------------------------------
+    // Online users counter
+    //-----------------------------------------------------------------
+    (function() {
+        if (isEventSourceSupported()) {
+            var online = document.createElement("div");
+            online.className = "online-counter";
+            document.body.appendChild(online);
+            var src = new EventSource("@{OnlineR}");
+            src.onopen  = function()      { console.log("Online: Eventsource opened."); };
+            src.onclose = function()      { console.log("Online: Eventsource closed."); };
+            src.onerror = function(e) {
+                console.log("Online: Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
+            };
+            src.addEventListener('online', function(msg) {
+                online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
+            });
+        }
+    })();
+    //-----------------------------------------------------------------
+    // New posts counter
+    //-----------------------------------------------------------------
+    (function() {
+        var readStats = function() {
+            httpRequest({
+                action: "@{AjaxBoardStatsReadR}",
+                onload: function(request) {
+                    var unreadElem = document.getElementById("mark-as-read");
+                    var boardList = document.getElementsByClassName("board-list")[0];
+                    boardList.removeChild(unreadElem);
+                    var ns = document.querySelectorAll('.new-posts-number');
+                    for (var i = 0; i < ns.length; i++)
+                        removeElement( ns[i] );
+                }
+            });
+        };
 
+        var updateUnread = function() {
+            var unreadElem = document.getElementById("mark-as-read");
+            if (unreadElem == null) {
+                var boardList = document.getElementsByClassName("board-list")[0];
+                unreadElem = document.createElement("span");
+                unreadElem.id = "mark-as-read";
+                var i = document.createElement("i");
+                i.title = #{toJSON $ msgrender MsgMarkAsRead};
+                i.className = "fa fa-check-square-o";
+                i.onclick = readStats;
+                unreadElem.appendChild(i);
+                boardList.appendChild(unreadElem);
+            }
+        };
+        var updateStats = function() {
+            httpRequest({
+                action: "@{AjaxBoardStatsR}",
+                headers: { 'Accept': 'application/json' },
+                onload: function(request) {
+                    if (request.status >= 200 && request.status < 400) {
+                        var data = JSON.parse(request.responseText);
+                        var boards = document.getElementsByClassName("board-link");
+                        var unread = false;
+                        for (var i = 0; i < boards.length; i++) {
+                            var board = boards[i].dataset.board;
+                            var newPosts = data[board] ? "+"+data[board] : "";
+                            boards[i].innerHTML = "/"+board+"/ <span class='new-posts-number'>"+newPosts+"</span>";
+                            if (data[board]) unread = true;
+                        }
+                        if (unread) updateUnread();
+                    }
+                }
+            });
+        };
+        updateStats();
+        if (isEventSourceSupported()) {
+            eventsource.addEventListener("new-post", function(msg) {
+                var currentBoard = document.location.pathname.substr(1);
+                var board = msg.data;
+                if (currentBoard == board) return;
+                var boardLink = document.getElementById("board-link-"+board);
+                if (boardLink == null) return;
+                var n = boardLink.innerHTML.match(/<span class='new-posts-number'>\+(\d+)<\/span>/);
+                var newPosts = 1;
+                if (n && n[1]) newPosts += +n[1];
+                boardLink.innerHTML = "/"+board+"/ <span class='new-posts-number'>+"+newPosts+"</span>";
+                updateUnread();
+            });
+        } else {
+            if (getConfig("board_stats_update"))
+                window.setInterval(updateStats, getConfig("board_stats_update"));
+        }
+        // Clean new posts counter on /feed/ refreshing
+        var refreshFeed = document.getElementById("refresh-feed");
+        if (refreshFeed != null) {
+            refreshFeed.addEventListener("refresh", function() {
+                var unreadElem = document.getElementById("mark-as-read");
+                var boardList = document.getElementsByClassName("board-list")[0];
+                if (unreadElem != null) {
+                    readStats();
+                }
+            });
+        }
+    })();
+});
+//-----------------------------------------------------------------
+// Initialization functions
+//-----------------------------------------------------------------
 function loadConfig() {
     setConfigIfNull("posts_autoload_interval", 30000);
     setConfigIfNull("mathjax", true);
@@ -376,8 +328,8 @@ function initFlashByClick(post) {
             close.style['text-align'] = 'right';
             close.onclick = function() {
                 el.style.display = 'block';
-                obj.parentNode.removeChild(obj);
-                close.parentNode.removeChild(close);
+                removeElement(obj);
+                removeElement(close);
             };
             insertAfter(close, el);
             el.style.display = 'none';
@@ -410,7 +362,7 @@ function initAudioPlayer(post) {
         }
     }
     for (var i = 0; i < toRemove.length; i++)
-        toRemove[i].parentNode.removeChild( toRemove[i] );
+        removeElement(toRemove[i]);
 }
  
 function initPostsAutoload(refresh) {
@@ -424,7 +376,58 @@ function initPostsAutoload(refresh) {
         c.innerHTML = x == 0 ? interval/1000 : x - 1;
     }, 1000);
 }
+//-----------------------------------------------------------------
+// Favicon blinking and title updating
+//-----------------------------------------------------------------
+function getUpdateTitle() {
+    var hidden = getHidden();
+    var visibilityChange = getVisibilityChange();
 
+    var blinkingFavicon = false;
+    var normalIcon = document.getElementById("favicon").cloneNode();
+    var noIcon     = document.getElementById("favicon").cloneNode();
+    noIcon.href='data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=';
+    var blinkFavicon = function() {
+        if (document[hidden] && !blinkingFavicon) {
+            var t = true;
+            blinkingFavicon = setInterval(function() {
+                var favicon = document.getElementById("favicon");
+                favicon.parentNode.replaceChild(t ? noIcon.cloneNode() : normalIcon.cloneNode(), favicon);
+                t = !t;
+            }, 500);
+        } else if (!document[hidden] && blinkingFavicon) {
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            var favicon = document.getElementById("favicon");
+            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
+        }
+    };
+
+    var updateTitle = function(n) {
+        blinkFavicon();
+        var t = /\[(\d+)\] (.+)/.exec(document.title);
+        if (document[hidden]) {
+            if (t)
+                document.title = "["+((+t[1])+n)+ "] " + t[2];
+            else
+                document.title = "["+n+"] " + document.title;
+        } else {
+            if (t) document.title = t[2];
+        }
+    };
+
+    document.addEventListener(visibilityChange, function() {
+        if (!document[hidden]) {
+            var t = /\[(\d+)\] (.+)/.exec(document.title);
+            if (t) document.title = t[2];
+            clearInterval(blinkingFavicon);
+            blinkingFavicon = false;
+            var favicon = document.getElementById("favicon");
+            favicon.parentNode.replaceChild(normalIcon.cloneNode(), favicon);
+        }
+    });
+    return updateTitle;
+}
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
@@ -528,11 +531,6 @@ function initSymbolCounter(formId) {
         document.querySelector('#'+formId+' textarea')[ev] = h;
     });
     if (formId == 'post-form') countSymbols(formId);
-}
-
-
-function clearFile(fileId) {
-    document.getElementById(fileId).value = "";
 }
 
 function closePostForm() {
@@ -1019,8 +1017,8 @@ function addVideoPlayer(post) {
             close.style['text-align'] = 'right';
             close.onclick = function() {
                 thumb.style.display = 'block';
-                video.parentNode.removeChild(video);
-                close.parentNode.removeChild(close);
+                removeElement(video);
+                removeElement(close);
             };
             insertAfter(close, video);
         };
@@ -1527,11 +1525,11 @@ function showPopupPost(element, event, postId, localId, board) {
 function closePopupPost(post) {
     if (post) {
         var p = document.getElementById('popup-'+post);
-        p.parentNode.removeChild(p);
+        removeElement(p);
     } else {
         var posts = document.getElementsByClassName('popup-post');
         while (posts.length) {
-            posts[0].parentNode.removeChild(posts[0]);
+            removeElement(posts[0]);
         }
     }
 }
@@ -1588,14 +1586,6 @@ function hideThread(threadLocalId, board, postId) {
             removeElement(op);
             var t = document.getElementById("thread-"+threadLocalId+"-"+board);
             if (t != null) removeElement(t);
-            var posts = document.getElementsByClassName("reply-post");
-            var postsToRemove = [];
-            for (var i = 0; i < posts.length; i++) {
-                if (posts[i].dataset.threadLocalId == threadLocalId && posts[i].dataset.board == board)
-                    postsToRemove.push(posts[i]);
-            }
-            for (var i = 0; i < postsToRemove.length; i++)
-                removeElement( postsToRemove[i] );
         }
     });
 }
@@ -1752,6 +1742,7 @@ function httpRequest(cnf) {
     var onloadBefore = cnf.onloadBefore || function() {};
     var onloadAfter  = cnf.onloadAfter || function() {};
     var onloadstart  = cnf.onloadstart;
+    var onloadend    = cnf.onloadend;
     var onerror = cnf.onerror;
     var onerrorBefore = cnf.onerrorBefore || function() {};
     var onerrorAfter = cnf.onerrorAfter || function() {};
@@ -1778,9 +1769,10 @@ function httpRequest(cnf) {
         popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.status+")", 0, false, true);
         onerrorAfter(request);
     };
-    if (onload ) request.onload  = function(){ onload(request)  };
-    if (onerror) request.onerror = function(){ onerror(request) };
-    if (onloadstart) request.onloadstart = function(){ onloadstart(request) };
+    if (onload ) request.onload  = onload;
+    if (onerror) request.onerror = onerror;
+    if (onloadstart) request.onloadstart = onloadstart;
+    if (onloadend  ) request.onloadend = onloadend;
     if (data)
         request.send(data);
     else

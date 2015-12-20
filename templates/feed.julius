@@ -52,7 +52,7 @@ function showQuickPostForm(postId) {
     var postform = document.getElementById('post-form');    
     if (postform) {
         var previousMessage = postform.getElementsByTagName("textarea")[0].value;
-        postform.parentNode.removeChild(postform);
+        removeElement(postform);
     }
     var post  = document.getElementById(postId);
     var board = post.dataset.board;

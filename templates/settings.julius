@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["number", "css_side_margin"],
                 ["checkbox", "css_hide_files_names"],
                 ["checkbox", "css_hide_files_info"],
+                ["checkbox", "css_hide_markup_buttons"],
                 ["text", "css_custom"],
                ];
     opts.forEach(function(x, i) {

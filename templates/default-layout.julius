@@ -235,6 +235,7 @@ function loadConfig() {
     setConfigIfNull("css_side_margin", 0);
     setConfigIfNull("css_hide_files_names", false);
     setConfigIfNull("css_hide_files_info", false);
+    setConfigIfNull("css_hide_markup_buttons", false);
     setConfigIfNull("css_custom", "");
 }
 
@@ -265,6 +266,7 @@ function resetConfig() {
     setConfig("css_side_margin", 0);
     setConfig("css_hide_files_names", false);
     setConfig("css_hide_files_info", false);
+    setConfig("css_hide_markup_buttons", false);
     setConfig("css_custom", "");
 }
 
@@ -291,6 +293,11 @@ function applyCSSSettings() {
     var hide_files_info = getConfig("css_hide_files_info");
     if (hide_files_info) {
         style.sheet.insertRule(".file-info { display: none; }", index);
+        index++;
+    }
+    var hide_markup_buttons = getConfig("css_hide_markup_buttons");
+    if (hide_markup_buttons) {
+        style.sheet.insertRule(".markup-buttons { display: none; }", index);
         index++;
     }
     var custom = getConfig("css_custom");

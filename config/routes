@@ -78,8 +78,10 @@
 /admin/account/password    NewPasswordR  POST
 
 /admin/config              ConfigR       GET POST
-
 /admin/rating/#Int/#Censorship ManageCensorshipR GET
+/admin/deleted/#Int        AdminDeletedR GET
+/admin/deleted/filtered/#Text/#Int/#Int AdminDeletedFilteredR GET
+/admin/recover/deleted     AdminRecoverDeletedR GET
 
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST

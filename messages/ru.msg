@@ -400,6 +400,18 @@ PostsByIP: Все посты с этим IP
 DisplayOnlyHellbanned: Показывать только посты на премодерации
 DisplayAllPosts: Показывать все посты
 ######################################################################################
+#### Admin deleted posts
+######################################################################################
+AdminDeletedPosts: Удаленнные посты
+AdminAllDeletedPosts: Все удаленные посты
+AdminRecoverDeletedPosts: Восстановить удаленные посты
+AdminRecoveredDeletedPosts: Удаленные посты восстановлены
+AdminDeletedFromBoard: на борде 
+AdminDeletedFromThread: в треде 
+AdminDeletedFilter: Отфильтровать посты
+AdminDeletedWhichBoard: с какой борды?
+AdminDeletedWhichThread: из какого треда? 0 - показать только треды, -1 - со всех тредов
+######################################################################################
 ImageSource: Соус
 PostPreview: Предварительный просмотр
 DeleteFile: Удалить файл

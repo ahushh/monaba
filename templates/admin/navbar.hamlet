@@ -1,4 +1,7 @@
 <div .admin-navbar>
+    $if elem DeletePostsP permissions
+        <a href=@{AdminDeletedR 0}>_{MsgAdminDeletedPosts} #
+        | 
     $if elem HellBanP permissions
         <a href=@{HellBanNoPageR}>_{MsgHellbanning} #
         | 

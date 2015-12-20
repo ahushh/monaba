@@ -398,6 +398,18 @@ PostsByIP: Posts by IP
 DisplayOnlyHellbanned: Display only hellbanned posts
 DisplayAllPosts: Display all posts
 ######################################################################################
+#### Admin deleted posts
+######################################################################################
+AdminDeletedPosts: Deleted posts
+AdminAllDeletedPosts: All deleted posts
+AdminRecoverDeletedPosts: Recover deleted posts
+AdminRecoveredDeletedPosts: Deleted posts have been recoverd
+AdminDeletedFromBoard: from board 
+AdminDeletedFromThread: from thread 
+AdminDeletedFilter: Filter posts
+AdminDeletedWhichBoard: from which board?
+AdminDeletedWhichThread: from which thread? 0 - display only threads, -1 - from all threads
+######################################################################################
 ImageSource: Source
 PostPreview: Preview
 DeleteFile: Delete file

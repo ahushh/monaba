@@ -1683,6 +1683,13 @@ function getVisibilityChange() {
 // ---------------------------------------------------------
 // Misc
 // ---------------------------------------------------------
+function filterDeletedPosts() {
+    var destBoard = prompt(#{toJSON $ msgrender MsgAdminDeletedWhichBoard});
+    var destThread = prompt(#{toJSON $ msgrender MsgAdminDeletedWhichThread});
+    if (destBoard && destThread)
+        window.location.href = "/admin/deleted/filtered/"+destBoard+"/"+destThread+"/0";
+}
+
 function moveThread(board, thread) {
     var destBoard = prompt(#{toJSON $ msgrender MsgWhichBoard});
     if (destBoard)

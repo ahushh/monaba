@@ -40,6 +40,7 @@ library
                      Handler.Admin.User
                      Handler.Admin.Modlog
                      Handler.Admin.Search
+                     Handler.Admin.Delete
                      Handler.Ajax
                      Handler.Settings
                      Handler.Captcha

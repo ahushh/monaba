@@ -159,6 +159,11 @@ instance Yesod App where
       AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP]
       ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
+
+      AdminDeletedR{}         -> isAuthorized' [DeletePostsP]
+      AdminDeletedFilteredR{} -> isAuthorized' [DeletePostsP]
+      AdminRecoverDeletedR{}  -> isAuthorized' [DeletePostsP]
+
       ConfigR{}       -> isAuthorized' [ManageConfigP]
       _               -> return Authorized
 

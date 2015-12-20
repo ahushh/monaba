@@ -1,0 +1,11 @@
+^{adminNavbarWidget}
+<h2 style=text-align:center> _{MsgAdminDeletedPosts}, _{MsgAdminDeletedFromBoard}: #{board}, _{MsgAdminDeletedFromThread}: #{thread}
+<div .feed>
+  <form .delete-form method=get action=@{AdminRecoverDeletedR}>
+    $forall (e, files) <- postsAndFiles
+      ^{postWidget e files False False True True True permissions}
+    <div #delete-container>
+      <a onclick="filterDeletedPosts()">_{MsgAdminDeletedFilter}
+      <input type=submit value=_{MsgAdminRecoverDeletedPosts}>
+
+^{paginationWidget page pages (AdminDeletedFilteredR board thread)}

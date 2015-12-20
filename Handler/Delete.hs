@@ -35,6 +35,20 @@ getDeletedByOpR board thread = do
     defaultTitleMsg MsgDeletedPosts
     $(widgetFile "deleted")
 
+getDeleteFileR :: Int -> Handler Html
+getDeleteFileR fileId = do
+  muser  <- maybeAuth
+  mgroup <- getMaybeGroup muser
+  let fileKey           = toSqlKey $ fromIntegral fileId
+      errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
+      nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
+  file <- runDB $ get404 fileKey
+  post <- runDB $ get404 $ attachedfileParentId file
+  posterId <- getPosterId
+  when (not nopasreq && postPosterId post /= posterId) $ errorRedirect MsgFileNotYours
+  deleteFile $ Entity fileKey file
+  redirectUltDest HomeR
+
 getDeleteR :: Handler Html
 getDeleteR = do
   query  <- reqGetParams <$> getRequest
@@ -103,6 +117,27 @@ deleteFiles idsToRemove = do
         liftIO $ removeFile $ attachedfilePath f
         when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
         runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
+
+deleteFile :: Entity Attachedfile -> Handler ()
+deleteFile (Entity fId f) = do
+  AppSettings{..} <- appSettings <$> getYesod
+  sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
+  let ft = attachedfileFiletype f
+      fe = attachedfileExtension f
+      hs = attachedfileHashsum f
+      ts = attachedfileThumbSize f
+  case sameFilesCount `compare` 0 of
+    GT -> do -- this file belongs to several posts so don't delete it from disk
+      filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
+      unless (filesWithSameThumbSize > 0) $
+        when (ft `elem` thumbFileTypes) $ do
+          void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+      runDB $ delete fId
+    _  -> do
+      liftIO $ removeFile $ attachedfilePath f
+      when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+      runDB $ delete fId
+
 ---------------------------------------------------------------------------------------------
 -- used by Handler/Admin and Handler/Board
 ---------------------------------------------------------------------------------------------

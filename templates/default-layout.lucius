@@ -209,6 +209,7 @@ pre {
 }
 .file-name {
     margin: 2px;
+    display:inline;
 }
 .file-info {
     font-style: italic;

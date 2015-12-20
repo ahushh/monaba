@@ -83,13 +83,16 @@
              <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>#{postParentTitle postVal} >>/#{board}/#{sThreadLocalId}
 
     $forall Entity fileKey file <- eFiles
-       $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+      $with fKey <- fromIntegral $ fromSqlKey fileKey
+        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
           $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
             $with up <- attachedfilePath file
               $with fi <- makeFileInfo file
-                <div class=#{c} id="file-#{show $ fromIntegral $ fromSqlKey fileKey}">
+                <div class=#{c} id="file-#{fKey}">
                   <div .file-name>
                       <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
+                      <a href=@{DeleteFileR fKey}>
+                        <i title=_{MsgDeleteFile} .fa .fa-trash>
                       $if attachedfileFiletype file == FileImage
                         <ul .dropdown-menu>
                           <li>
@@ -108,25 +111,24 @@
                   <div .file-info>
                     #{fi}
                   $if elem ChangeFileRatingP permissions
-                    $with key <- fromIntegral $ fromSqlKey fileKey
                      <div .rating-management>
                        $with fRating <- tread (attachedfileRating file)
                          $if fRating == SFW
                              SFW&nbsp;
                          $else
-                             <a href=@{ManageCensorshipR key SFW}>SFW
+                             <a href=@{ManageCensorshipR fKey SFW}>SFW
                          $if fRating == R15
                              R-15&nbsp;
                          $else
-                             <a href=@{ManageCensorshipR key R15}>R-15
+                             <a href=@{ManageCensorshipR fKey R15}>R-15
                          $if fRating == R18
                              R-18&nbsp;
                          $else
-                             <a href=@{ManageCensorshipR key R18}>R-18
+                             <a href=@{ManageCensorshipR fKey R18}>R-18
                          $if fRating == R18G
                              R-18G&nbsp;
                          $else
-                             <a href=@{ManageCensorshipR key R18G}>R-18G
+                             <a href=@{ManageCensorshipR fKey R18G}>R-18G
                   $with fRating <- tread (attachedfileRating file)
                     $if fRating > rating
                       $case fRating

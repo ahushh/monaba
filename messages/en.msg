@@ -400,3 +400,5 @@ DisplayAllPosts: Display all posts
 ######################################################################################
 ImageSource: Source
 PostPreview: Preview
+DeleteFile: Delete file
+FileNotYours: Wrong session. You can't delete this file.

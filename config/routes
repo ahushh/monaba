@@ -8,6 +8,7 @@
 /captcha             CaptchaR      GET
 /feed                FeedR         GET
 /delete              DeleteR       GET 
+/delete/file/#Int    DeleteFileR   GET
 /deleted/#Text/#Int  DeletedByOpR  GET
 /edit                PostEditR     POST
 /history/#Int        EditHistoryR  GET

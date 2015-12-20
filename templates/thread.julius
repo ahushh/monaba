@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
             data: formData,
             onloadstart: function() {
                 pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                postform.querySelector("input[type='submit']").disabled = 1;
+            },
+            onloadend: function() {
+                postform.querySelector("input[type='submit']").removeAttribute('disabled');
             },
             onloadBefore: function() {
                 refreshCaptcha();

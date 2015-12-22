@@ -144,6 +144,8 @@ pre {
 }
 .popup_message_text {
     display: inline;
+    max-height: 150px;
+    overflow-y: scroll;
 }
 .close_popup_message {
     cursor: pointer;

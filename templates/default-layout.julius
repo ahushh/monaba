@@ -17,6 +17,11 @@ var Monaba = {
     removePopupPostTimer: {},
     iframelyAPIKey: 'a24983cf9554abfbd77bd2',
     youtubeAPIKey: 'AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw',
+    lastPopup: {
+        container: '',
+        count: 0,
+        message: ''
+    }
 };
 loadConfig();
 applyCSSSettings();
@@ -1297,6 +1302,13 @@ function expandImage(post) {
 // popup messages
 //-----------------------------------------------------------------
 function popupMessage(text, delay, loadingIcon, close) {
+    if (text == Monaba.lastPopup.message && close) {
+        console.log(text);
+        Monaba.lastPopup.count++;
+        Monaba.lastPopup.container.innerHTML = text + ' x' + Monaba.lastPopup.count + ' ';
+        return;
+    }
+
     var container = document.getElementById("popup_message_container");
     if (container == null) {
         container = document.createElement("div");
@@ -1319,6 +1331,9 @@ function popupMessage(text, delay, loadingIcon, close) {
     var textContainer = document.createElement("div");
     textContainer.className = 'popup_message_text';
     textContainer.innerHTML = text;
+    Monaba.lastPopup.container = textContainer;
+    Monaba.lastPopup.message = text;
+    Monaba.lastPopup.count = 0;
     msg.appendChild(textContainer);
 
     if (close) {

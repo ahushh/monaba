@@ -413,4 +413,5 @@ AdminDeletedWhichThread: from which thread? 0 - display only threads, -1 - from 
 ImageSource: Source
 PostPreview: Preview
 DeleteFile: Delete file
+DeleteFileConfirm: This cannot be undone. Continue?
 FileNotYours: Wrong session. You can't delete this file.

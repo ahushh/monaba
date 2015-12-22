@@ -91,7 +91,7 @@
                 <div class=#{c} id="file-#{fKey}">
                   <div .file-name>
                       <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
-                      <a href=@{DeleteFileR fKey}>
+                      <a onclick="return confirm('_{MsgDeleteFileConfirm}')" href=@{DeleteFileR fKey}>
                         <i title=_{MsgDeleteFile} .fa .fa-trash>
                       $if attachedfileFiletype file == FileImage
                         <ul .dropdown-menu>

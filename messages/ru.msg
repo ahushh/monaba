@@ -415,4 +415,5 @@ AdminDeletedWhichThread: из какого треда? 0 - показать то
 ImageSource: Соус
 PostPreview: Предварительный просмотр
 DeleteFile: Удалить файл
+DeleteFileConfirm: Файл нельзя будет восстановить. Продолжить?
 FileNotYours: Неверная сессия. Файл не ваш и удалить его нельзя.

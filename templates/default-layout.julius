@@ -1791,10 +1791,10 @@ function httpRequest(cnf) {
         popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.status+")", 0, false, true);
         onerrorAfter(request);
     };
-    if (onload ) request.onload  = onload;
-    if (onerror) request.onerror = onerror;
-    if (onloadstart) request.onloadstart = onloadstart;
-    if (onloadend  ) request.onloadend = onloadend;
+    if (onload ) request.onload  = function(){ onload(request)  };
+    if (onerror) request.onerror = function(){ onerror(request) };
+    if (onloadstart) request.onloadstart = function(){ onloadstart(request) };
+    if (onloadend  ) request.onloadend = function(){ onloadend(request) };
     if (data)
         request.send(data);
     else

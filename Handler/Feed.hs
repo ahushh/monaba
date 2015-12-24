@@ -47,7 +47,7 @@ getAjaxFeedOffsetR offset = do
   AppSettings{..}  <- appSettings <$> getYesod
   msgrender        <- getMessageRender
   mBanner          <- chooseBanner
-  (editFormWidget, _) <- generateFormPost editForm
+  (editFormWidget, _) <- generateFormPost $ editForm permissions
   if offset == 0
      then defaultLayout $ do
             setUltDestCurrent
@@ -84,8 +84,8 @@ getAjaxNewFeedR lastPostId = do
   -------------------------------------------------------------------------------------------------------------------
   AppSettings{..}  <- appSettings <$> getYesod
   msgrender        <- getMessageRender
-  (editFormWidget, _) <- generateFormPost editForm
+  (editFormWidget, _) <- generateFormPost $ editForm permissions
   let offset  = -1 :: Int
       mBanner = Nothing :: Maybe (String, String)
   bareLayout $(widgetFile "feed")
-  
+

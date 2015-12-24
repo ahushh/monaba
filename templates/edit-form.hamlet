@@ -42,3 +42,7 @@
     ^{fvInput passwordView}
     <input type=button id=edit-button value=_{MsgEdit}>
     <i title=_{MsgCloseIcon} onclick="hideEditForm()" .fa .fa-close .icon-close #close-edit-form>
+    $if elem ShadowEditP permissions
+      <label>
+        _{MsgDontSaveHistory}
+        ^{fvInput shadowView}

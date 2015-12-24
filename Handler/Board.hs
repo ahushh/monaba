@@ -85,7 +85,7 @@ getBoardR board page = do
   ------------------------------------------------------------------------------------------------------- 
   AppSettings{..}   <- appSettings <$> getYesod
   (postFormWidget, formEnctype) <- generateFormPost $ postForm True boardVal muser
-  (editFormWidget, _)           <- generateFormPost editForm
+  (editFormWidget, _)           <- generateFormPost $ editForm permissions
   msgrender        <- getMessageRender
   mBanner          <- chooseBanner
   defaultLayout $ do

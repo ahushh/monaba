@@ -9,13 +9,14 @@ postPostEditR :: Handler TypedContent
 postPostEditR = do
   muser       <- maybeAuth
   permissions <- getPermissions <$> getMaybeGroup muser
-  ((result, _), _) <- runFormPost editForm
+  ((result, _), _) <- runFormPost $ editForm permissions
   case result of
     FormFailure []                  -> trickyRedirect "error" MsgBadFormData HomeR
     FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) HomeR
     FormMissing                     -> trickyRedirect "error" MsgNoFormData  HomeR
-    FormSuccess (newMessage, pswd, postId) -> do
+    FormSuccess (newMessage, pswd, postId, mShadowEdit) -> do
       let postKey = (toSqlKey . fromIntegral) postId :: Key Post
+          shadowEdit = fromMaybe False mShadowEdit
       post     <- runDB (get404 postKey)
       posterId <- getPosterId
       boardVal <- getBoardVal404 (postBoard post)
@@ -52,10 +53,13 @@ postPostEditR = do
                                , historyMessages = oldMessage : oldMessages
                                , historyDates    = oldDate    : oldDates
                                }
-      runDB $ update postKey [PostMessage =. messageFormatted, PostLastModified =. Just now, PostRawMessage =. unTextarea newMessage]
-      if isJust history
-        then runDB $ replace (entityKey $ fromJust history) newHistory
-        else void $ runDB $ insert newHistory
+      runDB $ update postKey ([PostMessage =. messageFormatted
+                             , PostRawMessage =. unTextarea newMessage]
+                             ++[PostLastModified =. Just now | not (ShadowEditP `elem` permissions && shadowEdit)])
+      unless (ShadowEditP `elem` permissions && shadowEdit) $
+        if isJust history
+          then runDB $ replace (entityKey $ fromJust history) newHistory
+          else void $ runDB $ insert newHistory
       trickyRedirect "ok" MsgPostEdited HomeR
   
 getEditHistoryR :: Int -> Handler Html

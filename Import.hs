@@ -35,6 +35,7 @@ data GroupConfigurationForm = GroupConfigurationForm
                               Bool -- ^ to view admin panel
                               Bool -- ^ to manage bans
                               Bool -- ^ to edit any post
+                              Bool -- ^ Permission to edit any post without saving history  
                               Bool -- ^ to use additional markup
                               Bool -- ^ to view moderation log 
                               Bool -- ^ to view ip and uid

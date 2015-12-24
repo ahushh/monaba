@@ -72,13 +72,14 @@ postForm isNewThread boardVal muser extra = do
       widget = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
-editForm :: Html -> MForm Handler (FormResult (Textarea, Text, Int), Widget)
-editForm extra = do
+editForm :: [Permission] -> Html -> MForm Handler (FormResult (Textarea, Text, Int, Maybe Bool), Widget)
+editForm permissions extra = do
   (postIdRes  , postIdView  ) <- mreq intField      "" Nothing
   (messageRes , messageView ) <- mreq textareaField "" Nothing
   (passwordRes, passwordView) <- mreq passwordField "" Nothing  
+  (shadowRes  , shadowView  ) <- mopt checkBoxField "" Nothing 
   -- msgrender <- getMessageRender
-  let result = (,,) <$> messageRes <*> passwordRes <*> postIdRes
+  let result = (,,,) <$> messageRes <*> passwordRes <*> postIdRes <*> shadowRes
       widget = $(widgetFile "edit-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------

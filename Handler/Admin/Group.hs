@@ -17,6 +17,7 @@ groupsForm extra = do
   (manageBanRes    , manageBanView   ) <- mreq checkBoxField "" Nothing
   (editPostsRes    , editPostsView   ) <- mreq checkBoxField "" Nothing
   (aMarkupRes      , aMarkupView     ) <- mreq checkBoxField "" Nothing    
+  (shadowEditRes   , shadowEditView  ) <- mreq checkBoxField "" Nothing 
   (viewModlogRes   , viewModlogView  ) <- mreq checkBoxField "" Nothing
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing 
@@ -25,9 +26,9 @@ groupsForm extra = do
   let result = GroupConfigurationForm <$> nameRes <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
-               manageBanRes    <*> editPostsRes   <*> aMarkupRes     <*>
-               viewModlogRes   <*> viewIPAndIDRes <*> hellbanningRes <*>
-               ratingRes
+               manageBanRes    <*> editPostsRes   <*> shadowEditRes  <*>
+               aMarkupRes      <*> viewModlogRes  <*> viewIPAndIDRes <*>
+               hellbanningRes  <*> ratingRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -41,6 +42,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ManagePanelP     , MsgManagePanel     )
              ,(ManageBanP       , MsgManageBan       )
              ,(EditPostsP       , MsgEditPosts       )
+             ,(ShadowEditP      , MsgShadowEdit      ) 
              ,(AdditionalMarkupP, MsgAdditionalMarkup)
              ,(ViewModlogP      , MsgViewModlog      )
              ,(ViewIPAndIDP     , MsgViewIPAndID     )
@@ -65,14 +67,14 @@ postManageGroupsR = do
     FormFailure xs -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (GroupConfigurationForm name manageThread manageBoard manageUsers
-                 manageConfig  deletePostsP managePanel manageBan editPosts
+                 manageConfig  deletePostsP managePanel manageBan editPosts shadowEdit
                  aMarkup viewModLog  viewIPAndID hellbanning changeFileRating
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
-                        ,(ViewModlogP  ,viewModLog  ), (ViewIPAndIDP,viewIPAndID ), (HellBanP,hellbanning)
-                        ,(ChangeFileRatingP, changeFileRating)
+                        ,(ShadowEditP  ,shadowEdit ) , (ViewModlogP ,viewModLog  ), (ViewIPAndIDP,viewIPAndID )
+                        ,(HellBanP,hellbanning)      , (ChangeFileRatingP, changeFileRating)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

@@ -258,11 +258,13 @@ ManagePanel :Manage Panel
 ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 EditPosts: Edit posts and view history
+ShadowEdit: Edit posts without saving history
 ViewModlog: View moderation log 
 ViewIPAndID: View poster's IP and ID
 Hellbanning: Hellbanning
 ChangeFileRating: Change file's censorship rating
 
+DontSaveHistory: Do not save editing history
 ######################################################################################
 #### Hellbanning
 ######################################################################################

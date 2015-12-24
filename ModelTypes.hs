@@ -39,6 +39,7 @@ data Permission = ManageThreadP
                 | ViewIPAndIDP
                 | HellBanP
                 | ChangeFileRatingP 
+                | ShadowEditP 
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 data Ternary = Enabled | Disabled | Required

@@ -928,6 +928,7 @@ function showEditForm(postId) {
     var ps = document.querySelector('#edit-form input[type=password]');
     var hd = document.querySelector('#edit-form input[type=hidden]');
     var pt = document.querySelector('#edit-form input[type=number]');
+    var se = document.querySelector('#edit-form input[type=checkbox]');
     var bt = document.getElementById('edit-button');
     ta.addEventListener('keydown', function(e) {
         if (e.keyCode == 13 && e.ctrlKey)
@@ -938,6 +939,7 @@ function showEditForm(postId) {
         obj[ ta.name ] = ta.value;
         obj[ ps.name ] = ps.value;
         obj[ hd.name ] = hd.value;
+        obj[ se.name ] = se.value;
         obj[ pt.name ] = postId;
         var pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         httpRequest({

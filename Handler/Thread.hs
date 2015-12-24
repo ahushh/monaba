@@ -60,7 +60,7 @@ getThreadR board thread = do
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
   (postFormWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
-  (editFormWidget, _)           <- generateFormPost editForm
+  (editFormWidget, _)           <- generateFormPost $ editForm permissions
 
   noDeletedPosts  <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
   mBanner         <- chooseBanner

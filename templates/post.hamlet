@@ -4,6 +4,12 @@
             <input type=checkbox name=postdelete value=#{sPostId}>
             <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close>
         <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit>
+        $if elem EditPostsP permissions
+          <a href=@{AdminLockEditing (fromIntegral postId)}>
+            $if postLockEditing postVal
+              <i title=_{MsgUnlockEditing} .fa .fa-unlock>
+            $else
+              <i title=_{MsgLockEditing} .fa .fa-lock>
         $if isThread
           <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread>
         $if geoIp

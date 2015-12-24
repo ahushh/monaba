@@ -26,6 +26,8 @@ postPostEditR = do
           trickyRedirect "error" MsgThreadEditingIsDisabled HomeR
         when (postParent post /= 0 && not (boardPostEditing boardVal)) $
           trickyRedirect "error" MsgPostEditingIsDisabled   HomeR
+        when (postLockEditing post) $ 
+          trickyRedirect "error" MsgDisabledEditing HomeR
   
         when (postPosterId post /= posterId &&
               postPassword post /= pswd

@@ -83,6 +83,8 @@
 /admin/deleted/filtered/#Text/#Int/#Int AdminDeletedFilteredR GET
 /admin/recover/deleted     AdminRecoverDeletedR GET
 
+/admin/editing/lock/#Int   AdminLockEditing GET
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST

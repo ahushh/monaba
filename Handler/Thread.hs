@@ -149,6 +149,7 @@ postThreadR board thread = do
                            , postHellbanned   = hellbanned
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
+                           , postLockEditing  = False
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------

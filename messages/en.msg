@@ -415,3 +415,6 @@ PostPreview: Preview
 DeleteFile: Delete file
 DeleteFileConfirm: This cannot be undone. Continue?
 FileNotYours: Wrong session. You can't delete this file.
+DisabledEditing: Editing of this post is disabled
+LockEditing: Disable editing of this post for users
+UnlockEditing: Enable editing of this post for users

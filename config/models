@@ -60,6 +60,7 @@ Post json
     deletedByOp  Bool 
     posterId     Text 
     lastModified UTCTime Maybe 
+    lockEditing  Bool default=false
     hellbanned   Bool default=false
     -- form's values
     message      Textarea

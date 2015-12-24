@@ -10,6 +10,14 @@ getAdminR = do
     defaultTitleMsg MsgManagement
     $(widgetFile "admin")
 -------------------------------------------------------------------------------------------------------------
+getAdminLockEditing :: Int -> Handler Html
+getAdminLockEditing postKey = do
+  let k = (toSqlKey $ fromIntegral postKey) :: Key Post
+  post <- runDB $ get404 k
+  runDB $ update k [PostLockEditing =. not (postLockEditing post)]
+  redirectUltDest HomeR
+
+-------------------------------------------------------------------------------------------------------------
 -- Thread management
 -------------------------------------------------------------------------------------------------------------
 getMoveThreadR :: Text -> Int -> Text -> Handler Html

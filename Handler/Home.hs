@@ -1,6 +1,7 @@
 module Handler.Home where
 
 import Import
+import qualified Data.Text as T (null)
 
 getHomeR :: Handler Html
 getHomeR = do

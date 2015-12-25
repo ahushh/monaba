@@ -168,7 +168,7 @@ pre {
    border: 1px dotted rgba(50,50,50,0.5);
 }
 
-#news-title {
+#latest-news > .title {
    font-weight: bold;
    background: none repeat scroll 0% 0% #202020;
 }

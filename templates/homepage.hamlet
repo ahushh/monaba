@@ -1,45 +1,50 @@
 <div #main-title>
-    <h1>#{appSiteName}
+  <h1>#{appSiteName}
 <div #home-container>
-    <div #board-list-full>
-        $forall c <- boardCategories
-          $with bs <- filterBoards boards c group
-            $if not (null bs)
-              <div .board-category>#{c}
-              $forall Entity _ b <- sortBoards bs
-                <p><a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> — #{boardTitle b}
-    <div #home-content>
-      #{preEscapedToHtml $ unTextarea homeContent}
-    $if not $ null newsAndFiles
-        <div #latest-news>
-            <div #news-title>_{MsgNews}
-            $forall (Entity pKey t, eFiles) <- newsAndFiles
-                $if not $ t == entityVal (fst $ head newsAndFiles)
-                    <hr>
-                <div .news id=p#{fromSqlKey pKey}>
-                    <div .title>
-                        <a href=@{ThreadR newsBoard $ postLocalId t}>
-                            <strong>#{postTitle t}</strong>
-                            <time>#{myFormatTime timeZone $ postDate t}
-                    $forall Entity _ file <- eFiles
-                        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-                           $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
-                             $with up <- attachedfilePath file
-                               $with fi <- makeFileInfo file
-                                 <div class=#{c}>
-                                   $if attachedfileThumbWidth file == -1
-                                       <img src="#{tp}" .thumb title="#{fi}">
-                                   $elseif attachedfileFiletype file == FileVideo
-                                       <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileFiletype file == FileAudio
-                                       <audio controls>
-                                         <source src="/#{up}">
-                                       <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileFiletype file == FileImage
-                                       <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                                   $elseif attachedfileFiletype file == FileFlash
-                                       <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
-                                   $else
-                                       <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-                    $with m <- preEscapedToHtml $ unTextarea $ postMessage t
-                        <div .message>#{m}
+  <div #board-list-full>
+    <div .title>_{MsgHomeBoards}
+    $forall c <- boardCategories
+      $with bs <- filterBoards boards c group
+        $if not (null bs)
+          $if not (T.null c)
+            <div .board-category>#{c}
+          $forall Entity _ b <- sortBoards bs
+            <p>
+              <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ 
+              —
+              <a href=@{BoardNoPageR $ boardName b}> #{boardTitle b}
+  <div #home-content>
+    #{preEscapedToHtml $ unTextarea homeContent}
+  $if not $ null newsAndFiles
+    <div #latest-news>
+      <div .title>_{MsgNews}
+      $forall (Entity pKey t, eFiles) <- newsAndFiles
+        $if not $ t == entityVal (fst $ head newsAndFiles)
+          <hr>
+        <div .news id=p#{fromSqlKey pKey}>
+          <div .title>
+            <a href=@{ThreadR newsBoard $ postLocalId t}>
+              <strong>#{postTitle t}
+              <time>#{myFormatTime timeZone $ postDate t}
+          $forall Entity _ file <- eFiles
+            $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+              $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
+                $with up <- attachedfilePath file
+                  $with fi <- makeFileInfo file
+                    <div class=#{c}>
+                      $if attachedfileThumbWidth file == -1
+                        <img src="#{tp}" .thumb title="#{fi}">
+                      $elseif attachedfileFiletype file == FileVideo
+                        <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileAudio
+                        <audio controls>
+                          <source src="/#{up}">
+                        <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileImage
+                        <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                      $elseif attachedfileFiletype file == FileFlash
+                        <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
+                      $else
+                        <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+          $with m <- preEscapedToHtml $ unTextarea $ postMessage t
+            <div .message>#{m}

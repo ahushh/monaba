@@ -224,7 +224,6 @@ pre {
     text-align: center;
 }
 .file-name {
-    margin: 2px;
     display:inline;
 }
 .file-info {

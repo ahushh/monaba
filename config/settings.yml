@@ -43,6 +43,7 @@ titleDelimiter:    " / "
 ffmpeg:            "/usr/bin/ffmpeg"
 exiftool:          "/usr/bin/exiftool"
 animatedThumbs:    false
+randomBanners:     false # true - show banners from differents boards, false - same board
 
 # default JS settings
 jsPostsAutoloadInterval:          30000

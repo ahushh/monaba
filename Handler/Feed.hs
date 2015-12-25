@@ -1,7 +1,7 @@
 module Handler.Feed where
 
 import           Import
-import           Handler.Posting (chooseBanner, postForm, editForm)
+import           Handler.Posting (takeBanner, randomBanner, postForm, editForm)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getAjaxFeedOffsetR 0
@@ -46,7 +46,7 @@ getAjaxFeedOffsetR offset = do
   -------------------------------------------------------------------------------------------------------------------
   AppSettings{..}  <- appSettings <$> getYesod
   msgrender        <- getMessageRender
-  mBanner          <- chooseBanner
+  mBanner          <- if appRandomBanners then randomBanner else takeBanner "feed"
   (editFormWidget, _) <- generateFormPost $ editForm permissions
   if offset == 0
      then defaultLayout $ do

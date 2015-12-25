@@ -63,9 +63,9 @@ getThreadR board thread = do
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
 
   noDeletedPosts  <- (==0) <$> runDB (count [PostBoard ==. board, PostParent ==. thread, PostDeletedByOp ==. True])
-  mBanner         <- chooseBanner
   msgrender       <- getMessageRender
   AppSettings{..} <- appSettings <$> getYesod
+  mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   defaultLayout $ do
     setUltDestCurrent
     defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]

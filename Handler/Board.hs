@@ -83,11 +83,11 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
-  AppSettings{..}   <- appSettings <$> getYesod
   (postFormWidget, formEnctype) <- generateFormPost $ postForm True boardVal muser
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
-  msgrender        <- getMessageRender
-  mBanner          <- chooseBanner
+  msgrender       <- getMessageRender
+  AppSettings{..} <- appSettings <$> getYesod
+  mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", tshow page, ") "] else ""

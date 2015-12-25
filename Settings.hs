@@ -68,6 +68,7 @@ data AppSettings = AppSettings
     , appFfmpeg              :: Text
     , appExiftool            :: Text
     , appAnimatedThumbs      :: Bool
+    , appRandomBanners       :: Bool
     , appJsPostsAutoloadInterval :: Int
     , appJsMathjax :: Bool
     , appJsEventsource :: Bool
@@ -138,6 +139,7 @@ instance FromJSON AppSettings where
         appFfmpeg                 <- o .: "ffmpeg"
         appExiftool               <- o .: "exiftool"
         appAnimatedThumbs         <- o .: "animatedThumbs"
+        appRandomBanners          <- o .: "randomBanners"
 
         appJsPostsAutoloadInterval <- o .: "jsPostsAutoloadInterval"
         appJsMathjax <- o .: "jsMathjax"

@@ -85,8 +85,23 @@ editForm permissions extra = do
 -------------------------------------------------------------------------------------------------------------------
 -- Helpers
 -------------------------------------------------------------------------------------------------------------------
-chooseBanner :: Handler (Maybe (String, String))
-chooseBanner = do
+takeBanner :: Text -> Handler (Maybe (String, String))
+takeBanner b = do
+  let board = unpack b
+  AppSettings{..} <- appSettings <$> getYesod  
+  liftIO $ unlessM (doesDirectoryExist (appStaticDir </> "banners")) $ createDirectory (appStaticDir </> "banners")
+  dirExists <- liftIO $ doesDirectoryExist (appStaticDir </> "banners" </> board)
+  if dirExists
+    then do
+      banners <- filter (\b->b/="."&&b/="..") <$> liftIO (getDirectoryContents (appStaticDir </> "banners" </> board))
+      mBanner <- liftIO $ pick banners
+      case mBanner of
+        Just banner -> return $ Just ("/" ++ appStaticDir </> "banners" </> board </> banner, "/" ++ board)
+        Nothing -> return Nothing
+    else return Nothing
+
+randomBanner :: Handler (Maybe (String, String))
+randomBanner = do
   AppSettings{..} <- appSettings <$> getYesod
   liftIO $ do
     unlessM (doesDirectoryExist (appStaticDir </> "banners")) $ createDirectory (appStaticDir </> "banners")

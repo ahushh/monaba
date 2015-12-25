@@ -1,3 +1,10 @@
+header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
 html {
     position: relative;
     min-height: 97%;
@@ -61,9 +68,8 @@ pre {
     padding: 5px;
     text-align: center;
 }
-.board-list {
+#board-list {
     text-align: left;
-    margin-bottom: 20px;
 }
 .poster-name {
     font-weight: bolder;

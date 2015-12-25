@@ -1,13 +1,11 @@
-$maybe msg <- mmsg
-    <div #message>#{msg}
-
-<div #control-panel>
+<header>
+  <div #control-panel>
     [ <a href=@{HomeR}>_{MsgHome}</a> ][ <a href=@{HelpR}>_{MsgHelp}</a> | <a href=@{SettingsR}>_{MsgSettings}</a> ]
     $maybe Entity _ user <- muser
         [ #{userName user} | <a href=@{AdminR}>_{MsgManage}</a> | <a href=@{AuthR LogoutR}>_{MsgLogout}</a> ]
     $nothing         
         [ <a href=@{AuthR LoginR}>_{MsgManage}</a> ]
-<div .board-list>
+  <div #board-list>
     [ <a title="_{MsgFeed}" href=@{FeedR}>/feed/</a> ] 
     $forall Entity _ b <- sortBoards (filterBoards boards "" uGroup)
       [ <a title="#{boardTitle b}" id=board-link-#{boardName b} class=board-link data-board=#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 

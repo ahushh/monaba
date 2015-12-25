@@ -7,6 +7,10 @@
    border-top: 0;
 }
 
+header, .pagination {
+    background-color: black;;
+}
+
 html, body {
    background-color: black;;
    color: #7C7C7C;
@@ -227,12 +231,11 @@ pre {
    color: #105510 !important;
 }
 
-#next-page {
+.pagination .previous {
    border-right: 1px solid rgba(100, 100, 100, 0.7);
    padding-right: 5px;
 }
-
-#prev-page {
+.pagination .next {
    border-left: 1px solid rgba(100, 100, 100, 0.7);
    padding-left: 5px;
 }

@@ -1,8 +1,8 @@
 <div .pagination>
   $if not $ page == 0
-      <a id=next-page href=@{route $ page - 1}>_{MsgPrevious}#
-      &nbsp;&nbsp;
-  <span #pages-list>
+    <a .previous href=@{route $ page - 1}>_{MsgPrevious}#
+    &nbsp;&nbsp;
+  <span .list>
     $forall (i,p) <- enumerate pages
       $if p == page
         <strong>#{ p }#
@@ -10,6 +10,7 @@
         <a href=@{route p}>#{ p }#
       $if not $ i == (length pages - 1)
         &nbsp;
-   
   $if (page + 1) < length pages
-      &nbsp;<a id=prev-page href=@{route $ page + 1}>_{MsgNext}
+    &nbsp;
+  $if (page + 1) < length pages
+    <a .next href=@{route $ page + 1}>_{MsgNext}

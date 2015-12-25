@@ -2,6 +2,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    z-index: 999999;
 }
 header {
     border-bottom: 1px solid rgba(100, 100, 100, 0.3);
@@ -9,6 +10,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
+    z-index: 999999;
 }
 html {
     position: relative;

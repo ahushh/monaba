@@ -939,7 +939,8 @@ function showEditForm(postId) {
         obj[ ta.name ] = ta.value;
         obj[ ps.name ] = ps.value;
         obj[ hd.name ] = hd.value;
-        obj[ se.name ] = se.value;
+        if (se != null)
+            obj[ se.name ] = se.value;
         obj[ pt.name ] = postId;
         var pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
         httpRequest({

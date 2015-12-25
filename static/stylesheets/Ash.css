@@ -4,6 +4,10 @@
    color: black;
 }
 
+header, .pagination {
+    background-color: #E0E0E0;
+}
+
 html, body {
    background-color: #E0E0E0;
    background-image: url("/static/img/dust.jpg");
@@ -51,14 +55,6 @@ a {
 
 a:hover {
    color: #FF6600;
-}
-
-header {
-   clear: both;
-   color: #995b46;
-   font-size: 2em;
-   font-weight: bold;
-   text-align: center;
 }
 
 footer {
@@ -159,9 +155,9 @@ pre {
    border: 1px dotted black;
 }
 
-#news-title {
+#latest-news > .title {
    font-weight: bold;
-   background: none repeat scroll 0% 0% #CFCFCF;
+   background: none repeat scroll 0% 0% #202020;
 }
 
 .popup_message {
@@ -221,12 +217,12 @@ pre {
    color: #206620 !important;
 }
 
-#next-page {
+.pagination .previous {
    border-right: 1px solid rgba(10, 10, 10, 0.7);
    padding-right: 5px;
 }
 
-#prev-page {
+.pagination .next {
    border-left: 1px solid rgba(10, 10, 10, 0.7);
    padding-left: 5px;
 }

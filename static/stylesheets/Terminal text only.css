@@ -4,6 +4,10 @@
 	font-size:20pt;
 	border:2px dashed #0CD264;
 }
+header, .pagination {
+	background-color:#020902;
+}
+
 html,body {
 	background-color:#020902;
 	color:#0CD264;
@@ -132,11 +136,11 @@ table td {
 .expand-post {
 	color:#0CD264;
 }
-#next-page {
+.pagination .previous {
 	border-right:1px solid #0CD264;
 	padding-right:5px;
 }
-#prev-page {
+.pagination .next {
 	border-left:1px solid #0CD264;
 	padding-left:5px;
 }

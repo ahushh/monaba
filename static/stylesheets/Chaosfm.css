@@ -6,10 +6,14 @@ html, body {
    padding: 15px;
 }
 
+header, .pagination {
+   background-color: #000505;
+}
+
 #message {
    font-size: 1.7em;
-   border: 1px dashed red !important;
-   color: red !important;
+   border: 1px dashed red;
+   color: red;
 }
 
 * {

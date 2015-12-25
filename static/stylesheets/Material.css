@@ -6,6 +6,9 @@
 #home-content img,.banner {
 	display:none;
 }
+header, .pagination {
+	background-color:#009688;
+}
 html,body {
 	background-attachment:fixed;
 	background-image:url(https://i.imgur.com/nGfpIaA.png);

@@ -3,6 +3,10 @@
    border: 2px dashed red;
 }
 
+header, .pagination {
+   background-color: #353535;
+}
+
 html, body {
    margin:0;
    padding:0;

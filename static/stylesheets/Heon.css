@@ -3,6 +3,10 @@
 	color:#C8CDD5;
 	border:none;
 }
+header, .pagination {
+	background-color:#6E7C87;
+}
+
 #home-content img,#board-summary,#board-subtitle {
 	display:none;
 }
@@ -51,13 +55,13 @@ footer {
 	font-size:12px;
 	text-align:center;
 }
-#next-page {
-	border-right:1px solid white;
-	padding-right:5px;
-}
-#prev-page {
+.pagination .next {
 	border-left:1px solid white;
 	padding-left:5px;
+}
+.pagination .previous {
+	border-right:1px solid white;
+	padding-right:5px;
 }
 .reflink {
 	font-size:85%;

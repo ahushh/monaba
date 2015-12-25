@@ -4,6 +4,9 @@
   font-size: 20pt;
   border: 2px dashed #0CD264;
 }
+header, .pagination {
+	background-color:#020902;
+}
 html, body {
   background-color: #020902;
   color: #0CD264;

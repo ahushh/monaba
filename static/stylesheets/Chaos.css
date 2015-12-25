@@ -8,6 +8,10 @@
    font-size: 10pt;
 }
 
+header, .pagination {
+   background-color: #151515;
+}
+
 html, body {
    background-color: #151515;
    color: #77cd3b;

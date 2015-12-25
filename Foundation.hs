@@ -112,6 +112,7 @@ instance Yesod App where
         stylesheet <- flip mplus (Just $ appStylesheet $ appSettings master) <$> lookupSession "stylesheet"
         let stylesheetPath s = "/" </> appStaticDir (appSettings master) </> "stylesheets" </> (unpack s ++ ".css")
             uGroup           = (userGroup . entityVal) <$> muser
+            settings         = appSettings master
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and

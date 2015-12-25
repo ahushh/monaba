@@ -43,3 +43,33 @@ titleDelimiter:    " / "
 ffmpeg:            "/usr/bin/ffmpeg"
 exiftool:          "/usr/bin/exiftool"
 animatedThumbs:    false
+
+# default JS settings
+jsPostsAutoloadInterval:          30000
+jsMathjax:                        true
+jsEventsource:                    true
+jsBoardStatsUpdate:               30000
+jsAnimationSpeed:                 300
+jsPopupMessageDisplayTime:        2000
+jsPopupPostDelayBeforeDisplaying: 500
+jsPopupPostRemovingOnMouseOut:    false
+jsPopupPostDelayBeforeRemoving:   500
+jsVideoAutoplay:                  true
+jsVideoLoop:                      true
+jsVideoScaleWidth:                0
+jsVideoScaleHeight:               2
+jsVimeoEnable:                    true
+jsCoubEnable:                     true
+jsYoutubeEnable:                  true
+jsYoutubeLoadTitles:              true
+jsYoutubeHtml5:                   true
+jsUrlVideoWidth:                  360
+jsUrlVideoHeight:                 270
+jsFlashHeight:                    400
+jsFlashWidth:                     400
+jsCssWidePosts:                   true
+jsCssSideMargin:                  0
+jsCssHideFilesNames:              false
+jsCssHideFilesInfo:               false
+jsCssHideMarkupButtons:           false
+jsCssCustom:                      ""

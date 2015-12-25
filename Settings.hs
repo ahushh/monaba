@@ -68,6 +68,34 @@ data AppSettings = AppSettings
     , appFfmpeg              :: Text
     , appExiftool            :: Text
     , appAnimatedThumbs      :: Bool
+    , appJsPostsAutoloadInterval :: Int
+    , appJsMathjax :: Bool
+    , appJsEventsource :: Bool
+    , appJsBoardStatsUpdate :: Int
+    , appJsAnimationSpeed :: Int
+    , appJsPopupMessageDisplayTime :: Int
+    , appJsPopupPostDelayBeforeDisplaying :: Int
+    , appJsPopupPostRemovingOnMouseOut :: Bool
+    , appJsPopupPostDelayBeforeRemoving :: Int
+    , appJsVideoAutoplay :: Bool
+    , appJsVideoLoop :: Bool
+    , appJsVideoScaleWidth :: Int
+    , appJsVideoScaleHeight :: Int
+    , appJsVimeoEnable :: Bool
+    , appJsCoubEnable :: Bool
+    , appJsYoutubeEnable :: Bool
+    , appJsYoutubeLoadTitles :: Bool
+    , appJsYoutubeHtml5 :: Bool
+    , appJsUrlVideoWidth :: Int
+    , appJsUrlVideoHeight :: Int
+    , appJsFlashHeight :: Int
+    , appJsFlashWidth :: Int
+    , appJsCssWidePosts :: Bool
+    , appJsCssSideMargin :: Int
+    , appJsCssHideFilesNames :: Bool
+    , appJsCssHideFilesInfo :: Bool
+    , appJsCssHideMarkupButtons :: Bool
+    , appJsCssCustom :: Text
     }
 
 instance FromJSON AppSettings where
@@ -110,6 +138,35 @@ instance FromJSON AppSettings where
         appFfmpeg                 <- o .: "ffmpeg"
         appExiftool               <- o .: "exiftool"
         appAnimatedThumbs         <- o .: "animatedThumbs"
+
+        appJsPostsAutoloadInterval <- o .: "jsPostsAutoloadInterval"
+        appJsMathjax <- o .: "jsMathjax"
+        appJsEventsource <- o .: "jsEventsource"
+        appJsBoardStatsUpdate <- o .: "jsBoardStatsUpdate"
+        appJsAnimationSpeed <- o .: "jsAnimationSpeed"
+        appJsPopupMessageDisplayTime <- o .: "jsPopupMessageDisplayTime"
+        appJsPopupPostDelayBeforeDisplaying <- o .: "jsPopupPostDelayBeforeDisplaying"
+        appJsPopupPostRemovingOnMouseOut <- o .: "jsPopupPostRemovingOnMouseOut"
+        appJsPopupPostDelayBeforeRemoving <- o .: "jsPopupPostDelayBeforeRemoving"
+        appJsVideoAutoplay <- o .: "jsVideoAutoplay"
+        appJsVideoLoop <- o .: "jsVideoLoop"
+        appJsVideoScaleWidth <- o .: "jsVideoScaleWidth"
+        appJsVideoScaleHeight <- o .: "jsVideoScaleHeight"
+        appJsVimeoEnable <- o .: "jsVimeoEnable"
+        appJsCoubEnable <- o .: "jsCoubEnable"
+        appJsYoutubeEnable <- o .: "jsYoutubeEnable"
+        appJsYoutubeLoadTitles <- o .: "jsYoutubeLoadTitles"
+        appJsYoutubeHtml5 <- o .: "jsYoutubeHtml5"
+        appJsUrlVideoWidth <- o .: "jsUrlVideoWidth"
+        appJsUrlVideoHeight <- o .: "jsUrlVideoHeight"
+        appJsFlashHeight <- o .: "jsFlashHeight"
+        appJsFlashWidth <- o .: "jsFlashWidth"
+        appJsCssWidePosts <- o .: "jsCssWidePosts"
+        appJsCssSideMargin <- o .: "jsCssSideMargin"
+        appJsCssHideFilesNames <- o .: "jsCssHideFilesNames"
+        appJsCssHideFilesInfo <- o .: "jsCssHideFilesInfo"
+        appJsCssHideMarkupButtons <- o .: "jsCssHideMarkupButtons"
+        appJsCssCustom <- o .: "jsCssCustom"
 
         return AppSettings {..}
 

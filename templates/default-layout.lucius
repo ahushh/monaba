@@ -1,3 +1,8 @@
+.pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
 header {
     border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     position: fixed;

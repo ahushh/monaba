@@ -4,6 +4,9 @@
     left: 0;
     z-index: 1;
 }
+.container {
+    padding-top: 1%;
+}
 header {
     border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     position: fixed;

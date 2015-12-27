@@ -4,10 +4,22 @@
 	font-size:20pt;
 	border:2px dashed #0CD264;
 }
-header, .pagination {
-	background-color:#020902;
+header {
+	background-color:#0CD264;
+	color: #020902;
+	padding: 2px 0px;
 }
-
+header a {
+	color: #020902;
+}
+.pagination {
+	background: #0CD264;
+	color: #020902;
+	padding: 2px;
+}
+.pagination a {
+	color:#020902;
+}
 html,body {
 	background-color:#020902;
 	color:#0CD264;
@@ -72,9 +84,10 @@ h1,h2 {
 #board-header {
 	font-family:FixedSys;
 	font-size:24pt;
+	margin-top: 10px; 
 }
 #home-content img {
-	display:none;
+	display:none!important;
 }
 hr {
 	border-top:2px dashed #0CD264;
@@ -88,14 +101,14 @@ hr {
 	margin-bottom:15px;
 }
 .board-category {
-	background-color:#001400
+	background-color:#001400;
+	margin-left: -1px;
 }
 #latest-news {
 	border:2px dashed #0CD264;
 }
-#news-title {
-	background-color:#001400;
-	border-bottom:2px dashed #0CD264;
+.news > .title {
+	text-align: left;
 }
 pre {
 	background-color:#002800;
@@ -137,11 +150,11 @@ table td {
 	color:#0CD264;
 }
 .pagination .previous {
-	border-right:1px solid #0CD264;
+	border-right:1px solid #020902;
 	padding-right:5px;
 }
 .pagination .next {
-	border-left:1px solid #0CD264;
+	border-left:1px solid #020902;
 	padding-left:5px;
 }
 .quote,.symbol-counter {

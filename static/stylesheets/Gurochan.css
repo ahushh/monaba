@@ -2,14 +2,28 @@
 	font-size:14pt;
 	color:#AD0A0F;
 }
-header, .pagination {
+header {
 	background-color:#EDDAD2;
+	padding: 3px 0px;
+}
+.pagination {
+	background-color:#EDDAD2;
+	padding: 3px;
 }
 #home-container {
 	font-size:10pt;
 }
 #home-content img {
-	display:none;
+	display:none!important;
+}
+.board-category {
+	margin-left: -1px!important;
+}
+#latest-news > .title {
+	background: #D9AF9E;
+}
+.news > .title {
+	text-align: left;
 }
 html,body {
 	background-color:#EDDAD2;
@@ -160,6 +174,7 @@ pre {
 #board-summary {
 	color:#AD0A0F;
 	font-size:24pt;
+	margin-top: 10px;
 }
 #board-subtitle {
 	color:#AD0A0F;
@@ -180,11 +195,13 @@ pre {
 .symbol-counter {
 	color:#AF0A0F !important;
 }
-.pagination .next, .pagination .previous {
-	border-right:1px solid #808080;
-	padding-right:5px;
+.pagination .next {
 	border-left:1px solid #808080;
 	padding-left:5px;
+}
+.pagination .previous {
+	border-right: 1px solid #808080;
+	padding-right: 5px;
 }
 .spoiler {
 	background-color:#CA927B!important;

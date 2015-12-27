@@ -3,12 +3,26 @@
 	color:#C8CDD5;
 	border:none;
 }
-header, .pagination {
-	background-color:#6E7C87;
+header {
+	background: #546471;
+	padding: 3px 0px;
 }
-
+.pagination {
+	background: #546471;
+	padding: 3px;
+}
+#latest-news > .title {
+	background: #546471;
+	font-weight: bold;
+}
+.news > .title {
+	text-align: left!important;
+}
+hr {
+	border: 1px solid #546471!important;
+}
 #home-content img,#board-summary,#board-subtitle {
-	display:none;
+	display:none!important;
 }
 #board-header {
 	color:#C8CDD5;

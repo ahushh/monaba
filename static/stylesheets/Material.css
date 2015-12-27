@@ -4,10 +4,18 @@
 	border:none;
 }
 #home-content img,.banner {
-	display:none;
+	display:none!important;
 }
-header, .pagination {
-	background-color:#009688;
+header {
+	background-color:#00796b;
+	padding: 1px 0px;
+}
+.pagination {
+	background-color: #00796b;
+	padding: 2px;
+}
+.news > .title {
+	text-align: left !important;
 }
 html,body {
 	background-attachment:fixed;

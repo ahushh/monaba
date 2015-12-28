@@ -218,16 +218,22 @@ GroupDeleted: Group has been deleted
 
 ### Account
 Account: Account
+OldPassword: Old password
 NewPassword: New password
+PostsSent: Posts sent
+ChangePassword: Change
 ## Messages
 PasswordChanged: Password has been changed successfully
+WrongPassword: Wrong password
 
 ### Users management
 Users: Users
 AddNewUserOrUpdate: New user/update
 ## Messages
-UsersAddedOrUpdated: New user has been added/updated successfully
+UsersAdded: New user has been added successfully
+UsersUpdated: User's password/group has been changed successfully
 UsersDeleted: User has been deleted successfully
+UsersPasswordNotSpecified: Password wasn't specified
 UserDoesNotExist: User doesn't exist
 YouAreTheOnlyWhoCanManageUsers: DENIED. You are the only who can manage users.
 

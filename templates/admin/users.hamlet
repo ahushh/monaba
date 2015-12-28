@@ -8,6 +8,6 @@
     $forall Entity _ user <- users
         <tr>
             <td>
-                <a href=@{UsersDeleteR $ userName user}>_{MsgDeleteBtn}
+                <a onclick="return confirm('_{MsgDeleteFileConfirm}')" href=@{UsersDeleteR $ userName user}>_{MsgDeleteBtn}
             <td>#{userName user}
-            <td>#{show $ userGroup user}
+            <td>#{userGroup user}

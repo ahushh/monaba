@@ -220,15 +220,21 @@ GroupDeleted: Группа удалена
 
 ### Account
 Account: Мой аккаунт
+OldPassword: Старый пароль
 NewPassword: Новый пароль
+PostsSent: Постов отправлено
+ChangePassword: Сменить
 ## Messages
 PasswordChanged: Пароль изменен
+WrongPassword: Неправильный пароль
 
 ### Users management
 Users: Пользователи
 AddNewUserOrUpdate: Новый аккаунт/обновить
 ## Messages
-UsersAddedOrUpdated: Аккаунт добавлен/обновлен
+UsersAdded: Аккаунт добавлен
+UsersUpdated: Аккаунт обновлен
+UsersPasswordNotSpecified: Не указан пароль
 UserDoesNotExist: Пользователь не существует
 UsersDeleted: Аккаунт удален
 YouAreTheOnlyWhoCanManageUsers: Нетъ. Вы единственный, кто может добавить нового пользователя.

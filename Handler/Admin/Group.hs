@@ -32,24 +32,6 @@ groupsForm extra = do
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
-showPermission :: Permission -> AppMessage
-showPermission p = fromJust $ lookup p xs
-  where xs = [(ManageThreadP    , MsgManageThread    )
-             ,(ManageBoardP     , MsgManageBoard     )
-             ,(ManageUsersP     , MsgManageUsers     )
-             ,(ManageConfigP    , MsgManageConfig    )
-             ,(DeletePostsP     , MsgDeletePosts     )
-             ,(ManagePanelP     , MsgManagePanel     )
-             ,(ManageBanP       , MsgManageBan       )
-             ,(EditPostsP       , MsgEditPosts       )
-             ,(ShadowEditP      , MsgShadowEdit      ) 
-             ,(AdditionalMarkupP, MsgAdditionalMarkup)
-             ,(ViewModlogP      , MsgViewModlog      )
-             ,(ViewIPAndIDP     , MsgViewIPAndID     )
-             ,(HellBanP         , MsgHellbanning     )
-             ,(ChangeFileRatingP, MsgChangeFileRating)
-             ]
-
 getManageGroupsR :: Handler Html
 getManageGroupsR = do
   groups <- map entityVal <$> runDB (selectList ([]::[Filter Group]) [])

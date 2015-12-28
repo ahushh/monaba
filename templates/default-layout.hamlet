@@ -8,7 +8,7 @@
       <i .fa .fa-gear>
     $maybe Entity _ user <- muser
       <i .fa .fa-user>
-      #{userName user}
+      <a href=@{AccountR}>#{userName user}
       <a href=@{AdminR} title=_{MsgManage}>
         <i .fa .fa-gears>
       <a href=@{AuthR LogoutR} title=_{MsgLogout}>

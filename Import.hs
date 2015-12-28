@@ -25,6 +25,24 @@ import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append)
 
 -------------------------------------------------------------------------------------------------------------------
+showPermission :: Permission -> AppMessage
+showPermission p = fromJust $ lookup p xs
+  where xs = [(ManageThreadP    , MsgManageThread    )
+             ,(ManageBoardP     , MsgManageBoard     )
+             ,(ManageUsersP     , MsgManageUsers     )
+             ,(ManageConfigP    , MsgManageConfig    )
+             ,(DeletePostsP     , MsgDeletePosts     )
+             ,(ManagePanelP     , MsgManagePanel     )
+             ,(ManageBanP       , MsgManageBan       )
+             ,(EditPostsP       , MsgEditPosts       )
+             ,(ShadowEditP      , MsgShadowEdit      ) 
+             ,(AdditionalMarkupP, MsgAdditionalMarkup)
+             ,(ViewModlogP      , MsgViewModlog      )
+             ,(ViewIPAndIDP     , MsgViewIPAndID     )
+             ,(HellBanP         , MsgHellbanning     )
+             ,(ChangeFileRatingP, MsgChangeFileRating)
+             ]
+
 data GroupConfigurationForm = GroupConfigurationForm
                               Text -- ^ Group name
                               Bool -- ^ Permission to manage threads
@@ -182,6 +200,9 @@ isAjaxRequest = do
 -------------------------------------------------------------------------------------------------------------------
 -- Template helpers
 -------------------------------------------------------------------------------------------------------------------
+inc :: Int -> Int
+inc = (+1)
+
 makeFileInfo :: Attachedfile -> String
 makeFileInfo file = extractFileExt (attachedfileName file) ++", "++ attachedfileSize file ++i
   where i = if length (attachedfileInfo file) > 0 then ", "++ attachedfileInfo file else ""

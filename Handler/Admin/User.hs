@@ -1,7 +1,7 @@
 module Handler.Admin.User where
 
 import           Import
-import           Yesod.Auth.HashDB (setPassword)
+import           Yesod.Auth.HashDB (setPassword, validatePass)
 import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------
@@ -10,12 +10,12 @@ import qualified Data.Text as T (intercalate)
 usersForm :: [(Text,Text)] -> -- ^ [(group name, group name)]
             Html          -> -- ^ Extra token
             MForm Handler (FormResult ( Text -- ^ User name
-                                      , Text -- ^ User password
+                                      , Maybe Text -- ^ User password
                                       , Text -- ^ User group
                                       ), Widget)
 usersForm groups extra = do
   (userNameRes     , userNameView     ) <- mreq textField                "" Nothing
-  (userPasswordRes , userPasswordView ) <- mreq textField                "" Nothing
+  (userPasswordRes , userPasswordView ) <- mopt passwordField            "" Nothing
   (userGroupRes    , userGroupView    ) <- mreq (selectFieldList groups) "" Nothing
   let result = (,,) <$> userNameRes <*> userPasswordRes <*> userGroupRes
       widget = $(widgetFile "admin/users-form")
@@ -39,18 +39,28 @@ postUsersR = do
     FormFailure []                      -> msgRedirect MsgBadFormData
     FormFailure xs                      -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing                         -> msgRedirect MsgNoFormData
-    FormSuccess (name, password, group) -> do
+    FormSuccess (name, mPassword, group) -> do
+      mUser <- runDB $ getBy $ UserUniqName name
       let newUser = User { userName     = name
                          , userPassword = ""
                          , userSalt     = ""
                          , userGroup    = group
                          }
-      userWithPassword <- liftIO $ setPassword password newUser
-      u <- runDB $ getBy $ UserUniqName name
-      if isJust u
-        then void $ runDB $ replace (entityKey $ fromJust u) userWithPassword
-        else (addModlogEntry $ MsgModlogAddUser name) >> (void $ runDB $ insert userWithPassword)
-      msgRedirect MsgUsersAddedOrUpdated
+      case mUser of
+        Just (Entity key user) -> do -- update user
+          let password = fromMaybe (userPassword user) mPassword
+          userWithPassword <- liftIO $ setPassword password newUser
+          void $ runDB $ replace key userWithPassword
+          msgRedirect MsgUsersUpdated
+        Nothing -> do -- new user
+          case mPassword of
+            Just password -> do
+              userWithPassword <- liftIO $ setPassword password newUser
+              addModlogEntry $ MsgModlogAddUser name
+              void $ runDB $ insert userWithPassword
+              msgRedirect MsgUsersAdded
+            Nothing -> msgRedirect MsgUsersPasswordNotSpecified
+
 
 getUsersDeleteR :: Text -> Handler Html
 getUsersDeleteR usrName = do
@@ -73,20 +83,26 @@ getUsersDeleteR usrName = do
 -------------------------------------------------------------------------------------------------------------
 -- Account  
 -------------------------------------------------------------------------------------------------------------
-newPasswordForm :: Html -> MForm Handler (FormResult Text, Widget)
+newPasswordForm :: Html -> MForm Handler (FormResult (Text, Text), Widget)
 newPasswordForm extra = do
-  (newPasswordRes , newPasswordView ) <- mreq textField "" Nothing
+  (oldPasswordRes , oldPasswordView ) <- mreq passwordField "" Nothing
+  (newPasswordRes , newPasswordView ) <- mreq passwordField "" Nothing
   let widget = toWidget [whamlet|
                              <form method=post action=@{NewPasswordR}>
                                  #{extra}
+                                 _{MsgOldPassword}: ^{fvInput oldPasswordView}
+                                 _{MsgNewPassword}: ^{fvInput newPasswordView}
                                   <input type=submit value=_{MsgNewPassword}>
-                                 ^{fvInput newPasswordView}
                         |]
-  return (newPasswordRes, widget)
+      result = (,) <$> oldPasswordRes <*> newPasswordRes
+  return (result, widget)
 
 getAccountR :: Handler Html
 getAccountR = do
   (formWidget, _) <- generateFormPost newPasswordForm
+  user  <- (entityVal . fromJust) <$> maybeAuth
+  group <- (entityVal . fromJust) <$> runDB (getBy $ GroupUniqName $ userGroup user)
+  posts <- runDB $ count [PostOwnerUser ==. Just (userName user)]
   defaultLayout $ do
     defaultTitleMsg MsgAccount
     $(widgetFile "admin/account")
@@ -99,9 +115,13 @@ postNewPasswordR = do
     FormFailure []          -> msgRedirect MsgBadFormData
     FormFailure xs          -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing             -> msgRedirect MsgNoFormData
-    FormSuccess newPassword -> do
-      eUser               <- fromJust <$> maybeAuth
-      userWithNewPassword <- liftIO $ setPassword newPassword (entityVal eUser)
-      void $ runDB $ replace (entityKey eUser) userWithNewPassword
-      msgRedirect MsgPasswordChanged
+    FormSuccess (oldPassword, newPassword) -> do
+      eUser <- fromJust <$> maybeAuth
+      let isValid = validatePass (entityVal eUser) oldPassword
+      case isValid of
+        Just False -> msgRedirect MsgWrongPassword
+        _ -> do
+           userWithNewPassword <- liftIO $ setPassword newPassword (entityVal eUser)
+           void $ runDB $ replace (entityKey eUser) userWithNewPassword
+           msgRedirect MsgPasswordChanged
       

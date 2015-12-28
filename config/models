@@ -49,6 +49,7 @@ Post json
     parent       Int
     parentTitle  Text default=''
     owner        Text Maybe
+    ownerUser    Text Maybe
     date         UTCTime
     bumped       UTCTime Maybe
     ip           Text

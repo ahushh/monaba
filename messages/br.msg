@@ -226,7 +226,6 @@ PasswordChanged: Password modificado com sucesso
 Users: Usuários
 AddNewUserOrUpdate: Novo usuário/atualizar
 ## Messages
-UsersAddedOrUpdated: Novo usuário adicionado/atualizado com sucesso
 UsersDeleted: Usuário deletado com sucesso
 UserDoesNotExist: Usuário não existe
 YouAreTheOnlyWhoCanManageUsers: NÃO MERDA, SHERLOCK. Você é o único que pode administrar usuários.

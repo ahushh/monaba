@@ -8,9 +8,12 @@
       <i .fa .fa-gear>
     $maybe Entity _ user <- muser
       <i .fa .fa-user>
-      <a href=@{AccountR}>#{userName user}
-      <a href=@{AdminR} title=_{MsgManage}>
-        <i .fa .fa-gears>
+      $if elem ManagePanelP permissions
+        <a href=@{AccountR}>#{userName user}
+        <a href=@{AdminR} title=_{MsgManage}>
+          <i .fa .fa-gears>
+      $else
+        #{userName user}
       <a href=@{AuthR LogoutR} title=_{MsgLogout}>
         <i .fa .fa-sign-out>
     $nothing         

@@ -108,6 +108,7 @@ instance Yesod App where
         mmsg       <- getMessage
         msgrender  <- getMessageRender
         boards     <- runDB $ selectList ([]::[Filter Board]) []
+        permissions <- (maybe [] (groupPermissions . entityVal)) <$> runDB (getBy $ GroupUniqName $ maybe "" (userGroup . entityVal) muser)
         categories <- (maybe [] (configBoardCategories . entityVal)) <$> runDB (selectFirst ([]::[Filter Config]) [])
         stylesheet <- flip mplus (Just $ appStylesheet $ appSettings master) <$> lookupSession "stylesheet"
         let stylesheetPath s = "/" </> appStaticDir (appSettings master) </> "stylesheets" </> (unpack s ++ ".css")

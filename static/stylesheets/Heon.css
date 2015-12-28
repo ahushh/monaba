@@ -148,6 +148,7 @@ pre {
 .popup_message {
 	background-color:#546471;
 	color:white;
+	margin-top: 20px;
 }
 .quick-post-form {
 	padding:3px;

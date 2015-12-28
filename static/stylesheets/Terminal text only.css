@@ -118,6 +118,7 @@ pre {
 .popup_message {
 	background-color:#001400;
 	border:1px solid #0CD264;
+	margin-top: 18px;
 }
 table {
 	border-style:none;

@@ -123,6 +123,7 @@ pre {
 .popup_message {
 	background-color:#00796b;
 	color:#e0f2f1;
+	margin-top: 18px;
 }
 .quick-post-form {
 	padding:3px;

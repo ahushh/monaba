@@ -1,3 +1,7 @@
+.thread-parent {
+    float: right;
+    font-size: 0.8em
+}
 .pagination {
     position: fixed;
     bottom: 0;
@@ -42,12 +46,10 @@ hr {
 pre {
     overflow-x: auto;
 }
-.online-counter {
-    position: fixed;
-    bottom: 0;
-    right: 0;
+.fa.online {
+    margin-right: 0.5em;
 }
-.fa {
+.fa.clickable {
     cursor: pointer;
 }
 .thread {

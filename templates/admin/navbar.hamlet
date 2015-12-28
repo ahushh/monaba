@@ -1,26 +1,36 @@
 <div .admin-navbar>
+    <i .fa .fa-dashboard> | 
     $if elem DeletePostsP permissions
+        <i .fa .fa-trash>
         <a href=@{AdminDeletedR 0}>_{MsgAdminDeletedPosts} #
         | 
     $if elem HellBanP permissions
+        <i .fa .fa-eye-slash>
         <a href=@{HellBanNoPageR}>_{MsgHellbanning} #
         | 
     $if elem ViewModlogP permissions
+        <i .fa .fa-history>
         <a href=@{ModlogR 0}>_{MsgModlog} #
         | 
     $if elem ManageBanP permissions
+        <i .fa .fa-gavel>
         <a href=@{BanByIpR "" ""}>_{MsgBans} #
         | 
     $if elem ManageBoardP permissions
+        <i .fa .fa-th>
         <a href=@{ManageBoardsR NewBoard ""}>_{MsgBoards} #
         | 
     $if elem ManageUsersP permissions
+        <i .fa .fa-user-plus>
         <a href=@{UsersR}>_{MsgUsers} #
         | 
     $if elem ManageUsersP permissions
+        <i .fa .fa-group>
         <a href=@{ManageGroupsR}>_{MsgGroups} #
         | 
     $if elem ManageConfigP permissions
+        <i .fa .fa-wrench>
         <a href=@{ConfigR}>_{MsgConfig} #
         | 
+    <i .fa .fa-user>
     <a href=@{AccountR}>_{MsgAccount}

@@ -301,7 +301,7 @@ SupportedLanguages: Поддерживаемые языки для тега [cod
 ######################################################################################
 #### Ajax, popups, refmap, ...
 ######################################################################################
-Online: Онлайн:
+Online: Онлайн
 GetNewPosts: Получить новые посты (если есть)
 NoNewPosts: Нет новых постов
 
@@ -346,6 +346,7 @@ Language: Язык
 FeedIgnoredBoards: /feed/ игнорируемые борды
 MaxAllowedRating: Максимальный рейтинг
 ResetDefaults: Сбросить
+JSFeatures: JavaScript фичи
 
 ######################################################################################
 #### Modlogs
@@ -406,7 +407,7 @@ DisplayAllPosts: Показывать все посты
 ######################################################################################
 AdminDeletedPosts: Удаленнные посты
 AdminAllDeletedPosts: Все удаленные посты
-AdminRecoverDeletedPosts: Восстановить удаленные посты
+AdminRecoverDeletedPosts: Восстановить отмеченные посты
 AdminRecoveredDeletedPosts: Удаленные посты восстановлены
 AdminDeletedFromBoard: на борде 
 AdminDeletedFromThread: в треде 

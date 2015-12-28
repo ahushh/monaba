@@ -51,10 +51,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var buttons = document.createElement("div");
         buttons.className = "scroll-buttons";
         var top = document.createElement("i");
-        top.className = 'fa fa-chevron-up scroll-top';
+        top.className = 'fa fa-chevron-up scroll-top clickable';
         top.onclick = function() { scroll(0,0); };
         var bottom = document.createElement("i");
-        bottom.className = 'fa fa-chevron-down scroll-bottom';
+        bottom.className = 'fa fa-chevron-down scroll-bottom clickable';
         bottom.onclick = function() { scroll(0,document.body.scrollHeight); };
         buttons.appendChild(top);
         buttons.appendChild(bottom);
@@ -65,9 +65,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
     //-----------------------------------------------------------------
     (function() {
         if (isEventSourceSupported()) {
-            var online = document.createElement("div");
+            var icon = document.createElement("i");
+            icon.className = 'fa fa-users online clickable';
+            icon.title = #{toJSON $ msgrender MsgOnline};
+            var online = document.createElement("span");
             online.className = "online-counter";
-            document.body.appendChild(online);
+            var cp = document.getElementById('control-panel')
+            cp.insertBefore(icon, cp.firstChild);
+            cp.insertBefore(online, cp.firstChild);
+
             var src = new EventSource("@{OnlineR}");
             src.onopen  = function()      { console.log("Online: Eventsource opened."); };
             src.onclose = function()      { console.log("Online: Eventsource closed."); };
@@ -75,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log("Online: Eventsource error. " + (e.readyState == 1 ? "" : "Connection closed.") );
             };
             src.addEventListener('online', function(msg) {
-                online.innerHTML = #{toJSON $ msgrender MsgOnline} + ' ' + msg.data;
+                online.innerHTML = msg.data;
             });
         }
     })();
@@ -105,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 unreadElem.id = "mark-as-read";
                 var i = document.createElement("i");
                 i.title = #{toJSON $ msgrender MsgMarkAsRead};
-                i.className = "fa fa-check-square-o";
+                i.className = "fa fa-check-square-o clickable";
                 i.onclick = readStats;
                 unreadElem.appendChild(i);
                 boardList.appendChild(unreadElem);
@@ -1470,8 +1476,8 @@ function cachePopupPost(el) {
         post.onmouseleave = function() { Monaba.removePopupPostTimer = setTimeout(closePopupPost, getConfig("popup_post_delay_before_removing")); };
         post.onmouseenter = function() { clearTimeout(Monaba.removePopupPostTimer) };
     } else {
-        var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle'></i>";
-        var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times'></i>";
+        var closeAllPopup = "<i onclick='closePopupPost()' title='"+#{toJSON $ msgrender MsgCloseAllPopupIcon}+"' class='fa fa-times-circle clickable'></i>";
+        var closeOnePopup = "<i onclick='closePopupPost(\""+postId+"\")' title='"+#{toJSON $ msgrender MsgCloseOnePopupIcon}+"' class='fa fa-times clickable'></i>";
         var closePopups = closeAllPopup+" "+closeOnePopup;
         var span = document.createElement('span');
         span.className = 'close-popup-container';

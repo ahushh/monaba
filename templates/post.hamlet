@@ -2,16 +2,16 @@
     <div .post-header>
         <span .mark-to-delete onclick="markToDelete(this)">
             <input type=checkbox name=postdelete value=#{sPostId}>
-            <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close>
-        <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit>
+            <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close .clickable>
+        <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit .clickable>
         $if elem EditPostsP permissions
           <a href=@{AdminLockEditing (fromIntegral postId)}>
             $if postLockEditing postVal
-              <i title=_{MsgUnlockEditing} .fa .fa-unlock>
+              <i title=_{MsgUnlockEditing} .fa .fa-unlock-alt>
             $else
               <i title=_{MsgLockEditing} .fa .fa-lock>
         $if isThread
-          <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread>
+          <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread .clickable>
         $if geoIp
             $maybe GeoCountry code name <- postCountry postVal
                 <img src=#{geoIconPath appStaticDir code} title=#{name}>
@@ -33,7 +33,7 @@
             $else
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>##{sPostLocalId}#
         $if canPost
-            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right>
+            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
             <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .text-reply>
               _{MsgReplyIcon}
         <span .cpanel>
@@ -50,12 +50,11 @@
                    A 
                ]
            $if elem ManageThreadP permissions
-               [
-               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h>
-               <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows>
-               ] 
+               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h .clickable>
+               <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows .clickable>
            $if elem ManageBanP permissions
-               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>B 
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
+                 <i .fa .fa-ban>
            $if elem ViewIPAndIDP permissions
              [
              <a title="IP & UID" onclick="toggleInline( document.querySelector('#p#{sPostId} .id-container') )">IP & UID
@@ -102,7 +101,7 @@
                       $if attachedfileFiletype file == FileImage
                         <ul .dropdown-menu>
                           <li>
-                            <i title=_{MsgImageSource} .fa .fa-search>
+                            <i title=_{MsgImageSource} .fa .fa-search .clickable>
                             <ul>
                               <li>
                                 <a title=Google target=_blank href="//www.google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
@@ -115,6 +114,16 @@
                               <li>
                                 <a title=Iqdb target=_blank href="//iqdb.org/?url=#{appRoot}/#{up}">Iq
                   <div .file-info>
+                    $if attachedfileFiletype file == FileVideo
+                      <i .fa .fa-video-camera>
+                    $elseif attachedfileFiletype file == FileAudio
+                      <i .fa .fa-music>
+                    $elseif attachedfileFiletype file == FileImage
+                      <i .fa .fa-photo>
+                    $elseif attachedfileFiletype file == FileFlash
+                      <i .fa .fa-file-flash>
+                    $else
+                      <i .fa .fa-file-o>
                     #{fi}
                   $if elem ChangeFileRatingP permissions
                      <div .rating-management>
@@ -165,4 +174,6 @@
         <div .message>#{m}
     $maybe lm <- postLastModified postVal
         <span .last-modified>
+            <i .fa .fa-history>
             <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime timeZone lm}
+            

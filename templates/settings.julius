@@ -7,6 +7,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
     jsf.appendChild(table);
     table.appendChild(tbody);
 
+    var tr  = document.createElement("tr");
+
+    var td1 = document.createElement("td");
+    var span = document.createElement("span");
+    span.innerHTML = #{toJSON $ msgrender MsgJSFeatures};
+    var i  = document.createElement("i");
+    i.className = 'fa fa-wrench';
+    td1.appendChild(i);
+    td1.appendChild(span);
+
+    var td2 = document.createElement("td");
+    var input = document.createElement("input");
+    input.type = 'submit';
+    input.value = #{toJSON $ msgrender MsgResetDefaults};
+    input.onclick = function() { resetConfig() };
+    td2.appendChild(input);
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tbody.appendChild(tr);
+
     var opts = [["number", "posts_autoload_interval"],
                 ["checkbox", "mathjax"],
                 ["checkbox", "eventsource"],
@@ -36,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["checkbox", "css_hide_markup_buttons"],
                 ["text", "css_custom"],
                ];
+
     opts.forEach(function(x, i) {
         var tr  = document.createElement("tr");
         var td1 = document.createElement("td");
@@ -56,15 +78,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         tr.appendChild(td2);
         tbody.appendChild(tr);
     });
-    var tr  = document.createElement("tr");
-    var input = document.createElement("input");
-    input.type = 'submit';
-    input.value = #{toJSON $ msgrender MsgResetDefaults};
-    input.onclick = function() { resetConfig() };
-    var td1 = document.createElement("td");
-    td1.appendChild(input);
-    tr.appendChild(td1);
-    tbody.appendChild(tr);
 });
 
 

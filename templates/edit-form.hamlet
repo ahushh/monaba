@@ -3,6 +3,7 @@
     ^{fvInput postIdView}
 ^{fvInput messageView}
 <div .markup-buttons>
+  <i .fa .fa-pencil>
   <a onclick="insertTag('[b]','[/b]','edit-form');countSymbols('edit-form')">
      <strong>
        _{MsgMarkupBold}

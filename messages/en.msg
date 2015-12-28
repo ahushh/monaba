@@ -299,7 +299,7 @@ SupportedLanguages: Supported languages for tag [code=<language>]
 ######################################################################################
 #### Ajax, popups, refmap, ...
 ######################################################################################
-Online: Online:
+Online: Online
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
 
@@ -344,6 +344,7 @@ Language: Language
 FeedIgnoredBoards: /feed/ ignored boards
 MaxAllowedRating: Max allowed rating
 ResetDefaults: Reset defaults
+JSFeatures: JavaScript features
 
 ######################################################################################
 #### Modlogs
@@ -404,7 +405,7 @@ DisplayAllPosts: Display all posts
 ######################################################################################
 AdminDeletedPosts: Deleted posts
 AdminAllDeletedPosts: All deleted posts
-AdminRecoverDeletedPosts: Recover deleted posts
+AdminRecoverDeletedPosts: Recover marked posts
 AdminRecoveredDeletedPosts: Deleted posts have been recoverd
 AdminDeletedFromBoard: from board 
 AdminDeletedFromThread: from thread 

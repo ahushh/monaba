@@ -6,10 +6,10 @@
   ^{fvInput subjectView}#
   <input type=submit value=_{MsgSubmitBtn}>#
   &nbsp;
-  <a>
-    <i title="_{MsgPostPreview}" .fa .fa-eye .preview-toggle onclick="previewToggle()">
+  <i title="_{MsgPostPreview}" .fa .fa-eye .preview-toggle onclick="previewToggle()" .clickable>
   ^{fvInput messageView}
   <div .markup-buttons>
+       <i .fa .fa-pencil>
        <a onclick="insertTag('[b]','[/b]','post-form');countSymbols('post-form')">
           <strong>
             _{MsgMarkupBold}
@@ -37,7 +37,7 @@
           _{MsgMarkupInlineLatex}
        &nbsp;
        <a onclick="insertTag('[latex]','[/latex]','post-form');countSymbols('post-form')">
-          _{MsgMarkupLatex}
+          _{MsgMarkupLatex}nn
        &nbsp;
        <a .quote onmousedown="insertQuote('post-form');countSymbols('post-form')">
           _{MsgMarkupQuote}
@@ -45,7 +45,7 @@
        <span style=display:inline .symbol-counter>
   $if length fileviews > 0
     <div #attach-file>
-      <i .fa .fa-paperclip>
+      <i .fa .fa-paperclip .clickable>
       _{MsgAttachFile}
     <div #attachment-thumbs>
     $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)

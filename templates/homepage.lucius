@@ -35,6 +35,10 @@
 #home-content {
     display: inline-block;
 }
+#home-content img {
+    max-width: 100%;
+}
+
 .board-category {
     margin: 3px 3px 3px -4px;
     padding: 3px 3px 3px 5px;

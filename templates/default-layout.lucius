@@ -348,6 +348,15 @@ ul {
     display: table;
 }
 @media all and (max-width:1024px) {
+    table td {
+        display: block;
+    }
+    .attachment-thumb {
+        width: 100%;
+    }
+    .container {
+        padding-top: 10%;
+    }
     .reply-post, .feed .op-post {
         min-width: 40%;
     }
@@ -361,6 +370,30 @@ ul {
     }
     .text-reply {
         display: inline-block;
+    }
+    #post-form-inputs input[type='text'], #post-form-inputs input[type='password'] {
+        width:100%;
+    }
+    .plain-post-form input[type='submit'] {
+        width: 90%;
+    }
+    .quick-post-form input[type='submit'] {
+        width: 50%;
+    }
+    i.fa {
+        font-size: 1.5em;
+    }
+    .file-name .dropdown-menu, .icon-reply {
+        display: none;
+    }
+    .cpanel {
+        display:block;
+    }
+    .file {
+        float: none;
+    }
+    .markup-buttons {
+        font-size: 1.2em;
     }
 }
 @media all and (min-width:1024px) {

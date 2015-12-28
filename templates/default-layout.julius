@@ -1499,7 +1499,7 @@ function displayPopupPost(event, post) {
     var wWidth  = + window.innerWidth;
     var pHeight = + post.offsetHeight;
     var pWidth  = + post.offsetWidth;
-
+    if (wWidth < pWidth) return;
     var cursorY = + event.pageY - 15;
     var cursorX = + event.pageX - 10;
     var diffH   = + window.scrollY;

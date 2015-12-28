@@ -37,6 +37,8 @@
 
 
 /admin                     AdminR        GET
+/admin/login/modlog        ModlogLoginR  GET
+/admin/logout/modlog       ModlogLogoutR GET
 /admin/modlog/#Int         ModlogR       GET 
 /admin/stick/#Text/#Int    StickR        GET
 /admin/lock/#Text/#Int     LockR         GET
@@ -67,7 +69,6 @@
 /admin/search/uid/#Text                 AdminSearchUIDNoPageR       GET
 /admin/search/hellbanned/uid/#Text/#Int AdminSearchHBUIDR           GET
 /admin/search/hellbanned/uid/#Text      AdminSearchHBUIDNoPageR     GET
-
 
 /admin/groups              ManageGroupsR GET POST
 /admin/groups/delete/#Text DeleteGroupsR GET

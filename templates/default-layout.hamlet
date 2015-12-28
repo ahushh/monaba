@@ -14,7 +14,7 @@
           <i .fa .fa-gears>
       $else
         #{userName user}
-      <a href=@{AuthR LogoutR} title=_{MsgLogout}>
+      <a href=@{ModlogLogoutR} title=_{MsgLogout}>
         <i .fa .fa-sign-out>
     $nothing         
       <a href=@{AuthR LoginR} title=_{MsgLogin}>

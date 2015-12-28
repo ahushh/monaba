@@ -5,6 +5,7 @@ import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.HashDB    (authHashDB, getAuthIdHashDB, HashDBUser(..))
+import Yesod.Auth.Message
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -267,6 +268,8 @@ instance YesodAuth App where
     getAuthId creds = getAuthIdHashDB AuthR (Just . UserUniqName) creds
 
     authHttpManager = getHttpManager
+    onLogin  = setMessageI NowLoggedIn >> redirect ModlogLoginR
+
 
 instance YesodAuthPersist App
 

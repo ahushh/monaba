@@ -29,3 +29,14 @@ addModlogEntry msg = do
   maxEntries <- getConfig configModlogMaxEntries
   toDelete <- runDB $ selectList ([]::[Filter Modlog]) [Desc ModlogDate, OffsetBy maxEntries]
   runDB $ forM_ toDelete $ \(Entity k _) -> delete k
+
+getModlogLoginR :: Handler Html
+getModlogLoginR = do
+  addModlogEntry MsgModlogLogin
+  redirectUltDest HomeR
+
+getModlogLogoutR :: Handler Html
+getModlogLogoutR = do
+  addModlogEntry MsgModlogLogout
+  redirect $ AuthR LogoutR
+

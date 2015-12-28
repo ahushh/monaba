@@ -419,6 +419,9 @@ ModlogRecoverPosts p@Text: Recovered deleted posts #{p}
 ModlogDeletePosts p@Text: Deleted posts #{p}
 ModlogDeleteFile f@Text p@Text: Deleted file #{f} of post #{p}
 
+ModlogLogin: Log in
+ModlogLogout: Log out
+
 ######################################################################################
 #### Admin search posts
 ######################################################################################

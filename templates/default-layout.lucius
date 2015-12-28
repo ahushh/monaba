@@ -356,7 +356,7 @@ ul {
         width: 100%;
     }
     .container {
-        padding-top: 10%;
+        padding-top: 4%;
     }
     .reply-post, .feed .op-post {
         min-width: 40%;

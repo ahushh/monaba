@@ -5,7 +5,7 @@ upload-dir:     "upload"
 static-dir:     "_env:STATIC_DIR:static"
 host:           "_env:HOST:*4" # any IPv4 host
 port:           "_env:PORT:3000"
-approot:        "_env:APPROOT:http://localhost" # change to your domain
+approot:        "_env:APPROOT:http://192.168.1.45" # change to your domain
 ip-from-header: "_env:IP_FROM_HEADER:false"
 
 # Optional values with the following production defaults.

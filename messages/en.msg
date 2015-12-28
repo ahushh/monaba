@@ -82,8 +82,8 @@ DeleteBtn: Delete
 OnlyFiles: Only files
 ## panel
 Manage: Manage
-Login: Login
-Logout: Logout
+Login: Log in
+Logout: Log out
 Home: Home
 ### admin buttons
 BanPoster: Ban poster

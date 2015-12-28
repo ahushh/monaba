@@ -2,6 +2,7 @@ module Handler.Admin.Hellban where
 
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
+import           Utils.YobaMarkup     (makeExternalRef)
 -------------------------------------------------------------------------------------------------------------
 getHellBanNoPageR :: Handler Html
 getHellBanNoPageR = getHellBanR 0
@@ -34,8 +35,13 @@ getHellBanDoR postId action ban = do
  post <- runDB $ get404 postKey
  let posterId = postPosterId post
  case action of
-   "one" -> void $ runDB $ update postKey [PostHellbanned =. True]
-   "all" -> void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
+   "one" -> do
+     void $ runDB $ update postKey [PostHellbanned =. True]
+     p <- makeExternalRef (postBoard post) (postLocalId post)
+     addModlogEntry $ MsgModlogHellbanHidePost p
+   "all" -> do
+     void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
+     addModlogEntry $ MsgModlogHellbanHideAllPosts posterId
    _     -> return ()
  void $ when ban $ do
    addModlogEntry $ MsgModlogHellban posterId
@@ -50,12 +56,16 @@ getHellBanUndoR postId action = do
  post <- runDB $ get404 postKey
  let posterId = postPosterId post
  case action of
-   "show"  -> runDB $ update postKey [PostHellbanned =. False]
+   "show"  -> do
+     runDB $ update postKey [PostHellbanned =. False]
+     p <- makeExternalRef (postBoard post) (postLocalId post)
+     addModlogEntry $ MsgModlogHellbanShowPost p
    "unban" -> do
      addModlogEntry (MsgModlogUnhellban posterId)
      runDB $ deleteWhere [HellbanUid ==. postPosterId post]
    "both"  -> do
      addModlogEntry (MsgModlogUnhellban posterId)
+     addModlogEntry $ MsgModlogHellbanShowAllPosts posterId
      runDB (update postKey [PostHellbanned =. False])
      runDB (deleteWhere [HellbanUid ==. postPosterId post])
  redirectUltDest HomeR

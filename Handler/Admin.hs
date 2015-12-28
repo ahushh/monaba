@@ -14,6 +14,8 @@ getAdminLockEditing :: Int -> Handler Html
 getAdminLockEditing postKey = do
   let k = (toSqlKey $ fromIntegral postKey) :: Key Post
   post <- runDB $ get404 k
+  p <- makeExternalRef (postBoard post) (postLocalId post)
+  addModlogEntry ((if postLockEditing post then MsgModlogEnablePostEditing else MsgModlogDisablePostEditing) p)
   runDB $ update k [PostLockEditing =. not (postLockEditing post)]
   redirectUltDest HomeR
 
@@ -113,5 +115,10 @@ getAutoSageR board thread = do
 -------------------------------------------------------------------------------------------------------------
 getManageCensorshipR :: Int -> Censorship -> Handler Html
 getManageCensorshipR fileId rating = do
-  runDB $ update (toSqlKey $ fromIntegral fileId) [AttachedfileRating =. tshow rating]
+  let key = toSqlKey $ fromIntegral fileId
+  file <- runDB (get404 key)
+  post <- runDB $ get404 $ attachedfileParentId file
+  runDB $ update key [AttachedfileRating =. tshow rating]
+  p <- makeExternalRef (postBoard post) (postLocalId post)
+  addModlogEntry $ MsgModlogChangeRating (pack $ attachedfileName file) p (attachedfileRating file) (tshow rating)
   redirectUltDest HomeR

@@ -395,6 +395,12 @@ ModlogAutosageOffThread thr1@Text: Turned on bumping thread #{thr1}
 ModlogHellban uid@Text: Hellbanned user #{uid}
 ModlogUnhellban uid@Text: Unhellbanned user #{uid}
 
+ModlogHellbanHidePost p@Text: Hellban: hide post #{p}
+ModlogHellbanShowPost p@Text: Hellban: show post #{p}
+
+ModlogHellbanHideAllPosts uid@Text: Hellban: hide all users's posts #{uid}
+ModlogHellbanShowAllPosts uid@Text: Hellban: show all users's posts #{uid}
+
 ModlogRebuildPostsMessagesOn board@Text: Rebuilt HTML of posts messages on /#{board}/
 ModlogRebuildPostsMessages: Rebuilt HTML of posts messages
 
@@ -402,6 +408,16 @@ ModlogMoveThread from@Text to@Text: Moved thread from #{from} to #{to}
 ModlogChangeThread from@Text to@Text p@Text: Moved #{p} from thread #{from} to #{to}
 
 NoSuchPost: No such post
+
+ModlogChangeRating f@Text p@Text r1@Text r2@Text: Censorship rating #{f} #{r1} → #{r2} #{p}
+
+ModlogDisablePostEditing p@Text: Disabled post editing #{p}
+ModlogEnablePostEditing p@Text: Enabled post editing #{p}
+
+ModlogRecoverPosts p@Text: Recovered deleted posts #{p}
+
+ModlogDeletePosts p@Text: Deleted posts #{p}
+ModlogDeleteFile f@Text p@Text: Deleted file #{f} of post #{p}
 
 ######################################################################################
 #### Admin search posts

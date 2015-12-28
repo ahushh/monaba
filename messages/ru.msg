@@ -394,8 +394,14 @@ ModlogUnstickThread thr1@Text: Откреплен тред #{thr1}
 ModlogUnlockThread thr1@Text: Разблокирован тред #{thr1}
 ModlogAutosageOffThread thr1@Text: Включен бамп треда #{thr1}
 
+ModlogHellbanHidePost p@Text: Премодерация: скрыт пост #{p}
+ModlogHellbanShowPost p@Text: Премодерация: показан пост #{p}
+
 ModlogHellban uid@Text: Премодерируются все сообщения пользователя #{uid}
 ModlogUnhellban uid@Text: Пользователь снят с премодерации #{uid}
+
+ModlogHellbanHideAllPosts uid@Text: Премодерация: скрыть все посты пользователя #{uid}
+ModlogHellbanShowAllPosts uid@Text: Премодерация: показать все посты пользователя #{uid}
 
 ModlogRebuildPostsMessagesOn board@Text: Обновлены HTML сообщения в постах на борде /#{board}/
 ModlogRebuildPostsMessages: Обновлены HTML сообщения в постах на борде
@@ -404,6 +410,16 @@ ModlogMoveThread from@Text to@Text: Перемещен тред из #{from} в 
 ModlogChangeThread from@Text to@Text p@Text: Перемещен #{p} пост из треда #{from} в тред #{to}
 
 NoSuchPost: Нет такого поста
+
+ModlogChangeRating f@Text p@Text r1@Text r2@Text: Смена рейтинга файла #{f}  #{r1} → #{r2} #{p}
+
+ModlogDisablePostEditing p@Text: Отключено редактирование поста #{p}
+ModlogEnablePostEditing p@Text: Включено редактирование поста #{p}
+
+ModlogRecoverPosts p@Text: Восстановлены удаленные посты #{p}
+
+ModlogDeletePosts p@Text: Удалены посты #{p}
+ModlogDeleteFile f@Text p@Text: Удален файл #{f} поста #{p}
 
 ######################################################################################
 #### Admin search posts

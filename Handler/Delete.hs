@@ -5,6 +5,8 @@ import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
 import           System.Directory   (removeFile)--, removeDirectory, getDirectoryContents)
+import           Handler.Admin.Modlog (addModlogEntry)
+import           Utils.YobaMarkup     (makeExternalRef)
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -46,6 +48,9 @@ getDeleteFileR fileId = do
   post <- runDB $ get404 $ attachedfileParentId file
   posterId <- getPosterId
   when (not nopasreq && postPosterId post /= posterId) $ errorRedirect MsgFileNotYours
+  when (nopasreq && postPosterId post /= posterId) $ do
+    p <- makeExternalRef (postBoard post) (postLocalId post)
+    addModlogEntry $ MsgModlogDeleteFile (pack $ attachedfileName file) p
   deleteFile $ Entity fileKey file
   redirectUltDest HomeR
 
@@ -88,7 +93,13 @@ getDeleteR = do
           requestIds   = map helper xs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
-      -- when nopasreq $ addModlogEntry MsgModlogDeletePosts $ T.intercalate "," $ map (postLocalId $ 
+
+      posterId <- getPosterId
+      let posts' = filter (\(Entity _ p) -> postPosterId p /= posterId) posts
+      when nopasreq $ do
+        bt <- forM posts' $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           
+        addModlogEntry $ MsgModlogDeletePosts $ T.concat bt
+
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
         _  -> deletePosts posts onlyfiles >> redirectUltDest HomeR

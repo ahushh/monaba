@@ -1,8 +1,11 @@
 module Handler.Admin.Delete where
 
 import           Import
+import           Handler.Admin.Modlog (addModlogEntry) 
+import           Utils.YobaMarkup     (makeExternalRef)
+import qualified Data.Text            as T
 -------------------------------------------------------------------------------------------------------------
--- View deleted posts
+-- View and recover deleted posts
 -------------------------------------------------------------------------------------------------------------
 getAdminDeletedFilteredR :: Text -> Int -> Int -> Handler Html
 getAdminDeletedFilteredR board thread page = do
@@ -46,6 +49,9 @@ getAdminRecoverDeletedR = do
   query  <- reqGetParams <$> getRequest
   let requestIds = map (toSqlKey . fromIntegral . tread . snd) $ reverse query
   runDB $ updateWhere [PostId <-. requestIds] [PostDeleted =. False]
+  posts <- runDB $ selectList [PostId <-. requestIds] []
+  bt <- forM posts $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)
+  addModlogEntry $ MsgModlogRecoverPosts $ T.concat bt
   setMessageI MsgAdminRecoveredDeletedPosts
   redirectUltDest HomeR
 

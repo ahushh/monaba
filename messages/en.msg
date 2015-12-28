@@ -87,8 +87,10 @@ Logout: Log out
 Home: Home
 ### admin buttons
 BanPoster: Ban poster
-StickThread: Stick/unstick
-LockThread: Lock/unlock
+StickThread: Stick
+UnstickThread: Unstick
+LockThread: Lock
+UnlockThread: Unlock
 Autosage: Autosage
 ThreadIsSticked: Thread is sticked
 ThreadIsLocked: Thread is locked
@@ -384,7 +386,11 @@ ModlogUpdateConfig: Updated config
 
 ModlogStickThread thr1@Text: Sticked thread #{thr1}
 ModlogLockThread thr1@Text: Locked thread #{thr1}
-ModlogAutosageThread thr1@Text: Turned off bumping thread #{thr1}
+ModlogAutosageOnThread thr1@Text: Turned off bumping thread #{thr1}
+
+ModlogUnstickThread thr1@Text: Unsticked thread #{thr1}
+ModlogUnlockThread thr1@Text: Unlocked thread #{thr1}
+ModlogAutosageOffThread thr1@Text: Turned on bumping thread #{thr1}
 
 ModlogHellban uid@Text: Hellbanned user #{uid}
 ModlogUnhellban uid@Text: Unhellbanned user #{uid}

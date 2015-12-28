@@ -81,8 +81,8 @@ getStickR board thread = do
   case maybePost of
     Just (Entity pId p) -> do
       t <- makeExternalRef board thread
-      addModlogEntry $ MsgModlogStickThread t
       runDB $ update pId [PostSticked =. not (postSticked p)]
+      addModlogEntry ((if postSticked p then MsgModlogUnstickThread else MsgModlogStickThread) t)
       redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
@@ -92,8 +92,8 @@ getLockR board thread = do
   case maybePost of
     Just (Entity pId p) -> do
       t <- makeExternalRef board thread
-      addModlogEntry $ MsgModlogLockThread t
       runDB $ update pId [PostLocked =. not (postLocked p)]
+      addModlogEntry ((if postLocked p then MsgModlogUnlockThread else MsgModlogLockThread) t)
       redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
       
@@ -103,8 +103,8 @@ getAutoSageR board thread = do
   case maybePost of
     Just (Entity pId p) -> do
       t <- makeExternalRef board thread
-      addModlogEntry $ MsgModlogAutosageThread t
       runDB $ update pId [PostAutosage =. not (postAutosage p)]
+      addModlogEntry ((if postAutosage p then MsgModlogAutosageOffThread else MsgModlogAutosageOnThread) t)
       redirectUltDest AdminR
     _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
 
@@ -113,5 +113,5 @@ getAutoSageR board thread = do
 -------------------------------------------------------------------------------------------------------------
 getManageCensorshipR :: Int -> Censorship -> Handler Html
 getManageCensorshipR fileId rating = do
-  runDB $ update (toSqlKey $ fromIntegral fileId) [AttachedfileRating =. pack (show rating)]
+  runDB $ update (toSqlKey $ fromIntegral fileId) [AttachedfileRating =. tshow rating]
   redirectUltDest HomeR

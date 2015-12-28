@@ -87,8 +87,10 @@ Logout: Выйти
 Home: Домой
 ### admin buttons
 BanPoster: Забанить!
-StickThread: Прикрепить/открепить
-LockThread: Заблокировать/разблокировать
+StickThread: Прикрепить
+UnstickThread: Открепить
+LockThread: Заблокировать
+UnlockThread: Разблокировать
 Autosage: Автосажа
 ThreadIsSticked: Тред закреплен
 ThreadIsLocked: Тред закрыт
@@ -386,7 +388,11 @@ ModlogUpdateConfig: Обновлен конфиг
 
 ModlogStickThread thr1@Text: Прикреплен тред #{thr1}
 ModlogLockThread thr1@Text: Закрыт постинг в треде #{thr1}
-ModlogAutosageThread thr1@Text: Отключен бамп треда #{thr1}
+ModlogAutosageOnThread thr1@Text: Отключен бамп треда #{thr1}
+
+ModlogUnstickThread thr1@Text: Откреплен тред #{thr1}
+ModlogUnlockThread thr1@Text: Разблокирован тред #{thr1}
+ModlogAutosageOffThread thr1@Text: Включен бамп треда #{thr1}
 
 ModlogHellban uid@Text: Премодерируются все сообщения пользователя #{uid}
 ModlogUnhellban uid@Text: Пользователь снят с премодерации #{uid}

@@ -368,10 +368,6 @@ ModlogDelUser gag@Text: Deletou usuário #{gag}
 
 ModlogUpdateConfig: Atualizou config
 
-ModlogStickThread thr1@Text: Pinou thread #{thr1}
-ModlogLockThread thr1@Text: Trancou thread #{thr1}
-ModlogAutosageThread thr1@Text: Desligou o bumping na thread #{thr1}
-
 ModlogHellban uid@Text: Hellbanniu usuário #{uid}
 ModlogUnhellban uid@Text: Removeu hellban do usuário #{uid}
 

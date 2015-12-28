@@ -222,6 +222,9 @@ enumerate = zip [0..]
 ifelse :: Bool -> Text -> Text -> Text
 ifelse x y z = if x then y else z
 
+ifelseall :: forall a. Bool -> a -> a -> a
+ifelseall x y z = if x then y else z
+
 myFormatTime :: Int     -> -- ^ Time offset in seconds
                UTCTime -> -- ^ UTCTime
                String

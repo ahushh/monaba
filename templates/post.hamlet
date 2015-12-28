@@ -42,11 +42,14 @@
                [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
              $if elem ManageThreadP permissions
                [ 
-               <a title=_{MsgStickThread} href=@{StickR board postLocalId'}>
+               $with m <- ifelseall (postSticked postVal) MsgUnstickThread MsgStickThread
+                 <a title=_{m} href=@{StickR board postLocalId'}>
                    S                
-               <a title=_{MsgLockThread} href=@{LockR board postLocalId'}>
+               $with m <- ifelseall (postLocked postVal) MsgUnstickThread MsgStickThread
+                 <a title=_{m} href=@{LockR board postLocalId'}>
                    L
-               <a title=_{MsgAutosage} href=@{AutoSageR board postLocalId'}>
+               $with m <- ifelseall (postAutosage postVal) MsgUnstickThread MsgStickThread
+                 <a title=_{m} href=@{AutoSageR board postLocalId'}>
                    A 
                ]
            $if elem ManageThreadP permissions

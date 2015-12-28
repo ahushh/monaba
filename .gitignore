@@ -1,3 +1,5 @@
+static/banners/*
+!static/banners/feed
 config.yml
 upload/*
 Captcha

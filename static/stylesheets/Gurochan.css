@@ -23,7 +23,7 @@ header {
 	background: #D9AF9E;
 }
 .news > .title {
-	text-align: left;
+	text-align: left!important;
 }
 html,body {
 	background-color:#EDDAD2;
@@ -155,7 +155,7 @@ pre {
 	border:1px solid #CA927B;
 	background-color:#D9AF9E;
 	font-size:10pt;
-	margin-top: 20px;
+	margin-top: 20px!important;
 }
 .quick-post-form {
 	padding:2px;

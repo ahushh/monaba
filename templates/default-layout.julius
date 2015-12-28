@@ -945,7 +945,7 @@ function showEditForm(postId) {
         obj[ ta.name ] = ta.value;
         obj[ ps.name ] = ps.value;
         obj[ hd.name ] = hd.value;
-        if (se != null)
+        if (se != null && se.checked)
             obj[ se.name ] = se.value;
         obj[ pt.name ] = postId;
         var pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);

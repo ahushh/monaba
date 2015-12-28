@@ -237,6 +237,7 @@ UsersUpdated: Аккаунт обновлен
 UsersPasswordNotSpecified: Не указан пароль
 UserDoesNotExist: Пользователь не существует
 UsersDeleted: Аккаунт удален
+UsersDeleteConfirm: Точно удалить?
 YouAreTheOnlyWhoCanManageUsers: Нетъ. Вы единственный, кто может добавить нового пользователя.
 
 ### Config management

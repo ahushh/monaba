@@ -235,6 +235,7 @@ UsersUpdated: User's password/group has been changed successfully
 UsersDeleted: User has been deleted successfully
 UsersPasswordNotSpecified: Password wasn't specified
 UserDoesNotExist: User doesn't exist
+UsersDeleteConfirm: This cannot be undone. Continue?
 YouAreTheOnlyWhoCanManageUsers: DENIED. You are the only who can manage users.
 
 ### Config management

@@ -16,6 +16,7 @@ getManageBoardsR action board = do
   (formWidget, _) <- generateFormPost $ updateBoardForm maybeBoard action bCategories groups -- oops, ignored formEnctype
   boards          <- runDB $ selectList ([]::[Filter Board]) []
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgBoardManagement
     $(widgetFile "admin/boards")
 -------------------------------------------------------------------------------------------------------------    

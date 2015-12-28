@@ -28,6 +28,7 @@ getBanByIpR board ip = do
   (formWidget, _) <- generateFormPost $ banByIpForm ip board
   bans            <- runDB $ selectList ([]::[Filter Ban]) []
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgBanManagement
     $(widgetFile "admin/ban")
 

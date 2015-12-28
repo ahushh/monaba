@@ -23,6 +23,7 @@ getHellBanR page = do
   -------------------------------------------------------------------------------------------------------------------
   AppSettings{..}  <- appSettings <$> getYesod
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgHellbanning
     $(widgetFile "admin/hellban")
 -- ------------------------------------------------------------------------------------------------------------

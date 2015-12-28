@@ -23,6 +23,7 @@ getAdminDeletedFilteredR board thread page = do
   let postsAndFiles = zip posts postFiles
   AppSettings{..}  <- appSettings <$> getYesod
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgAdminDeletedPosts
     $(widgetFile "admin/deleted-filtered")
 
@@ -41,6 +42,7 @@ getAdminDeletedR page = do
   let postsAndFiles = zip posts postFiles
   AppSettings{..}  <- appSettings <$> getYesod
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgAdminAllDeletedPosts
     $(widgetFile "admin/deleted")
 

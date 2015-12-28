@@ -49,6 +49,7 @@ getConfigR = do
   configVal <- entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Config]) [])
   (formWidget, _) <- generateFormPost $ configForm configVal
   defaultLayout $ do
+    setUltDestCurrent
     defaultTitleMsg MsgConfig
     $(widgetFile "admin/config")
 

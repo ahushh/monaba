@@ -12,6 +12,7 @@ header, .pagination {
 }
 
 html, body {
+   background-image: url("/static/img/snow.jpg");
    background-color: black;;
    color: #7C7C7C;
    font-family: serif;

@@ -116,7 +116,7 @@ hr {
   border: 2px dashed #0CD264;
 }
 .news > .title {
-  text-align: left;
+  text-align: left!important;
 }
 pre {
 	background-color: #002800;
@@ -126,7 +126,7 @@ pre {
 .popup_message {
 	background-color: #001400;
 	border:1px solid #0CD264;
-  margin-top: 18px;
+        margin-top: 18px!important;
 }
 table {
 	border-style:none;

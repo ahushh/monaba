@@ -352,7 +352,7 @@ ul {
     display: table;
 }
 @media all and (max-width:1024px) {
-    .mobile {
+    #edit-form label, .mobile {
         display: block;
     }
     .desktop {

@@ -987,7 +987,7 @@ function showEditForm(postId) {
                 var raw = data[0].rawMessage;
                 ta.value = raw;
                 countSymbols('edit-form');
-                ef.style.display = 'table';
+                ef.style.display = 'block';
             } else {
                 hideEditForm();
             }

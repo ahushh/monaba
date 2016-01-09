@@ -44,6 +44,7 @@ library
                      Handler.Ajax
                      Handler.Settings
                      Handler.Captcha
+                     Handler.RSS
                      Utils.File
                      Utils.YobaMarkup
 
@@ -138,6 +139,7 @@ library
                  , blaze-builder
                  , base64-bytestring
                  , mtl
+                 , yesod-newsfeed
 
 
 executable         Monaba

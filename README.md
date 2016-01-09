@@ -8,7 +8,7 @@ Features
 * Multiple file attachment
 * Webm and audio support
 * AJAX posting and quick reply
-* Feed page
+* Feed page and RSS
 * Online user counter
 * New posts counter
 * Answer map and previews

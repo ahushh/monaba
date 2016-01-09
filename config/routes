@@ -90,3 +90,4 @@
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST
 
+/rss/#Text        RssR     GET

@@ -4,7 +4,10 @@ $if offset == 0
         <div .banner>
           <a href="#{url}">
             <img src="#{img}">
-    <h2 style=text-align:center> _{MsgFeed}
+    <h2 style=text-align:center>
+      _{MsgFeed}
+      <a title="RSS" href=@{RssR "feed"}>
+        <i .fa .fa-rss>
     <div .feed>
       <div #refresh-feed style=text-align:center onclick="refreshFeed()">
         [ 

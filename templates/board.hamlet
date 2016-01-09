@@ -5,6 +5,9 @@ $maybe banner <- mBanner
         <img src="#{img}">
 
 <div id="board-header"> #{appSiteName} — #{title}
+  <a title="RSS" href=@{RssR board}>
+    &nbsp;
+    <i .fa .fa-rss>
 $if not $ T.null summary
     <div id="board-summary">#{summary}
 $if hasAccessToNewThread

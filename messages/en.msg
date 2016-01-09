@@ -454,3 +454,6 @@ DisabledEditing: Editing of this post is disabled
 LockEditing: Disable editing of this post for users
 UnlockEditing: Enable editing of this post for users
 HomeBoards: Board list
+######################################################################################
+RssFeed s@Text b@Text: #{s} /#{b}/ RSS feed
+RssRecentPosts b@Text: Recents posts from /#{b}/

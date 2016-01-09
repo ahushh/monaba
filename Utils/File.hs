@@ -202,11 +202,12 @@ resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
   height <- getImageHeight w
   let inSz                    = (width, height)
       outSz@(width', height') = calcResolution inSz maxSz
-  if gif
+  (pointer, images) <- coalesceImages w
+  numberImages <- getNumberImages images
+  if gif && numberImages > 1
     then do
-      (pointer, images) <- coalesceImages w
       (_,w1) <- magickWand
-      n <- if animatedThumbs then getNumberImages images else return 2
+      let n = if animatedThumbs then numberImages else 2
       forM_ [1..(n-1)] $ \i -> localGenesis $ do
         images `setIteratorIndex` i
         (_,image) <- getImage images
@@ -220,6 +221,7 @@ resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
       IM.resizeImage w width' height' lanczosFilter 1
       setImageCompressionQuality w 95
       writeImages w (fromText $ pack to) True
+      release pointer
       return outSz
 
 -- | Make a thumbnail for an image file

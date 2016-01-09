@@ -19,7 +19,19 @@
     $nothing         
       <a href=@{AuthR LoginR} title=_{MsgLogin}>
         <i .fa .fa-sign-in>
-  <div #board-list>
+  <div .board-list .mobile>
+    <select onchange="document.location=this.options[this.selectedIndex].value">
+      <option selected>_{MsgHomeBoards}
+      <option value=@{FeedR}>_{MsgFeed}
+      $forall Entity _ b <- sortBoards (filterBoards boards "" uGroup)
+        <option value=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardTitle b}
+      $forall c <- filter ((/=)"") categories
+        $with bs <- sortBoards (filterBoards boards c uGroup)
+          $if not (null bs)
+            <optgroup label=#{c}>
+              $forall Entity _ b <- bs
+                <option value=@{BoardNoPageR $ boardName b}>/#{boardName b}/ - #{boardTitle b}
+  <div .board-list .desktop>
     [ <a title="_{MsgFeed}" href=@{FeedR}>/feed/</a> ] 
     $forall Entity _ b <- sortBoards (filterBoards boards "" uGroup)
       [ <a title="#{boardTitle b}" id=board-link-#{boardName b} class=board-link data-board=#{boardName b} href=@{BoardNoPageR $ boardName b}>/#{boardName b}/</a> ] 

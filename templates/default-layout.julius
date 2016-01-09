@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 action: "@{AjaxBoardStatsReadR}",
                 onload: function(request) {
                     var unreadElem = document.getElementById("mark-as-read");
-                    var boardList = document.getElementById("board-list");
+                    var boardList = document.querySelector(".board-list.desktop");
                     boardList.removeChild(unreadElem);
                     var ns = document.querySelectorAll('.new-posts-number');
                     for (var i = 0; i < ns.length; i++)
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var updateUnread = function() {
             var unreadElem = document.getElementById("mark-as-read");
             if (unreadElem == null) {
-                var boardList = document.getElementById("board-list");
+                var boardList = document.querySelector(".board-list.desktop");
                 unreadElem = document.createElement("span");
                 unreadElem.id = "mark-as-read";
                 var i = document.createElement("i");
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         if (refreshFeed != null) {
             refreshFeed.addEventListener("refresh", function() {
                 var unreadElem = document.getElementById("mark-as-read");
-                var boardList = document.getElementById("board-list");
+                var boardList = document.querySelector(".board-list.desktop");
                 if (unreadElem != null) {
                     readStats();
                 }

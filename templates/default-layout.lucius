@@ -80,9 +80,6 @@ pre {
     padding: 5px;
     text-align: center;
 }
-#board-list {
-    text-align: left;
-}
 .poster-name {
     font-weight: bolder;
 }
@@ -200,6 +197,10 @@ pre {
 }
 .board-list {
     text-align: left;
+}
+.board-list.mobile {
+    padding-left: 1%;
+    padding-right: 1%;
 }
 #control-panel {
     float: right;
@@ -351,6 +352,12 @@ ul {
     display: table;
 }
 @media all and (max-width:1024px) {
+    .mobile {
+        display: block;
+    }
+    .desktop {
+        display: none;
+    }
     table td {
         display: block;
     }
@@ -378,7 +385,7 @@ ul {
         width:100%;
     }
     .plain-post-form input[type='submit'] {
-        width: 90%;
+        width: 80%;
     }
     .quick-post-form input[type='submit'] {
         width: 50%;
@@ -400,6 +407,12 @@ ul {
     }
 }
 @media all and (min-width:1024px) {
+    .mobile {
+        display: none;
+    }
+    .desktop {
+        display: block;
+    }
     .container {
         width: 70%;
         margin: auto;
@@ -416,6 +429,12 @@ ul {
     }
 }
 @media all and (min-width:1600px) {
+    .mobile {
+        display: none;
+    }
+    .desktop {
+        display: block;
+    }
     .container {
         width: 55%;
         margin: auto;

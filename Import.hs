@@ -25,6 +25,15 @@ import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append)
 
 -------------------------------------------------------------------------------------------------------------------
+-- | If ajax request, redirects to page that makes JSON from message and status string.
+--   If regular request, redirects to given URL.
+trickyRedirect status msg url = do
+  setMessageI msg
+  t <- isAjaxRequest
+  if t
+    then redirect (JsonFromMsgR status)
+    else redirect url
+-------------------------------------------------------------------------------------------------------------------      
 showPermission :: Permission -> AppMessage
 showPermission p = fromJust $ lookup p xs
   where xs = [(ManageThreadP    , MsgManageThread    )

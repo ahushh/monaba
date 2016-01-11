@@ -181,12 +181,3 @@ isBanExpired (Entity banId ban) = do
       if now > t
         then runDB (delete banId) >> return True
         else return False
--------------------------------------------------------------------------------------------------------------------      
--- | If ajax request, redirects to page that makes JSON from message and status string.
---   If regular request, redirects to given URL.
-trickyRedirect status msg url = do
-  setMessageI msg
-  t <- isAjaxRequest
-  if t
-    then redirect (JsonFromMsgR status)
-    else redirect url

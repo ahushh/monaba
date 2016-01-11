@@ -5,7 +5,7 @@
             <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close .clickable>
         <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit .clickable>
         $if elem EditPostsP permissions
-          <a href=@{AdminLockEditing (fromIntegral postId)}>
+          <a .ajax-admin href=@{AdminLockEditing (fromIntegral postId)}>
             $if postLockEditing postVal
               <i title=_{MsgUnlockEditing} .fa .fa-unlock-alt>
             $else
@@ -43,13 +43,13 @@
              $if elem ManageThreadP permissions
                [ 
                $with m <- ifelseall (postSticked postVal) MsgUnstickThread MsgStickThread
-                 <a title=_{m} href=@{StickR board postLocalId'}>
+                 <a .ajax-admin title=_{m} href=@{StickR board postLocalId'}>
                    S                
                $with m <- ifelseall (postLocked postVal) MsgUnstickThread MsgStickThread
-                 <a title=_{m} href=@{LockR board postLocalId'}>
+                 <a .ajax-admin title=_{m} href=@{LockR board postLocalId'}>
                    L
                $with m <- ifelseall (postAutosage postVal) MsgUnstickThread MsgStickThread
-                 <a title=_{m} href=@{AutoSageR board postLocalId'}>
+                 <a .ajax-admin title=_{m} href=@{AutoSageR board postLocalId'}>
                    A 
                ]
            $if elem ManageThreadP permissions

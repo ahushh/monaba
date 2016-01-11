@@ -47,7 +47,7 @@ getHellBanDoR postId action ban = do
  void $ when ban $ do
    addModlogEntry $ MsgModlogHellban posterId
    void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = postIp post }
- redirectUltDest HomeR
+ trickyRedirect "ok" MsgSuccessEx AdminR
 
 getHellBanUndoR :: Int  -> -- ^ Post internal ID
                  Text -> -- ^ 'show' - show this post; 'unban' - unban this user; 'both' - show post and unban
@@ -69,4 +69,4 @@ getHellBanUndoR postId action = do
      addModlogEntry $ MsgModlogHellbanShowAllPosts posterId
      runDB (update postKey [PostHellbanned =. False])
      runDB (deleteWhere [HellbanUid ==. postPosterId post])
- redirectUltDest HomeR
+ trickyRedirect "ok" MsgSuccessEx AdminR

@@ -457,3 +457,5 @@ HomeBoards: Board list
 ######################################################################################
 RssFeed s@Text b@Text: #{s} /#{b}/ RSS feed
 RssRecentPosts b@Text: Recents posts from /#{b}/
+SuccessEx: Success!
+ErrorEx: Error!

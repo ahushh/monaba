@@ -7,7 +7,6 @@ import           Data.List (sort)
 import           System.FilePath ((</>))
 import           System.Directory (getDirectoryContents)
 import           Data.Foldable as Foldable (forM_)
-import           Handler.Posting (trickyRedirect)
 -------------------------------------------------------------------------------------------------------------------
 settingsForm :: [(Text,Text)] -> -- ^ All boards
                [Text] -> -- ^ Ignored boards

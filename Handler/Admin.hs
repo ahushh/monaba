@@ -17,7 +17,7 @@ getAdminLockEditing postKey = do
   p <- makeExternalRef (postBoard post) (postLocalId post)
   addModlogEntry ((if postLockEditing post then MsgModlogEnablePostEditing else MsgModlogDisablePostEditing) p)
   runDB $ update k [PostLockEditing =. not (postLockEditing post)]
-  redirectUltDest HomeR
+  trickyRedirect "ok" MsgSuccessEx HomeR
 
 -------------------------------------------------------------------------------------------------------------
 -- Thread management
@@ -85,8 +85,8 @@ getStickR board thread = do
       t <- makeExternalRef board thread
       runDB $ update pId [PostSticked =. not (postSticked p)]
       addModlogEntry ((if postSticked p then MsgModlogUnstickThread else MsgModlogStickThread) t)
-      redirectUltDest AdminR
-    _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
+      trickyRedirect "ok" MsgSuccessEx AdminR
+    _                   -> trickyRedirect "error" MsgNoSuchThread AdminR
       
 getLockR :: Text -> Int -> Handler Html
 getLockR board thread = do
@@ -96,8 +96,8 @@ getLockR board thread = do
       t <- makeExternalRef board thread
       runDB $ update pId [PostLocked =. not (postLocked p)]
       addModlogEntry ((if postLocked p then MsgModlogUnlockThread else MsgModlogLockThread) t)
-      redirectUltDest AdminR
-    _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
+      trickyRedirect "ok" MsgSuccessEx AdminR
+    _                   -> trickyRedirect "error" MsgNoSuchThread AdminR
       
 getAutoSageR :: Text -> Int -> Handler Html
 getAutoSageR board thread = do
@@ -107,8 +107,8 @@ getAutoSageR board thread = do
       t <- makeExternalRef board thread
       runDB $ update pId [PostAutosage =. not (postAutosage p)]
       addModlogEntry ((if postAutosage p then MsgModlogAutosageOffThread else MsgModlogAutosageOnThread) t)
-      redirectUltDest AdminR
-    _                   -> setMessageI MsgNoSuchThread >> redirectUltDest AdminR
+      trickyRedirect "ok" MsgSuccessEx AdminR
+    _                   -> trickyRedirect "error" MsgNoSuchThread AdminR
 
 -------------------------------------------------------------------------------------------------------------
 -- Censorship management
@@ -121,4 +121,4 @@ getManageCensorshipR fileId rating = do
   runDB $ update key [AttachedfileRating =. tshow rating]
   p <- makeExternalRef (postBoard post) (postLocalId post)
   addModlogEntry $ MsgModlogChangeRating (pack $ attachedfileName file) p (attachedfileRating file) (tshow rating)
-  redirectUltDest HomeR
+  trickyRedirect "ok" MsgSuccessEx AdminR

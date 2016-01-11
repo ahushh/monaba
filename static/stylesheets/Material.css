@@ -3,7 +3,7 @@
 	color:#1de9b6;
 	border:none;
 }
-#home-content img,.banner {
+#home-content img{
 	display:none!important;
 }
 header {
@@ -26,11 +26,8 @@ html,body {
 	background-color:#009688;
 	color:#e0f2f1;
 	font-family:Century Gothic,sans-serif;
-	font-size:1em;
+	font-size:10pt;
 	padding:10px;
-}
-form {
-	font-size:0.9em;
 }
 textarea,input,select {
 	border:none;
@@ -167,6 +164,13 @@ pre {
 .spoiler:hover {
 	color:#e0f2f1!important;
 	background-color:transparent!important;
+}
+.spoiler a {
+	color:#00695c!important;
+	background-color:#00695c!important;
+}
+.spoiler a:hover {
+	color:#1de9b6!important;
 }
 .dropdown-menu ul li {
     background-color: #00796b;

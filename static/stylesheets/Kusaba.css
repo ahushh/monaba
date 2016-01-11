@@ -68,9 +68,6 @@ a.previous {
   padding-right: 5px;
 }
 .banner {
-  display: none;
-}
-#board-header {
   padding-top: 20px;
 }
 .plain-post-form {
@@ -127,6 +124,12 @@ pre {
 }
 .spoiler {
   transition: 0.3s !important;
+}
+.spoiler a {
+  color:#000000!important;
+}
+.spoiler a:hover {
+  color: #3ECA82!important;
 }
 .quote {
   color: #789922!important;

@@ -3,6 +3,7 @@ module Handler.Admin where
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (fixReferences, doYobaMarkup, makeExternalRef)
+import           System.Process       (readProcess)
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
@@ -122,3 +123,15 @@ getManageCensorshipR fileId rating = do
   p <- makeExternalRef (postBoard post) (postLocalId post)
   addModlogEntry $ MsgModlogChangeRating (pack $ attachedfileName file) p (attachedfileRating file) (tshow rating)
   trickyRedirect "ok" MsgSuccessEx AdminR
+-------------------------------------------------------------------------------------------------------------
+getAdminRestartR :: Handler Html
+getAdminRestartR = undefined
+
+getAdminGitPullR :: Handler Html
+getAdminGitPullR = do
+  out <- liftIO $ readProcess "git" ["pull"] []
+  defaultLayout $ [whamlet|
+                    ^{adminNavbarWidget}
+                    <pre>
+                      #{out}
+                  |]

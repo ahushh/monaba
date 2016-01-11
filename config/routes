@@ -86,6 +86,10 @@
 
 /admin/editing/lock/#Int   AdminLockEditing GET
 
+/admin/restart             AdminRestartR GET
+/admin/git/pull            AdminGitPullR GET
+
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST

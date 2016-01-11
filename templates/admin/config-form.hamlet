@@ -1,6 +1,7 @@
 <form .config method=post action=@{ConfigR}>
     #{extra}
     <input type=submit value=_{MsgUpdateConfig}>
+    <a href=@{AdminGitPullR}>Git pull
     <table>
         <tr>
             <td>_{MsgReplyDelay}

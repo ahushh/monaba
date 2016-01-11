@@ -42,3 +42,8 @@ sendNewPostES :: Text -> Handler ()
 sendNewPostES board = do
   chan <- appSSEChan <$> getYesod
   liftIO $ atomically $ writeTChan chan ("new-post", board)
+
+sendEditedPostES :: Int -> Handler ()
+sendEditedPostES postId = do
+  chan <- appSSEChan <$> getYesod
+  liftIO $ atomically $ writeTChan chan ("edited-post", tshow postId)

@@ -2,6 +2,7 @@ module Handler.Edit where
  
 import           Import
 import           Handler.Posting
+import           Handler.EventSource (sendEditedPostES)
 import           Utils.YobaMarkup (doYobaMarkup)
 import qualified Data.Text as T (intercalate)
 -------------------------------------------------------------------------------------------------------------------
@@ -60,6 +61,7 @@ postPostEditR = do
         if isJust history
           then runDB $ replace (entityKey $ fromJust history) newHistory
           else void $ runDB $ insert newHistory
+      sendEditedPostES postId
       trickyRedirect "ok" MsgPostEdited HomeR
   
 getEditHistoryR :: Int -> Handler Html

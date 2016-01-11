@@ -61,6 +61,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
         document.body.appendChild(buttons);
     })();
     //-----------------------------------------------------------------
+    // Auto update of edited posts
+    //-----------------------------------------------------------------
+    (function() {
+        if (!isEventSourceSupported()) return;
+        eventsource.addEventListener("edited-post", function(msg) {
+            httpRequest({
+                action: '/ajax/postbyid/'+msg.data,
+                onload: function(request) {
+                    if (request.status >= 200 && request.status < 400) {
+                        var newPost = parseDOMElement(request.responseText);
+                        initOnePost(newPost);
+                        var post = document.getElementById('p'+msg.data);
+                        post.parentNode.replaceChild(newPost, post);
+                    } else {
+                    }
+                }
+            });
+        });
+    })();
+    //-----------------------------------------------------------------
     // Online users counter
     //-----------------------------------------------------------------
     (function() {

@@ -26,13 +26,13 @@ var Monaba = {
 loadConfig();
 applyCSSSettings();
 //-----------------------------------------------------------------
+function isEventSourceSupported() {
+    return getConfig("eventsource") && typeof(EventSource) !== "undefined";
+}
 document.addEventListener("DOMContentLoaded", function(event) {
     //-----------------------------------------------------------------
     // EventSource
     //-----------------------------------------------------------------
-    function isEventSourceSupported() {
-        return getConfig("eventsource") && typeof(EventSource) !== "undefined";
-    }
     if (isEventSourceSupported()) {
         eventsource = new EventSource("@{EventR}");
         eventsource.onopen  = function()      { console.log("Eventsource opened."); };
@@ -74,6 +74,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         initOnePost(newPost);
                         var post = document.getElementById('p'+msg.data);
                         post.parentNode.replaceChild(newPost, post);
+                        makeRefmap();
+                        initPopupsCache();
+                        refreshMathjax();
                     } else {
                     }
                 }
@@ -1016,19 +1019,24 @@ function showEditForm(postId) {
             onloadOk: function(request) {
                 var response = JSON.parse(request.responseText);
                 if (response.ok) {
-                    httpRequest({
-                        action: "/ajax/post/"+board+"/"+localId,
-                        onload: function(request) {
-                            hideEditForm();
-                            var newPost = parseDOMElement(request.responseText);
-                            initOnePost(newPost);
-                            post.parentNode.replaceChild(newPost, post);
-                            makeRefmap();
-                            initPopupsCache();
-                            refreshMathjax();
-                            popupMessage(response.ok, getConfig("popup_message_display_time"));
-                        }
-                    });
+                    if (isEventSourceSupported()) {
+                        hideEditForm();
+                        popupMessage(response.ok, getConfig("popup_message_display_time"));
+                    } else {
+                        httpRequest({
+                            action: "/ajax/post/"+board+"/"+localId,
+                            onload: function(request) {
+                                hideEditForm();
+                                var newPost = parseDOMElement(request.responseText);
+                                initOnePost(newPost);
+                                post.parentNode.replaceChild(newPost, post);
+                                makeRefmap();
+                                initPopupsCache();
+                                refreshMathjax();
+                                popupMessage(response.ok, getConfig("popup_message_display_time"));
+                            }
+                        });
+                    }
                 } else {
                     popupMessage(response.error, getConfig("popup_message_display_time"));
                 }

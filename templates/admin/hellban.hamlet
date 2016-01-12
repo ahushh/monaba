@@ -1,5 +1,8 @@
 ^{adminNavbarWidget}
-<h2 style=text-align:center> _{MsgHellbanAllPosts} 
+<h2 style=text-align:center>
+  _{MsgHellbanAllPosts} 
+  / 
+  <a href=@{AdminSearchHBUsersNoPageR}>_{MsgAllHellbannedUsers}
 <div .feed>
   <form .delete-form method=get action=@{DeleteR}>
     $forall (e, files) <- postsAndFiles

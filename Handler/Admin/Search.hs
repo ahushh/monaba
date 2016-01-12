@@ -3,6 +3,21 @@ module Handler.Admin.Search where
 
 import Import
 -------------------------------------------------------------------------------------------------------------
+getAdminSearchHBUsersNoPageR :: Handler Html
+getAdminSearchHBUsersNoPageR = getAdminSearchHBUsersR 0
+
+getAdminSearchHBUsersR :: Int -> Handler Html
+getAdminSearchHBUsersR page = do
+  perPage <- getConfig configShowLatestPosts
+  all' <- runDB $ selectList ([]::[Filter Hellban]) []
+  hbs <- runDB $ selectList ([]::[Filter Hellban]) [LimitTo perPage, OffsetBy $ page*perPage]
+  let pages = listPages perPage (length all')
+  -------------------------------------------------------------------------------------------------------------------
+  defaultLayout $ do
+    setUltDestCurrent
+    defaultTitleMsg MsgAllHellbannedUsers
+    $(widgetFile "admin/search/hellbanned")
+
 getAdminSearchIPNoPageR :: Text -> Handler Html
 getAdminSearchIPNoPageR = flip getAdminSearchIPR 0
 
@@ -57,4 +72,5 @@ getAdminSearchHBUIDNoPageR posterId = flip getAdminSearchHBUIDR 0 posterId
 
 getAdminSearchHBUIDR :: Text -> Int -> Handler Html
 getAdminSearchHBUIDR posterId page = uidSearchHelper True posterId page
+
 

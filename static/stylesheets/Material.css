@@ -18,11 +18,6 @@ header {
 	text-align: left !important;
 }
 html,body {
-	background-attachment:fixed;
-	background-image:url(https://i.imgur.com/nGfpIaA.png);
-	background-size:contain;
-	background-position:right;
-	background-repeat:no-repeat;
 	background-color:#009688;
 	color:#e0f2f1;
 	font-family:Century Gothic,sans-serif;

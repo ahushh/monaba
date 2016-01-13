@@ -54,7 +54,7 @@ pre {
 header {
   background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   padding: 1px 0px;
-  border: none;
+  border: none !important;
 }
 .banner {
   margin-top: 10px;

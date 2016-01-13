@@ -1,6 +1,6 @@
 #message {
-	font-size:1.5em;
-	color:#C8CDD5;
+	font-size:2em;
+	color:white;
 	border:none;
 }
 header {
@@ -36,7 +36,7 @@ html,body {
 	background-color:#6E7C87;
 	color:white;
 	font-family:Calibri;
-	font-size:1em;
+	font-size:10.5pt;
 	padding:10px;
 }
 textarea,input,select {
@@ -45,7 +45,7 @@ textarea,input,select {
 	background-color:#37414A;
 	color:white;
 	font-family:Calibri;
-	font-size:1em;
+	font-size:inherit;
 	margin:1px;
 }
 input[type=submit]:hover {
@@ -101,13 +101,13 @@ footer {
 	padding:5px;
 }
 .reply-post.highlighted-post,.feed .op-post.highlighted-post {
-	background-color:#4b5a65;
+	background-color:#43505a;
 }
 .op-post.highlighted-post {
-	background-color:#4b5a65;
+	background-color:#546471;
 }
 .thread {
-	border-top:3px solid #ffffff;
+	border-top:3px solid #49687d;
 	border-image:url(https://i.imgur.com/mRAnYs1.png) 3;
 	margin:5px;
 	padding:10px 2px;
@@ -148,6 +148,7 @@ pre {
 .popup_message {
 	background-color:#546471;
 	color:white;
+	margin-top: 20px!important;
 }
 .quick-post-form {
 	padding:3px;
@@ -188,6 +189,9 @@ pre {
 .spoiler:hover {
 	color:#48B0FD!important;
 	background-color:#212121!important;
+}
+.spoiler a:hover {
+	color: #48B0FD!important;
 }
 .dropdown-menu ul li {
     background-color: #546471;

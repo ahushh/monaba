@@ -9,14 +9,14 @@
 }
 #board-list-full .title {
   background: #88DD88;
-  margin-left: 3px;
+  margin-left: 3px!important;
   border-radius: 4px;
 }
 .board-category {
   display: none;
 }
 #board-list-full p {
-  margin-left: 9px;
+  margin-left: 9px!important;
 }
 #home-content img {
   display: none!important;
@@ -68,9 +68,6 @@ a.previous {
   padding-right: 5px;
 }
 .banner {
-  display: none;
-}
-#board-header {
   padding-top: 20px;
 }
 .plain-post-form {
@@ -128,6 +125,12 @@ pre {
 .spoiler {
   transition: 0.3s !important;
 }
+.spoiler a {
+  color:#000000!important;
+}
+.spoiler a:hover {
+  color: #3ECA82!important;
+}
 .quote {
   color: #789922!important;
 }
@@ -162,7 +165,7 @@ pre {
 .popup_message {
   background: #DAF0D6;
   border-radius: 4px;
-  margin-top: 20px;
+  margin-top: 20px!important;
 }
 .expand-post {
    color: #DAF0D6;

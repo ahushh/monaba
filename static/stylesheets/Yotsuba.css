@@ -37,7 +37,7 @@
 /* board */
 
 html, body {
-  background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
+  background: #FFFFEE url(https://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   color: #880000;
   font:13px/1.231 arial,helvetica,clean,sans-serif;
 }
@@ -52,9 +52,9 @@ pre {
   padding: 5px;
 }
 header {
-  background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
+  background: #FFFFEE url(https://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   padding: 1px 0px;
-  border: none;
+  border: none !important;
 }
 .banner {
   margin-top: 10px;
@@ -101,7 +101,7 @@ textarea, input, select {
 }
 .popup_message {
   background: #F0E0D6;
-  margin-top: 10px;
+  margin-top: 10px !important;
   border: 1px solid #D9BFB7;
 }
 .reply-title {

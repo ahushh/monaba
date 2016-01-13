@@ -185,5 +185,21 @@ a.previous {
 
 #message {
   font-size: 28px;
+  font-family: Tahoma,sans-serif;
+  letter-spacing: -2px;
   color: #e00;
+}
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2{
+  font-family: Tahoma,sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: -2px;
+  color: #AF0A0F;
+  margin: 10px 0px !important;
+}
+h2 .fa {
+  color: #AF0A0F;
 }

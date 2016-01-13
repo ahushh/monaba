@@ -37,7 +37,7 @@
 /* board */
 
 html, body {
-  background: #FFFFEE url(https://i.imgur.com/2kGOsYZ.png) top center repeat-x;
+  background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   color: #880000;
   font:13px/1.231 arial,helvetica,clean,sans-serif;
 }
@@ -52,7 +52,7 @@ pre {
   padding: 5px;
 }
 header {
-  background: #FFFFEE url(https://i.imgur.com/2kGOsYZ.png) top center repeat-x;
+  background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   padding: 1px 0px;
   border: none !important;
 }
@@ -185,5 +185,21 @@ a.previous {
 
 #message {
   font-size: 28px;
+  font-family: Tahoma,sans-serif;
+  letter-spacing: -2px;
   color: #e00;
+}
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2{
+  font-family: Tahoma,sans-serif;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: -2px;
+  color: #AF0A0F;
+  margin: 10px 0px !important;
+}
+h2 .fa {
+  color: #AF0A0F;
 }

@@ -101,7 +101,7 @@ textarea, input, select {
 }
 .popup_message {
   background: #F0E0D6;
-  margin-top: 10px;
+  margin-top: 10px !important;
   border: 1px solid #D9BFB7;
 }
 .reply-title {

@@ -203,7 +203,7 @@ h1, h2{
   font-size: 28px;
   font-weight: bold;
   letter-spacing: -2px;
-  margin: 10px 0px;
+  margin: 10px 0px !important;
   color: #AF0A0F;
 }
 h2 .fa {

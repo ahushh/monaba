@@ -54,7 +54,7 @@ pre {
 header {
   background: #FFFFEE url(http://i.imgur.com/2kGOsYZ.png) top center repeat-x;
   padding: 1px 0px;
-  border: none !important;
+  border: none;
 }
 .banner {
   margin-top: 10px;
@@ -101,7 +101,7 @@ textarea, input, select {
 }
 .popup_message {
   background: #F0E0D6;
-  margin-top: 10px !important;
+  margin-top: 10px;
   border: 1px solid #D9BFB7;
 }
 .reply-title {
@@ -185,7 +185,6 @@ a.previous {
 
 #message {
   font-size: 28px;
-  font-family: Tahoma,sans-serif;
   letter-spacing: -2px;
   color: #e00;
 }
@@ -198,7 +197,7 @@ h1, h2{
   font-weight: bold;
   letter-spacing: -2px;
   color: #AF0A0F;
-  margin: 10px 0px !important;
+  margin: 10px 0px;
 }
 h2 .fa {
   color: #AF0A0F;

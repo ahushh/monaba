@@ -185,6 +185,7 @@ a.previous {
 
 #message {
   font-size: 28px;
+  font-family: Tahoma,sans-serif;
   letter-spacing: -2px;
   color: #e00;
 }

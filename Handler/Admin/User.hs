@@ -51,6 +51,10 @@ postUsersR = do
           let password = fromMaybe (userPassword user) mPassword
           userWithPassword <- liftIO $ setPassword password newUser
           void $ runDB $ replace key userWithPassword
+          when (isJust mPassword) $
+            addModlogEntry $ MsgModlogChangeUserPassword name
+          when (group /= (userGroup user)) $
+            addModlogEntry $ MsgModlogChangeUserGroup name group
           msgRedirect MsgUsersUpdated
         Nothing -> do -- new user
           case mPassword of

@@ -382,6 +382,8 @@ ModlogDelGroup gsd@Text: Deleted group #{gsd}
 
 ModlogAddUser gag@Text: Added user #{gag}
 ModlogDelUser gag@Text: Deleted user #{gag}
+ModlogChangeUserPassword g@Text: Change password of user #{g}
+ModlogChangeUserGroup u@Text g@Text: Change group of user #{u} to #{g}
 
 ModlogUpdateConfig: Updated config
 

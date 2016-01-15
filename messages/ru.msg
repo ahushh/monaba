@@ -384,6 +384,8 @@ ModlogDelGroup gsd@Text: Удалена группа #{gsd}
 
 ModlogAddUser gag@Text: Добавлен пользователь #{gag}
 ModlogDelUser gag@Text: Удален пользователь #{gag}
+ModlogChangeUserPassword g@Text: Изменен пароль пользователя #{g}
+ModlogChangeUserGroup u@Text g@Text: Изменена группа пользователя #{u} на #{g}
 
 ModlogUpdateConfig: Обновлен конфиг
 

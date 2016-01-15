@@ -74,7 +74,7 @@
          <li>_{MsgOpModerationIsEnabled}
       $forall r <- boardExtraRules boardVal
          $if not $ T.null r
-             <li>#{r}
+             <li>#{preEscapedToHtml r}
 
 <div .close-post-form>
   [ #

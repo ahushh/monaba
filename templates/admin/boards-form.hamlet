@@ -41,7 +41,7 @@
         <tr>
             <td>_{MsgBoardExtraRules}
             <td>^{fvInput extraRulesView}
-            <td>_{MsgOptional}, _{MsgSeparateBy ";"}
+            <td>_{MsgOptional}, raw HTML, _{MsgSeparateBy ";"}
         <tr>
             <td>_{MsgBoardDefaultName }
             <td>^{fvInput defaultNameView}

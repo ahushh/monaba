@@ -2,10 +2,10 @@
 
 <table .admin-table>
   <tr>
-      <td>_{MsgModlogDate}
-      <td>_{MsgModlogUser}
-      <td>_{MsgModlogGroup}
-      <td>_{MsgModlogMessage}      
+      <th>_{MsgModlogDate}
+      <th>_{MsgModlogUser}
+      <th>_{MsgModlogGroup}
+      <th>_{MsgModlogMessage}
   $forall Entity _ entry <- entries
       <tr>
           <td> #{myFormatTime timeZone $ modlogDate entry}

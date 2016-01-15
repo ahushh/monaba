@@ -69,7 +69,7 @@ updateBoardForm board action bCategories groups extra = do
   (replyAccessRes      , replyAccessView      ) <- mopt (multiSelectFieldList groups) "" (helper'' boardReplyAccess)
   (threadAccessRes     , threadAccessView     ) <- mopt (multiSelectFieldList groups) "" (helper'' boardThreadAccess)
   (opModerationRes     , opModerationView     ) <- mopt (selectFieldList onoff) "" (helper'  boardOpModeration "Enable")
-  (extraRulesRes       , extraRulesView       ) <- mopt textField     "" (helper (T.intercalate ";" . boardExtraRules) "")
+  (extraRulesRes       , extraRulesView       ) <- mopt textareaField     "" (helper (Textarea . T.intercalate ";" . boardExtraRules) (Textarea ""))
   (enableGeoIpRes      , enableGeoIpView      ) <- mopt (selectFieldList onoff) "" (helper'  boardEnableGeoIp "Disable")
   (opEditingRes        , opEditingView        ) <- mopt (selectFieldList onoff) "" (helper'  boardOpEditing "Enable")
   (postEditingRes      , postEditingView      ) <- mopt (selectFieldList onoff) "" (helper'  boardPostEditing "Enable")
@@ -137,7 +137,7 @@ postNewBoardsR = do
                            , boardReplyAccess       = bReplyAccess
                            , boardThreadAccess      = bThreadAccess
                            , boardOpModeration      = onoff bOpModeration
-                           , boardExtraRules        = maybe [] (T.split (==';')) bExtraRules
+                           , boardExtraRules        = maybe [] (T.split (==';') . unTextarea) bExtraRules
                            , boardEnableGeoIp       = onoff bEnableGeoIp
                            , boardOpEditing         = onoff bOpEditing
                            , boardPostEditing       = onoff bPostEditing
@@ -194,7 +194,7 @@ postAllBoardsR = do
                              , boardReplyAccess       = mplus bReplyAccess  (boardReplyAccess  oldBoard)
                              , boardThreadAccess      = mplus bThreadAccess (boardThreadAccess oldBoard)
                              , boardOpModeration      = onoff bOpModeration boardOpModeration
-                             , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                             , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';') . unTextarea) bExtraRules
                              , boardEnableGeoIp       = onoff bEnableGeoIp     boardEnableGeoIp
                              , boardOpEditing         = onoff bOpEditing       boardOpEditing
                              , boardPostEditing       = onoff bPostEditing     boardPostEditing
@@ -252,7 +252,7 @@ postUpdateBoardsR board = do
                            , boardReplyAccess       = mplus bReplyAccess  Nothing
                            , boardThreadAccess      = mplus bThreadAccess Nothing
                            , boardOpModeration      = onoff bOpModeration boardOpModeration
-                           , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';')) bExtraRules
+                           , boardExtraRules        = maybe (boardExtraRules oldBoard) (T.split (==';') . unTextarea) bExtraRules
                            , boardEnableGeoIp       = onoff bEnableGeoIp     boardEnableGeoIp
                            , boardOpEditing         = onoff bOpEditing       boardOpEditing
                            , boardPostEditing       = onoff bPostEditing     boardPostEditing

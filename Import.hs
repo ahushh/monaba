@@ -92,7 +92,7 @@ data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe [Text]) -- ^ Reply access
                               (Maybe [Text]) -- ^ Thread access
                               (Maybe Text  ) -- ^ Allow OP moderate his/her thread
-                              (Maybe Text  ) -- ^ Extra rules
+                              (Maybe Textarea) -- ^ Extra rules
                               (Maybe Text  ) -- ^ Enable geo IP
                               (Maybe Text  ) -- ^ Enable OP editing
                               (Maybe Text  ) -- ^ Enable post editing

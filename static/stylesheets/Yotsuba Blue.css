@@ -57,7 +57,7 @@ pre {
 header {
   background: #EEF2FF url(http://i.imgur.com/YSqkUWI.png) top center repeat-x;
   padding: 1px 0px;
-  border: none;
+  border: none !important;
 }
 .banner {
   margin-top: 10px;
@@ -192,6 +192,7 @@ a.previous {
 
 #message {
   font-size: 28px;
+  letter-spacing: -2px;
   color: #e00;
 }
 
@@ -202,6 +203,7 @@ h1, h2{
   font-size: 28px;
   font-weight: bold;
   letter-spacing: -2px;
+  margin: 10px 0px !important;
   color: #AF0A0F;
 }
 h2 .fa {

@@ -11,8 +11,8 @@ getAdminR = do
     defaultTitleMsg MsgManagement
     $(widgetFile "admin")
 -------------------------------------------------------------------------------------------------------------
-getAdminLockEditing :: Int -> Handler Html
-getAdminLockEditing postKey = do
+getAdminLockEditingR :: Int -> Handler Html
+getAdminLockEditingR postKey = do
   let k = (toSqlKey $ fromIntegral postKey) :: Key Post
   post <- runDB $ get404 k
   p <- makeExternalRef (postBoard post) (postLocalId post)

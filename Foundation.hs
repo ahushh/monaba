@@ -133,41 +133,58 @@ instance Yesod App where
       AdminR{}        -> isAuthorized' [ManagePanelP]
       NewPasswordR{}  -> isAuthorized' [ManagePanelP]
       AccountR{}      -> isAuthorized' [ManagePanelP]
+
       StickR{}        -> isAuthorized' [ManageThreadP]
       LockR{}         -> isAuthorized' [ManageThreadP]
       AutoSageR{}     -> isAuthorized' [ManageThreadP]
       MoveThreadR{}   -> isAuthorized' [ManageThreadP]
+      ChangeThreadR{} -> isAuthorized' [ManageThreadP]
 
       BanByIpR{}      -> isAuthorized' [ManageBanP]
+      BanDeleteR{}    -> isAuthorized' [ManageBanP]
+
       ManageBoardsR{} -> isAuthorized' [ManageBoardP]
       NewBoardsR{}    -> isAuthorized' [ManageBoardP]
       UpdateBoardsR{} -> isAuthorized' [ManageBoardP]
       AllBoardsR{}    -> isAuthorized' [ManageBoardP]
+      DeleteBoardR{}  -> isAuthorized' [ManageBoardP]
+      CleanBoardR{}   -> isAuthorized' [ManageBoardP]
+      RebuildPostsMessagesOnBoardR{}    -> isAuthorized' [ManageBoardP]
 
       HellBanNoPageR{}  -> isAuthorized' [HellBanP]
       HellBanR{}        -> isAuthorized' [HellBanP]
       HellBanDoR{}      -> isAuthorized' [HellBanP]
+      HellBanUndoR{}    -> isAuthorized' [HellBanP]
 
       AdminSearchHBUIDR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
       AdminSearchHBUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchHBUsersR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
+      AdminSearchHBUsersNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]
 
-      DeleteBoardR{}  -> isAuthorized' [ManageBoardP]
-      CleanBoardR{}   -> isAuthorized' [ManageBoardP]
       UsersR{}        -> isAuthorized' [ManageUsersP]
       ManageGroupsR{} -> isAuthorized' [ManageUsersP]
+      DeleteGroupsR{} -> isAuthorized' [ManageUsersP]
       UsersDeleteR{}  -> isAuthorized' [ManageUsersP]
+
       ModlogR{}       -> isAuthorized' [ViewModlogP]
+
       AdminSearchIPR{}       -> isAuthorized' [ViewIPAndIDP]
       AdminSearchIPNoPageR{} -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDR{}       -> isAuthorized' [ViewIPAndIDP]
       AdminSearchUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP]
+
       ManageCensorshipR{} -> isAuthorized' [ChangeFileRatingP]
 
       AdminDeletedR{}         -> isAuthorized' [DeletePostsP]
       AdminDeletedFilteredR{} -> isAuthorized' [DeletePostsP]
       AdminRecoverDeletedR{}  -> isAuthorized' [DeletePostsP]
 
+      AdminLockEditingR{}     -> isAuthorized' [EditPostsP]
+
       ConfigR{}       -> isAuthorized' [ManageConfigP]
+      AdminGitPullR{} -> isAuthorized' [ManageConfigP]
+      AdminRestartR{} -> isAuthorized' [ManageConfigP]
+
       _               -> return Authorized
 
     -- This function creates static content files in the static folder

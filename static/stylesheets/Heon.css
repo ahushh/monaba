@@ -28,7 +28,7 @@ hr {
 	color:#C8CDD5;
 	font-weight:700;
 	border-bottom:3px solid #ffffff;
-	border-image:url(https://i.imgur.com/mRAnYs1.png) 3;
+	border-image:url("/static/img/heon.png") 3;
 	padding-bottom:10px;
 	margin-bottom:5px;
 }
@@ -108,7 +108,7 @@ footer {
 }
 .thread {
 	border-top:3px solid #49687d;
-	border-image:url(https://i.imgur.com/mRAnYs1.png) 3;
+	border-image:url("/static/img/heon.png") 3;
 	margin:5px;
 	padding:10px 2px;
 }
@@ -129,7 +129,7 @@ table td {
 #delete-container {
 	text-align:right;
 	border-top:3px solid #ffffff;
-	border-image:url(https://i.imgur.com/mRAnYs1.png) 3;
+	border-image:url("/static/img/heon.png") 3;
 	margin:5px;
 	padding:10px 2px;
 }

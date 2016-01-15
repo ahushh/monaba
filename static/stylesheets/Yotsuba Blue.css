@@ -37,7 +37,7 @@
 /* board */
 
 html, body {
-  background: #EEF2FF url(http://i.imgur.com/YSqkUWI.png) top center repeat-x;
+  background: #EEF2FF url("/static/img/yotsubablue.png") top center repeat-x;
   color: #000000;
   font:13px/1.231 arial,helvetica,clean,sans-serif;
 }
@@ -55,7 +55,7 @@ pre {
   padding: 5px;
 }
 header {
-  background: #EEF2FF url(http://i.imgur.com/YSqkUWI.png) top center repeat-x;
+  background: #EEF2FF url("/static/img/yotsubablue.png") top center repeat-x;
   padding: 1px 0px;
   border: none !important;
 }

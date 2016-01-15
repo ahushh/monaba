@@ -893,10 +893,7 @@ function handleFile(file, fInput, rInput) {
         var div = document.createElement('div');
         div.className = "attachment-thumb";
 
-        var img = new Image();
-        img.title = file.name + ", " + fSize;
-        img.file = file;
-        img.onclick = function() {
+        var onclick = function() {
             fInput.value = '';
             rInput.dataset.used = "0";
             rInput.style.display = "none";
@@ -905,7 +902,16 @@ function handleFile(file, fInput, rInput) {
             document.getElementById("attach-file").className = "";
             fts.removeChild(div);
         };
-        div.appendChild(img);
+
+        var img = new Image();
+        img.title = file.name + ", " + fSize;
+        img.file = file;
+        img.onclick = onclick;
+
+        var video = document.createElement("video");
+        video.title = file.name + ", " + fSize;
+        video.file = file;
+        video.onclick = onclick;
 
         rInput.dataset.used = "1";
         rInput.style.display = "block";
@@ -913,18 +919,28 @@ function handleFile(file, fInput, rInput) {
 
         fts.appendChild(div);
         if (file.type.match('image.*')) {
+            div.appendChild(img);
             var reader = new FileReader();
             reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
             reader.readAsDataURL(file);
         } else if (file.type.match('video.*')) {
-            img.src = "@{StaticR fileicons_video_png}";
+            video.controls = true;
+            video.play();
+            div.appendChild(video);
+            var reader = new FileReader();
+            reader.onload = (function(v) { return function(e) { v.src = e.target.result; }; })(video);
+            reader.readAsDataURL(file);
         } else if (file.type.match('audio.*')) {
+            div.appendChild(img);
             img.src = "@{StaticR fileicons_audio_png}";
         } else if (file.type.match('archive.*') || file.type.match('.*compressed') || file.type.match('application/(x-)?(rar|7z|zip|gzip)') ) {
+            div.appendChild(img);
             img.src = "@{StaticR fileicons_archive_png}";            
         } else if (file.type == "application/x-shockwave-flash") {
+            div.appendChild(img);
             img.src = "@{StaticR fileicons_flash_png}";
         } else  {
+            div.appendChild(img);
             img.src = "@{StaticR fileicons_default_png}";
         }
     }

@@ -288,11 +288,11 @@ ul {
 .no-js .rating-input {
     display: inline;
 }
-.attachment-thumb img {
+.attachment-thumb img, .attachment-thumb video {
     margin: 1px;
     border: 0;
 }
-.attachment-thumb img:hover {
+.attachment-thumb img:hover, .attachment-thumb video:hover {
     margin: 0;
     border: 1px solid red;
 }
@@ -325,10 +325,10 @@ ul {
 }
 .attachment-thumb {
     display: inline-block;
-    width: 15%;
+    width: 25%;
     margin: 5px;
 }
-.attachment-thumb img {
+.attachment-thumb img, .attachment-thumb video {
     width: 100%;
     margin: 1px;
     vertical-align: top;

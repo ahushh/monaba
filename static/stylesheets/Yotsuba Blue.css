@@ -103,7 +103,7 @@ textarea, input, select {
   border-style: solid;
   border-color: #B7C5D9;
 }
-.popup_message {
+.popup-message {
   background: #D6DAF0;
   margin-top: 10px !important;
   border: 1px solid #B7C5D9;

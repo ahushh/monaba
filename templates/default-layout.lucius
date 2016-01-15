@@ -158,17 +158,17 @@ pre {
 .post-label-false, .post-label-false a {
     color: red;
 }
-.popup_message_text {
+.popup-message-text {
     display: inline;
     max-height: 150px;
     overflow-y: scroll;
 }
-.close_popup_message {
+.close-popup-message {
     cursor: pointer;
     display: inline;
     vertical-align: top;
 }
-.popup_message {
+.popup-message {
     /* display: inline-block;     */
     float: right;
     clear: both;
@@ -177,7 +177,7 @@ pre {
     word-wrap: break-word;
     padding: 10px 10px;
 }
-#popup_message_container {
+#popup-message-container {
     max-width: 90%;
     right: 10px;
     position: fixed;

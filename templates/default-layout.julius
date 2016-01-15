@@ -1400,18 +1400,18 @@ function popupMessage(text, delay, loadingIcon, close) {
         return;
     }
 
-    var container = document.getElementById("popup_message_container");
+    var container = document.getElementById("popup-message-container");
     if (container == null) {
         container = document.createElement("div");
-        container.id = "popup_message_container";
+        container.id = "popup-message-container";
         document.body.appendChild(container);
     }
 
     var wrap = document.createElement("div");
-    wrap.className = 'popup_message_wrap';
+    wrap.className = 'popup-message-wrap';
 
     var msg = document.createElement("div");
-    msg.className = 'popup_message';
+    msg.className = 'popup-message';
 
     if (loadingIcon) {
         var icon = document.createElement("i");
@@ -1420,7 +1420,7 @@ function popupMessage(text, delay, loadingIcon, close) {
     }
 
     var textContainer = document.createElement("div");
-    textContainer.className = 'popup_message_text';
+    textContainer.className = 'popup-message-text';
     textContainer.innerHTML = text;
     Monaba.lastPopup.container = textContainer;
     Monaba.lastPopup.message = text;
@@ -1429,7 +1429,7 @@ function popupMessage(text, delay, loadingIcon, close) {
 
     if (close) {
         var cpm = document.createElement("div");
-        cpm.className = 'close_popup_message';
+        cpm.className = 'close-popup-message';
         var l = document.createElement("a");
         l.innerHTML = "✖ ";
         l.onclick = function() {

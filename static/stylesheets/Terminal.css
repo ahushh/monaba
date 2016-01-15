@@ -94,9 +94,6 @@ h1, h2 {
   font-size: 24pt;
   margin-top: 10px;
 }
-#home-content img {
-  display: none!important;
-}
 hr {
   border-top: 2px dashed #0CD264;
   border-bottom: none;

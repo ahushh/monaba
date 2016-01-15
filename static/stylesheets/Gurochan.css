@@ -10,9 +10,6 @@ header {
 	background-color:#D9AF9E;
 	padding: 3px;
 }
-#home-content img {
-	display:none!important;
-}
 .board-category {
 	margin-left: -1px!important;
 }

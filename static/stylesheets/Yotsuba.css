@@ -1,8 +1,5 @@
 /* home page */
 
-#home-content img {
-  display: none !important;
-}
 #home-content hr {
   display: none;
 }

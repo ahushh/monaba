@@ -21,7 +21,7 @@ header {
 hr {
 	border: 1px solid #546471!important;
 }
-#home-content img,#board-summary,#board-subtitle {
+#board-summary,#board-subtitle {
 	display:none!important;
 }
 #board-header {

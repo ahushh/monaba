@@ -1,197 +1,197 @@
 #message {
-	font-size:2em;
-	color:white;
-	border:none;
+    font-size: 2em;
+    color: white;
+    border: none;
 }
 header {
-	background: #546471;
-	padding: 3px 0px;
+    background: #546471;
+    padding: 3px 0;
 }
 .pagination {
-	background: #546471;
-	padding: 3px;
+    background: #546471;
+    padding: 3px;
 }
 #latest-news > .title {
-	background: #546471;
-	font-weight: bold;
+    background: #546471;
+    font-weight: bold;
 }
 .news > .title {
-	text-align: left!important;
+    text-align: left!important;
 }
 hr {
-	border: 1px solid #546471!important;
+    border: 1px solid #546471!important;
 }
-#board-summary,#board-subtitle {
-	display:none!important;
+#board-summary, #board-subtitle {
+    display: none!important;
 }
 #board-header {
-	color:#C8CDD5;
-	font-weight:700;
-	border-bottom:3px solid #ffffff;
-	border-image:url("/static/img/heon.png") 3;
-	padding-bottom:10px;
-	margin-bottom:5px;
+    color: #c8cdd5;
+    font-weight: 700;
+    border-bottom: 3px solid #ffffff;
+    border-image: url('/static/img/heon.png') 3;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
 }
-html,body {
-	background-color:#6E7C87;
-	color:white;
-	font-family:Calibri;
-	font-size:10.5pt;
-	padding:10px;
+html, body {
+    background-color: #6e7c87;
+    color: white;
+    font-family: Calibri;
+    font-size: 10.5pt;
+    padding: 10px;
 }
-textarea,input,select {
-	border:2px solid #545454;
-	border-radius:5px;
-	background-color:#37414A;
-	color:white;
-	font-family:Calibri;
-	font-size:inherit;
-	margin:1px;
+textarea, input, select {
+    border: 2px solid #545454;
+    border-radius: 5px;
+    background-color: #37414a;
+    color: white;
+    font-family: Calibri;
+    font-size: inherit;
+    margin: 1px;
 }
 input[type=submit]:hover {
-	background-color:#37414A;
+    background-color: #37414a;
 }
 input[type=submit] {
-	border:2px solid #545454;
+    border: 2px solid #545454;
 }
 .time {
-	color:inherit;
+    color: inherit;
 }
 a {
-	color:inherit;
-	padding:0px;
+    color: inherit;
+    padding: 0;
 }
 a:hover {
-	color:#343855;
+    color: #343855;
 }
 footer {
-	font-family:Calibri;
-	font-size:12px;
-	text-align:center;
+    font-family: Calibri;
+    font-size: 12px;
+    text-align: center;
 }
 .pagination .next {
-	border-left:1px solid white;
-	padding-left:5px;
+    border-left: 1px solid white;
+    padding-left: 5px;
 }
 .pagination .previous {
-	border-right:1px solid white;
-	padding-right:5px;
+    border-right: 1px solid white;
+    padding-right: 5px;
 }
 .reflink {
-	font-size:85%;
-	font-weight:bold;
+    font-size: 85%;
+    font-weight: bold;
 }
 .file-info {
-	color:inherit;
-	font-size:0.8em;
-	text-decoration:none;
+    color: inherit;
+    font-size: 0.8em;
+    text-decoration: none;
 }
 .file-name {
-	font-size:0.8em;
+    font-size: 0.8em;
 }
-.reply.post,.feed .post {
-	background-color:#546471;
-	margin:3px;
-	padding:5px;
+.reply.post, .feed .post {
+    background-color: #546471;
+    margin: 3px;
+    padding: 5px;
 }
 .popup-post {
-	background-color:#546471;
-	border:1px solid #808080;
-	margin:3px;
-	padding:5px;
+    background-color: #546471;
+    border: 1px solid #808080;
+    margin: 3px;
+    padding: 5px;
 }
-.reply.post.highlighted,.feed .post.highlighted {
-	background-color:#43505a;
+.reply.post.highlighted, .feed .post.highlighted {
+    background-color: #43505a;
 }
 .op.post.highlighted {
-	background-color:#546471;
+    background-color: #546471;
 }
 .thread {
-	border-top:3px solid #49687d;
-	border-image:url("/static/img/heon.png") 3;
-	margin:5px;
-	padding:10px 2px;
+    border-top: 3px solid #49687d;
+    border-image: url('/static/img/heon.png') 3;
+    margin: 5px;
+    padding: 10px 2px;
 }
 .reply-title {
-	color:#28344A;
-	font-size:1.2em;
-	font-weight:bold;
+    color: #28344a;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 hr {
-	border:none;
+    border: none;
 }
 table {
-	border-style:none;
+    border-style: none;
 }
 table td {
-	border-style:none;
+    border-style: none;
 }
 #delete-container {
-	text-align:right;
-	border-top:3px solid #ffffff;
-	border-image:url("/static/img/heon.png") 3;
-	margin:5px;
-	padding:10px 2px;
+    text-align: right;
+    border-top: 3px solid #ffffff;
+    border-image: url('/static/img/heon.png') 3;
+    margin: 5px;
+    padding: 10px 2px;
 }
 pre {
-	background-color:#2C2C2C;
-	padding:10px;
+    background-color: #2c2c2c;
+    padding: 10px;
 }
 .board-category {
-	font-weight:bold;
-	background:none repeat scroll 0% 0% #546471;
+    font-weight: bold;
+    background: none repeat scroll 0 0 #546471;
 }
 #news-title {
-	font-weight:bold;
-	background:#546471;
+    font-weight: bold;
+    background: #546471;
 }
 .popup-message {
-	background-color:#546471;
-	color:white;
-	margin-top: 20px!important;
+    background-color: #546471;
+    color: white;
+    margin-top: 20px!important;
 }
 .quick-post-form {
-	padding:3px;
+    padding: 3px;
 }
 .hist-msg {
-	background-color:#546471;
-	margin:3px;
-	padding:5px;
+    background-color: #546471;
+    margin: 3px;
+    padding: 5px;
 }
 .admin-navbar {
-	background-color:#546471;
-	padding:3px;
-	margin-bottom:10px;
+    background-color: #546471;
+    padding: 3px;
+    margin-bottom: 10px;
 }
 .show-plain-form {
-	margin-bottom:10px;
+    margin-bottom: 10px;
 }
 .expand-post {
-	color:white;
+    color: white;
 }
 .quote {
-	color:#81B1FF!important;
+    color: #81b1ff!important;
 }
 .symbol-counter {
-	color:#81B1FF!important;
+    color: #81b1ff!important;
 }
 #main-image {
-	opacity:0.4;
+    opacity: 0.4;
 }
 .spoiler {
-	color:#212121!important;
-	background-color:#212121!important;
+    color: #212121!important;
+    background-color: #212121!important;
 }
 .op.post .spoiler {
-	color:#212121!important;
-	background-color:#212121!important;
+    color: #212121!important;
+    background-color: #212121!important;
 }
 .spoiler:hover {
-	color:#48B0FD!important;
-	background-color:#212121!important;
+    color: #48b0fd!important;
+    background-color: #212121!important;
 }
 .spoiler a:hover {
-	color: #48B0FD!important;
+    color: #48b0fd!important;
 }
 .dropdown-menu ul li {
     background-color: #546471;

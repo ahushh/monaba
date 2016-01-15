@@ -1,142 +1,142 @@
 #message {
-   font-size: 1.5em;
-   border: 2px dashed red;
+    font-size: 1.5em;
+    border: 2px dashed red;
 }
 
 header, .pagination {
-   background-color: #353535;
+    background-color: #353535;
 }
 
 html, body {
-   margin:0;
-   padding:0;
-   font:15px "Arial", serif;
-   color:#999;
-   background-color: #353535;
+    margin: 0;
+    padding: 0;
+    font: 15px 'Arial', serif;
+    color: #999999;
+    background-color: #353535;
 }
 
 .container {
-   overflow: hidden;
-   margin-top: 0px;
-   background-color: #292929;
-   border-bottom: 2px solid #863D3D;
-   border-top: 2px solid #863D3D;
-   border-right: 1px solid #030303;
-   border-left: 1px solid #030303;
+    overflow: hidden;
+    margin-top: 0;
+    background-color: #292929;
+    border-bottom: 2px solid #863d3d;
+    border-top: 2px solid #863d3d;
+    border-right: 1px solid #030303;
+    border-left: 1px solid #030303;
 }
 
 #main {
-   margin: auto 3%;
-   padding:5px 25px;
-   min-height:600px;
-   box-shadow:5px 0 10px #222;
-   border-right:1px solid #000;
-   box-shadow: -2px 0px 10px #1A1A1A;
-   border-left: 2px dashed #863D3D;
+    margin: auto 3%;
+    padding: 5px 25px;
+    min-height: 600px;
+    box-shadow: 5px 0 10px #222222;
+    border-right: 1px solid #000000;
+    box-shadow: -2px 0 10px #1a1a1a;
+    border-left: 2px dashed #863d3d;
 }
 
 a {
-   color:#A75353;
+    color: #a75353;
 }
 
 a:hover {
-   color:#804040;
+    color: #804040;
 }
 
 hr {
-   border-color:#853737;
-   border-style:solid none none none;
-   border-width:1px;
+    border-color: #853737;
+    border-style: solid none none none;
+    border-width: 1px;
 }
 
 .spoiler {
-   background: #000;
-   box-shadow: -2px 1px 2px #1A1A1A;
-   color: transparent;
-   transition:all 0.2s ease;
+    background: #000000;
+    box-shadow: -2px 1px 2px #1a1a1a;
+    color: transparent;
+    transition: all 0.2s ease;
 }
 .spoiler:hover {
-   background: none;
-   color: #999;
-   box-shadow: none;
+    background: none;
+    color: #999999;
+    box-shadow: none;
 }
 
 #board-list-full, .popup-message {
-   background: none repeat scroll 0% 0% #2C2C2C;
-   border: 1px dashed #5c1f1f;
-   width: auto !important;
+    background: none repeat scroll 0 0 #2c2c2c;
+    border: 1px dashed #5c1f1f;
+    width: auto !important;
 }
 
 .thread {
-   margin: 2px;
-   border-top: 2px solid #863D3D;
-   padding: 20px 2px;
+    margin: 2px;
+    border-top: 2px solid #863d3d;
+    padding: 20px 2px;
 }
 
 .reply.post, .feed .post {
-   overflow: hidden;
-   padding: 8px 15px;
-   margin-bottom: 6px;
-   background: #252525;
-   border: 1px solid #000;
+    overflow: hidden;
+    padding: 8px 15px;
+    margin-bottom: 6px;
+    background: #252525;
+    border: 1px solid #000000;
 }
 
 .popup-post {
-   background: #252525;
-   z-index: 300;
-   position:absolute;
-   border:1px dashed #863D3D;
-   box-shadow: 0px 0px 10px #0C0C0C;
+    background: #252525;
+    z-index: 300;
+    position: absolute;
+    border: 1px dashed #863d3d;
+    box-shadow: 0 0 10px #0c0c0c;
 }
 
 .post-block-named {
-   padding: 1px 8px;
-   background-color: #2E2E2E;
-   border: 1px solid #0C0C0C;
-   box-shadow: 0px 0px 10px #202020;
-   color: #CCC;
+    padding: 1px 8px;
+    background-color: #2e2e2e;
+    border: 1px solid #0c0c0c;
+    box-shadow: 0 0 10px #202020;
+    color: #cccccc;
 }
 
-input[type="text"], input[type="password"] {
-   height: 20px;
+input[type='text'], input[type='password'] {
+    height: 20px;
 }
 
-input[type="checkbox"], input[type="submit"] {
-   margin: 3px 3px 3px 4px;
+input[type='checkbox'], input[type='submit'] {
+    margin: 3px 3px 3px 4px;
 }
 
-select, textarea, input[type="text"], input[type="password"], input[type="submit"] {
-   background:#212121;
-   color:#CCC;
-   border:1px solid #4C4C4C;
-   box-shadow: 0px 0px 10px #202020;
+select, textarea, input[type='text'], input[type='password'], input[type='submit'] {
+    background: #212121;
+    color: #cccccc;
+    border: 1px solid #4c4c4c;
+    box-shadow: 0 0 10px #202020;
 }
 
 input::-webkit-input-placeholder {
-   color:#727272;
+    color: #727272;
 }
 
 input::-moz-placeholder {
-   color:#727272;
+    color: #727272;
 }
 
 .reply.post.highlighted, .feed .post.highlighted {
-   background: none repeat scroll 0% 0% #1A1A1A;
-   border: 1px dashed #863D3D;
+    background: none repeat scroll 0 0 #1a1a1a;
+    border: 1px dashed #863d3d;
 }
 
 .op.post.highlighted {
-   background: none repeat scroll 0% 0% #1A1A1A;
+    background: none repeat scroll 0 0 #1a1a1a;
 }
 
 #delete-container {
-   border-top: 1px solid #5c1f1f;
-   padding-top: 10px;
-   text-align: right;
+    border-top: 1px solid #5c1f1f;
+    padding-top: 10px;
+    text-align: right;
 }
 
 footer {
-   text-align:center;
+    text-align: center;
 }
 .dropdown-menu ul li {
     background-color: #252525;

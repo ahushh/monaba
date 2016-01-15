@@ -1,176 +1,176 @@
 #message {
-  color: #0CD264;
-  font-family: FixedSys;
-  font-size: 20pt;
-  border: 2px dashed #0CD264;
+    color: #0cd264;
+    font-family: FixedSys;
+    font-size: 20pt;
+    border: 2px dashed #0cd264;
 }
 header {
-	background-color:#0CD264;
-  color: #020902;
-  padding: 2px 0px;
+    background-color: #0cd264;
+    color: #020902;
+    padding: 2px 0;
 }
 header a {
-  color: #020902;
+    color: #020902;
 }
 .pagination {
-  background-color: #0CD264;
-  color: #020902;
-  padding: 2px;
+    background-color: #0cd264;
+    color: #020902;
+    padding: 2px;
 }
 .pagination a {
-  color: #020902;
+    color: #020902;
 }
 .pagination .next {
-  border-left: 1px solid #020902;
-  padding-left: 10px;
+    border-left: 1px solid #020902;
+    padding-left: 10px;
 }
 .pagination .previous {
-  border-right: 1px solid #020902;
-  padding-right: 10px;
+    border-right: 1px solid #020902;
+    padding-right: 10px;
 }
 html, body {
-  background-color: #020902;
-  color: #0CD264;
-  font-family: Courier New,Lucida Console;
-  font-size: 10pt;
+    background-color: #020902;
+    color: #0cd264;
+    font-family: Courier New,Lucida Console;
+    font-size: 10pt;
 }
 footer {
-  text-align: center;
-  font-size: 9pt;
+    text-align: center;
+    font-size: 9pt;
 }
 textarea, input, select {
-  background-color: #001400;
-  border: 2px solid #0CD264;
-  border-radius: 5px;
-  color: #0CD264;
-  margin:1px;
+    background-color: #001400;
+    border: 2px solid #0cd264;
+    border-radius: 5px;
+    color: #0cd264;
+    margin: 1px;
 }
 .banner, #board-summary, #board-subtitle {
-  display: none;
+    display: none;
 }
 a {
-  color: #0CD264;
+    color: #0cd264;
 }
 a:hover {
-  color: #208448;
+    color: #208448;
 }
 .file-info, .file-name, .file-name a {
-  font-size: 10px;
+    font-size: 10px;
 }
 h1, h2 {
-  font-family: FixedSys;
-  font-size: 18pt;
+    font-family: FixedSys;
+    font-size: 18pt;
 }
 .reply.post, .feed .post {
-  background-color: #001400;
-  border: 1px solid #0CD264;
-  margin: 3px;
-  padding: 5px;
+    background-color: #001400;
+    border: 1px solid #0cd264;
+    margin: 3px;
+    padding: 5px;
 }
 .popup-post {
-	background-color: #001400;
-	border: 1px solid #0CD264;
-	margin: 3px;
-	padding: 5px;
+    background-color: #001400;
+    border: 1px solid #0cd264;
+    margin: 3px;
+    padding: 5px;
 }
-.reply.post.highlighted,.feed .post.highlighted {
-	background-color: #002800;
+.reply.post.highlighted, .feed .post.highlighted {
+    background-color: #002800;
 }
 .op.post.highlighted {
-  background-color: #001400;
+    background-color: #001400;
 }
 .thread {
-  padding: 15px 0px;
-  border-top: 1px solid #0CD264;
+    padding: 15px 0;
+    border-top: 1px solid #0cd264;
 }
 #show-plain-form {
-  padding-bottom: 15px;
+    padding-bottom: 15px;
 }
 .reply-title {
-  font-weight:bold;
+    font-weight: bold;
 }
 #board-header {
-  font-family: FixedSys;
-  font-size: 24pt;
-  margin-top: 10px;
+    font-family: FixedSys;
+    font-size: 24pt;
+    margin-top: 10px;
 }
 hr {
-  border-top: 2px dashed #0CD264;
-  border-bottom: none;
+    border-top: 2px dashed #0cd264;
+    border-bottom: none;
 }
 #main-title {
-  font-family: FixedSys;
+    font-family: FixedSys;
 }
 #board-list-full {
-  border: 2px dashed #0CD264;
-  margin-bottom: 15px;
+    border: 2px dashed #0cd264;
+    margin-bottom: 15px;
 }
 .board-category {
-  background-color: #001400;
-  margin-left: -1px;
+    background-color: #001400;
+    margin-left: -1px;
 }
 #latest-news {
-  border: 2px dashed #0CD264;
+    border: 2px dashed #0cd264;
 }
 .news > .title {
-  text-align: left!important;
+    text-align: left!important;
 }
 pre {
-	background-color: #002800;
-	border: 2px dashed #0CD264;
-	padding: 10px;
+    background-color: #002800;
+    border: 2px dashed #0cd264;
+    padding: 10px;
 }
 .popup-message {
-	background-color: #001400;
-	border:1px solid #0CD264;
-        margin-top: 18px!important;
+    background-color: #001400;
+    border: 1px solid #0cd264;
+    margin-top: 18px!important;
 }
 table {
-	border-style:none;
+    border-style: none;
 }
 table td {
-	border-style:none;
+    border-style: none;
 }
 #delete-container {
-	text-align:right;
-  border-bottom: 1px solid #0CD264;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+    text-align: right;
+    border-bottom: 1px solid #0cd264;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
 }
 .quick-post-form {
-	padding:2px;
+    padding: 2px;
 }
 .hist-msg {
-	background-color: #001400;
-	border:1px solid #0CD264;
-	margin:3px;
-	padding:5px;
+    background-color: #001400;
+    border: 1px solid #0cd264;
+    margin: 3px;
+    padding: 5px;
 }
 .admin-navbar {
-	background-color: #001400;
-	border-bottom: 1px solid #0CD264;
-	padding: 3px;
-	margin-bottom: 10px;
+    background-color: #001400;
+    border-bottom: 1px solid #0cd264;
+    padding: 3px;
+    margin-bottom: 10px;
 }
 .expand-post {
-	color:#0CD264;
+    color: #0cd264;
 }
 #next-page {
-	border-right: 1px solid #0CD264;
-	padding-right: 5px;
+    border-right: 1px solid #0cd264;
+    padding-right: 5px;
 }
 #prev-page {
-	border-left: 1px solid #0CD264;
-	padding-left: 5px;
+    border-left: 1px solid #0cd264;
+    padding-left: 5px;
 }
 .quote, .symbol-counter {
-  color: #098440!important;
+    color: #098440!important;
 }
 .spoiler {
-  background-color: #0CD264!important;
-  color: #0CD264!important;
+    background-color: #0cd264!important;
+    color: #0cd264!important;
 }
 .spoiler:hover {
-  background-color: transparent!important;
-  color: #0CD264!important;
+    background-color: transparent!important;
+    color: #0cd264!important;
 }

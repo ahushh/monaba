@@ -1,208 +1,208 @@
 #message {
-	font-size:18pt;
-	color:#AD0A0F;
+    font-size: 18pt;
+    color: #ad0a0f;
 }
 header {
-	background-color:#D9AF9E;
-	padding: 1px 0px;
+    background-color: #d9af9e;
+    padding: 1px 0;
 }
 .pagination {
-	background-color:#D9AF9E;
-	padding: 3px;
+    background-color: #d9af9e;
+    padding: 3px;
 }
 .board-category {
-	margin-left: -1px!important;
+    margin-left: -1px!important;
 }
 #latest-news > .title {
-	background: #D9AF9E;
+    background: #d9af9e;
 }
 .news > .title {
-	text-align: left!important;
+    text-align: left!important;
 }
 html, body {
-	background-color:#EDDAD2;
-	color:#000000;
-	font-size:10pt;
-	font-family:"Trebuchet MS",Tahoma,Verdana,Arial,sans-serif;
+    background-color: #eddad2;
+    color: #000000;
+    font-size: 10pt;
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,sans-serif;
 }
-textarea,input,select {
-	border:1px solid #CA927B;
-	background-color:#E6CBC0;
-	margin:1px;
+textarea, input, select {
+    border: 1px solid #ca927b;
+    background-color: #e6cbc0;
+    margin: 1px;
 }
 a {
-	color:#34345C;
-	font-size: 10pt;
+    color: #34345c;
+    font-size: 10pt;
 }
 a:hover {
-	color:#D00;
+    color: #dd0000;
 }
 .file-info, .file-name, .file-name a {
     font-size: 0.8em;
 }
 footer {
-	border-top: 1px solid #000000;
-	margin:-12px 0px;
-	padding-top:7px;
-	text-align:center;
-	font-size:10pt;
+    border-top: 1px solid #000000;
+    margin: -12px 0;
+    padding-top: 7px;
+    text-align: center;
+    font-size: 10pt;
 }
 .reflink {
-	font-weight:bold;
+    font-weight: bold;
 }
-.file-info{
-	display: none;
+.file-info {
+    display: none;
 }
 
-.reply.post,.feed .post {
-	background-color:#D9AF9E;
-	border:1px solid #CA927B;
-	margin:3px;
-	padding:5px;
-	font-size:10pt;
+.reply.post, .feed .post {
+    background-color: #d9af9e;
+    border: 1px solid #ca927b;
+    margin: 3px;
+    padding: 5px;
+    font-size: 10pt;
 }
 .popup-post {
-	font-size:10pt;
-	background-color:#D9AF9E;
-	border:1px solid #808080;
-	margin:3px;
-	padding:5px;
+    font-size: 10pt;
+    background-color: #d9af9e;
+    border: 1px solid #808080;
+    margin: 3px;
+    padding: 5px;
 }
-.reply.post.highlighted,.feed .post.highlighted {
-	background-color:#CE9882;
+.reply.post.highlighted, .feed .post.highlighted {
+    background-color: #ce9882;
 }
 .op.post.highlighted {
-	background-color:#D9AF9E;
+    background-color: #d9af9e;
 }
 .thread {
-	border-top: 1px solid black;
-	padding:15px 0px
+    border-top: 1px solid black;
+    padding: 15px 0;
 }
 .fa {
-	color:#2b2b4c;
+    color: #2b2b4c;
 }
 .reply-title {
-	color:#0F0C5D;
-	font-weight:800;
+    color: #0f0c5d;
+    font-weight: 800;
 }
 .poster-name {
-	color:#117743;
-	font-size:10pt;
+    color: #117743;
+    font-size: 10pt;
 }
 .reflink {
-	font-weight:400;
+    font-weight: 400;
 }
 hr {
-	border-color:#CA927B;
-	border-style:solid none none;
-	border-width:1px;
+    border-color: #ca927b;
+    border-style: solid none none;
+    border-width: 1px;
 }
 table {
-	border-style:none;
+    border-style: none;
 }
 table td {
-	border-style:none;
+    border-style: none;
 }
 #show-plain-form {
-	margin-bottom:4px;
+    margin-bottom: 4px;
 }
 #delete-container {
-	text-align:right;
+    text-align: right;
 }
 pre {
-	background-color:#2C2C2C;
-	border:1px solid #808080;
-	padding:10px;
+    background-color: #2c2c2c;
+    border: 1px solid #808080;
+    padding: 10px;
 }
 #main-title {
-	color:#AF0A0F;
+    color: #af0a0f;
 }
 #latest-news {
-	background-color:#E6CBC0;
-	border:1px solid #CA927B;
+    background-color: #e6cbc0;
+    border: 1px solid #ca927b;
 }
 #news-title {
-	background-color:#D9AF9E;
+    background-color: #d9af9e;
 }
 .board-category {
-	font-weight:bold;
-	background-color:#D9AF9E;
+    font-weight: bold;
+    background-color: #d9af9e;
 }
 #board-list-full {
-	border:1px solid #CA927B;
-	background-color:#E6CBC0;
-	margin-bottom:15px;
+    border: 1px solid #ca927b;
+    background-color: #e6cbc0;
+    margin-bottom: 15px;
 }
 .news strong {
-	color:#0F0C5D
+    color: #0f0c5d;
 }
 .news strong:hover {
-	color:#D00;
+    color: #dd0000;
 }
 .news time {
-	color:#000000;
+    color: #000000;
 }
 .popup-message {
-	border:1px solid #CA927B;
-	background-color:#D9AF9E;
-	font-size:10pt;
-	margin-top: 20px!important;
+    border: 1px solid #ca927b;
+    background-color: #d9af9e;
+    font-size: 10pt;
+    margin-top: 20px!important;
 }
 .quick-post-form {
-	padding:2px;
+    padding: 2px;
 }
 .hist-msg {
-	background-color:#D9AF9E;
-	border:1px solid #CA927B;
-	margin:3px;
-	padding:5px;
+    background-color: #d9af9e;
+    border: 1px solid #ca927b;
+    margin: 3px;
+    padding: 5px;
 }
 .banner {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 #board-header {
-	color: #AD0A0F;
+    color: #ad0a0f;
 }
 #board-subtitle {
-	color:#AD0A0F;
-	font-size:11pt;
+    color: #ad0a0f;
+    font-size: 11pt;
 }
 .admin-navbar {
-	background-color:#D9AF9E;
-	border-bottom:1px solid #CA927B;
-	padding:3px;
-	margin-bottom:10px;
+    background-color: #d9af9e;
+    border-bottom: 1px solid #ca927b;
+    padding: 3px;
+    margin-bottom: 10px;
 }
 .quote {
-	color:#AF0A0F!important;
+    color: #af0a0f!important;
 }
 .symbol-counter {
-	color:#AF0A0F !important;
+    color: #af0a0f !important;
 }
 .pagination .next {
-	border-left:1px solid #808080;
-	padding-left:5px;
+    border-left: 1px solid #808080;
+    padding-left: 5px;
 }
 .pagination .previous {
-	border-right: 1px solid #808080;
-	padding-right: 5px;
+    border-right: 1px solid #808080;
+    padding-right: 5px;
 }
 .spoiler {
-	background-color:#CA927B!important;
-	color:#CA927B!important;
+    background-color: #ca927b!important;
+    color: #ca927b!important;
 }
 .spoiler a {
-	background-color:#CA927B!important;
-	color:#CA927B!important;
+    background-color: #ca927b!important;
+    color: #ca927b!important;
 }
 .spoiler:hover {
-	background-color:#CA927B!important;
-	color:#000000!important;
+    background-color: #ca927b!important;
+    color: #000000!important;
 }
 .spoiler a:hover {
-	background-color:#CA927B!important;
-	color:#34345C!important;
+    background-color: #ca927b!important;
+    color: #34345c!important;
 }
 .dropdown-menu ul li {
-	background-color:#D9AF9E;
+    background-color: #d9af9e;
 }

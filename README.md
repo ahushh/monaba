@@ -123,4 +123,15 @@ See `extra/nginx.conf`
 
 init.d script for gentoo: `extra/monaba`
 
-For systemd users: `extra/monaba.service`
+For systemd users:
+
+Firstly install `libpam-systemd` package and relogin.
+
+Configure `extra/monaba.service` and put this file into `/etc/systemd/user/` or `~/.config/systemd/user/` directory
+
+Example of usage:
+
+`systemctl --user start monaba`
+`systemctl --user stop monaba`
+`systemctl --user restart monaba`
+

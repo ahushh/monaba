@@ -44,6 +44,7 @@ ffmpeg:            "/usr/bin/ffmpeg"
 exiftool:          "/usr/bin/exiftool"
 animatedThumbs:    false
 randomBanners:     false # true - show banners from differents boards, false - same board
+restartCmd:        "systemctl --user restart monaba"
 
 # default JS settings
 jsPostsAutoloadInterval:          30000

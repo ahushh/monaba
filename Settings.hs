@@ -69,6 +69,7 @@ data AppSettings = AppSettings
     , appExiftool            :: Text
     , appAnimatedThumbs      :: Bool
     , appRandomBanners       :: Bool
+    , appRestartCmd          :: Text
     , appJsPostsAutoloadInterval :: Int
     , appJsMathjax :: Bool
     , appJsEventsource :: Bool
@@ -140,6 +141,7 @@ instance FromJSON AppSettings where
         appExiftool               <- o .: "exiftool"
         appAnimatedThumbs         <- o .: "animatedThumbs"
         appRandomBanners          <- o .: "randomBanners"
+        appRestartCmd             <- o .: "restartCmd"
 
         appJsPostsAutoloadInterval <- o .: "jsPostsAutoloadInterval"
         appJsMathjax <- o .: "jsMathjax"

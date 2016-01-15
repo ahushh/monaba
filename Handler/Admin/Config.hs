@@ -3,6 +3,29 @@ module Handler.Admin.Config where
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate, splitOn)
+import           System.Process       (readProcess, runCommand)
+-------------------------------------------------------------------------------------------------------------
+-- Application control
+-------------------------------------------------------------------------------------------------------------
+getAdminRestartR :: Handler Html
+getAdminRestartR = do
+  AppSettings{..} <- appSettings <$> getYesod
+  liftIO $ runCommand $ unpack appRestartCmd
+  defaultLayout $ [whamlet|
+                    ^{adminNavbarWidget}
+                     ok
+                  |]
+
+getAdminGitPullR :: Handler Html
+getAdminGitPullR = do
+  out <- liftIO $ readProcess "git" ["pull"] []
+  defaultLayout $ [whamlet|
+                    ^{adminNavbarWidget}
+                    <pre>
+                      #{out}
+                  |]
+-------------------------------------------------------------------------------------------------------------
+-- Configuration
 -------------------------------------------------------------------------------------------------------------
 configForm :: Config ->
              Html   ->

@@ -54,7 +54,7 @@ footer {
 	display: none;
 }
 
-.reply-post,.feed .op-post {
+.reply.post,.feed .post {
 	background-color:#D9AF9E;
 	border:1px solid #CA927B;
 	margin:3px;
@@ -68,10 +68,10 @@ footer {
 	margin:3px;
 	padding:5px;
 }
-.reply-post.highlighted-post,.feed .op-post.highlighted-post {
+.reply.post.highlighted,.feed .post.highlighted {
 	background-color:#CE9882;
 }
-.op-post.highlighted-post {
+.op.post.highlighted {
 	background-color:#D9AF9E;
 }
 .thread {

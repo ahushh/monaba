@@ -100,7 +100,7 @@ footer {
    color: #FF0000 !important;;
 }
 
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
    background: none repeat scroll 0% 0% #001010;
    margin: 4px;
    padding: 5px;
@@ -114,12 +114,12 @@ footer {
    padding: 5px;
 }
 
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
    background: none repeat scroll 0% 0% #000505;
    border: 1px double #00CCCC;
 }
 
-.op-post.highlighted-post {
+.op.post.highlighted {
    background: none repeat scroll 0% 0% #000505;
 }
 

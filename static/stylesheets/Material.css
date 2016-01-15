@@ -62,7 +62,7 @@ footer {
 .file-name {
 	font-size:0.8em;
 }
-.reply-post,.feed .op-post {
+.reply.post,.feed .post {
 	background-color:#00796b;
 	margin:3px;
 	padding:5px;
@@ -72,10 +72,10 @@ footer {
 	margin:3px;
 	padding:5px;
 }
-.reply-post.highlighted-post,.feed .op-post.highlighted-post {
+.reply.post.highlighted,.feed .post.highlighted {
 	background-color:#00695c;
 }
-.op-post.highlighted-post {
+.op.post.highlighted {
 	background-color:#00796b;
 }
 .thread {
@@ -149,7 +149,7 @@ pre {
 	color:#00695c!important;
 	background-color:#00695c!important;
 }
-.op-post .spoiler {
+.op.post .spoiler {
 	color:#00796b!important;
 	background-color:#00796b!important;
 }

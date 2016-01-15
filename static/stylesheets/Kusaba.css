@@ -142,14 +142,14 @@ pre {
 .thread {
   padding: 5px 0px;
 }
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
   background: #DAF0D6;
   border-radius: 4px;
   margin: 3px;
   padding: 5px;
   transition: 0.3s;
 }
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
   background: #b8e2b1;
 }
 .popup-post {

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 function refreshFeed(nopopup, updateTitle) {
-    var allPosts = document.querySelectorAll(".op-post, .reply-post");
+    var allPosts = document.querySelectorAll(".post");
     var lastPost = allPosts[0];
     if (! lastPost) return;
     var lastPostId = lastPost.id.slice(1);

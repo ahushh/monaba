@@ -91,10 +91,10 @@ pre {
     font-weight: bolder;
     color: #d77d31;
 }
-.op-post {
+.op.post {
     word-wrap: break-word;
 }
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
     display: table;
     overflow: hidden;
     word-wrap: break-word;
@@ -367,7 +367,7 @@ ul {
     .container {
         padding-top: 4%;
     }
-    .reply-post, .feed .op-post {
+    .reply.post, .feed .post {
         min-width: 40%;
     }
     .quick-post-form {

@@ -101,7 +101,7 @@ footer {
    font-size: 0.8em;
 }
 
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
    background: none repeat scroll 0% 0% #050505;
    border: 1px solid #383838;
    margin: 3px;
@@ -115,12 +115,12 @@ footer {
    padding: 5px;
 }
 
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
    background: none repeat scroll 0% 0% #181818;
    border: 1px solid #050505;
 }
 
-.op-post.highlighted-post {
+.op.post.highlighted {
    background: none repeat scroll 0% 0% #181818;
 }
 
@@ -254,21 +254,21 @@ pre {
    opacity: 0.4;
 }
 
-.op-post .spoiler {
+.op.post .spoiler {
     color: black;
     background-color: black;
 }
 
-.feed .op-post .spoiler, .reply-post .spoiler {
+.feed .post .spoiler, .reply.post .spoiler {
     color: #050505;
     background-color: #050505;
 }
 
-.feed .op-post .spoiler:hover, .spoiler:hover {
+.feed .post .spoiler:hover, .spoiler:hover {
     color:white;
 }
 
-.feed .op-post.highlighted-post .spoiler, .reply-post.highlighted-post .spoiler {
+.feed .post.highlighted .spoiler, .reply.post.highlighted .spoiler {
     color: #181818;
     background-color: #181818;
 }

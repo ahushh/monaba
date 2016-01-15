@@ -74,7 +74,7 @@ textarea, input, select {
 #show-plain-form {
   margin: 4px 0px 10px 0px;
 }
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
   background: #F0E0D6;
   padding: 5px;
   margin: 3px;
@@ -82,10 +82,10 @@ textarea, input, select {
   border-style: none solid solid none;
   border-color: #D9BFB7;
 }
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
   background: #e5cab9;
 }
-.op-post.highlighted-post {
+.op.post.highlighted {
   background: #F0E0D6;
 }
 .popup-post {

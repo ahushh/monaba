@@ -1,4 +1,4 @@
-<div class=#{pClass} id=p#{sPostId} data-post-local-id=#{sPostLocalId} data-thread-local-id=#{sThreadLocalId} data-board=#{board}>
+<div .post class=#{pClass} id=p#{sPostId} data-post-local-id=#{sPostLocalId} data-thread-local-id=#{sThreadLocalId} data-board=#{board}>
     <div .post-header>
         <span .mark-to-delete onclick="markToDelete(this)">
             <input type=checkbox name=postdelete value=#{sPostId}>

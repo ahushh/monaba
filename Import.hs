@@ -287,7 +287,7 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
       threadLocalId  = postParent  $ entityVal ePost
       board          = postBoard $ entityVal ePost
       isThread       = sThreadLocalId == "0"
-      pClass         = (if isThread then "op-post" else "reply-post") :: Text
+      pClass         = (if isThread then "op" else "reply") :: Text
   in do
     timeZone        <- handlerToWidget getTimeZone
     rating          <- handlerToWidget getCensorshipRating

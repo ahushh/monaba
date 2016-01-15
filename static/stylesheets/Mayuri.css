@@ -73,7 +73,7 @@ hr {
    padding: 20px 2px;
 }
 
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
    overflow: hidden;
    padding: 8px 15px;
    margin-bottom: 6px;
@@ -120,12 +120,12 @@ input::-moz-placeholder {
    color:#727272;
 }
 
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
    background: none repeat scroll 0% 0% #1A1A1A;
    border: 1px dashed #863D3D;
 }
 
-.op-post.highlighted-post {
+.op.post.highlighted {
    background: none repeat scroll 0% 0% #1A1A1A;
 }
 

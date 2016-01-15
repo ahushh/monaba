@@ -53,7 +53,7 @@ h1,h2 {
 .attachment-thumb {
 	display:none;
 }
-.reply-post,.feed .op-post {
+.reply.post,.feed .post {
 	background-color:#001400;
 	border:1px solid #0CD264;
 	margin:3px;
@@ -65,10 +65,10 @@ h1,h2 {
 	margin:3px;
 	padding:5px;
 }
-.reply-post.highlighted-post,.feed .op-post.highlighted-post {
+.reply.post.highlighted,.feed .post.highlighted {
 	background-color:#002800;
 }
-.op-post.highlighted-post {
+.op.post.highlighted {
 	background-color:#001400;
 }
 .thread {

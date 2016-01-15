@@ -81,7 +81,7 @@ footer {
    font-size: 0.8em;
 }
 
-.reply-post, .feed .op-post {
+.reply.post, .feed .post {
    background: none repeat scroll 0% 0% #CFCFCF;
    border-radius: 3px;
    border: 1px solid #EEEEEE;
@@ -97,12 +97,12 @@ footer {
    padding: 5px;
 }
 
-.reply-post.highlighted-post, .feed .op-post.highlighted-post {
+.reply.post.highlighted, .feed .post.highlighted {
    background: none repeat scroll 0% 0% #c2c2c2;
    border: 1px dashed #EE6600;
 }
 
-.op-post.highlighted-post {
+.op.post.highlighted {
    background: none repeat scroll 0% 0% #c2c2c2;
 }
 

@@ -268,7 +268,7 @@ function applyCSSSettings() {
     }
     var wide_posts = getConfig("css_wide_posts");
     if (wide_posts) {
-        style.sheet.insertRule(".reply-post, .feed .op-post { display: block; }", index);
+        style.sheet.insertRule(".reply.post, .feed .post { display: block; }", index);
         index++;
     }
     var hide_files_names = getConfig("css_hide_files_names");
@@ -329,7 +329,7 @@ function initManagementLinks(parent) {
                     var data = JSON.parse(request.responseText);
                     if (data.ok) {
                         popupMessage(data.ok, getConfig("popup_message_display_time"));
-                        var post = link.closest('.op-post, .reply-post');
+                        var post = link.closest('.post');
                         var localId = post.dataset.postLocalId;
                         var board   = post.dataset.board;
                         httpRequest({
@@ -1122,7 +1122,7 @@ function addVideoPlayer(post) {
 }
 
 function initVideoPlayer(selector) {
-    var posts = document.querySelectorAll(selector ? selector : ".reply-post, .op-post");
+    var posts = document.querySelectorAll(selector ? selector : ".post");
     Array.prototype.forEach.call(posts, addVideoPlayer);
 }
 
@@ -1130,7 +1130,7 @@ function initVideoPlayer(selector) {
 // youtube, vimeo
 //-----------------------------------------------------------------
 function initUrlVideoPlayer(selector) {
-    var posts = document.querySelectorAll(selector ? selector : ".reply-post, .op-post");
+    var posts = document.querySelectorAll(selector ? selector : ".post");
     Array.prototype.forEach.call(posts, function(post) {
         addYoutubeVideoPlayer(post);
         addVimeoVideoPlayer(post);
@@ -1346,7 +1346,7 @@ function addCoubVideoPlayer(post) {
 // Images
 //-----------------------------------------------------------------
 function initImageExpanding(selector) {
-    var s = selector ? selector : '.reply-post, .op-post';
+    var s = selector ? selector : '.post';
     Array.prototype.forEach.call(document.querySelectorAll(s), expandImage);
 }
 
@@ -1482,20 +1482,20 @@ function highlightPost(postId) {
     removePostHighlight();
     var p = document.getElementById(postId);
     if (p != null) {
-        addClass(p, 'highlighted-post');
+        addClass(p, 'highlighted');
     }
 }
 
 function removePostHighlight() {
-    Array.prototype.forEach.call(document.querySelectorAll('.highlighted-post'), function(el, i) {
-        removeClass(el,'highlighted-post');
+    Array.prototype.forEach.call(document.querySelectorAll('.highlighted'), function(el, i) {
+        removeClass(el,'highlighted');
     });
 }
 //-----------------------------------------------------------------
 // Reference map
 //-----------------------------------------------------------------
 function makeRefmap(postSelector) {
-    var selector = postSelector ? postSelector : ".reply-post, .op-post";
+    var selector = postSelector ? postSelector : ".post";
     var posts = document.querySelectorAll(selector);
     Array.prototype.forEach.call(posts, function(el, i) {
         var postId   = /p(?:opup-)?(\d+)/.exec( el.id )[1];        
@@ -1574,7 +1574,7 @@ function cachePopupPost(el) {
 }
 
 function initPopupsCache(selector) {
-    var s = selector ? selector : '.reply-post, .op-post';
+    var s = selector ? selector : '.post';
     Array.prototype.forEach.call(document.querySelectorAll(s), cachePopupPost);
 }
 
@@ -1643,10 +1643,10 @@ function closePopupPost(post) {
 // threads
 //-----------------------------------------------------------------
 function refreshThread(board, threadLocalId, nopopup, updateTitle) {
-    var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply-post");
+    var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply.post");
     var lastPost = allPosts[ allPosts.length - 1 ];
     if (! lastPost) {
-        lastPost = document.querySelector("#thread-"+threadLocalId+"-"+board+" .op-post");
+        lastPost = document.querySelector("#thread-"+threadLocalId+"-"+board+" .op.post");
     }
     var lastPostId = lastPost.dataset.postLocalId;
     var ictr = document.querySelector(".delete-form .icon-thread-refresh");

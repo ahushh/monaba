@@ -270,6 +270,7 @@ ManageBan   : Бан
 AdditionalMarkup: Расширенная разметка
 EditPosts: Редактирование постов и просмотр истории
 ShadowEdit: Редактирование постов без сохранения истории
+AppControl: Управление приложением
 ViewModlog: Просматривать мод-логи 
 ViewIPAndID: Просматривать IP и ID постеров
 Hellbanning: Премодерация
@@ -424,6 +425,9 @@ ModlogDeleteFile f@Text p@Text: Удален файл #{f} поста #{p}
 ModlogLogin: Залогинился
 ModlogLogout: Вышел
 
+ModlogAppRestart: Перезапустил движок
+ModlogExecuteGitPull: Выполнил 'git pull'
+
 ######################################################################################
 #### Admin search posts
 ######################################################################################
@@ -462,3 +466,5 @@ RssFeed s@Text b@Text: #{s} /#{b}/ RSS лента
 RssRecentPosts b@Text: Последние посты с доски /#{b}/
 SuccessEx: Успех!
 ErrorEx: Ошибка!
+AppRestart: Перезапустить движок
+AppGitPull: Выполнить 'git pull'

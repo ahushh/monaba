@@ -46,5 +46,8 @@
         <tr>
             <td>_{MsgChangeFileRating     }
             <td>^{fvInput ratingView      }
+       <tr>
+            <td>_{MsgAppControl           }
+            <td>^{fvInput applControlView }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

@@ -3,12 +3,18 @@ module Handler.Admin where
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (fixReferences, doYobaMarkup, makeExternalRef)
+import           System.Process       (readProcess, runCommand)
+-------------------------------------------------------------------------------------------------------------
+-- Main page
 -------------------------------------------------------------------------------------------------------------
 getAdminR :: Handler Html
 getAdminR = do
+  permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
   defaultLayout $ do
     defaultTitleMsg MsgManagement
     $(widgetFile "admin")
+-------------------------------------------------------------------------------------------------------------
+-- Lock editing
 -------------------------------------------------------------------------------------------------------------
 getAdminLockEditingR :: Int -> Handler Html
 getAdminLockEditingR postKey = do
@@ -18,7 +24,28 @@ getAdminLockEditingR postKey = do
   addModlogEntry ((if postLockEditing post then MsgModlogEnablePostEditing else MsgModlogDisablePostEditing) p)
   runDB $ update k [PostLockEditing =. not (postLockEditing post)]
   trickyRedirect "ok" MsgSuccessEx HomeR
+-------------------------------------------------------------------------------------------------------------
+-- Application control
+-------------------------------------------------------------------------------------------------------------
+getAdminRestartR :: Handler Html
+getAdminRestartR = do
+  AppSettings{..} <- appSettings <$> getYesod
+  addModlogEntry MsgModlogAppRestart
+  liftIO $ runCommand $ unpack appRestartCmd
+  defaultLayout $ [whamlet|
+                    ^{adminNavbarWidget}
+                     ok
+                  |]
 
+getAdminGitPullR :: Handler Html
+getAdminGitPullR = do
+  addModlogEntry MsgModlogExecuteGitPull
+  out <- liftIO $ readProcess "git" ["pull"] []
+  defaultLayout $ [whamlet|
+                    ^{adminNavbarWidget}
+                    <pre>
+                      #{out}
+                  |]
 -------------------------------------------------------------------------------------------------------------
 -- Thread management
 -------------------------------------------------------------------------------------------------------------

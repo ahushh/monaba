@@ -182,8 +182,9 @@ instance Yesod App where
       AdminLockEditingR{}     -> isAuthorized' [EditPostsP]
 
       ConfigR{}       -> isAuthorized' [ManageConfigP]
-      AdminGitPullR{} -> isAuthorized' [ManageConfigP]
-      AdminRestartR{} -> isAuthorized' [ManageConfigP]
+
+      AdminGitPullR{} -> isAuthorized' [AppControlP]
+      AdminRestartR{} -> isAuthorized' [AppControlP]
 
       _               -> return Authorized
 

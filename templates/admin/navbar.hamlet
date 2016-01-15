@@ -1,5 +1,7 @@
 <div .admin-navbar>
-    <i .fa .fa-dashboard> | 
+    <a href=@{AdminR}>    
+      <i .fa .fa-dashboard>
+    | 
     $if elem DeletePostsP permissions
         <i .fa .fa-trash>
         <a href=@{AdminDeletedR 0}>_{MsgAdminDeletedPosts} #

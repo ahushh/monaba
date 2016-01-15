@@ -268,6 +268,7 @@ ManageBan   :Manage Ban
 AdditionalMarkup: Additional markup
 EditPosts: Edit posts and view history
 ShadowEdit: Edit posts without saving history
+AppControl: Application control
 ViewModlog: View moderation log 
 ViewIPAndID: View poster's IP and ID
 Hellbanning: Hellbanning
@@ -422,6 +423,9 @@ ModlogDeleteFile f@Text p@Text: Deleted file #{f} of post #{p}
 ModlogLogin: Log in
 ModlogLogout: Log out
 
+ModlogAppRestart: Restarted the application
+ModlogExecuteGitPull: Execute 'git pull'
+
 ######################################################################################
 #### Admin search posts
 ######################################################################################
@@ -460,3 +464,5 @@ RssFeed s@Text b@Text: #{s} /#{b}/ RSS feed
 RssRecentPosts b@Text: Recents posts from /#{b}/
 SuccessEx: Success!
 ErrorEx: Error!
+AppRestart: Restart engine
+AppGitPull: Execute 'git pull'

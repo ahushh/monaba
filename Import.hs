@@ -50,6 +50,7 @@ showPermission p = fromJust $ lookup p xs
              ,(ViewIPAndIDP     , MsgViewIPAndID     )
              ,(HellBanP         , MsgHellbanning     )
              ,(ChangeFileRatingP, MsgChangeFileRating)
+             ,(AppControlP      , MsgAppControl)
              ]
 
 data GroupConfigurationForm = GroupConfigurationForm
@@ -68,6 +69,7 @@ data GroupConfigurationForm = GroupConfigurationForm
                               Bool -- ^ to view ip and uid
                               Bool -- ^ to use hellbanning 
                               Bool -- ^ to change censorship rating
+                              Bool -- ^ to control application
 
 data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text)   -- ^ Name

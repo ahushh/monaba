@@ -5,6 +5,7 @@
     border: 2px dashed #0cd264;
 }
 header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     background-color: #0cd264;
     color: #020902;
     padding: 2px 0;
@@ -156,13 +157,13 @@ table td {
     padding-left: 5px;
 }
 .quote, .symbol-counter {
-    color: #098440!important;
+    color: #098440;
 }
 .spoiler {
-    background-color: #0cd264!important;
-    color: #0cd264!important;
+    background-color: #0cd264;
+    color: #0cd264;
 }
 .spoiler:hover {
-    background-color: transparent!important;
-    color: #0cd264!important;
+    background-color: transparent;
+    color: #0cd264;
 }

@@ -5,6 +5,7 @@
 }
 
 header, .pagination {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     background-color: #ffffee;
 }
 
@@ -50,12 +51,16 @@ input.submit {
     padding: 5px;
 }
 
+a i {
+    color: #600000;
+}
+
 a {
     color: #0000ee;
     padding: 0;
 }
 
-a:hover {
+a i:hover, a:hover {
     color: #dd0000;
 }
 
@@ -214,4 +219,17 @@ pre {
 
 .dropdown-menu ul li {
     background-color: #f0e0d6;
+}
+.quote {
+    color: green;
+}
+.spoiler, .spoiler a {
+    color: black;
+    background-color: black;
+}
+.spoiler a:hover {
+    color: #dd0000;
+}
+.spoiler:hover {
+    color:white;
 }

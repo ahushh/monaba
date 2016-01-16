@@ -171,10 +171,10 @@ pre {
     margin-bottom: 10px;
 }
 .quote {
-    color: #af0a0f!important;
+    color: #af0a0f;
 }
 .symbol-counter {
-    color: #af0a0f !important;
+    color: #af0a0f;
 }
 .pagination .next {
     border-left: 1px solid #808080;
@@ -185,20 +185,20 @@ pre {
     padding-right: 5px;
 }
 .spoiler {
-    background-color: #ca927b!important;
-    color: #ca927b!important;
+    background-color: #ca927b;
+    color: #ca927b;
 }
 .spoiler a {
-    background-color: #ca927b!important;
-    color: #ca927b!important;
+    background-color: #ca927b;
+    color: #ca927b;
 }
 .spoiler:hover {
-    background-color: #ca927b!important;
-    color: #000000!important;
+    background-color: #ca927b;
+    color: #000000;
 }
 .spoiler a:hover {
-    background-color: #ca927b!important;
-    color: #34345c!important;
+    background-color: #ca927b;
+    color: #34345c;
 }
 .dropdown-menu ul li {
     background-color: #d9af9e;

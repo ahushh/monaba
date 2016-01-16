@@ -64,6 +64,7 @@ a:hover {
 }
 
 header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     clear: both;
     color: #995b46;
     font-size: 2em;
@@ -226,4 +227,22 @@ pre {
 }
 .dropdown-menu ul li {
     background-color: #292929;
+}
+.quote {
+    color: #206620;
+}
+
+.spoiler, .spoiler a {
+    color: black;
+    background-color: black;
+    border-bottom: none;
+}
+
+.spoiler a:hover {
+    color: #dd0000;
+    border-bottom: #68696b 1px dotted;
+}
+
+.spoiler:hover {
+    color:white;
 }

@@ -249,21 +249,21 @@ pre {
     opacity: 0.4;
 }
 
-.op.post .spoiler {
-    color: black;
-    background-color: black;
-}
-
-.feed .post .spoiler, .reply.post .spoiler {
-    color: #050505;
+.spoiler, .spoiler a {
+    background-image: url("/static/img/snow.jpg")
     background-color: #050505;
+    color: #050505;
 }
 
-.feed .post .spoiler:hover, .spoiler:hover {
+.spoiler a:hover, .highlighted .spoiler a:hover {
+    color: #742307;
+}
+
+.spoiler:hover, .highlighted .spoiler:hover {
     color: white;
 }
 
-.feed .post.highlighted .spoiler, .reply.post.highlighted .spoiler {
+.highlighted .spoiler, .highlighted .spoiler a {
     color: #181818;
     background-color: #181818;
 }

@@ -12,7 +12,6 @@
     padding-top: 1%;
 }
 header {
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     position: fixed;
     top: 0;
     left: 0;
@@ -237,16 +236,7 @@ pre {
     font-style: italic;
     margin: 2px;
 }
-.quote {
-    color: green;
-}
-.spoiler {
-    color: black;
-    background-color: black;
-}
-.spoiler:hover {
-    color:white;
-}
+
 iframe {
     border: 0px;
 }

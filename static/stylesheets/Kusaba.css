@@ -120,19 +120,24 @@ pre {
     border-radius: 4px;
 }
 .spoiler {
-    transition: 0.3s !important;
+    color: black;
+    background-color: black;
+    transition: 0.3s;
+}
+.spoiler:hover {
+    color:white;
 }
 .spoiler a {
-    color: #000000!important;
+    color: #000000;
 }
 .spoiler a:hover {
-    color: #3eca82!important;
+    color: #3eca82;
 }
 .quote {
-    color: #789922!important;
+    color: #789922;
 }
 .symbol-counter {
-    color: #789922!important;
+    color: #789922;
 }
 .admin-navbar {
     background: #daf0d6;

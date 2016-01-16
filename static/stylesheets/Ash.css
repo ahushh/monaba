@@ -4,6 +4,10 @@
     color: black;
 }
 
+header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
+
 header, .pagination {
     background-color: #e0e0e0;
 }
@@ -214,8 +218,22 @@ pre {
 }
 
 .quote {
-    color: #206620 !important;
+    color: #206620;
 }
+
+.spoiler, .spoiler a {
+    color: black;
+    background-color: black;
+}
+
+.spoiler:hover {
+    color:white;
+}
+
+.spoiler a:hover {
+    color: #ff6600;
+}
+
 
 .pagination .previous {
     border-right: 1px solid rgba(10, 10, 10, 0.7);

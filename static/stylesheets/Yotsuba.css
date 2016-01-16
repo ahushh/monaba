@@ -51,7 +51,7 @@ pre {
 header {
     background: #ffffee url('/static/img/yotsuba.png') top center repeat-x;
     padding: 1px 0;
-    border: none !important;
+    border: none;
 }
 .banner {
     margin-top: 10px;
@@ -151,24 +151,24 @@ a.previous {
     padding-right: 5px;
 }
 .quote {
-    color: #789922 !important;
+    color: #789922;
 }
 .symbol-counter {
-    color: #789922 !important;
+    color: #789922;
 }
 .spoiler {
-    color: #000000 !important;
-    background: #000000 !important;
+    color: #000000;
+    background: #000000;
 }
 .spoiler:hover {
-    color: #ffffff !important;
-    background: #000000 !important;
+    color: #ffffff;
+    background: #000000;
 }
 .spoiler a {
-    color: #000000 !important;
+    color: #000000;
 }
 .spoiler a:hover {
-    color: #ffffff !important;
+    color: #ffffff;
 }
 .dropdown-menu li ul {
     background: #f0e0d6;

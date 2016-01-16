@@ -4,6 +4,7 @@
     border: none;
 }
 header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     background-color: #00796b;
     padding: 1px 0;
 }
@@ -134,32 +135,32 @@ pre {
     color: #e0f2f1;
 }
 .quote {
-    color: #aeea00!important;
+    color: #aeea00;
 }
 .symbol-counter {
-    color: #aeea00!important;
+    color: #aeea00;
 }
 #main-image {
     opacity: 0.4;
 }
 .spoiler {
-    color: #00695c!important;
-    background-color: #00695c!important;
+    color: #00695c;
+    background-color: #00695c;
 }
 .op.post .spoiler {
-    color: #00796b!important;
-    background-color: #00796b!important;
+    color: #00796b;
+    background-color: #00796b;
 }
 .spoiler:hover {
-    color: #e0f2f1!important;
-    background-color: transparent!important;
+    color: #e0f2f1;
+    background-color: transparent;
 }
 .spoiler a {
-    color: #00695c!important;
-    background-color: #00695c!important;
+    color: #00695c;
+    background-color: #00695c;
 }
 .spoiler a:hover {
-    color: #1de9b6!important;
+    color: #1de9b6;
 }
 .dropdown-menu ul li {
     background-color: #00796b;

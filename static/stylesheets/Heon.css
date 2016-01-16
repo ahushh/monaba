@@ -4,6 +4,7 @@
     border: none;
 }
 header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
     background: #546471;
     padding: 3px 0;
 }
@@ -170,28 +171,28 @@ pre {
     color: white;
 }
 .quote {
-    color: #81b1ff!important;
+    color: #81b1ff;
 }
 .symbol-counter {
-    color: #81b1ff!important;
+    color: #81b1ff;
 }
 #main-image {
     opacity: 0.4;
 }
 .spoiler {
-    color: #212121!important;
-    background-color: #212121!important;
+    color: #212121;
+    background-color: #212121;
 }
 .op.post .spoiler {
-    color: #212121!important;
-    background-color: #212121!important;
+    color: #212121;
+    background-color: #212121;
 }
 .spoiler:hover {
-    color: #48b0fd!important;
-    background-color: #212121!important;
+    color: #48b0fd;
+    background-color: #212121;
 }
 .spoiler a:hover {
-    color: #48b0fd!important;
+    color: #48b0fd;
 }
 .dropdown-menu ul li {
     background-color: #546471;

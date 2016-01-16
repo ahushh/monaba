@@ -33,6 +33,7 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | UserProof            -- #user
           | Link          Text   -- http://rossia3.ru
           | NamedLink Text Text  -- [Портал сетевой войны](http://rossia3.ru)
+          | Magnet    Text Text  -- magnet:?xl=Размер_в_байтах&dn=Имя_файла&xt=urn:tree:tiger:TTH-хеш_файла
           | List        [[Expr]] -- * one\n * two\n * three\n
           | Plain         Text   -- any text 
           | Newline              -- \n
@@ -175,6 +176,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     f acc (List           x) = listHandler       acc x
     f acc (Link           x) = return $ [st|#{acc}<a href='#{x}'>#{x}</a>|]
     f acc (NamedLink    n x) = return $ [st|#{acc}<a href='#{x}'>#{n}</a>|]
+    f acc (Magnet       n x) = return $ [st|#{acc}<a href='#{x}'>#{n}</a>|]
     f acc Newline            = return $ acc <> "<br>"
     ----------------------------------------------------------------------------------------------------------
     f acc (InnerRef postId) = do
@@ -247,7 +249,7 @@ plain = Plain . pack <$> many1 (myCheck >> myCheck' >> anyChar)
         myCheck'  = foldr (\f acc -> acc >> notFollowedBy (try f))
                           (notFollowedBy $ try quote)
                           wholeTags
-        wholeTags = [ spoilerwakaba, newline, namedLink, link, bold, italic, underline, strike, spoiler,
+        wholeTags = [ spoilerwakaba, newline, namedLink, link, magnet, bold, italic, underline, strike, spoiler,
                       color, code, extref, innerref, proof, extproof, proofop, userproof, groupproof]
 --------------------------------------------------------------
 -- Kusaba-like tags
@@ -345,6 +347,14 @@ link = do
   rest   <- many1 $ noneOf " \n\t\r["
   return $ Link (T.concat [pack scheme, "://", escapeHTML (pack rest)])
 
+magnet :: Parser Expr
+magnet = do
+  scheme <- try $ string "magnet:?"
+  left   <- manyTill (noneOf " \n\t\r") (try $ string "dn=")
+  name <- many1 $ noneOf " \n\t\r&"
+  rest <- many1 $ noneOf " \n\t\r"
+  return $ Magnet ("magnet: " <> pack name) (escapeHTML $ T.concat $ map pack [scheme, left, "dn=", name, rest])
+
 quote :: Parser Expr
 quote = char '>' >> Quote <$> manyTill onelineExpr (newline' <|> (eof >> return ""))
 
@@ -400,6 +410,7 @@ onelineExpr = try bold
           <|> tryWakabaTags
           <|> try namedLink
           <|> try link
+          <|> try magnet
           <|> try extref
           <|> try innerref
           <|> try userproof
@@ -415,6 +426,7 @@ expr = try quote
    <|> tryWakabaTags
    <|> try namedLink
    <|> try link
+   <|> try magnet
    <|> try extref
    <|> try innerref
    <|> try userproof

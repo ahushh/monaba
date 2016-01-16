@@ -197,9 +197,6 @@ pre {
     font-size: 7pt !important;
     background: #daf0d6;
 }
-.file-info {
-    display: none;
-}
 #delete-container {
     text-align: right;
     padding: 5px 0;

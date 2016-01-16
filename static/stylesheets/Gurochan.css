@@ -50,9 +50,6 @@ footer {
 .reflink {
     font-weight: bold;
 }
-.file-info {
-    display: none;
-}
 
 .reply.post, .feed .post {
     background-color: #d9af9e;

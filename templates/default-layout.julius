@@ -568,10 +568,10 @@ function generatePassword(n) {
 }
 
 function fillPasswords() {
-    var password = get_cookie("password");
+    var password = getItem("password");
     if (!password) {
         password = generatePassword();
-        set_cookie('password', password);
+        setItem('password', password);
     }
     Array.prototype.forEach.call(document.querySelectorAll('input[type=password]'), function(el, i) {
         el.value = password;
@@ -800,7 +800,7 @@ function initPostForm() {
     var pf = document.getElementById("post-form");
     var pi = document.querySelectorAll("input[type='password']")[0];
     pi.oninput = function() {
-        set_cookie('password', pi.value);
+        setItem('password', pi.value);
     };
 
     if (getItem("hideRules"))
@@ -1709,12 +1709,10 @@ function hideThread(threadLocalId, board, postId) {
 }
 
 // ---------------------------------------------------------
-//  wakaba3.js
+//  Cookies
 // ---------------------------------------------------------
-function get_cookie(name)
-{
-    if (document.cookie)
-    {
+function get_cookie(name) {
+    if (document.cookie)     {
         var regexp = new RegExp("(^|;\\s+)" + name + "=(.*?)(;|$)");
         var hit = regexp.exec(document.cookie);
         if(hit && hit.length > 2)
@@ -1724,16 +1722,11 @@ function get_cookie(name)
     }
 }
 
-function set_cookie(name,value,days)
-{
-    if(days)
-    {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        var expires = "; expires="+ date.toGMTString();
-    } else {
-        expires="";
-    }       
+function set_cookie(name,value,days) {
+    if (!days) days = 9999999;
+    var date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    var expires = "; expires="+ date.toGMTString();
     document.cookie = name + "=" + value + expires + "; path=/";
 }  
 // ---------------------------------------------------------

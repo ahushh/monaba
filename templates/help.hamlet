@@ -1,5 +1,5 @@
-<h2 style=text-align:center>_{MsgHelp}
+<h2>
+  _{MsgHelp} /
+  <a href=@{HelpMarkupR}>
+    _{MsgMarkup}
 #{preEscapedToHtml $ unTextarea about}
-<div style="margin-left:30px">
-<ul>
-    <li><a href=@{HelpMarkupR}>_{MsgMarkup}</a>

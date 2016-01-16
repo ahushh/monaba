@@ -4,36 +4,36 @@
 ^{fvInput messageView}
 <div .markup-buttons>
   <i .fa .fa-pencil>
-  <a onclick="insertTag('[b]','[/b]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[b]','[/b]','edit-form');">
      <strong>
        _{MsgMarkupBold}
   &nbsp;
-  <a onclick="insertTag('[i]','[/i]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[i]','[/i]','edit-form');">
      <em>
        _{MsgMarkupItalic}
   &nbsp;
-  <a onclick="insertTag('[u]','[/u]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[u]','[/u]','edit-form');">
      <u>
        _{MsgMarkupUnderline}
   &nbsp;
-  <a onclick="insertTag('[s]','[/s]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[s]','[/s]','edit-form');">
      <span style="text-decoration:line-through">
        _{MsgMarkupStrike}
   &nbsp;
-  <a onclick="insertTag('[spoiler]','[/spoiler]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[spoiler]','[/spoiler]','edit-form');">
      <span .spoiler>
        _{MsgMarkupSpoiler}
   &nbsp;
   <a .button-code>
      _{MsgMarkupCode}
   &nbsp;
-  <a onclick="insertTag('[l]','[/l]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[l]','[/l]','edit-form');">
      _{MsgMarkupInlineLatex}
   &nbsp;
-  <a onclick="insertTag('[latex]','[/latex]','edit-form');countSymbols('edit-form')">
+  <a onclick="insertTag('[latex]','[/latex]','edit-form');">
      _{MsgMarkupLatex}
   &nbsp;
-  <a .quote onmousedown="insertQuote('edit-form');countSymbols('edit-form')">
+  <a .quote onmousedown="insertQuote('edit-form');">
      _{MsgMarkupQuote}
   &nbsp;
   <span style=display:inline .symbol-counter>

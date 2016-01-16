@@ -635,10 +635,19 @@ function insert(text, parentId) {
     }
     textarea.focus();
     // $(textarea).trigger('autosize.resize');
+    countSymbols(parentId);
 } 
 
 function insertQuote(parentId) {
     insert(">"+ window.getSelection().toString().replace(/\n/gm, "\n>")+"\n", parentId);
+}
+
+function insertQuoted(text, parentId) {
+    var selection = window.getSelection().toString();
+    if (selection)
+        insert(text+"\n>"+ selection.replace(/\n/gm, "\n>")+"\n", parentId);
+    else
+        insert(text+"\n", parentId);
 }
 
 function insertTag(open, close, parentId) {
@@ -649,6 +658,9 @@ function insertTag(open, close, parentId) {
     var txt = open + textarea.value.substring(start, end) + close; 
     textarea.value = textarea.value.substring(0, start) + txt + textarea.value.substring(end, len);
     textarea.focus();
+    countSymbols(parentId);
+    textarea.selectionStart = end+open.length;
+    textarea.selectionEnd = end+open.length;
     // $(textarea).trigger('autosize.resize');
 } 
 

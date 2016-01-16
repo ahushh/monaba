@@ -33,8 +33,8 @@
             $else
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>##{sPostLocalId}#
         $if canPost
-            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
-            <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insert('>>#{sPostLocalId}#{pack "\\n"}','post-form');" .text-reply>
+            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
+            <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .text-reply>
               _{MsgReplyIcon}
         <span .cpanel>
            $if isThread

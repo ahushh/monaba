@@ -276,8 +276,9 @@ postWidget :: Entity Post              ->
              Bool                     -> -- ^ If geo ip enabled
              Bool                     -> -- ^ Show post date
              [Permission]             -> -- ^ List of the all permissions
+             Int                      -> -- ^ Index number
              Widget
-postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissions = 
+postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissions number = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost

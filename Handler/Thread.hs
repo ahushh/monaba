@@ -49,14 +49,14 @@ getThreadR board thread = do
       geoIpEnabled     = boardEnableGeoIp  boardVal
       showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------
+  posterId <- getPosterId
   allPosts <- selectThread board thread
   when (null allPosts) notFound
-  let repliesAndFiles = drop 1 allPosts
+  let repliesAndFiles = filter (\(eReply, _) -> checkHellbanned (entityVal eReply) permissions posterId) $ drop 1 allPosts
       eOpPost         = fst $ head allPosts
       opPostFiles     = reverse $ snd $ head allPosts
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
-  posterId <- getPosterId
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
   (postFormWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser

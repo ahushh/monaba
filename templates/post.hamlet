@@ -32,6 +32,9 @@
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>##{sPostLocalId}#
             $else
                 <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>##{sPostLocalId}#
+        $if number > 0
+          <span .index-number>
+            #{number}
         $if canPost
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
             <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .text-reply>

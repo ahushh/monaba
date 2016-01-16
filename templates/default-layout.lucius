@@ -490,3 +490,6 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .no-js .omitted a {
     display: none;
 }
+.post-header .index-number {
+    font-size: 0.7em;
+}

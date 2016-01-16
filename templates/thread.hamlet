@@ -25,11 +25,10 @@ $if hasAccessToReply
         ^{postFormWidget}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}" data-board=#{board}>
-        ^{postWidget eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions}
+        ^{postWidget eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions 0}
     
-        $forall (eReply, files) <- repliesAndFiles
-          $if checkHellbanned (entityVal eReply) permissions posterId
-            ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions}
+        $forall (i, (eReply, files)) <- enumerate repliesAndFiles
+          ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions (inc i)}
 
     $if hasAccessToReply
         <div #show-plain-form-bottom>

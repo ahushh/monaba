@@ -10,7 +10,7 @@ $else
 <div .feed>
   <form .delete-form method=get action=@{DeleteR}>
     $forall (e, files) <- postsAndFiles
-      ^{postWidget e files False False True True True permissions}
+      ^{postWidget e files False False True True True permissions 0}
     ^{deleteWidget permissions}
 
 $if onlyHellbanned

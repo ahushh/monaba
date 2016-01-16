@@ -38,7 +38,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget post files True True False geoIpEnabled showPostDate permissions}
+                                   ^{postWidget post files True True False geoIpEnabled showPostDate permissions 0}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -104,8 +104,8 @@ getAjaxPostByIdR postId = do
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal post) == 0
-                       then postWidget post files False True False geoIpEnabled showPostDate permissions
-                       else postWidget post files False True False geoIpEnabled showPostDate permissions
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -128,8 +128,8 @@ getAjaxPostR board postId = do
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget post files False True False geoIpEnabled showPostDate permissions
-                       else postWidget post files False True False geoIpEnabled showPostDate permissions
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

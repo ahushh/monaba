@@ -28,34 +28,35 @@ document.addEventListener("DOMContentLoaded", function(event) {
     tr.appendChild(td2);
     tbody.appendChild(tr);
 
-    var opts = [["number", "posts_autoload_interval"],
-                ["checkbox", "mathjax"],
-                ["checkbox", "eventsource"],
-                ["number", "board_stats_update"],
-                ["number", "animation_speed"],
-                ["number", "popup_message_display_time"],
-                ["number", "popup_post_delay_before_displaying"],
-                ["checkbox", "popup_post_removing_on_mouse_out"],
-                ["number", "popup_post_delay_before_removing"],
-                ["checkbox", "video_autoplay"],
-                ["checkbox", "video_loop"],
-                ["number","video_scale_width"],
-                ["number","video_scale_height"],
-                ["checkbox", "vimeo_enable"],
-                ["checkbox", "coub_enable"],
-                ["checkbox", "youtube_enable"],
-                ["checkbox", "youtube_load_titles"],
-                ["checkbox", "youtube_html5"],
-                ["number", "url_video_width"],
-                ["number", "url_video_height"],
-                ["number","flash_width"],
-                ["number", "flash_height"],
-                ["checkbox", "css_wide_posts"],
-                ["number", "css_side_margin"],
-                ["checkbox", "css_hide_files_names"],
-                ["checkbox", "css_hide_files_info"],
-                ["checkbox", "css_hide_markup_buttons"],
-                ["text", "css_custom"],
+    var opts = [
+                ["number"  , "board_stats_update"                , #{toJSON $ msgrender MsgBoardStatsUpdate}],
+                ["checkbox", "eventsource"                       , #{toJSON $ msgrender MsgEventsource}],
+                ["number"  , "posts_autoload_interval"           , #{toJSON $ msgrender MsgPostsAutoloadInterval}],
+                ["checkbox", "mathjax"                           , #{toJSON $ msgrender MsgMathjax}],
+                ["number"  , "animation_speed"                   , #{toJSON $ msgrender MsgAnimationSpeed}],
+                ["number"  , "popup_message_display_time"        , #{toJSON $ msgrender MsgPopupMessageDisplayTime }],
+                ["number"  , "popup_post_delay_before_displaying", #{toJSON $ msgrender MsgPopupPostDelayBeforeDisplaying}],
+                ["checkbox", "popup_post_removing_on_mouse_out"  , #{toJSON $ msgrender MsgPopupPostRemovingOnMouseOut}],
+                ["number"  , "popup_post_delay_before_removing"  , #{toJSON $ msgrender MsgPpopupPostDelayBeforeRemoving}],
+                ["checkbox", "video_autoplay"                    , #{toJSON $ msgrender MsgVideoAutoplay}],
+                ["checkbox", "video_loop"                        , #{toJSON $ msgrender MsgVideoLoop}],
+                ["number"  , "video_scale_width"                 , #{toJSON $ msgrender MsgVideoScaleWidth}],
+                ["number"  , "video_scale_height"                , #{toJSON $ msgrender MsgVideoScaleHeight}],
+                ["checkbox", "vimeo_enable"                      , #{toJSON $ msgrender MsgVimeoEnable}],
+                ["checkbox", "coub_enable"                       , #{toJSON $ msgrender MsgCoubEnable}],
+                ["checkbox", "youtube_enable"                    , #{toJSON $ msgrender MsgYoutubeEnable}],
+                ["checkbox", "youtube_load_titles"               , #{toJSON $ msgrender MsgYoutubeLoadTitles}],
+                ["checkbox", "youtube_html5"                     , #{toJSON $ msgrender MsgYoutubeHtml5}],
+                ["number"  , "url_video_width"                   , #{toJSON $ msgrender MsgUrlVideoWidth}],
+                ["number"  , "url_video_height"                  , #{toJSON $ msgrender MsgUrlVideoHeight}],
+                ["number"  , "flash_width"                       , #{toJSON $ msgrender MsgFlashWidth}],
+                ["number"  , "flash_height"                      , #{toJSON $ msgrender MsgFlashHeight}],
+                ["checkbox", "css_wide_posts"                    , #{toJSON $ msgrender MsgCssWidePosts}],
+                ["number"  , "css_side_margin"                   , #{toJSON $ msgrender MsgCssSideMargin}],
+                ["checkbox", "css_hide_files_names"              , #{toJSON $ msgrender MsgCssHideFilesNames}],
+                ["checkbox", "css_hide_files_info"               , #{toJSON $ msgrender MsgCssHideFilesInfo}],
+                ["checkbox", "css_hide_markup_buttons"           , #{toJSON $ msgrender MsgCssHideMarkupButtons}],
+                ["text"    , "css_custom"                        , #{toJSON $ msgrender MsgCssCustom}],
                ];
 
     opts.forEach(function(x, i) {
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var type = x[0];
         var input = type == 'text' ? document.createElement('textarea') : document.createElement("input");
         var opt = "cnf_"+x[1];
-        td1.innerHTML = x[1];
+        td1.innerHTML = x[2];
         var e = function() { setItem(opt, type == "checkbox" ? this.checked : this.value) };
         input.oninput = e; input.onchange = e;
         input.type = type;

@@ -470,3 +470,34 @@ SuccessEx: Успех!
 ErrorEx: Ошибка!
 AppRestart: Перезапустить движок
 AppGitPull: Выполнить 'git pull'
+######################################################################################
+## JS Settings
+######################################################################################
+BoardStatsUpdate: Интервал обновления счетчиков новых постов в списке борд (мс.)
+Eventsource: EventSource - автообновление отредактированных постов, мгновенное обновление счетика новых постов и пр.
+PostsAutoloadInterval: Интервал обновления треда/фида (мс.)
+Mathjax: Включить LaTeX
+AnimationSpeed: Скорость анимации всплывающих сообщений (мс.)
+PopupMessageDisplayTime: Время показа всплывающих сообщений (мс.)
+PopupPostDelayBeforeDisplaying: Задержка перед отображением всплывающих постов (мс.)
+PopupPostRemovingOnMouseOut: Включить удаление всплывающих постов по наведению курсора за границы поста, при выкл. — с помощью кнопок
+PpopupPostDelayBeforeRemoving: Задержка перед удаление всплывающих постов (мс.)
+VideoAutoplay: Автовоспроизведение видео при его разворачивании
+VideoLoop: Зацикливать воспроизведение видео
+VideoScaleWidth: Во сколько раз масштабировать видео по ширине при разворачивании
+VideoScaleHeight: ... по высоте
+VimeoEnable: Встраивать плеер вместо ссылки на vimeo
+CoubEnable:  ... coub
+YoutubeEnable: ... YouTube
+YoutubeLoadTitles: Загружать названия видео вместо ссылки на YouTube
+YoutubeHtml5: Включить HTML5 для YouTube плеера
+UrlVideoWidth: Ширина плеера для видео из ссылок
+UrlVideoHeight: Высота плеера для видео из ссылок
+FlashWidth: Ширина развернутых флеш-файлов
+FlashHeight: Высота развернутых флеш-файлов
+CssWidePosts: Растягивать посты по ширине
+CssSideMargin: Отступ по бокам страницы в %, 0 - стандартный отступ
+CssHideFilesNames: Скрывать имена файлов
+CssHideFilesInfo: Скрывать информацию о файлах
+CssHideMarkupButtons: Скрывать кнопки разметки
+CssCustom: Пользовательский CSS

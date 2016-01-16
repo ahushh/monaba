@@ -468,3 +468,34 @@ SuccessEx: Success!
 ErrorEx: Error!
 AppRestart: Restart engine
 AppGitPull: Execute 'git pull'
+######################################################################################
+## JS Settings
+######################################################################################
+BoardStatsUpdate: board_stats_update
+Eventsource: eventsource
+PostsAutoloadInterval: posts_autoload_interval
+Mathjax: mathjax
+AnimationSpeed: animation_speed
+PopupMessageDisplayTime: popup_message_display_time
+PopupPostDelayBeforeDisplaying: popup_post_delay_before_displaying
+PopupPostRemovingOnMouseOut: popup_post_removing_on_mouse_out
+PpopupPostDelayBeforeRemoving: popup_post_delay_before_removing
+VideoAutoplay: video_autoplay
+VideoLoop: video_loop
+VideoScaleWidth: video_scale_width
+VideoScaleHeight: video_scale_height
+VimeoEnable: vimeo_enable
+CoubEnable: coub_enable
+YoutubeEnable: youtube_enable
+YoutubeLoadTitles: youtube_load_titles
+YoutubeHtml5: youtube_html5
+UrlVideoWidth: url_video_width
+UrlVideoHeight: url_video_height
+FlashWidth: flash_width
+FlashHeight: flash_height
+CssWidePosts: css_wide_posts
+CssSideMargin: css_side_margin
+CssHideFilesNames: css_hide_files_names
+CssHideFilesInfo: css_hide_files_info
+CssHideMarkupButtons: css_hide_markup_buttons
+CssCustom: css_custom

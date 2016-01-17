@@ -468,6 +468,7 @@ SuccessEx: Success!
 ErrorEx: Error!
 AppRestart: Restart engine
 AppGitPull: Execute 'git pull'
+MoveElement: Move
 ######################################################################################
 ## JS Settings
 ######################################################################################

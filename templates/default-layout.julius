@@ -26,6 +26,44 @@ var Monaba = {
 loadConfig();
 applyCSSSettings();
 //-----------------------------------------------------------------
+// draggable
+//-----------------------------------------------------------------
+(function() {
+    document.addEventListener('mousedown', function(e){
+        e = e || window.event;
+
+        var button = e.target || e.srcElement;
+        if (!button.className.match(/drag-button/))
+            return true;
+        var draggable = button.closest(".draggable");
+
+        e.preventDefault();
+        var shiftX = e.pageX - draggable.getBoundingClientRect().left - window.pageXOffset,
+            shiftY = e.pageY - draggable.getBoundingClientRect().top - window.pageYOffset;
+        
+        var move = function(event) {
+            draggable.style.left = event.pageX - shiftX + 'px';
+            draggable.style.top  = event.pageY - shiftY + 'px';
+        };
+        draggable.style.position = 'absolute';
+        move(e);
+
+        document.onmousemove = function(e) {
+            move(e);
+        };
+
+        button.onmouseup = function() {
+            document.onmousemove = null;
+            button.onmouseup = null;
+        };
+
+        draggable.ondragstart = function() {
+            return false;
+        };
+    }, false);
+})();
+
+//-----------------------------------------------------------------
 function isEventSourceSupported() {
     return getConfig("eventsource") && typeof(EventSource) !== "undefined";
 }
@@ -1564,7 +1602,7 @@ function cachePopupPost(el) {
     for (var i = 0; i < vs.length; i++) vs[i].pause();
     while (vs.length) vs[0].parentNode.removeChild(vs[0]);
 
-    post.className = 'popup-post';
+    post.className = 'popup-post draggable';
     post.id = 'popup-'+postId;
     if ( getConfig('popup_post_removing_on_mouse_out') ) {
         post.onmouseleave = function() { Monaba.removePopupPostTimer = setTimeout(closePopupPost, getConfig("popup_post_delay_before_removing")); };
@@ -1578,6 +1616,8 @@ function cachePopupPost(el) {
         span.innerHTML = closePopups;
         post.appendChild(span);
     }
+    var dragme = parseDOMElement("<i title="+#{toJSON $ msgrender MsgMoveElement}+" class='fa fa-arrows-alt drag-button'></i>");
+    post.appendChild(dragme)
 
     post.onclick = function() { post.style['z-index'] = Monaba.zindex + 1; Monaba.zindex += 1; };
     Monaba.postCache[postId] = post;

@@ -483,3 +483,9 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .post-header .index-number {
     font-size: 0.7em;
 }
+.drag-button {
+    cursor: move;
+}
+.popup-post .drag-button {
+    float: right;
+}

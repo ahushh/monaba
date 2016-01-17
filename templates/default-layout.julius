@@ -40,17 +40,18 @@ applyCSSSettings();
         var target = e.target || e.srcElement;
         if (!target.className.match(/wheel-resizable/)) return true;
         e.preventDefault();
-        var cx = e.clientX;
-        var cy = e.clientY;
-        var delta = e.deltaY;
-        var newW = parseInt( target.style.width  ) * (delta < 0 ? 1.2 : 0.8);
-        var newH = parseInt( target.style.height ) * (delta < 0 ? 1.2 : 0.8);
+        var newW = parseInt( target.style.width  ) * (e.deltaY < 0 ? 1.2 : 0.8);
+        var newH = parseInt( target.style.height ) * (e.deltaY < 0 ? 1.2 : 0.8);
         var oldW = parseInt( target.style.width  );
         var oldH = parseInt( target.style.height );
+        var deltaW = newW - oldW;
+        var deltaH = newH - oldH;
+
         target.style.width  = newW+'px';
         target.style.height = newH+'px';
-        target.style.left   = parseInt(cx - (newW / oldW)*(cx - parseInt(target.style.left, 10)), 10);
-        target.style.top    = parseInt(cx - (newH / oldH)*(cy - parseInt(target.style.top, 10)), 10);
+
+        target.style.left   = (e.pageX - pageXOffset - (newW/oldW)*(e.pageX - pageXOffset - parseInt(target.style.left, 10) ))+ 'px';
+        target.style.top    = (e.pageY - pageYOffset - (newW/oldW)*(e.pageY - pageYOffset - parseInt(target.style.top , 10) ))+ 'px';
     },false);
 })();
 //-----------------------------------------------------------------
@@ -67,12 +68,17 @@ applyCSSSettings();
             if (Math.abs(moveX) < 3 && Math.abs(moveY) < 3) return true;
             Monaba.dragged.moving = true;
 
-            Monaba.dragged.elem.style.position = 'absolute';
             Monaba.dragged.elem.style['z-index'] = 1000;
         }
         if (Monaba.dragged.moving) {
-            Monaba.dragged.elem.style.left = e.pageX - Monaba.dragged.shiftX + 'px';
-            Monaba.dragged.elem.style.top  = e.pageY - Monaba.dragged.shiftY + 'px';
+            if (Monaba.dragged.elem.style.position == 'fixed') {
+                Monaba.dragged.elem.style.left = e.pageX - pageXOffset - Monaba.dragged.shiftX + 'px';
+                Monaba.dragged.elem.style.top  = e.pageY - pageYOffset - Monaba.dragged.shiftY + 'px';
+            } else {
+                Monaba.dragged.elem.style.position == 'absolute';
+                Monaba.dragged.elem.style.left = e.pageX - Monaba.dragged.shiftX + 'px';
+                Monaba.dragged.elem.style.top  = e.pageY - Monaba.dragged.shiftY + 'px';
+            }
         }
     },false);
     document.addEventListener('mouseup', function(e){
@@ -1186,10 +1192,10 @@ function addVideoPlayer(post) {
     if (getConfig("expand_files_in_post"))
         addVideoPlayerInPost(post);
     else
-        addVideoPlayerCenter(post);
+        addVideoPlayerPopup(post);
 }
 
-function addVideoPlayer(post) {
+function addVideoPlayerPopup(post) {
 }
 
 function addVideoPlayerInPost(post) {

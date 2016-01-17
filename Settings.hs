@@ -73,6 +73,7 @@ data AppSettings = AppSettings
     , appJsPostsAutoloadInterval :: Int
     , appJsMathjax :: Bool
     , appJsEventsource :: Bool
+    , appJsExpandFilesInPost :: Bool
     , appJsBoardStatsUpdate :: Int
     , appJsAnimationSpeed :: Int
     , appJsPopupMessageDisplayTime :: Int
@@ -146,6 +147,7 @@ instance FromJSON AppSettings where
         appJsPostsAutoloadInterval <- o .: "jsPostsAutoloadInterval"
         appJsMathjax <- o .: "jsMathjax"
         appJsEventsource <- o .: "jsEventsource"
+        appJsExpandFilesInPost <- o .: "jsExpandFilesInPost"
         appJsBoardStatsUpdate <- o .: "jsBoardStatsUpdate"
         appJsAnimationSpeed <- o .: "jsAnimationSpeed"
         appJsPopupMessageDisplayTime <- o .: "jsPopupMessageDisplayTime"

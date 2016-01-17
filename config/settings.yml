@@ -50,6 +50,7 @@ restartCmd:        "systemctl --user restart monaba"
 jsPostsAutoloadInterval:          30000
 jsMathjax:                        true
 jsEventsource:                    true
+jsExpandFilesInPost:              false
 jsBoardStatsUpdate:               30000
 jsAnimationSpeed:                 300
 jsPopupMessageDisplayTime:        2000

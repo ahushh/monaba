@@ -21,7 +21,13 @@ var Monaba = {
         container: '',
         count: 0,
         message: ''
-    }
+    },
+    dragged: {
+        elem: null,
+        x: null,
+        y: null,
+        moving: false
+    },
 };
 loadConfig();
 applyCSSSettings();
@@ -29,37 +35,52 @@ applyCSSSettings();
 // draggable
 //-----------------------------------------------------------------
 (function() {
+    document.addEventListener('mousemove', function(e){
+        e = e || window.event;
+        var button = e.target || e.srcElement;
+        if (! Monaba.dragged.elem ) return true;
+        if (! Monaba.dragged.moving) {
+            var moveX = e.pageX - Monaba.dragged.initX;
+            var moveY = e.pageY - Monaba.dragged.initY;
+            if (Math.abs(moveX) < 3 && Math.abs(moveY) < 3) return true;
+            Monaba.dragged.moving = true;
+
+            Monaba.dragged.elem.style.position = 'absolute';
+            Monaba.dragged.elem.style['z-index'] = 1000;
+        }
+        if (Monaba.dragged.moving) {
+            Monaba.dragged.elem.style.left = e.pageX - Monaba.dragged.shiftX + 'px';
+            Monaba.dragged.elem.style.top  = e.pageY - Monaba.dragged.shiftY + 'px';
+        }
+    },false);
+    document.addEventListener('mouseup', function(e){
+        e = e || window.event;
+        var button = e.target || e.srcElement;
+        if (e.which != 1) return true;
+        if (Monaba.dragged.moving) e.stopPropagation();
+        if (Monaba.dragged.elem) Monaba.dragged.elem.ondragstart = null;
+        Monaba.dragged.elem = null;
+        Monaba.dragged.shiftX = 0;
+        Monaba.dragged.shiftY = 0;
+        Monaba.dragged.moving = false;
+    }, true);
     document.addEventListener('mousedown', function(e){
         e = e || window.event;
-
-        var button = e.target || e.srcElement;
-        if (!button.className.match(/drag-button/))
-            return true;
-        var draggable = button.closest(".draggable");
-
-        e.preventDefault();
-        var shiftX = e.pageX - draggable.getBoundingClientRect().left - window.pageXOffset,
-            shiftY = e.pageY - draggable.getBoundingClientRect().top - window.pageYOffset;
-        
-        var move = function(event) {
-            draggable.style.left = event.pageX - shiftX + 'px';
-            draggable.style.top  = event.pageY - shiftY + 'px';
-        };
-        draggable.style.position = 'absolute';
-        move(e);
-
-        document.onmousemove = function(e) {
-            move(e);
-        };
-
-        button.onmouseup = function() {
-            document.onmousemove = null;
-            button.onmouseup = null;
-        };
+        var target = e.target || e.srcElement;
+        if (!target.className.match(/drag-button/)) return true;
+        if (e.which != 1) return true;
+        var draggable = target.closest(".draggable");
 
         draggable.ondragstart = function() {
             return false;
         };
+
+        Monaba.dragged.elem = draggable;
+        var shiftX = e.pageX - Monaba.dragged.elem.getBoundingClientRect().left - pageXOffset,
+            shiftY = e.pageY - Monaba.dragged.elem.getBoundingClientRect().top - pageYOffset;
+
+        Monaba.dragged.shiftX = shiftX;
+        Monaba.dragged.shiftY = shiftY;
     }, false);
 })();
 
@@ -236,6 +257,7 @@ function loadConfig() {
     setConfigIfNull("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfigIfNull("mathjax", #{toJSON $ appJsMathjax settings});
     setConfigIfNull("eventsource", #{toJSON $ appJsEventsource settings});
+    setConfigIfNull("expand_files_in_post", #{toJSON $ appJsExpandFilesInPost settings});
     setConfigIfNull("board_stats_update", #{toJSON $ appJsBoardStatsUpdate settings});
     setConfigIfNull("animation_speed", #{toJSON $ appJsAnimationSpeed settings});
     setConfigIfNull("popup_message_display_time", #{toJSON $ appJsPopupMessageDisplayTime settings});
@@ -267,6 +289,7 @@ function resetConfig() {
     setConfig("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfig("mathjax", #{toJSON $ appJsMathjax settings});
     setConfig("eventsource", #{toJSON $ appJsEventsource settings});
+    setConfig("expand_files_in_post", #{toJSON $ appJsExpandFilesInPost settings});
     setConfig("board_stats_update", #{toJSON $ appJsBoardStatsUpdate settings});
     setConfig("animation_speed", #{toJSON $ appJsAnimationSpeed settings});
     setConfig("popup_message_display_time", #{toJSON $ appJsPopupMessageDisplayTime settings});
@@ -1138,6 +1161,16 @@ function hideEditForm() {
 // webm
 //-----------------------------------------------------------------
 function addVideoPlayer(post) {
+    if (getConfig("expand_files_in_post"))
+        addVideoPlayerInPost(post);
+    else
+        addVideoPlayerCenter(post);
+}
+
+function addVideoPlayer(post) {
+}
+
+function addVideoPlayerInPost(post) {
     var thumbs = post.querySelectorAll(".video");
     Array.prototype.forEach.call(thumbs, function(thumb) {
         thumb.onclick = function(){
@@ -1416,26 +1449,61 @@ function expandImage(post) {
         thumbImg.onclick = function(event) {
             if (event.which == 2 || event.which == 3)
                 return true;
-            if (isFull) {
-                thumbImg.src = thumbUrl;
-                thumbImg.onload = function() {
-                    thumbImg.style.width = '';
-                    thumbImg.setAttribute('width', thumbWidth);
-                    thumbImg.setAttribute('height', thumbHeight);
-                    isFull = false;
-                };
+            if (getConfig("expand_files_in_post")) {
+                if (isFull) {
+                    thumbImg.src = thumbUrl;
+                    thumbImg.onload = function() {
+                        thumbImg.style.width = '';
+                        thumbImg.setAttribute('width', thumbWidth);
+                        thumbImg.setAttribute('height', thumbHeight);
+                        isFull = false;
+                    };
+                } else {
+                    addClass(thumbImg, 'image-loading');
+                    thumbImg.onload = function() {
+                        removeClass(thumbImg, 'image-loading');
+                        thumbImg.removeAttribute('width');
+                        thumbImg.removeAttribute('height');
+                        thumbImg.style.width = '100%';
+                        isFull = true;
+                    };
+                    thumbImg.src = fullUrl;
+                }
+                event.preventDefault();
             } else {
-                addClass(thumbImg, 'image-loading');
-                thumbImg.onload = function() {
-                    removeClass(thumbImg, 'image-loading');
-                    thumbImg.removeAttribute('width');
-                    thumbImg.removeAttribute('height');
-                    thumbImg.style.width = '100%';
-                    isFull = true;
+                var img = new Image();
+                var wWidth  = window.innerWidth;
+                var wHeight = window.innerHeight;
+                img.src = fullUrl;
+                img.className = "expanded-image draggable drag-button";
+                img.addEventListener("mouseup",function(e){
+                    document.body.removeChild(img);
+                }, false);
+                img.onload = function() {
+                    document.body.appendChild(img);
+                    var imgHeight = img.height;
+                    var imgWidth  = img.width;
+                    var ratio  = imgHeight > wHeight || imgWidth > wWidth ? Math.min(wWidth/imgWidth, wHeight/imgHeight) : 1;
+                    var height = imgHeight*ratio;
+                    var width  = imgWidth*ratio;
+                    console.log(wHeight);
+                    console.log(wWidth);
+                    console.log(img.height);
+                    console.log(img.width);
+                    console.log(ratio);
+                    console.log(height);
+                    console.log(width);
+                    img.style.height = height+'px';
+                    img.style.width  = width+'px';
+                    img.style.position = 'fixed';
+                    img.style['z-index'] = Monaba.zindex + 1;
+                    img.style.top    = (wHeight-height)/2 +'px';
+                    img.style.bottom = (wHeight-height)/2 +'px';
+                    img.style.left   = (wWidth-width)/2 +'px';
+                    img.style.right   = (wWidth-width)/2 +'px';
+                    Monaba.zindex += 1;
                 };
-                thumbImg.src = fullUrl;
             }
-            event.preventDefault();
         };
     });
 }

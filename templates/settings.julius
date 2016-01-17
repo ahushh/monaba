@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var opts = [
                 ["number"  , "board_stats_update"                , #{toJSON $ msgrender MsgBoardStatsUpdate}],
                 ["checkbox", "eventsource"                       , #{toJSON $ msgrender MsgEventsource}],
+                ["checkbox", "expand_files_in_post"              , #{toJSON $ msgrender MsgExpandFilesInPost}],
                 ["number"  , "posts_autoload_interval"           , #{toJSON $ msgrender MsgPostsAutoloadInterval}],
                 ["checkbox", "mathjax"                           , #{toJSON $ msgrender MsgMathjax}],
                 ["number"  , "animation_speed"                   , #{toJSON $ msgrender MsgAnimationSpeed}],
@@ -58,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["checkbox", "css_hide_markup_buttons"           , #{toJSON $ msgrender MsgCssHideMarkupButtons}],
                 ["text"    , "css_custom"                        , #{toJSON $ msgrender MsgCssCustom}],
                ];
-
+    console.log(opts);
     opts.forEach(function(x, i) {
         var tr  = document.createElement("tr");
         var td1 = document.createElement("td");

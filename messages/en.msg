@@ -474,6 +474,7 @@ MoveElement: Move
 ######################################################################################
 BoardStatsUpdate: board_stats_update
 Eventsource: eventsource
+ExpandFilesInPost: expand_files_in_post
 PostsAutoloadInterval: posts_autoload_interval
 Mathjax: mathjax
 AnimationSpeed: animation_speed

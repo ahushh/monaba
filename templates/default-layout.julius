@@ -1001,6 +1001,7 @@ function handleFile(file, fInput, rInput) {
             rInput.value = 1;
             insertAfter(rInput, fts);
             document.getElementById("attach-file").className = "";
+            while (div.firstChild) div.removeChild(div.firstChild);
             fts.removeChild(div);
         };
 
@@ -1010,6 +1011,7 @@ function handleFile(file, fInput, rInput) {
         img.onclick = onclick;
 
         var video = document.createElement("video");
+        video.volume = 0;
         video.title = file.name + ", " + fSize;
         video.file = file;
         video.onclick = onclick;
@@ -1025,7 +1027,6 @@ function handleFile(file, fInput, rInput) {
             reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
             reader.readAsDataURL(file);
         } else if (file.type.match('video.*')) {
-            video.controls = true;
             video.play();
             div.appendChild(video);
             var reader = new FileReader();

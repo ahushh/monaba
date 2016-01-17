@@ -45,6 +45,9 @@ hr {
 pre {
     overflow-x: auto;
 }
+video {
+    display: block;
+}
 .fa.online {
     margin-right: 0.5em;
 }

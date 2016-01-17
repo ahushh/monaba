@@ -32,6 +32,28 @@ var Monaba = {
 loadConfig();
 applyCSSSettings();
 //-----------------------------------------------------------------
+// Resizable
+//-----------------------------------------------------------------
+(function() {
+    document.addEventListener("wheel",function(e){
+        e = e || window.event;
+        var target = e.target || e.srcElement;
+        if (!target.className.match(/wheel-resizable/)) return true;
+        e.preventDefault();
+        var cx = e.clientX;
+        var cy = e.clientY;
+        var delta = e.deltaY;
+        var newW = parseInt( target.style.width  ) * (delta < 0 ? 1.2 : 0.8);
+        var newH = parseInt( target.style.height ) * (delta < 0 ? 1.2 : 0.8);
+        var oldW = parseInt( target.style.width  );
+        var oldH = parseInt( target.style.height );
+        target.style.width  = newW+'px';
+        target.style.height = newH+'px';
+        target.style.left   = parseInt(cx - (newW / oldW)*(cx - parseInt(target.style.left, 10)), 10);
+        target.style.top    = parseInt(cx - (newH / oldH)*(cy - parseInt(target.style.top, 10)), 10);
+    },false);
+})();
+//-----------------------------------------------------------------
 // draggable
 //-----------------------------------------------------------------
 (function() {
@@ -1475,7 +1497,7 @@ function expandImage(post) {
                 var wWidth  = window.innerWidth;
                 var wHeight = window.innerHeight;
                 img.src = fullUrl;
-                img.className = "expanded-image draggable drag-button";
+                img.className = "draggable drag-button wheel-resizable";
                 img.addEventListener("mouseup",function(e){
                     document.body.removeChild(img);
                 }, false);
@@ -1486,13 +1508,6 @@ function expandImage(post) {
                     var ratio  = imgHeight > wHeight || imgWidth > wWidth ? Math.min(wWidth/imgWidth, wHeight/imgHeight) : 1;
                     var height = imgHeight*ratio;
                     var width  = imgWidth*ratio;
-                    console.log(wHeight);
-                    console.log(wWidth);
-                    console.log(img.height);
-                    console.log(img.width);
-                    console.log(ratio);
-                    console.log(height);
-                    console.log(width);
                     img.style.height = height+'px';
                     img.style.width  = width+'px';
                     img.style.position = 'fixed';

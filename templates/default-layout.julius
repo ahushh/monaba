@@ -97,13 +97,13 @@ applyCSSSettings();
         var target = e.target || e.srcElement;
         if (!target.className.match(/drag-button/)) return true;
         if (e.which != 1) return true;
-        var draggable = target.closest(".draggable");
+        var draggable = target.closest(".draggable") || target.parentNode.querySelector(".draggable");
 
         draggable.ondragstart = function() {
             return false;
         };
-
         Monaba.dragged.elem = draggable;
+
         var shiftX = e.pageX - Monaba.dragged.elem.getBoundingClientRect().left - pageXOffset,
             shiftY = e.pageY - Monaba.dragged.elem.getBoundingClientRect().top - pageYOffset;
 
@@ -1189,16 +1189,6 @@ function hideEditForm() {
 // webm
 //-----------------------------------------------------------------
 function addVideoPlayer(post) {
-    if (getConfig("expand_files_in_post"))
-        addVideoPlayerInPost(post);
-    else
-        addVideoPlayerPopup(post);
-}
-
-function addVideoPlayerPopup(post) {
-}
-
-function addVideoPlayerInPost(post) {
     var thumbs = post.querySelectorAll(".video");
     Array.prototype.forEach.call(thumbs, function(thumb) {
         thumb.onclick = function(){
@@ -1208,26 +1198,66 @@ function addVideoPlayerInPost(post) {
                 video.autoplay = 'autoplay';
             if (getConfig("video_loop"))
                 video.loop = 'loop';
-            if (getConfig("video_scale_width") > 0)
-                video.width = thumb.width*getConfig("video_scale_width")
-            if (getConfig("video_scale_height") > 0)
-                video.width = thumb.width*getConfig("video_scale_height")
+
             var source = document.createElement("source");
             source.src = thumb.dataset.url;
-            thumb.style.display = 'none';
             video.appendChild(source);
-            thumb.parentNode.appendChild( video );
 
             var close = document.createElement("a");
             close.innerHTML = #{toJSON $ msgrender MsgCloseIcon}+" ✖";
             close.style.display = 'block';
             close.style['text-align'] = 'right';
-            close.onclick = function() {
-                thumb.style.display = 'block';
-                removeElement(video);
-                removeElement(close);
-            };
-            insertAfter(close, video);
+
+            if (getConfig("expand_files_in_post")) {
+                if (getConfig("video_scale_width") > 0)
+                    video.width = thumb.width*getConfig("video_scale_width")
+                if (getConfig("video_scale_height") > 0)
+                    video.height = thumb.height*getConfig("video_scale_height")
+                thumb.style.display = 'none';
+                thumb.parentNode.appendChild( video );
+                close.onclick = function() {
+                    thumb.style.display = 'block';
+                    removeElement(video);
+                    removeElement(close);
+                };
+                insertAfter(close, video);
+            } else {
+                var wrap = document.createElement("div");
+                wrap.className = "draggable";
+                wrap.style['z-index'] = Monaba.zindex + 1;
+                Monaba.zindex += 1;
+                close.onclick = function() {
+                    removeElement(wrap);
+                };
+
+                video.className = "wheel-resizable";
+                video.onloadeddata = function() {
+                    var wWidth  = window.innerWidth;
+                    var wHeight = window.innerHeight;
+                    var videoHeight = video.offsetHeight;
+                    var videoWidth  = video.offsetWidth;
+                    var ratio  = videoHeight > wHeight || videoWidth > wWidth ? Math.min(wWidth/videoWidth, wHeight/videoHeight) : 1;
+                    var height = videoHeight*ratio;
+                    var width  = videoWidth*ratio;
+                    video.style.height = height+'px';
+                    video.style.width  = width+'px';
+                    wrap.style.position = 'fixed';
+                    wrap.style.top    = (wHeight-height)/2 +'px';
+                    wrap.style.left   = (wWidth-width)/2 +'px';
+                };
+
+                var div = document.createElement("div");
+                var dragme = parseDOMElement("<i title="+#{toJSON $ msgrender MsgMoveElement}+" class='fa fa-arrows-alt drag-button'></i>");
+                dragme.style.float = 'left';
+
+                div.appendChild(dragme);
+                div.appendChild(close);
+
+                wrap.appendChild(div);
+                wrap.appendChild(video);
+
+                document.body.appendChild(wrap);
+            }
         };
     });
 }

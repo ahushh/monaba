@@ -1,167 +1,141 @@
-#message {
-    font-size: 1.5em;
-    color: #1de9b6;
-    border: none;
+/* home page */
+
+#board-list-full {
+  background: #00796b;
 }
-header {
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
-    background-color: #00796b;
-    padding: 1px 0;
-}
-.pagination {
-    background-color: #00796b;
-    padding: 2px;
-}
-.news > .title {
-    text-align: left !important;
-}
-html, body {
-    background-color: #009688;
-    color: #e0f2f1;
-    font-family: Century Gothic,sans-serif;
-    font-size: 10pt;
-    padding: 10px;
-}
-textarea, input, select {
-    border: none;
-    background-color: #00796b;
-    color: #e0f2f1;
-    font-family: Century Gothic,sans-serif;
-    font-size: small;
-}
-input[type=submit]:hover {
-    background-color: #00796b;
-}
-input[type=submit] {
-    border: none;
-}
-.time {
-    font-size: 0.8em;
-    color: #e0f2f1;
-}
-a {
-    color: #e0f2f1;
-    padding: 0;
-}
-a:hover {
-    color: #1de9b6;
-}
-footer {
-    font-family: Century Gothic,sans-serif;
-    font-size: 12px;
-    text-align: center;
-}
-.reflink {
-    font-size: 85%;
-    font-weight: bold;
-}
-.file-info {
-    color: #e0f2f1;
-    font-size: 0.8em;
-    text-decoration: none;
-}
-.file-name {
-    font-size: 0.8em;
-}
-.reply.post, .feed .post {
-    background-color: #00796b;
-    margin: 3px;
-    padding: 5px;
-}
-.popup-post {
-    background-color: #00796b;
-    margin: 3px;
-    padding: 5px;
-}
-.reply.post.highlighted, .feed .post.highlighted {
-    background-color: #00695c;
-}
-.op.post.highlighted {
-    background-color: #00796b;
-}
-.thread {
-    margin: 2px;
-    padding: 10px 2px;
-}
-.reply-title {
-    color: #18ffff;
-    font-size: 1em;
-    font-weight: bold;
-}
-hr {
-    border: none;
-}
-table {
-    border-style: none;
-}
-table td {
-    border-style: none;
-}
-#delete-container {
-    text-align: right;
-}
-pre {
-    background-color: #00695c;
-    padding: 10px;
+#board-list-full .title {
+  background: #00695c;
+  margin-left: -2px !important;
 }
 .board-category {
-    font-weight: bold;
+  display: none;
 }
-#news-title {
-    font-weight: bold;
+#latest-news {
+  background: #00796b;
 }
-.popup-message {
-    background-color: #00796b;
-    color: #e0f2f1;
-    margin-top: 18px!important;
+#latest-news > .title {
+  background: #00695c;
+  font-weight: bold;
+}
+.news > .title {
+  text-align: left !important;
+}
+hr {
+  display: none;
+}
+
+/* board */
+
+html, body {
+  background-color: #009688;
+  color: #e0f2f1;
+  font-family: Century Gothic,sans-serif;
+  font-size: 10pt;
+  padding: 10px;
+}
+header {
+  border: none !important;
+  background-color: #00796b;
+  padding: 1px 0px;
+}
+#board-summary, #board-subtitle {
+  display: none;
+}
+textarea, input, select {
+  border: none;
+  background-color: #00796b;
+  color: #e0f2f1;
+  font-family: Century Gothic,sans-serif;
+  font-size: small;
 }
 .quick-post-form {
-    padding: 3px;
+  padding: 2px;
 }
-.hist-msg {
-    background-color: #00796b;
-    margin: 3px;
-    padding: 5px;
+a, .fa {
+  color: #e0f2f1;
 }
-.admin-navbar {
-    background-color: #00796b;
-    padding: 3px;
-    margin-bottom: 10px;
+a:hover, .fa:hover {
+  color: #1de9b6;
 }
-.show-plain-form {
-    margin-bottom: 10px;
+pre {
+  background-color: #00695c;
+  padding: 10px;
 }
-.expand-post {
-    color: #e0f2f1;
+.quote, .symbol-counter {
+  color: #aeea00 !important;
 }
-.quote {
-    color: #aeea00;
+.spoiler, .spoiler a {
+  color: #00695c;
+  background-color: #00695c;
 }
-.symbol-counter {
-    color: #aeea00;
-}
-#main-image {
-    opacity: 0.4;
-}
-.spoiler {
-    color: #00695c;
-    background-color: #00695c;
-}
-.op.post .spoiler {
-    color: #00796b;
-    background-color: #00796b;
-}
-.spoiler:hover {
-    color: #e0f2f1;
-    background-color: transparent;
-}
-.spoiler a {
-    color: #00695c;
-    background-color: #00695c;
+.spoiler:hover{
+  color: #e0f2f1;
+  background-color: transparent;
 }
 .spoiler a:hover {
-    color: #1de9b6;
+  color: #1de9b6;
+  background: transparent;
 }
-.dropdown-menu ul li {
-    background-color: #00796b;
+.thread {
+  padding: 10px 0px;
+}
+.reply.post, .feed .post, .popup-post {
+  background: #00796b;
+  margin: 3px;
+  padding: 5px;
+}
+.popup-message {
+  background: #00796b;
+  margin-top: 10px !important;
+}
+.reply.post.highlighted, .feed .post.highlighted {
+  background-color: #00695c;
+}
+.op.post.highlighted {
+  background-color: #00796b;
+}
+.reply-title {
+  color: #18ffff;
+  font-weight: bold;
+}
+.reflink{
+  font-size: 8pt;
+  font-weight: bold;
+}
+.time {
+  font-size: 0.8em;
+}
+.index-number {
+  font: bold 11px tahoma !important;
+  color: #18ffff;
+}
+.file-name, .file-info {
+  font-size: 8pt;
+}
+.reply.post .dropdown-menu li ul {
+  background: #00796b;
+}
+.op.post .dropdown-menu li ul {
+  background: #009688;
+}
+#delete-container {
+  text-align: right;
+}
+footer {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* settings page */
+
+#message {
+  font-size: 20pt;
+}
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2 {
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 10px 0px;
 }

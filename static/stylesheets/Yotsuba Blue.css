@@ -9,7 +9,7 @@
 #board-list-full .title {
     background: #b7c5d9;
     font-size: 15px;
-    margin-left: -2px;
+    margin-left: -2px !important;
 }
 #board-list-full .board-category {
     display: none;
@@ -28,7 +28,7 @@
     background: #000000;
 }
 .news > .title {
-    text-align: left;
+    text-align: left !important;
 }
 
 /* board */
@@ -38,14 +38,11 @@ html, body {
     color: #000000;
     font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
-a {
+a, .fa {
     color: #34345c;
 }
-a:hover {
+a:hover, .fa:hover {
     color: #ee0000;
-}
-.fa {
-    color: #34345c;
 }
 pre {
     background: #9da6db;
@@ -54,7 +51,7 @@ pre {
 header {
     background: #eef2ff url('/static/img/yotsubablue.png') top center repeat-x;
     padding: 1px 0;
-    border: none;
+    border: none !important;
 }
 .banner {
     margin-top: 10px;
@@ -68,6 +65,9 @@ header {
 }
 #board-header .fa {
     color: #af0a0f;
+}
+#board-header .fa:hover {
+    color: #ee0000;
 }
 #board-summary, #board-subtitle {
     display: none;
@@ -115,7 +115,11 @@ textarea, input, select {
 .poster-name {
     color: #117743;
 }
-.file-name {
+.index-number {
+  font: bold 11px tahoma !important;
+  color: #4F7942;
+}
+.file-name, .file-info {
     font-size: 9px;
 }
 .thread {
@@ -149,35 +153,30 @@ footer {
     border-style: solid solid none none;
     border-color: #b7c5d9;
 }
-a.next {
+.pagination .next {
     border-left: 1px solid #b7c5d9;
     padding-left: 5px;
 }
-a.previous {
+.pagination .previous {
     border-right: 1px solid #b7c5d9;
     padding-right: 5px;
 }
-.quote {
-    color: #789922;
+.quote, .symbol-counter {
+    color: #789922 !important;
 }
-.symbol-counter {
-    color: #789922;
-}
-.spoiler {
+.spoiler, .spoiler a {
     color: #000000;
     background: #000000;
 }
-.spoiler:hover {
+.spoiler:hover, .spoiler a:hover {
     color: #ffffff;
     background: #000000;
 }
-.spoiler a {
-    color: #000000;
+.op.post .dropdown-menu li ul {
+    background: #eef2ff;
+    padding: 2px;
 }
-.spoiler a:hover {
-    color: #ffffff;
-}
-.dropdown-menu li ul {
+.reply.post .dropdown-menu li ul {
     background: #d6daf0;
     padding: 2px;
 }
@@ -185,6 +184,7 @@ a.previous {
 /* settings page */
 
 #message {
+    font-family: Tahoma,sans-serif;
     font-size: 28px;
     letter-spacing: -2px;
     color: #ee0000;
@@ -200,6 +200,9 @@ h1, h2 {
     margin: 10px 0 !important;
     color: #af0a0f;
 }
-h2 .fa {
+h2 .fa, h2 a {
     color: #af0a0f;
+}
+h2 fa:hover, h2 a:hover {
+    color: #ee0000;
 }

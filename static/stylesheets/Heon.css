@@ -1,103 +1,103 @@
-#message {
-    font-size: 2em;
-    color: white;
-    border: none;
+/* home page */
+
+#board-list-full, #latest-news {
+  background: #546471;
+  border: 1px solid #37414a;
 }
-header {
-    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
-    background: #546471;
-    padding: 3px 0;
+#board-list-full .title {
+  background: #37414a;
+  margin-left: -2px !important;
 }
-.pagination {
-    background: #546471;
-    padding: 3px;
-}
-#latest-news > .title {
-    background: #546471;
-    font-weight: bold;
-}
-.news > .title {
-    text-align: left!important;
+.board-category {
+  display: none;
 }
 hr {
-    border: 1px solid #546471!important;
+  background: #37414a;
+  border: none !important;
+  height: 1px
 }
-#board-summary, #board-subtitle {
-    display: none!important;
+#latest-news > .title {
+  background: #37414a;
+  font-weight: bold;
+}
+.news > .title {
+  text-align: left !important;
+}
+
+/* board */
+
+html, body {
+  background-color: #6e7c87;
+  color: white;
+  font-family: Calibri;
+  font-size: 10.5pt;
+}
+a, .fa {
+  color: white;
+}
+a:hover, .fa:hover {
+  color: #343855;
+}
+pre {
+  background-color: #2c2c2c;
+  padding: 10px;
+}
+header {
+  border: none !important;
+  background: #546471;
+  padding: 3px 0px;
+}
+.banner {
+  margin-top: 5px !important;
 }
 #board-header {
-    color: #c8cdd5;
-    font-weight: 700;
-    border-bottom: 3px solid #ffffff;
-    border-image: url('/static/img/heon.png') 3;
-    padding-bottom: 10px;
-    margin-bottom: 5px;
+  color: #c8cdd5;
+  font-weight: 700;
+  border-bottom: 3px solid #6e7c87;
+  border-image: url('/static/img/heon.png') 3;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
 }
-html, body {
-    background-color: #6e7c87;
-    color: white;
-    font-family: Calibri;
-    font-size: 10.5pt;
-    padding: 10px;
+#board-header .fa {
+  color: #c8cdd5;
+}
+#board-header .fa:hover {
+  color: #343855;
+}
+#board-summary, #board-subtitle {
+  display: none;
 }
 textarea, input, select {
-    border: 2px solid #545454;
-    border-radius: 5px;
-    background-color: #37414a;
-    color: white;
-    font-family: Calibri;
-    font-size: inherit;
-    margin: 1px;
+  border: 2px solid #545454;
+  border-radius: 5px;
+  background-color: #37414a;
+  color: white;
+  font-family: Calibri;
+  font-size: inherit;
+  margin: 1px;
 }
-input[type=submit]:hover {
-    background-color: #37414a;
+.quick-post-form {
+  padding: 2px;
 }
-input[type=submit] {
-    border: 2px solid #545454;
+.spoiler, .spoiler a {
+  color: #212121;
+  background-color: #212121;
 }
-.time {
-    color: inherit;
+.spoiler:hover, .spoiler a:hover {
+  color: #48b0fd;
+  background-color: #212121;
 }
-a {
-    color: inherit;
-    padding: 0;
+.quote, .symbol-counter {
+  color: #81b1ff !important;
 }
-a:hover {
-    color: #343855;
+.thread {
+  border-top: 3px solid #6e7c87;
+  border-image: url('/static/img/heon.png') 3;
+  margin: 5px;
+  padding: 10px 0px;
 }
-footer {
-    font-family: Calibri;
-    font-size: 12px;
-    text-align: center;
-}
-.pagination .next {
-    border-left: 1px solid white;
-    padding-left: 5px;
-}
-.pagination .previous {
-    border-right: 1px solid white;
-    padding-right: 5px;
-}
-.reflink {
-    font-size: 85%;
-    font-weight: bold;
-}
-.file-info {
-    color: inherit;
-    font-size: 0.8em;
-    text-decoration: none;
-}
-.file-name {
-    font-size: 0.8em;
-}
-.reply.post, .feed .post {
+.reply.post, .feed .post, .popup-post {
     background-color: #546471;
-    margin: 3px;
-    padding: 5px;
-}
-.popup-post {
-    background-color: #546471;
-    border: 1px solid #808080;
     margin: 3px;
     padding: 5px;
 }
@@ -107,93 +107,80 @@ footer {
 .op.post.highlighted {
     background-color: #546471;
 }
-.thread {
-    border-top: 3px solid #49687d;
-    border-image: url('/static/img/heon.png') 3;
-    margin: 5px;
-    padding: 10px 2px;
-}
-.reply-title {
-    color: #28344a;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-hr {
-    border: none;
-}
-table {
-    border-style: none;
-}
-table td {
-    border-style: none;
-}
-#delete-container {
-    text-align: right;
-    border-top: 3px solid #ffffff;
-    border-image: url('/static/img/heon.png') 3;
-    margin: 5px;
-    padding: 10px 2px;
-}
-pre {
-    background-color: #2c2c2c;
-    padding: 10px;
-}
-.board-category {
-    font-weight: bold;
-    background: none repeat scroll 0 0 #546471;
-}
-#news-title {
-    font-weight: bold;
-    background: #546471;
+.popup-post {
+    border: 1px solid #808080;
 }
 .popup-message {
     background-color: #546471;
     color: white;
-    margin-top: 20px!important;
+    margin-top: 15px !important;
 }
-.quick-post-form {
-    padding: 3px;
+.reply-title {
+  color: #28344a;
+  font-size: 13pt;
+  font-weight: bold;
 }
-.hist-msg {
-    background-color: #546471;
-    margin: 3px;
-    padding: 5px;
+.reflink {
+  font-size: 85%;
+  font-weight: bold;
 }
-.admin-navbar {
-    background-color: #546471;
-    padding: 3px;
-    margin-bottom: 10px;
+.index-number {
+  font: bold 11px tahoma !important;
+  color: #4F7942;
 }
-.show-plain-form {
-    margin-bottom: 10px;
+.file-info, .file-name {
+  font-size: 8pt;
 }
-.expand-post {
-    color: white;
+.reply.post .dropdown-menu li ul {
+  background-color: #546471;
+  padding: 2px;
 }
-.quote {
-    color: #81b1ff;
+.op.post .dropdown-menu li ul {
+  background: #6e7c87;
+  padding: 2px;
 }
-.symbol-counter {
-    color: #81b1ff;
+#delete-container {
+  text-align: right;
+  border-top: 3px solid #6e7c87;
+  border-image: url('/static/img/heon.png') 3;
+  padding: 10px 0px;
 }
-#main-image {
-    opacity: 0.4;
+.pagination {
+  background: #546471;
+  padding: 3px;
 }
-.spoiler {
-    color: #212121;
-    background-color: #212121;
+.pagination .next {
+  border-left: 1px solid white;
+  padding-left: 5px;
 }
-.op.post .spoiler {
-    color: #212121;
-    background-color: #212121;
+.pagination .previous {
+  border-right: 1px solid white;
+  padding-right: 5px;
 }
-.spoiler:hover {
-    color: #48b0fd;
-    background-color: #212121;
+footer {
+  font-size: 12px;
+  text-align: center;
 }
-.spoiler a:hover {
-    color: #48b0fd;
+
+/* settings page */
+
+#message {
+  font-size: 2em;
+  border: none !important;
 }
-.dropdown-menu ul li {
-    background-color: #546471;
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2{
+  color: #c8cdd5;
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+h2 .fa, h2 a {
+  color: #c8cdd5;
+}
+#main-title h1 {
+  color: white;
+  font-size: 22pt;
 }

@@ -9,7 +9,7 @@
 #board-list-full .title {
     background: #ffccaa;
     font-size: 15px;
-    margin-left: -2px;
+    margin-left: -2px !important;
 }
 #board-list-full .board-category {
     display: none;
@@ -28,7 +28,7 @@
     background: #880000;
 }
 .news > .title {
-    text-align: left;
+    text-align: left !important;
 }
 
 /* board */
@@ -38,10 +38,10 @@ html, body {
     color: #880000;
     font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
-a {
+a, .fa {
     color: #880000;
 }
-a:hover {
+a:hover, .fa:hover {
     color: #ee0000;
 }
 pre {
@@ -51,7 +51,7 @@ pre {
 header {
     background: #ffffee url('/static/img/yotsuba.png') top center repeat-x;
     padding: 1px 0;
-    border: none;
+    border: none !important;
 }
 .banner {
     margin-top: 10px;
@@ -61,6 +61,12 @@ header {
     font-size: 28px;
     font-weight: bold;
     letter-spacing: -2px;
+}
+#board-header .fa {
+    color: #af0a0f;
+}
+#board-header .fa:hover {
+    color: #ee0000;
 }
 #board-summary, #board-subtitle {
     display: none;
@@ -72,7 +78,7 @@ textarea, input, select {
     font-size: 10pt;
 }
 #show-plain-form {
-    margin: 4px 0 10px 0;
+    margin: 4px 0px 10px 0px;
 }
 .reply.post, .feed .post {
     background: #f0e0d6;
@@ -108,7 +114,11 @@ textarea, input, select {
 .poster-name {
     color: #117743;
 }
-.file-name {
+.index-number {
+  font: bold 11px tahoma !important;
+  color: #4F7942;
+}
+.file-name, .file-info {
     font-size: 9px;
 }
 .thread {
@@ -142,35 +152,30 @@ footer {
     border-style: solid solid none none;
     border-color: #d9bfb7;
 }
-a.next {
+.pagination .next {
     border-left: 1px solid #d9bfb7;
     padding-left: 5px;
 }
-a.previous {
+.pagination .previous {
     border-right: 1px solid #d9bfb7;
     padding-right: 5px;
 }
-.quote {
-    color: #789922;
+.quote, .symbol-counter {
+    color: #789922 !important;
 }
-.symbol-counter {
-    color: #789922;
-}
-.spoiler {
+.spoiler, .spoiler a {
     color: #000000;
     background: #000000;
 }
-.spoiler:hover {
+.spoiler:hover, .spoiler a:hover {
     color: #ffffff;
     background: #000000;
 }
-.spoiler a {
-    color: #000000;
+.op.post .dropdown-menu li ul {
+    background: #ffffee;
+    padding: 2px;
 }
-.spoiler a:hover {
-    color: #ffffff;
-}
-.dropdown-menu li ul {
+.reply.post .dropdown-menu li ul {
     background: #f0e0d6;
     padding: 2px;
 }
@@ -194,6 +199,9 @@ h1, h2 {
     color: #af0a0f;
     margin: 10px 0 !important;
 }
-h2 .fa {
+h2 .fa, h2 a {
     color: #af0a0f;
+}
+h2 fa:hover, h2 a:hover {
+    color: #ee0000;
 }

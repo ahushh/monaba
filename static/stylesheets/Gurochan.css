@@ -64,6 +64,9 @@ header {
   padding: 1px 0px;
   border: none !important;
 }
+.banner {
+  margin-top: 15px !important;
+}
 #board-header, #board-header .fa {
   color: #ad0a0f;
 }

@@ -1359,7 +1359,7 @@ function addYoutubeVideoPlayer(post) {
         if (first) {
             var d = document.createElement("div");
             d.className = "video-container";
-            msg.insertBefore(d, msg.firstChild);
+            msg.parentNode.insertBefore(d, msg);
             first = false;
             first1 = true;
         }
@@ -1415,7 +1415,7 @@ function addVimeoVideoPlayer(post) {
         if (first) {
             var d = document.createElement("div");
             d.className = "video-container";
-            msg.insertBefore(d, msg.firstChild);
+            msg.parentNode.insertBefore(d, msg);
             first = false;
             first1 = true;
         }
@@ -1458,7 +1458,7 @@ function addCoubVideoPlayer(post) {
         if (first) {
             var d = document.createElement("div");
             d.className = "video-container";
-            msg.insertBefore(d, msg.firstChild);
+            msg.parentNode.insertBefore(d, msg);
             first = false;
             first1 = true;
         }

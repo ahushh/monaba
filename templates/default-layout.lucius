@@ -492,3 +492,7 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .popup-post .drag-button {
     float: right;
 }
+.video-container {
+    display: inline-block;
+}
+

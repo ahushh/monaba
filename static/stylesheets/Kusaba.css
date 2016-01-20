@@ -65,7 +65,7 @@ header {
     padding-right: 5px;
 }
 .banner {
-    padding-top: 20px;
+  margin-top: 15px !important;
 }
 .plain-post-form {
     background: #daf0d6;

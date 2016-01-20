@@ -46,7 +46,7 @@ header a, header .fa {
     color: #020902;
 }
 .banner {
-    margin-top: 10px;
+    margin-top: 15px !important;
 }
 #board-header {
     font-family: FixedSys;

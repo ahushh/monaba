@@ -482,6 +482,8 @@ PopupMessageDisplayTime: popup_message_display_time
 PopupPostDelayBeforeDisplaying: popup_post_delay_before_displaying
 PopupPostRemovingOnMouseOut: popup_post_removing_on_mouse_out
 PpopupPostDelayBeforeRemoving: popup_post_delay_before_removing
+VideoRememberVolume: video_remember_volume
+VideoDefaultVolume: video_default_volume
 VideoAutoplay: video_autoplay
 VideoLoop: video_loop
 VideoScaleWidth: video_scale_width
@@ -495,8 +497,8 @@ UrlVideoWidth: url_video_width
 UrlVideoHeight: url_video_height
 FlashWidth: flash_width
 FlashHeight: flash_height
-iframelyAPIKey: iframely_API_key
-youtubeAPIKey: youtube_API_key
+IframelyAPIKey: iframely_API_key
+YoutubeAPIKey: youtube_API_key
 CssWidePosts: css_wide_posts
 CssSideMargin: css_side_margin
 CssHideFilesNames: css_hide_files_names

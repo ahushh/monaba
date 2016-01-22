@@ -80,6 +80,8 @@ data AppSettings = AppSettings
     , appJsPopupPostDelayBeforeDisplaying :: Int
     , appJsPopupPostRemovingOnMouseOut :: Bool
     , appJsPopupPostDelayBeforeRemoving :: Int
+    , appJsVideoRememberVolume :: Bool
+    , appJsVideoDefaultVolume :: Int
     , appJsVideoAutoplay :: Bool
     , appJsVideoLoop :: Bool
     , appJsVideoScaleWidth :: Int
@@ -156,6 +158,8 @@ instance FromJSON AppSettings where
         appJsPopupPostDelayBeforeDisplaying <- o .: "jsPopupPostDelayBeforeDisplaying"
         appJsPopupPostRemovingOnMouseOut <- o .: "jsPopupPostRemovingOnMouseOut"
         appJsPopupPostDelayBeforeRemoving <- o .: "jsPopupPostDelayBeforeRemoving"
+        appJsVideoRememberVolume  <- o .: "jsVideoRememberVolume"
+        appJsVideoDefaultVolume  <- o .: "jsVideoDefaultVolume"
         appJsVideoAutoplay <- o .: "jsVideoAutoplay"
         appJsVideoLoop <- o .: "jsVideoLoop"
         appJsVideoScaleWidth <- o .: "jsVideoScaleWidth"

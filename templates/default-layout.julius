@@ -416,7 +416,6 @@ function initManagementLinks(parent) {
     Array.prototype.forEach.call(links, function(link) {
         if (!link.href) return;
         link.onclick = function(event){
-            console.log("GOVNO");
             event.preventDefault();
             httpRequest({
                 action: link.href,
@@ -1573,7 +1572,6 @@ function expandImage(post) {
 //-----------------------------------------------------------------
 function popupMessage(text, delay, loadingIcon, close) {
     if (text == Monaba.lastPopup.message && close) {
-        console.log(text);
         Monaba.lastPopup.count++;
         Monaba.lastPopup.container.innerHTML = text + ' x' + Monaba.lastPopup.count + ' ';
         return;

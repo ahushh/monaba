@@ -70,6 +70,8 @@ jsUrlVideoWidth:                  360
 jsUrlVideoHeight:                 270
 jsFlashHeight:                    400
 jsFlashWidth:                     400
+jsIframelyAPIKey:                 "a24983cf9554abfbd77bd2"
+jsYoutubeAPIKey:                  "AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw"
 jsCssWidePosts:                   true
 jsCssSideMargin:                  0
 jsCssHideFilesNames:              false

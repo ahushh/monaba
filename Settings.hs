@@ -93,6 +93,8 @@ data AppSettings = AppSettings
     , appJsUrlVideoHeight :: Int
     , appJsFlashHeight :: Int
     , appJsFlashWidth :: Int
+    , appJsIframelyAPIKey :: Text
+    , appJsYoutubeAPIKey :: Text
     , appJsCssWidePosts :: Bool
     , appJsCssSideMargin :: Int
     , appJsCssHideFilesNames :: Bool
@@ -167,6 +169,8 @@ instance FromJSON AppSettings where
         appJsUrlVideoHeight <- o .: "jsUrlVideoHeight"
         appJsFlashHeight <- o .: "jsFlashHeight"
         appJsFlashWidth <- o .: "jsFlashWidth"
+        appJsIframelyAPIKey         <- o .: "jsIframelyAPIKey"
+        appJsYoutubeAPIKey          <- o .: "jsYoutubeAPIKey"
         appJsCssWidePosts <- o .: "jsCssWidePosts"
         appJsCssSideMargin <- o .: "jsCssSideMargin"
         appJsCssHideFilesNames <- o .: "jsCssHideFilesNames"

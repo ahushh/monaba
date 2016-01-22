@@ -15,8 +15,6 @@ var Monaba = {
     refMap: {},
     postCache: {},
     removePopupPostTimer: {},
-    iframelyAPIKey: 'a24983cf9554abfbd77bd2',
-    youtubeAPIKey: 'AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw',
     lastPopup: {
         container: '',
         count: 0,
@@ -305,6 +303,8 @@ function loadConfig() {
     setConfigIfNull("url_video_height", #{toJSON $ appJsUrlVideoHeight settings});
     setConfigIfNull("flash_height", #{toJSON $ appJsFlashHeight settings});
     setConfigIfNull("flash_width", #{toJSON $ appJsFlashWidth settings});
+    setConfigIfNull("iframely_API_key", #{toJSON $ appJsIframelyAPIKey settings});
+    setConfigIfNull("youtube_API_key", #{toJSON $ appJsYoutubeAPIKey settings});
     setConfigIfNull("css_wide_posts", #{toJSON $ appJsCssWidePosts settings});
     setConfigIfNull("css_side_margin", #{toJSON $ appJsCssSideMargin settings});
     setConfigIfNull("css_hide_files_names", #{toJSON $ appJsCssHideFilesNames settings});
@@ -337,6 +337,8 @@ function resetConfig() {
     setConfig("url_video_height", #{toJSON $ appJsUrlVideoHeight settings});
     setConfig("flash_height", #{toJSON $ appJsFlashHeight settings});
     setConfig("flash_width", #{toJSON $ appJsFlashWidth settings});
+    setConfig("iframely_API_key", #{toJSON $ appJsIframelyAPIKey settings});
+    setConfig("youtube_API_key", #{toJSON $ appJsYoutubeAPIKey settings});
     setConfig("css_wide_posts", #{toJSON $ appJsCssWidePosts settings});
     setConfig("css_side_margin", #{toJSON $ appJsCssSideMargin settings});
     setConfig("css_hide_files_names", #{toJSON $ appJsCssHideFilesNames settings});
@@ -1366,7 +1368,7 @@ function addYoutubeVideoPlayer(post) {
 
         if (getConfig("youtube_load_titles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
             var request = new XMLHttpRequest({mozSystem: true});
-            request.open("GET","https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key="+Monaba.youtubeAPIKey+"&part=snippet,contentDetails,statistics,status",true);
+            request.open("GET","https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key="+getConfig('youtube_API_key')+"&part=snippet,contentDetails,statistics,status",true);
             request.onload = function() {
                 var data = JSON.parse(request.responseText);
                 addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.items[0].snippet.thumbnails.high.width,
@@ -1464,7 +1466,7 @@ function addCoubVideoPlayer(post) {
         }
 
         var request = new XMLHttpRequest({mozSystem: true});
-        request.open("GET","//iframe.ly/api/oembed?url="+url+"&api_key="+Monaba.iframelyAPIKey, true);
+        request.open("GET","//iframe.ly/api/oembed?url="+url+"&api_key="+ getConfig('iframely_API_key'), true);
         request.onload = function() {
             var data = JSON.parse(request.responseText);
             addUrlVideoPlayer({ width:  getConfig("url_video_width"),

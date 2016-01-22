@@ -52,6 +52,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["number"  , "url_video_height"                  , #{toJSON $ msgrender MsgUrlVideoHeight}],
                 ["number"  , "flash_width"                       , #{toJSON $ msgrender MsgFlashWidth}],
                 ["number"  , "flash_height"                      , #{toJSON $ msgrender MsgFlashHeight}],
+                ["text"    , "iframely_API_key"                  , #{toJSON $ msgrender MsgIframelyAPIKey}],
+                ["text"    , "youtube_API_key"                   , #{toJSON $ msgrender MsgYoutubeAPIKey}],
                 ["checkbox", "css_wide_posts"                    , #{toJSON $ msgrender MsgCssWidePosts}],
                 ["number"  , "css_side_margin"                   , #{toJSON $ msgrender MsgCssSideMargin}],
                 ["checkbox", "css_hide_files_names"              , #{toJSON $ msgrender MsgCssHideFilesNames}],

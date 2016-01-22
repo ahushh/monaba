@@ -57,6 +57,8 @@ jsPopupMessageDisplayTime:        2000
 jsPopupPostDelayBeforeDisplaying: 500
 jsPopupPostRemovingOnMouseOut:    false
 jsPopupPostDelayBeforeRemoving:   500
+jsVideoRememberVolume:            true
+jsVideoDefaultVolume:             1
 jsVideoAutoplay:                  true
 jsVideoLoop:                      true
 jsVideoScaleWidth:                0

@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["number"  , "popup_post_delay_before_displaying", #{toJSON $ msgrender MsgPopupPostDelayBeforeDisplaying}],
                 ["checkbox", "popup_post_removing_on_mouse_out"  , #{toJSON $ msgrender MsgPopupPostRemovingOnMouseOut}],
                 ["number"  , "popup_post_delay_before_removing"  , #{toJSON $ msgrender MsgPpopupPostDelayBeforeRemoving}],
+                ["checkbox", "video_remember_volume"             , #{toJSON $ msgrender MsgVideoRememberVolume}],
+                ["double"  , "video_default_volume"              , #{toJSON $ msgrender MsgVideoDefaultVolume}],
                 ["checkbox", "video_autoplay"                    , #{toJSON $ msgrender MsgVideoAutoplay}],
                 ["checkbox", "video_loop"                        , #{toJSON $ msgrender MsgVideoLoop}],
                 ["number"  , "video_scale_width"                 , #{toJSON $ msgrender MsgVideoScaleWidth}],
@@ -72,7 +74,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
         td1.innerHTML = x[2];
         var e = function() { setItem(opt, type == "checkbox" ? this.checked : this.value) };
         input.oninput = e; input.onchange = e;
-        input.type = type;
+        if (type != "double")
+            input.type = type;
+        else {
+            input.type = "number";
+            input.step = "0.01";
+        }
         if (type == "checkbox")
             input.checked = getItem(opt);
         else

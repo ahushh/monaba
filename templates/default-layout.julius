@@ -290,6 +290,8 @@ function loadConfig() {
     setConfigIfNull("popup_post_delay_before_displaying", #{toJSON $ appJsPopupPostDelayBeforeDisplaying settings});
     setConfigIfNull("popup_post_removing_on_mouse_out", #{toJSON $ appJsPopupPostRemovingOnMouseOut settings});
     setConfigIfNull("popup_post_delay_before_removing", #{toJSON $ appJsPopupPostDelayBeforeRemoving settings});
+    setConfigIfNull("video_remember_volume", #{toJSON $ appJsVideoRememberVolume settings});
+    setConfigIfNull("video_default_volume", #{toJSON $ appJsVideoDefaultVolume settings});
     setConfigIfNull("video_autoplay", #{toJSON $ appJsVideoAutoplay settings});
     setConfigIfNull("video_loop", #{toJSON $ appJsVideoLoop settings});
     setConfigIfNull("video_scale_width", #{toJSON $ appJsVideoScaleWidth settings});
@@ -324,6 +326,8 @@ function resetConfig() {
     setConfig("popup_post_delay_before_displaying", #{toJSON $ appJsPopupPostDelayBeforeDisplaying settings});
     setConfig("popup_post_removing_on_mouse_out", #{toJSON $ appJsPopupPostRemovingOnMouseOut settings});
     setConfig("popup_post_delay_before_removing", #{toJSON $ appJsPopupPostDelayBeforeRemoving settings});
+    setConfig("video_remember_volume", #{toJSON $ appJsVideoRememberVolume settings});
+    setConfig("video_default_volume", #{toJSON $ appJsVideoDefaultVolume settings});
     setConfig("video_autoplay", #{toJSON $ appJsVideoAutoplay settings});
     setConfig("video_loop", #{toJSON $ appJsVideoLoop settings});
     setConfig("video_scale_width", #{toJSON $ appJsVideoScaleWidth settings});
@@ -1196,7 +1200,11 @@ function addVideoPlayer(post) {
     Array.prototype.forEach.call(thumbs, function(thumb) {
         thumb.onclick = function(){
             var video = document.createElement("video");
+            video.volume = getConfig('video_default_volume');
+            video.onloadeddata = function(){ video.volume = getConfig('video_default_volume'); };
             video.controls = true;
+            if (getConfig('video_remember_volume'))
+                video.onvolumechange = function() { setConfig('video_default_volume', video.volume) };
             if (getConfig("video_autoplay"))
                 video.autoplay = 'autoplay';
             if (getConfig("video_loop"))
@@ -1258,7 +1266,6 @@ function addVideoPlayer(post) {
 
                 wrap.appendChild(div);
                 wrap.appendChild(video);
-
                 document.body.appendChild(wrap);
             }
         };

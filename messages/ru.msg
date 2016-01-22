@@ -497,6 +497,8 @@ UrlVideoWidth: Ширина плеера для видео из ссылок
 UrlVideoHeight: Высота плеера для видео из ссылок
 FlashWidth: Ширина развернутых флеш-файлов
 FlashHeight: Высота развернутых флеш-файлов
+iframelyAPIKey: iframely API key
+youtubeAPIKey: youtube API key
 CssWidePosts: Растягивать посты по ширине
 CssSideMargin: Отступ по бокам страницы в %, 0 - стандартный отступ
 CssHideFilesNames: Скрывать имена файлов

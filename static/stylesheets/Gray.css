@@ -29,11 +29,11 @@ html, body {
   font-family: Calibri;
   font-size: 11pt;
 }
-#board-list-full, #latest-news, .reply.post, .popup-post, .popup-message, header, footer, .pagination, table, .dropdown-menu li ul {
+#board-list-full, #latest-news, .reply.post, .feed .op.post, .popup-post, .popup-message, header, footer, .pagination, table, .dropdown-menu li ul {
   background: black url('https://i.imgur.com/EUiVzMr.jpg') no-repeat fixed center;
   background-size: cover;
 }
-#board-list-full, #latest-news, hr, img, .reply.post, .popup-post, .popup-message, header, footer, .pagination, table {
+#board-list-full, #latest-news, hr, img, .reply.post, .feed .op.post, .popup-post, .popup-message, header, footer, .pagination, table {
   box-shadow: 0px 0px 4px rgb(0,0,0);
 }
 
@@ -94,7 +94,7 @@ header {
 .thread {
   padding: 5px 0px;
 }
-.reply.post, .popup-post {
+.reply.post, .feed .op.post, .popup-post {
   margin: 5px;
   padding: 5px;
   border: 1px solid black;

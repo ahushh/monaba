@@ -13,6 +13,12 @@ textarea, input, select {
   border-radius: 5px;
   margin: 1px;
 }
+.attachment-thumb img:hover, .attachment-thumb video:hover, select:hover, textarea:hover, input[type = "text"]:hover, input[type = "password"]:hover {
+	border: 1px solid #5B5347;
+}
+select:focus, textarea:focus, input[type = "text"]:focus, input[type = "password"]:focus {
+	box-shadow: 0 0 4px rgba(155, 129, 101, 0.7);
+}
 input[type="submit"] {
   background-color: #333333 !important;
   background: linear-gradient(to top, #4A4A4A, #292929, #4A4A4A);
@@ -87,7 +93,7 @@ header {
   padding: 3px 0px;
 }
 .banner {
-  margin-top: 10px !important;
+  margin-top: 15px !important;
 }
 #board-header, #board-summary, #board-subtitle {
   color: #ECCA74;
@@ -102,6 +108,12 @@ header {
   border-radius: 5px;
   margin: 5px;
   padding: 5px;
+}
+.popup-message {
+  background: #292825 url('https://i.imgur.com/F2AZvqs.jpg');
+  border: 1px solid #34352D;
+  border-radius: 5px;
+  margin-top: 15px !important;
 }
 .reply.post.highlighted, .feed .post.highlighted {
   box-shadow:#FCE236 0px 0px 5px;

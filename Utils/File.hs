@@ -164,7 +164,7 @@ type ImageResolution = (Int, Int)
 getImageResolution :: FilePath -> IO ImageResolution
 getImageResolution filepath = withMagickWandGenesis $ do
   (_,w) <- magickWand
-  readImage w (fromText $ pack filepath)
+  readImage w (pack filepath)
   width  <- getImageWidth w
   height <- getImageHeight w
   return (width, height)
@@ -197,7 +197,7 @@ resizeImage :: FilePath           -- ^ Source image file
             -> IO ImageResolution -- ^ The size of the output file
 resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
   (_,w) <- magickWand
-  readImage w (fromText $ pack from)
+  readImage w (pack from)
   width  <- getImageWidth w
   height <- getImageHeight w
   let inSz                    = (width, height)
@@ -215,12 +215,12 @@ resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
         addImage w1 image
       resetIterator w1
       release pointer
-      writeImages w1 (fromText $ pack to) True
+      writeImages w1 (pack to) True
       return outSz
     else do
       IM.resizeImage w width' height' lanczosFilter 1
       setImageCompressionQuality w 95
-      writeImages w (fromText $ pack to) True
+      writeImages w (pack to) True
       release pointer
       return outSz
 

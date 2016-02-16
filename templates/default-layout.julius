@@ -1821,6 +1821,14 @@ function closePopupPost(post) {
 //-----------------------------------------------------------------
 // threads
 //-----------------------------------------------------------------
+function addPostCounter(post, n) {
+    var reflink = post.getElementsByClassName("reflink")[0];
+    var index = document.createElement('span');
+    index.className = 'index-number';
+    index.innerHTML = " "+n;
+    insertAfter(index, reflink);
+}
+
 function refreshThread(board, threadLocalId, nopopup, updateTitle) {
     var allPosts = document.querySelectorAll("#thread-"+threadLocalId+"-"+board+" .reply.post");
     var lastPost = allPosts[ allPosts.length - 1 ];
@@ -1845,8 +1853,10 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
                 var posts = parseDOMElements(data);
                 var n = posts.length;
                 var thr   = document.getElementById("thread-"+threadLocalId+"-"+board);
+                var lastIndex = lastPost.getElementsByClassName("index-number")[0].innerHTML;
                 for (var i = 0; i < posts.length; i++) {
                     initOnePost(posts[i]);
+                    addPostCounter(posts[i], +lastIndex+i+1);
                     thr.appendChild(posts[i]);
                 }
                 makeRefmap();

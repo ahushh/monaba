@@ -1,0 +1,156 @@
+/* global */
+
+html, body {
+  background: #212121;
+	color: #698CC0;
+	font-family: "Trebuchet MS", Trebuchet, tahoma, serif;
+  font-size: 11pt;
+}
+a, .fa {
+	color: #C9BE89;
+}
+a:hover, .fa:hover, .spoiler a:hover, #board-header .fa:hover {
+	color: #EEFEBB;
+}
+pre {
+	background: #1C1C1C;
+	color: #CCCCCC;
+	padding: 10px;
+}
+
+/* home */
+
+#board-list-full, #latest-news {
+	background: #2C2C2C;
+	border: solid 1px #575757;
+	border-radius: 5px;
+}
+#board-list-full .board-category {
+	display: none;
+}
+#latest-news > .title {
+	font-weight: bold;
+}
+.news > .title {
+	text-align: left !important;
+}
+hr {
+	height: 1px;
+	background: #575757;
+	border: none;
+}
+
+/* borda */
+
+header {
+	background: #101010;
+	color: #C9BE89;
+}
+.banner {
+	margin-top: 10px !important;
+}
+#board-header, #board-header .fa {
+	color: #FFAB3F;
+	font-weight: bold;
+}
+#board-summary, #board-subtitle {
+	display: none;
+}
+textarea, input, select {
+	background: #111111;
+	color: #CCCCCC;
+	border: 2px solid #545454;
+	border-radius: 5px;
+	margin: 1px;
+}
+.spoiler, .spoiler a {
+	background:#575757;
+	color:#575757
+}
+.spoiler:hover {
+	color: #48B0FD;
+}
+.quote, .symbol-counter {
+	color: #789922 !important;
+}
+.thread {
+	padding: 5px 0px;
+}
+.reply.post, .feed .post, .popup-post {
+	background: #2C2C2C;
+	border: solid 1px #575757;
+	border-radius: 5px;
+	margin: 3px;
+	padding: 5px;
+}
+.reply.post.highlighted, .feed .post.highlighted {
+	background: #1C1C1C;
+	border: 1px solid #474747;
+}
+.popup-message {
+	background: #2C2C2C;
+	border: solid 1px #575757;
+	border-radius: 5px;
+	margin-top: 10px !important;
+}
+.reply-title {
+	color: #3941AC;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+.poster-name {
+	color: #B4B9CD;
+}
+.reflink {
+	font-weight: bold;
+	font-size: 10.5pt;
+}
+.index-number {
+  font-size: 10.5pt !important;
+	font-weight: bold;
+	color: #4F7942;
+}
+.file-info, .file-name {
+	font-size: 8pt;
+}
+.reply.post .dropdown-menu li ul {
+	background: #2C2C2C;
+	padding: 3px;
+}
+.op.post .dropdown-menu li ul {
+	background: #212121;
+	padding: 3px;
+}
+.quick-post-form {
+	padding: 2px;
+}
+#delete-container {
+	text-align: right;
+}
+.pagination {
+	background: #101010;
+	padding: 3px;
+	border-radius: 0px 5px 0px 0px;
+}
+footer {
+	text-align: center;
+	font-size: 9pt;
+}
+
+/* settings */
+
+#message {
+	font-size: 20pt;
+}
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2{
+  color: #FFAB3F;
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+h2 .fa, h2 a {
+  color: #FFAB3F;
+}

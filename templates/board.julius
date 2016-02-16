@@ -20,7 +20,7 @@ function expandThread(board, threadLocalId) {
     var tta     = thread.getElementsByClassName("truncate-thread-after")[0];
     delete Monaba['expThreads'][threadLocalId];
     var newReplies = [];
-    var origReplies = thread.getElementsByClassName(".reply.post");
+    var origReplies = thread.getElementsByClassName("reply");
     for (var i = 0; i < origReplies.length; i++)
         newReplies.push( origReplies[i] );
     Monaba['expThreads'][threadLocalId] = newReplies;
@@ -66,7 +66,7 @@ function truncateThread(threadLocalId,board,scrollToThreadBottom) {
     var tt      = thread.getElementsByClassName("truncate-thread")[0];
     var tta     = thread.getElementsByClassName("truncate-thread-after")[0];
     var oldReplies  = Monaba['expThreads'][threadLocalId];
-    var origReplies = thread.getElementsByClassName(".reply.post");
+    var origReplies = thread.getElementsByClassName("reply");
     delete Monaba['expThreads'][threadLocalId];
     toggleInline(omitted);
     while (origReplies.length)

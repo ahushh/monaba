@@ -40,6 +40,10 @@ a, .fa {
   color: #FFD97A;
   transition: 0.3s;
 }
+pre {
+  background: #211F1A;
+  padding: 10px;
+}
 a:hover, .fa:hover, .spoiler:hover a {
   color:#FCE236 !important;
 	text-shadow:#FCE236 0px 0px 10px;

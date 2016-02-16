@@ -78,6 +78,12 @@
           <ul>
             <li> item 1
             <li> item 2
+      <tr>
+        <td>[dice]10d100[/dice]
+        <td>&nbsp;→&nbsp;
+        <td>
+          <span class="dice-roll">
+            <img width="24" src="/static/img/roll.svg">42 96 91 1 99 49 69 62 63 61 (10d100)
     <hr>
 
     <p style=text-align:center><strong>_{MsgProofLabels}</strong>

@@ -8,11 +8,13 @@ module Utils.YobaMarkup
 
 import           Import
 import           System.Process
+import           System.Random
 import           Text.HTML.TagSoup  (escapeHTML)
 import           Text.Parsec hiding (newline)
 import           Text.Parsec.Text
 import           Text.Shakespeare.Text
-import qualified Data.Text     as T (concat, append)
+import qualified Data.Text     as T (concat, append, intercalate)
+import           Control.Monad (replicateM)
 -------------------------------------------------------------------------------------------------------------------
 type CodeLang = Text
 data Expr = Bold          [Expr] -- [b]bold[/b]
@@ -29,6 +31,7 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | ExternalProofLabel Text Int -- ##/b/1717
           | ProofLabelOP         -- ##OP
           | Color  Text   [Expr] -- [color=red]blah-blah[/color]
+          | Dice  Int Int Int    -- [dice]2d100+5[/dice]
           | GroupProof           -- #group
           | UserProof            -- #user
           | Link          Text   -- http://rossia3.ru
@@ -138,6 +141,17 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     quoteHandler     acc x = (\g -> acc <> "<span class=quote>>" <> g <>"</span><br>") <$> foldM f "" x
     listHandler      acc x = (\g -> acc <> "<ul>"     <> g <> "</ul>"    ) <$> T.concat <$> (mapM ((li <$>) . foldM f "") x)
     ----------------------------------------------------------------------------------------------------------
+    diceHandler acc n m mo = do
+      numbers <- liftIO ( map (+mo) <$> (replicateM n $ randomRIO (1,m)) )
+      return $ acc <> "<span class='dice-roll'><img width='24' src='/static/img/roll.svg'>"
+                   <> (T.intercalate ", " $ map tshow $ numbers)
+                   <> (if length numbers > 1 then " = " <> tshow (sum numbers) else "")
+                   <> " (" <> tshow n <> "d" <> tshow m <> yoba mo
+                   <> ")</span>"
+      where yoba x | x == 0     = ""
+                   | x > 0     = "+" <> tshow x
+                   | otherwise = tshow x
+    ----------------------------------------------------------------------------------------------------------
     colorHandler acc color' msg = do
       muser  <- maybeAuth
       mgroup <- getMaybeGroup muser
@@ -164,6 +178,7 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     f acc (Code  lang code') = T.append acc <$> liftIO (codeHighlight lang code')
     f acc (Plain          x) = return $ T.append acc $ escapeHTML x
     f acc (Color color' msg) = colorHandler      acc color' msg
+    f acc (Dice  n   m   mo) = diceHandler       acc n m mo
     f acc (Bold           x) = boldHandler       acc x
     f acc (Italic         x) = italicHandler     acc x
     f acc (Underline      x) = underlineHandler  acc x
@@ -275,6 +290,19 @@ code = do
   void $ optional $ try newline'
   return $ Code (escapeHTML $ pack lang) (pack content)
 
+dice :: Parsec Text () Expr
+dice = do
+  void $ string "[dice]"
+  n <- nat
+  void $ oneOf "dд"
+  m <- nat
+  mo <- option 0 (do{ sign <- do{ char '-'; return negate } <|> do{ char '+'; return id }
+                   ; mo'  <- many1 digit
+                   ; return $ sign $ read mo'
+                   })
+  void $ string "[/dice]"
+  return $ Dice (read n) (read m) mo
+
 color :: Parsec Text () Expr
 color = do
   void $ string "[color="
@@ -299,6 +327,7 @@ tryTags = try bold
       <|> try spoiler
       <|> try code
       <|> try color
+      <|> try dice
 --------------------------------------------------------------
 -- Wakaba-like tags
 --------------------------------------------------------------
@@ -317,6 +346,11 @@ tryWakabaTags = try spoilerwakaba
 --------------------------------------------------------------
 -- Other
 --------------------------------------------------------------
+nat = do
+  n0 <- oneOf "123456789"
+  n  <- many digit
+  return $ n0:n
+  
 newline' :: forall s u (m :: * -> *). Stream s m Char => ParsecT s u m String
 newline' = try (string "\n\r")
        <|> try (string "\r\n")
@@ -407,6 +441,7 @@ onelineExpr = try bold
           <|> try strike
           <|> try spoiler
           <|> try color
+          <|> try dice
           <|> tryWakabaTags
           <|> try namedLink
           <|> try link

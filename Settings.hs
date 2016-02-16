@@ -70,6 +70,7 @@ data AppSettings = AppSettings
     , appAnimatedThumbs      :: Bool
     , appRandomBanners       :: Bool
     , appRestartCmd          :: Text
+    , appJsDesktopNotification :: Bool
     , appJsPostsAutoloadInterval :: Int
     , appJsMathjax :: Bool
     , appJsEventsource :: Bool
@@ -148,6 +149,7 @@ instance FromJSON AppSettings where
         appRandomBanners          <- o .: "randomBanners"
         appRestartCmd             <- o .: "restartCmd"
 
+        appJsDesktopNotification <- o .: "jsDesktopNotification"
         appJsPostsAutoloadInterval <- o .: "jsPostsAutoloadInterval"
         appJsMathjax <- o .: "jsMathjax"
         appJsEventsource <- o .: "jsEventsource"

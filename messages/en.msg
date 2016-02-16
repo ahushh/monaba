@@ -312,6 +312,7 @@ SupportedLanguages: Supported languages for tag [code=<language>]
 Online: Online
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
+NewPosts: new posts!
 
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!
@@ -472,6 +473,7 @@ MoveElement: Move
 ######################################################################################
 ## JS Settings
 ######################################################################################
+DesktopNotification: desktop_notification
 BoardStatsUpdate: board_stats_update
 Eventsource: eventsource
 ExpandFilesInPost: expand_files_in_post

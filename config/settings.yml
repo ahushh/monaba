@@ -47,6 +47,7 @@ randomBanners:     false # true - show banners from differents boards, false - s
 restartCmd:        "systemctl --user restart monaba"
 
 # default JS settings
+jsDesktopNotification:            true
 jsPostsAutoloadInterval:          30000
 jsMathjax:                        true
 jsEventsource:                    true

@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     tbody.appendChild(tr);
 
     var opts = [
+                ["checkbox", "desktop_notification"              , #{toJSON $ msgrender MsgDesktopNotification}],
                 ["number"  , "board_stats_update"                , #{toJSON $ msgrender MsgBoardStatsUpdate}],
                 ["checkbox", "eventsource"                       , #{toJSON $ msgrender MsgEventsource}],
                 ["checkbox", "expand_files_in_post"              , #{toJSON $ msgrender MsgExpandFilesInPost}],

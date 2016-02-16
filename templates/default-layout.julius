@@ -111,10 +111,41 @@ applyCSSSettings();
 })();
 
 //-----------------------------------------------------------------
+// Desktop notifications
+// http://stackoverflow.com/questions/2271156/chrome-desktop-notification-example
+//-----------------------------------------------------------------
+function notifyMe(title, body, url) {
+    if (!Notification) {
+        alert('Desktop notifications not available in your browser. Try Chromium.'); 
+        return;
+    }
+    if (Notification.permission !== "granted")
+        Notification.requestPermission();
+    else {
+        var hidden = getHidden();
+        if (!document[hidden]) return;
+        var notification = new Notification(title, {
+//            icon: "@{FaviconR}",
+            body: body,
+        });
+        if (url) 
+            notification.onclick = function () {
+                window.open(url);      
+            };
+    }
+}
+//-----------------------------------------------------------------
 function isEventSourceSupported() {
     return getConfig("eventsource") && typeof(EventSource) !== "undefined";
 }
 document.addEventListener("DOMContentLoaded", function(event) {
+    //-----------------------------------------------------------------
+    // Desktop notification
+    //-----------------------------------------------------------------
+    if (getConfig('desktop_notification')) {
+        if (Notification.permission !== "granted")
+            Notification.requestPermission();
+    }
     //-----------------------------------------------------------------
     // EventSource
     //-----------------------------------------------------------------
@@ -277,9 +308,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
     })();
 });
 //-----------------------------------------------------------------
+// Desktop notifications
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
 // Initialization functions
 //-----------------------------------------------------------------
 function loadConfig() {
+    setConfigIfNull("desktop_notification", #{toJSON $ appJsDesktopNotification settings});
     setConfigIfNull("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfigIfNull("mathjax", #{toJSON $ appJsMathjax settings});
     setConfigIfNull("eventsource", #{toJSON $ appJsEventsource settings});
@@ -316,6 +351,7 @@ function loadConfig() {
 }
 
 function resetConfig() {
+    setConfig("desktop_notification", #{toJSON $ appJsDesktopNotification settings});
     setConfig("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfig("mathjax", #{toJSON $ appJsMathjax settings});
     setConfig("eventsource", #{toJSON $ appJsEventsource settings});
@@ -1853,7 +1889,10 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
                 var posts = parseDOMElements(data);
                 var n = posts.length;
                 var thr   = document.getElementById("thread-"+threadLocalId+"-"+board);
-                var lastIndex = lastPost.getElementsByClassName("index-number")[0].innerHTML;
+                var title = thr.getElementsByClassName("reply-title")[0].innerHTML;
+                var indexNum = lastPost.getElementsByClassName("index-number")[0];
+                var lastIndex = indexNum ? indexNum.innerHTML : 1;
+                if (n) notifyMe(n+" "+#{toJSON $ msgrender MsgNewPosts}, "/"+board+"/"+threadLocalId+(title? " '"+title+"'" : ""), "/"+board+"/"+threadLocalId);
                 for (var i = 0; i < posts.length; i++) {
                     initOnePost(posts[i]);
                     addPostCounter(posts[i], +lastIndex+i+1);

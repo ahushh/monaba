@@ -33,6 +33,7 @@ function refreshFeed(nopopup, updateTitle) {
                 var n = posts.length - 1;
                 var rf     = document.getElementById('refresh-feed');
                 var parent = rf.parentNode;
+                if (n) notifyMe(n +" "+#{toJSON $ msgrender MsgNewPosts}, "/feed/", "@{FeedR}" );
                 for (var i = posts.length-1; i >= 0; i--) {
                     initOnePost(posts[i]);
                     insertAfter(posts[i], rf);

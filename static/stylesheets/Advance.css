@@ -3,17 +3,21 @@
 /* global */
 
 html, body {
-	background-image: url('https://i.imgur.com/kSh1eoL.jpg');  
+  background-image: url('https://i.imgur.com/kSh1eoL.jpg');  
   background-color: rgb(38, 38, 38);
   color: #CCC;
 	font-family: 'Roboto Slab', serif;
   font-size: 10.5pt;
 }
 a, .fa {
-	color: #fff;
+  color: #fff;
 }
-a:hover, .fa:hover {
+a:hover, .fa:hover, .spoiler a:hover {
   color: #81a2be;
+}
+pre {
+  padding: 10px;
+  background: rgba(10,10,10,0.95);
 }
 
 /* home */
@@ -34,9 +38,9 @@ a:hover, .fa:hover {
   text-align: left !important;
 }
 #latest-news hr {
-	border : none;
-	border-top : 1px solid #282a2e;
-	height : 0;
+  border : none;
+  border-top : 1px solid #282a2e;
+  height : 0;
 }
 #home-content hr {
   display: none;
@@ -65,13 +69,13 @@ input, textarea, select {
   margin: 1px;
 }
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-	border : #000 solid 1px !important ;
+  border : #000 solid 1px !important ;
 }
-.spoiler {
+.spoiler, .spoiler a {
   background: #111; 
   color: #111;
 }
-.spoiler:hover, .spoiler:focus {
+.spoiler:hover {
   color: #c5c8c6;
 }
 .quote, .symbol-counter {
@@ -81,10 +85,10 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
   padding: 5px 0px;
 }
 .reply.post, .popup-post, .feed.post {
-	background: rgba(20,20,20,0.95);
+  background: rgba(20,20,20,0.95);
   margin: 3px;
-	padding: 5px;
-	border: 1px solid #282a2e;
+  padding: 5px;
+  border: 1px solid #282a2e;
 }
 .reply.post.highlighted, .feed.post.highlighted {
   background: rgba(10,10,10,0.95)
@@ -95,9 +99,9 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
   margin-top: 15px !important;
 }
 .reply-title {
-	font-size: 12pt;
-	color: #B294BB;
-	font-weight: bold;
+  font-size: 12pt;
+  color: #B294BB;
+  font-weight: bold;
 }
 .poster-name {
   color:#C5C8C6;

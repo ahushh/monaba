@@ -1109,6 +1109,7 @@ function previewToggle() {
     var textarea = postform.querySelector("textarea");
     var preview = document.createElement("div");
     preview.id = "post-preview";
+    preview.style.overflow = auto;
     preview.style.height = textarea.offsetHeight + 'px';
     preview.style.width = textarea.offsetWidth + 'px';
 

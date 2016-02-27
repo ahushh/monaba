@@ -426,14 +426,14 @@ function applyCSSSettings() {
     }
 }
 
-function initAllPosts() {
-    initImageExpanding();
-    initVideoPlayer();
-    initUrlVideoPlayer();
-    initPopupsCache();
-    initAudioPlayer();
-    initFlashByClick();
-    initManagementLinks();
+function initAllPosts(selector) {
+    initImageExpanding(selector);
+    initVideoPlayer(selector);
+    initUrlVideoPlayer(selector);
+    initPopupsCache(selector);
+    initAudioPlayer(selector);
+    initFlashByClick(selector);
+    initManagementLinks(selector);
 }
 
 function initOnePost(post) {

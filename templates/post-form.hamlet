@@ -37,7 +37,7 @@
           _{MsgMarkupInlineLatex}
        &nbsp;
        <a onclick="insertTag('[latex]','[/latex]','post-form');">
-          _{MsgMarkupLatex}nn
+          _{MsgMarkupLatex}
        &nbsp;
        <a .quote onmousedown="insertQuote('post-form');">
           _{MsgMarkupQuote}

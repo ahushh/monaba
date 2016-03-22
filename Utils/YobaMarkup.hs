@@ -260,12 +260,12 @@ plain = Plain . pack <$> many1 (myCheck >> myCheck' >> anyChar)
   where myCheck   = foldr (\f acc -> acc >> notFollowedBy (try f))
                           (notFollowedBy $ try $ string "[/b]"  )
                           tagEnds
-        tagEnds   = map string ["[/i]","[/s]","[/u]","[/spoiler]","[/color]","%%"]
+        tagEnds   = map string ["[/i]","[/s]","[/u]","[/spoiler]","[/color]","[/dice]","%%"]
         myCheck'  = foldr (\f acc -> acc >> notFollowedBy (try f))
                           (notFollowedBy $ try quote)
                           wholeTags
         wholeTags = [ spoilerwakaba, newline, namedLink, link, magnet, bold, italic, underline, strike, spoiler,
-                      color, code, extref, innerref, proof, extproof, proofop, userproof, groupproof]
+                      color, code, extref, innerref, proof, extproof, proofop, userproof, groupproof, dice]
 --------------------------------------------------------------
 -- Kusaba-like tags
 --------------------------------------------------------------

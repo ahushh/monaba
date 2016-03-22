@@ -57,6 +57,10 @@
         <td>&nbsp;→&nbsp;
         <td><a href="http://yesodweb.com">http://yesodweb.com</a>
       <tr>
+        <td>magnet:?xl=Размер_в_байтах&dn=Имя_файла
+        <td>&nbsp;→&nbsp;
+        <td><a href="magnet:?xl=Размер_в_байтах&amp;dn=Имя_файла">magnet: Имя_файла</a>
+      <tr>
         <td>>quote
         <td>&nbsp;→&nbsp;
         <td><span .quote style="color:green">>quote</span>

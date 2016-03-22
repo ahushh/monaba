@@ -7,7 +7,6 @@ import           Data.Char                       (toLower)
 import           Data.Text                       (pack)
 import           Data.Text.Encoding              (encodeUtf8)
 import           Data.Monoid                     ((<>))
-import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand
 import           Prelude
 import           System.Random                   (randomRIO)
@@ -46,7 +45,7 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
     return $ toLower char
   drawImage w dw
   trimImage w 0
-  writeImage w $ Just $ fromText $ pack path
+  writeImage w $ Just $ pack path
   return text
 ------------------------------------------------------------------------------------------------
 main = do

@@ -48,10 +48,10 @@
                $with m <- ifelseall (postSticked postVal) MsgUnstickThread MsgStickThread
                  <a .ajax-admin title=_{m} href=@{StickR board postLocalId'}>
                    S                
-               $with m <- ifelseall (postLocked postVal) MsgUnstickThread MsgStickThread
+               $with m <- ifelseall (postLocked postVal) MsgUnlockThread MsgLockThread
                  <a .ajax-admin title=_{m} href=@{LockR board postLocalId'}>
                    L
-               $with m <- ifelseall (postAutosage postVal) MsgUnstickThread MsgStickThread
+               $with m <- ifelseall (postAutosage postVal) MsgAutosage MsgAutosage
                  <a .ajax-admin title=_{m} href=@{AutoSageR board postLocalId'}>
                    A 
                ]

@@ -10,6 +10,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
     initMathjax();
     var postform = document.getElementById('post-form');
     initDragAndDrop(postform);
+    var threads = document.querySelectorAll(".thread");
+    for (var i = 0;i < threads.length; i++) {
+        var omitted = threads[i].querySelector(".omitted");
+        var n = 0;
+        if (omitted) n = +/(\d+)/.exec(omitted.textContent)[1];
+        var replies = threads[i].querySelectorAll(".reply");
+        if (replies) {
+            for (var j = 0; j < replies.length; j++) {
+                addPostCounter( replies[j], n+j+1 );
+            }
+        }
+    }
 });
 
 function expandThread(board, threadLocalId) {

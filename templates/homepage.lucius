@@ -55,7 +55,6 @@
     display: table;
     overflow: hidden;
     word-wrap: break-word;
-    padding: 5px;
     width: 100%;
 }
 .news > .title {

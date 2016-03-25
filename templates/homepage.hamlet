@@ -48,3 +48,7 @@
                         <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
           $with m <- preEscapedToHtml $ unTextarea $ postMessage t
             <div .message>#{m}
+          $maybe lm <- postLastModified t
+              <span .last-modified>
+                  <i .fa .fa-history>
+                  <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey pKey}>_{MsgLastModified} #{myFormatTime timeZone lm}

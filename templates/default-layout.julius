@@ -431,9 +431,10 @@ function initAllPosts(selector) {
     initVideoPlayer(selector);
     initUrlVideoPlayer(selector);
     initPopupsCache(selector);
-    initAudioPlayer(selector);
-    initFlashByClick(selector);
-    initManagementLinks(selector);
+
+    initAudioPlayer();
+    initFlashByClick();
+    initManagementLinks();
 }
 
 function initOnePost(post) {
@@ -442,6 +443,7 @@ function initOnePost(post) {
     addYoutubeVideoPlayer(post);
     addVimeoVideoPlayer(post);
     addCoubVideoPlayer(post);
+
     initAudioPlayer(post);
     initFlashByClick(post);
     initManagementLinks(post);

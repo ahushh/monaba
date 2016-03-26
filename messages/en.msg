@@ -312,7 +312,8 @@ SupportedLanguages: Supported languages for tag [code=<language>]
 Online: Online
 GetNewPosts: Get new posts
 NoNewPosts: No new posts
-NewPosts: new posts!
+NewPosts: New posts!
+NewPostsLast: Last:
 
 ThreadNotExist: This thread doesn't exist anymore
 NoPostsAnymore: Ooops, no posts in this thread!

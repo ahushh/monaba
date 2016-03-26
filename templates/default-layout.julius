@@ -114,7 +114,7 @@ applyCSSSettings();
 // Desktop notifications
 // http://stackoverflow.com/questions/2271156/chrome-desktop-notification-example
 //-----------------------------------------------------------------
-function notifyMe(title, body, url) {
+function notifyMe(title, body, url, img) {
     if (!Notification) {
         alert('Desktop notifications not available in your browser. Try Chromium.'); 
         return;
@@ -125,7 +125,7 @@ function notifyMe(title, body, url) {
         var hidden = getHidden();
         if (!document[hidden]) return;
         var notification = new Notification(title, {
-//            icon: "@{FaviconR}",
+//            icon: img,
             body: body,
         });
         if (url) 
@@ -307,9 +307,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
     })();
 });
-//-----------------------------------------------------------------
-// Desktop notifications
-//-----------------------------------------------------------------
 //-----------------------------------------------------------------
 // Initialization functions
 //-----------------------------------------------------------------
@@ -1895,7 +1892,12 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
                 var title = thr.getElementsByClassName("reply-title")[0].innerHTML;
                 var indexNum = lastPost.getElementsByClassName("index-number")[0];
                 var lastIndex = indexNum ? indexNum.innerHTML : 1;
-                if (n) notifyMe(n+" "+#{toJSON $ msgrender MsgNewPosts}, "/"+board+"/"+threadLocalId+(title? " '"+title+"'" : ""), "/"+board+"/"+threadLocalId);
+                if (n) {
+                    var m = posts[posts.length-1].querySelector(".message").innerText;
+                    var t = posts[posts.length-1].querySelector(".thumb");
+                    var i = t ? window.location.origin + t.getAttribute("src") : null;
+                    notifyMe("/"+board+"/"+threadLocalId+(title? " '"+title+"'" : "")+" "+#{toJSON $ msgrender MsgNewPosts}+" "+n+" "+#{toJSON $ msgrender MsgNewPostsLast}, m, "/"+board+"/"+threadLocalId, i);
+                }
                 for (var i = 0; i < posts.length; i++) {
                     initOnePost(posts[i]);
                     addPostCounter(posts[i], +lastIndex+i+1);

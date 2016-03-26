@@ -315,6 +315,7 @@ Online: Онлайн
 GetNewPosts: Получить новые посты (если есть)
 NoNewPosts: Нет новых постов
 NewPosts: Новые посты!
+NewPostsLast: Последний:
 
 ThreadNotExist: Похоже, этот тред больше не существует
 NoPostsAnymore: Внезапно, в этом треде постов нет вообще

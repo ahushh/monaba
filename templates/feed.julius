@@ -29,12 +29,17 @@ function refreshFeed(nopopup, updateTitle) {
             document.getElementById("refresh-feed").dispatchEvent(refreshFeedEvent);
             var data = request.responseText;
             if (/post/.test(data)) {
-                var posts = parseDOMElements(data);
-                var n = posts.length - 1;
+                var posts = Array.prototype.slice.call( parseDOMElements(data), 0, -1);
+                var n = posts.length;
                 var rf     = document.getElementById('refresh-feed');
                 var parent = rf.parentNode;
-                if (n) notifyMe(n +" "+#{toJSON $ msgrender MsgNewPosts}, "/feed/", "@{FeedR}" );
-                for (var i = posts.length-1; i >= 0; i--) {
+                if (n) {
+                    var m = posts[n-1].querySelector(".message").innerText;
+                    var t = posts[n-1].querySelector(".thumb");
+                    var i = t ? window.location.origin + t.getAttribute("src") : null;
+                    notifyMe("/feed/ "+#{toJSON $ msgrender MsgNewPosts}+" "+n+" "+#{toJSON $ msgrender MsgNewPostsLast}, m, "@{FeedR}", i);
+                }
+                for (var i = n-1; i >= 0; i--) {
                     initOnePost(posts[i]);
                     insertAfter(posts[i], rf);
                 }

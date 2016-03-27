@@ -153,8 +153,8 @@ instance Yesod App where
 
       HellBanNoPageR{}  -> isAuthorized' [HellBanP]
       HellBanR{}        -> isAuthorized' [HellBanP]
-      HellBanDoR{}      -> isAuthorized' [HellBanP]
-      HellBanUndoR{}    -> isAuthorized' [HellBanP]
+      HellBanActionR{}  -> isAuthorized' [HellBanP]
+      HellBanGetFormR{} -> isAuthorized' [HellBanP]
 
       AdminSearchHBUIDR{}       -> isAuthorized' [ViewIPAndIDP, HellBanP]
       AdminSearchHBUIDNoPageR{} -> isAuthorized' [ViewIPAndIDP, HellBanP]

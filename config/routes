@@ -53,8 +53,8 @@
 
 /admin/hellban                     HellBanNoPageR GET
 /admin/hellban/#Int                HellBanR       GET
-/admin/hellban/do/#Int/#Text/#Bool HellBanDoR     GET
-/admin/hellban/undo/#Int/#Text     HellBanUndoR   GET
+/admin/hellban/action/#Int         HellBanActionR POST
+/admin/hellban/getForm/#Int        HellBanGetFormR GET
 
 /admin/boards/new               NewBoardsR    POST
 /admin/boards/update/#Text      UpdateBoardsR POST

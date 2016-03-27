@@ -26,47 +26,73 @@ getHellBanR page = do
     setUltDestCurrent
     defaultTitleMsg MsgHellbanning
     $(widgetFile "admin/hellban")
--- ------------------------------------------------------------------------------------------------------------
-getHellBanDoR :: Int  -> -- ^ Post internal ID
-                Text -> -- ^ 'none' - don't hide this post; 'one' - hide it; 'all' - hide all this user's posts
-                Bool -> -- ^ Hellban or not this user
-               Handler Html
-getHellBanDoR postId action ban = do
- let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
- post <- runDB $ get404 postKey
- let posterId = postPosterId post
- case action of
-   "one" -> do
-     void $ runDB $ update postKey [PostHellbanned =. True]
-     p <- makeExternalRef (postBoard post) (postLocalId post)
-     addModlogEntry $ MsgModlogHellbanHidePost p
-   "all" -> do
-     void $ runDB $ updateWhere [PostPosterId ==. posterId] [PostHellbanned =. True]
-     addModlogEntry $ MsgModlogHellbanHideAllPosts posterId
-   _     -> return ()
- void $ when ban $ do
-   addModlogEntry $ MsgModlogHellban posterId
-   void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = postIp post }
- trickyRedirect "ok" MsgSuccessEx AdminR
+------------------------------------------------------------------------------------------------------------
+data HellbanFormAction = HellbanFormDo | HellbanFormUndo
+     deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
-getHellBanUndoR :: Int  -> -- ^ Post internal ID
-                 Text -> -- ^ 'show' - show this post; 'unban' - unban this user; 'both' - show post and unban
-                 Handler Html
-getHellBanUndoR postId action = do
- let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
- post <- runDB $ get404 postKey
- let posterId = postPosterId post
- case action of
-   "show"  -> do
-     runDB $ update postKey [PostHellbanned =. False]
-     p <- makeExternalRef (postBoard post) (postLocalId post)
-     addModlogEntry $ MsgModlogHellbanShowPost p
-   "unban" -> do
-     addModlogEntry (MsgModlogUnhellban posterId)
-     runDB $ deleteWhere [HellbanUid ==. postPosterId post]
-   "both"  -> do
-     addModlogEntry (MsgModlogUnhellban posterId)
-     addModlogEntry $ MsgModlogHellbanShowAllPosts posterId
-     runDB (update postKey [PostHellbanned =. False])
-     runDB (deleteWhere [HellbanUid ==. postPosterId post])
- trickyRedirect "ok" MsgSuccessEx AdminR
+data HellbanFormVisibility = HellbanFormShow | HellbanFormShowAll | HellbanFormHide | HellbanFormHidelAll
+     deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
+postHellBanActionR :: Int -> Handler Html
+postHellBanActionR postId = do
+  let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
+  post <- runDB $ get404 postKey
+  let posterId = postPosterId post
+  ((result, _), _) <- runFormPost hellbanForm
+  case result of
+    FormFailure []                     -> setMessageI MsgUnknownError >> redirectUltDest AdminR
+    FormFailure xs                     -> setMessageI MsgUnknownError >> redirectUltDest AdminR
+    FormMissing                        -> setMessageI MsgUnknownError >> redirectUltDest AdminR
+    FormSuccess (action, visibility)   -> do
+      case action of
+        HellbanFormDo -> do
+          addModlogEntry $ MsgModlogHellban posterId
+          void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = postIp post }
+        HellbanFormUndo -> do
+          addModlogEntry (MsgModlogUnhellban posterId)
+          runDB $ deleteWhere [HellbanUid ==. postPosterId post]
+      case visibility of
+        HellbanFormShow -> do
+          runDB $ update postKey [PostHellbanned =. False]
+          p <- makeExternalRef (postBoard post) (postLocalId post)
+          addModlogEntry $ MsgModlogHellbanShowPost p
+        HellbanFormShowAll -> undefined
+        HellbanFormHide -> do
+          void $ runDB $ update postKey [PostHellbanned =. True]
+          p <- makeExternalRef (postBoard post) (postLocalId post)
+          addModlogEntry $ MsgModlogHellbanHidePost p
+        HellbanFormHidelAll -> undefined
+      setMessageI MsgSuccessEx
+      redirectUltDest AdminR
+
+hellbanForm :: Html -> -- ^ Extra token
+              MForm Handler (FormResult ( HellbanFormAction,
+                                          HellbanFormVisibility
+                                        )
+                         , Widget)
+hellbanForm extra = do
+--  msgrender   <- getMessageRender
+  AppSettings{..} <- appSettings <$> getYesod
+
+  let hb :: [(Text, HellbanFormAction)]
+      hb = [("Hellban", HellbanFormDo), ("Unhellban", HellbanFormUndo)]
+      display :: [(Text, HellbanFormVisibility)]
+      display = [("show post", HellbanFormShow), ("hide post", HellbanFormHide), ("show all posts", HellbanFormShowAll), ("hide all posts", HellbanFormHidelAll)]
+  (hbRes       , hbView      ) <- mreq (selectFieldList hb     ) "" Nothing
+  (displayRes  , displayView ) <- mreq (selectFieldList display) "" Nothing
+  let result = (,) <$> hbRes <*> displayRes
+      widget = $(widgetFile "admin/hellban-form")
+  return (result, widget)
+
+getHellBanGetFormR :: Int -> Handler Html
+getHellBanGetFormR postId = do
+  let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
+  post <- runDB $ get404 postKey
+  let posterId = postPosterId post
+  banned <- runDB $ selectFirst [HellbanUid ==. posterId] []
+  (form, enc) <- generateFormPost hellbanForm
+  bareLayout [whamlet|<form id="hb-form-#{postId}" .hellban-form enctype=#{enc} action="@{HellBanActionR postId}" method=post>
+                        ^{form}
+                        $maybe _ <- banned
+                          user is banned
+                     |]

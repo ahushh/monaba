@@ -30,6 +30,28 @@ var Monaba = {
 loadConfig();
 applyCSSSettings();
 //-----------------------------------------------------------------
+// Hellban form
+//-----------------------------------------------------------------
+function showHellbanForm( postId ) {
+    var f = document.getElementById("hb-form-"+postId);
+    if (f) {
+        removeElement(f);
+        return;
+    }
+    var p = document.getElementById('p'+postId);
+    httpRequest({
+        action: '/admin/hellban/getForm/'+postId,
+        onload: function(request) {
+            if (request.status >= 200 && request.status < 400) {
+                var form = parseDOMElement(request.responseText);
+                insertAfter(form, p);
+            } else {
+            }
+        }
+    });
+}
+
+//-----------------------------------------------------------------
 // Resizable
 //-----------------------------------------------------------------
 (function() {

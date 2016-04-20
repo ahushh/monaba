@@ -1487,7 +1487,7 @@ function addVimeoVideoPlayer(post) {
         }
 
         var request = new XMLHttpRequest({mozSystem: true});
-        request.open("GET","http://vimeo.com/api/v2/video/"+videoId+".json",true);
+        request.open("GET","https://vimeo.com/api/v2/video/"+videoId+".json",true);
         request.onload = function() {
             var data = JSON.parse(request.responseText);
             addUrlVideoPlayer({ width:  getConfig("url_video_width"),

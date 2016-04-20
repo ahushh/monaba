@@ -40,9 +40,9 @@ postHellBanActionR postId = do
   let posterId = postPosterId post
   ((result, _), _) <- runFormPost hellbanForm
   case result of
-    FormFailure []                     -> setMessageI MsgUnknownError >> redirectUltDest AdminR
-    FormFailure xs                     -> setMessageI MsgUnknownError >> redirectUltDest AdminR
-    FormMissing                        -> setMessageI MsgUnknownError >> redirectUltDest AdminR
+    FormFailure []                     -> setMessageI MsgBadFormData                     >> redirectUltDest AdminR
+    FormFailure xs                     -> setMessageI (MsgError $ T.intercalate "; " xs) >> redirectUltDest AdminR
+    FormMissing                        -> setMessageI MsgNoFormData                      >> redirectUltDest AdminR
     FormSuccess (action, visibility)   -> do
       case action of
         HellbanFormDo -> do

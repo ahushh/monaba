@@ -1571,6 +1571,7 @@ function expandImage(post) {
         var thumbWidth = thumbImg.width;
         var thumbHeight = thumbImg.height;
         var isFull = false;
+        var img;
         thumbImg.onclick = function(event) {
             if (event.which == 2 || event.which == 3)
                 return true;
@@ -1596,13 +1597,19 @@ function expandImage(post) {
                 }
                 event.preventDefault();
             } else {
-                var img = new Image();
+                if (img) {
+                    document.body.removeChild(img);                    
+                    img = undefined;
+                    return;
+                }
+                img = new Image();
                 var wWidth  = window.innerWidth;
                 var wHeight = window.innerHeight;
                 img.src = fullUrl;
                 img.className = "draggable drag-button wheel-resizable";
                 img.addEventListener("mouseup",function(e){
                     document.body.removeChild(img);
+                    img = undefined;
                 }, false);
                 img.onload = function() {
                     document.body.appendChild(img);

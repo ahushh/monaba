@@ -269,10 +269,6 @@ HellbanPoster: Hellbanir esse usuário
 HideAndHellban: Hide esse post e hellbanir o usuário
 HideAllAndHellban: Hide todos os posts do usuário e o hellbanir
 
-HellbanShowPost: Mostrar esse post para qualquer usuário
-HellbanUnbanUser: Remover hellban esse usuário
-HellbanShowAndUnban: Mostrar esse post remover hellban do usuário
-
 PostIsVisibleOnlyForAuthor: Esse post é vísivel somente para o seu autor
 
 HellbanAllPosts: Todos os posts escondidos

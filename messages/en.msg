@@ -278,14 +278,17 @@ DontSaveHistory: Do not save editing history
 ######################################################################################
 #### Hellbanning
 ######################################################################################
+HellbanUserIsBanned: User is hellbanned
+HellbanDo: Hellban
+HellbanUndo: Unhellban
+HellbanShowPost: Show post
+HellbanHidePost: Hide post
+HellbanShowAllPosts: Show all posts
+HellbanHideAllPosts: Hide all posts
 HellbanHide: Hide this post for any user except its author
 HellbanPoster: Hellban this user
 HideAndHellban: Hide this post and hellban user
 HideAllAndHellban: Hide all user's posts and hellban him/her
-
-HellbanShowPost: Show this post for any user
-HellbanUnbanUser: Unhellban this user
-HellbanShowAndUnban: Show this post and unhellban user
 
 PostIsVisibleOnlyForAuthor: This post is visible only for its author
 

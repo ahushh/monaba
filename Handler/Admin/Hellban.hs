@@ -1,6 +1,7 @@
 module Handler.Admin.Hellban where
 
 import           Import
+import qualified Data.Text as T
 import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (makeExternalRef)
 -------------------------------------------------------------------------------------------------------------
@@ -71,13 +72,13 @@ hellbanForm :: Html -> -- ^ Extra token
                                         )
                          , Widget)
 hellbanForm extra = do
---  msgrender   <- getMessageRender
+  msgrender   <- getMessageRender
   AppSettings{..} <- appSettings <$> getYesod
 
   let hb :: [(Text, HellbanFormAction)]
-      hb = [("Hellban", HellbanFormDo), ("Unhellban", HellbanFormUndo)]
+      hb = [(msgrender MsgHellbanDo, HellbanFormDo), (msgrender MsgHellbanUndo, HellbanFormUndo)]
       display :: [(Text, HellbanFormVisibility)]
-      display = [("show post", HellbanFormShow), ("hide post", HellbanFormHide), ("show all posts", HellbanFormShowAll), ("hide all posts", HellbanFormHidelAll)]
+      display = [(msgrender MsgHellbanShowPost, HellbanFormShow), (msgrender MsgHellbanHidePost, HellbanFormHide), (msgrender MsgHellbanShowAllPosts, HellbanFormShowAll), (msgrender MsgHellbanHideAllPosts, HellbanFormHidelAll)]
   (hbRes       , hbView      ) <- mreq (selectFieldList hb     ) "" Nothing
   (displayRes  , displayView ) <- mreq (selectFieldList display) "" Nothing
   let result = (,) <$> hbRes <*> displayRes
@@ -94,5 +95,5 @@ getHellBanGetFormR postId = do
   bareLayout [whamlet|<form id="hb-form-#{postId}" .hellban-form enctype=#{enc} action="@{HellBanActionR postId}" method=post>
                         ^{form}
                         $maybe _ <- banned
-                          user is banned
+                          _{MsgHellbanUserIsBanned}
                      |]

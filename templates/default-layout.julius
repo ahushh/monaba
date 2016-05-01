@@ -10,6 +10,7 @@ Array.prototype.contains = function(obj) {
 //-----------------------------------------------------------------
 var eventsource = null;
 var Monaba = {
+    files: {},
     zindex: 10,
     expThreads: {},
     refMap: {},
@@ -925,8 +926,10 @@ function makePostFormData(postform) {
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].type == "submit") {
             ;
-        } else if (inputs[i].type == "file" && inputs[i].files != null) {
+        } else if (inputs[i].type == "file" && inputs[i].files && inputs[i].files.length) {
             formData.append(inputs[i].name, inputs[i].files[0]);
+        } else if (inputs[i].type == "file" && Monaba.files[ inputs[i].id ]) {
+            formData.append(inputs[i].name, Monaba.files[ inputs[i].id ]);
         } else if (inputs[i].type == "checkbox") {
             if (inputs[i].checked)
                 formData.append(inputs[i].name, inputs[i].value);
@@ -1037,11 +1040,11 @@ function initDragAndDrop(postform) {
         // }
         var rsNodeList = document.querySelectorAll("select.rating-input");
         var rs = [];
-        for (var i = 0; i < fsNodeList.length; i++)
-            if (!rsNodeList[i].dataset.used) rs.push(fsNodeList[i]);
+        for (var i = 0; i < rsNodeList.length; i++)
+            if (rsNodeList[i].dataset.used == 0) rs.push(rsNodeList[i]);
         if (!rs.length) return;
         handleFile(files[0], fs[0],rs[0]);
-        fs[0].files = files;
+        Monaba.files[ fs[0].id ] = files[0];
     };
 }
 
@@ -1055,8 +1058,8 @@ function handleFile(file, fInput, rInput) {
     if (window.FileReader) {
         var div = document.createElement('div');
         div.className = "attachment-thumb";
-
         var onclick = function() {
+            delete Monaba.files[ fInput.id ];
             fInput.value = '';
             rInput.dataset.used = "0";
             rInput.style.display = "none";

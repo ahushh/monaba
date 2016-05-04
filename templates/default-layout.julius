@@ -148,7 +148,7 @@ function notifyMe(title, body, url, img) {
         var hidden = getHidden();
         if (!document[hidden]) return;
         var notification = new Notification(title, {
-//            icon: img,
+            icon: img,
             body: body,
         });
         if (url) 

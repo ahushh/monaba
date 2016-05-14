@@ -1,4 +1,8 @@
-<h2 style=text-align:center>_{MsgHelp} — _{MsgMarkup}
+<h2 style=text-align:center>
+  <a href=@{HelpR}>
+    _{MsgHelp} 
+  / _{MsgMarkup}
+
 <div .markup-wrapper>
     $if elem AdditionalMarkupP permissions
         <p style=text-align:center><strong>_{MsgAdditionalMarkup}</strong>

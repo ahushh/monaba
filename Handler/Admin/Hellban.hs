@@ -28,22 +28,23 @@ getHellBanR page = do
     defaultTitleMsg MsgHellbanning
     $(widgetFile "admin/hellban")
 ------------------------------------------------------------------------------------------------------------
-data HellbanFormAction = HellbanFormDo | HellbanFormUndo
+data HellbanFormAction = HellbanFormDo | HellbanFormUndo | HellbanFormDoNothing
      deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
-data HellbanFormVisibility = HellbanFormShow | HellbanFormShowAll | HellbanFormHide | HellbanFormHidelAll
+data HellbanFormVisibility = HellbanFormShow | HellbanFormShowAll | HellbanFormHide | HellbanFormHidelAll | HellbanFormVisibilityNothing
      deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
-postHellBanActionR :: Int -> Handler Html
+postHellBanActionR :: Int -> Handler TypedContent
 postHellBanActionR postId = do
+  msgrender <- getMessageRender
   let postKey = (toSqlKey $ fromIntegral postId) :: Key Post
   post <- runDB $ get404 postKey
   let posterId = postPosterId post
   ((result, _), _) <- runFormPost hellbanForm
   case result of
-    FormFailure []                     -> setMessageI MsgBadFormData                     >> redirectUltDest AdminR
-    FormFailure xs                     -> setMessageI (MsgError $ T.intercalate "; " xs) >> redirectUltDest AdminR
-    FormMissing                        -> setMessageI MsgNoFormData                      >> redirectUltDest AdminR
+    FormFailure []                     -> selectRep $ provideJson $ object [("error", toJSON $ msgrender MsgBadFormData)]
+    FormFailure xs                     -> selectRep $ provideJson $ object [("error", toJSON $ msgrender (MsgError $ T.intercalate "; " xs))]
+    FormMissing                        -> selectRep $ provideJson $ object [("error", toJSON $ msgrender MsgNoFormData)]
     FormSuccess (action, visibility)   -> do
       case action of
         HellbanFormDo -> do
@@ -52,19 +53,24 @@ postHellBanActionR postId = do
         HellbanFormUndo -> do
           addModlogEntry (MsgModlogUnhellban posterId)
           runDB $ deleteWhere [HellbanUid ==. postPosterId post]
+        _ -> return ()
       case visibility of
         HellbanFormShow -> do
           runDB $ update postKey [PostHellbanned =. False]
           p <- makeExternalRef (postBoard post) (postLocalId post)
           addModlogEntry $ MsgModlogHellbanShowPost p
-        HellbanFormShowAll -> undefined
+        HellbanFormShowAll -> do
+          void $ runDB $ updateWhere [PostPosterId ==. postPosterId post] [PostHellbanned =. False]
+          addModlogEntry $ MsgModlogHellbanShowAllPosts $ postPosterId post
         HellbanFormHide -> do
           void $ runDB $ update postKey [PostHellbanned =. True]
           p <- makeExternalRef (postBoard post) (postLocalId post)
           addModlogEntry $ MsgModlogHellbanHidePost p
-        HellbanFormHidelAll -> undefined
-      setMessageI MsgSuccessEx
-      redirectUltDest AdminR
+        HellbanFormHidelAll -> do
+          void $ runDB $ updateWhere [PostPosterId ==. postPosterId post] [PostHellbanned =. True]          
+          addModlogEntry $ MsgModlogHellbanHideAllPosts $ postPosterId post
+        _ -> return ()
+      selectRep $ provideJson $ object [("ok", toJSON $ msgrender MsgSuccessEx)]
 
 hellbanForm :: Html -> -- ^ Extra token
               MForm Handler (FormResult ( HellbanFormAction,
@@ -76,9 +82,9 @@ hellbanForm extra = do
   AppSettings{..} <- appSettings <$> getYesod
 
   let hb :: [(Text, HellbanFormAction)]
-      hb = [(msgrender MsgHellbanDo, HellbanFormDo), (msgrender MsgHellbanUndo, HellbanFormUndo)]
+      hb = [(msgrender MsgHellbanDo, HellbanFormDo), (msgrender MsgHellbanUndo, HellbanFormUndo), ("---",HellbanFormDoNothing)]
       display :: [(Text, HellbanFormVisibility)]
-      display = [(msgrender MsgHellbanShowPost, HellbanFormShow), (msgrender MsgHellbanHidePost, HellbanFormHide), (msgrender MsgHellbanShowAllPosts, HellbanFormShowAll), (msgrender MsgHellbanHideAllPosts, HellbanFormHidelAll)]
+      display = [(msgrender MsgHellbanShowPost, HellbanFormShow), (msgrender MsgHellbanHidePost, HellbanFormHide), (msgrender MsgHellbanShowAllPosts, HellbanFormShowAll), (msgrender MsgHellbanHideAllPosts, HellbanFormHidelAll), ("---", HellbanFormVisibilityNothing)]
   (hbRes       , hbView      ) <- mreq (selectFieldList hb     ) "" Nothing
   (displayRes  , displayView ) <- mreq (selectFieldList display) "" Nothing
   let result = (,) <$> hbRes <*> displayRes

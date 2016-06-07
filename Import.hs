@@ -22,7 +22,7 @@ import           System.Random           (randomIO, randomRIO)
 import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Tag(TagText))
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
-import qualified Data.Text               as T (concat, toLower, append)
+import qualified Data.Text               as T (concat, toLower, append, take)
 
 -------------------------------------------------------------------------------------------------------------------
 -- | If ajax request, redirects to page that makes JSON from message and status string.
@@ -268,6 +268,15 @@ defaultTitleReverse title = do
 -------------------------------------------------------------------------------------------------------------------
 -- Widgets
 -------------------------------------------------------------------------------------------------------------------
+catalogPostWidget :: Entity Post -> [Entity Attachedfile] -> Int -> Widget
+catalogPostWidget ePost files replies = do
+  let post      = entityVal ePost
+      mFile     = if length files > 0 then Just (head files) else Nothing
+      msgLength = 35
+  rating <- handlerToWidget getCensorshipRating
+  AppSettings{..} <- handlerToWidget $ appSettings <$> getYesod
+  $(widgetFile "catalog-post")
+
 postWidget :: Entity Post              -> 
              [Entity Attachedfile]    -> 
              Bool                     -> -- ^ Are we in a thread

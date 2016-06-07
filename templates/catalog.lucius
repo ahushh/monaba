@@ -1,0 +1,10 @@
+.catalog .post {
+    margin: 5px;
+    display: inline-block;
+    vertical-align: top;
+    min-height: 200px;
+    min-width: 200px;
+}
+.catalog a {
+    text-align: center;
+}

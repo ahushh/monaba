@@ -43,6 +43,7 @@ import Handler.Home
 import Handler.Help
 import Handler.Thread
 import Handler.Board
+import Handler.Catalog
 import Handler.Edit
 import Handler.Feed
 import Handler.Delete

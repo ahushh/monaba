@@ -26,6 +26,7 @@ library
                      Handler.Help
                      Handler.Thread
                      Handler.Board
+                     Handler.Catalog
                      Handler.Edit
                      Handler.Feed
                      Handler.Posting

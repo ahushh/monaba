@@ -8,6 +8,9 @@ $maybe banner <- mBanner
   <a title="RSS" href=@{RssR board}>
     &nbsp;
     <i .fa .fa-rss>
+  <a title="_{MsgCatalog}" href=@{CatalogR board}>
+    &nbsp;
+    <i .fa .fa-table>
 $if not $ T.null summary
     <div id="board-summary">#{summary}
 $if hasAccessToNewThread

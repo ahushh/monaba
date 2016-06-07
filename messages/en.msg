@@ -63,6 +63,8 @@ MustBeGreaterThan thing@Text n@Int: '#{thing}' must be greater than #{show n}
 ######################################################################################
 #### Page
 ######################################################################################
+CatalogReplies vv@Int: Replies: #{show vv}
+Catalog: Catalog
 News: News
 Feed: Feed
 Iwantmore: I wanna moar

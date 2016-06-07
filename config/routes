@@ -20,6 +20,8 @@
 /online              OnlineR       GET
 /event               EventR        GET
 
+/catalog/#Text       CatalogR      GET
+
 /ajax/post/preview                AjaxPostPreviewR  POST
 /ajax/postform/#Text              AjaxGetPostFormR  GET
 /ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET

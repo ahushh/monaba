@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var indexNum = post.getElementsByClassName("index-number");
                         if (indexNum.length) {
                             var newPost = parseDOMElement(request.responseText);
-                            addPostCounter(newPost, indexNum[0].innerHTML;);
+                            addPostCounter(newPost, indexNum[0].innerHTML);
                         }
                         makeRefmap();
                         initPopupsCache();
@@ -1260,7 +1260,7 @@ function showEditForm(postId) {
                                 var indexNum = post.getElementsByClassName("index-number");
                                 if (indexNum.length) {
                                     var newPost = parseDOMElement(request.responseText);
-                                    addPostCounter(newPost, indexNum[0].innerHTML;);
+                                    addPostCounter(newPost, indexNum[0].innerHTML);
                                 }
                                 initOnePost(newPost);
                                 post.parentNode.replaceChild(newPost, post);

@@ -30,6 +30,6 @@
                       <img src="#{tp}" data-url="/#{up}" title="#{fi}">
     <div .reply-title>
       #{postTitle post}
-    $with m <- preEscapedToHtml $ T.take msgLength $ unTextarea $ postMessage post
+    $with m <- preEscapedToHtml $ T.take msgLength $ stripTags $ unTextarea $ postMessage post
       <div .message>#{m}
     _{MsgCatalogReplies replies}

@@ -154,7 +154,7 @@ function showQuickPostForm(postId, isPrivate) {
 
     document.getElementById('no-bump-block').style.display = '';
     postform.action = "/"+board+"/"+threadLocalId;
-    var inp = pf.getElementsByClassName("dest-input")[0];
+    var inp = postform.getElementsByClassName("dest-input")[0];
     if (isPrivate) {
         inp.value = postId.substring(1);
     } else {

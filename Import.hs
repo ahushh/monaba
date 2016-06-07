@@ -102,6 +102,7 @@ data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text  ) -- ^ Enable forced anonymity (no name input)
                               (Maybe Text  ) -- ^ Required thread title
                               (Maybe Int   ) -- ^ Index
+                              (Maybe Text  ) -- ^ Enable private messages
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
@@ -286,8 +287,9 @@ postWidget :: Entity Post              ->
              Bool                     -> -- ^ Show post date
              [Permission]             -> -- ^ List of the all permissions
              Int                      -> -- ^ Index number
+             Bool                     -> -- ^ Enable PM
              Widget
-postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissions number = 
+postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissions number enablePM = 
   let postVal        = entityVal ePost
       sPostLocalId   = show $ postLocalId $ entityVal ePost
       postLocalId'   = postLocalId $ entityVal ePost

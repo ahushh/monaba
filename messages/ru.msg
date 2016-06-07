@@ -179,6 +179,7 @@ PostEditing: Редактирование постов
 OpEditing: Редактирование ОП-постов
 ShowEditHistory: Показывать историю изменений
 ShowPostDate: Показывать дату постов
+BoardEnablePM: Приватные сообщения
 ## board list
 NewBoard: Новая борда
 AllBoards: Все борды

@@ -236,7 +236,7 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
 makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs = do
   unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory)) $
     createDirectory (appUploadDir </> thumbDirectory)
-  if height > thumbSize || width > thumbSize
+  if height > thumbSize || width > thumbSize || fileext == "gif"
     then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)

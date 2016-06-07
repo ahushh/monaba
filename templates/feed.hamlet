@@ -20,7 +20,8 @@ $if offset == 0
       $forall (e, files) <- postsAndFiles
         $with geoIpEnabled' <- elem (postBoard (entityVal e)) geoIpEnabled
           $with showPostDate <- elem (postBoard (entityVal e)) boardsWhereShowDate
-            ^{postWidget e files False True True geoIpEnabled' showPostDate permissions 0}
+            $with enablePM  <- elem (postBoard (entityVal e)) boardsWhereEnablePM
+              ^{postWidget e files False True True geoIpEnabled' showPostDate permissions 0 enablePM}
       <div #load-previous-posts style=text-align:center data-offset=#{showPosts} onclick="loadPreviousPosts(#{showPosts})">
         [ 
         <a .i-want-more>
@@ -33,4 +34,5 @@ $else
     $forall (e, files) <- postsAndFiles
       $with geoIpEnabled' <- elem (postBoard (entityVal e)) geoIpEnabled
         $with showPostDate <- elem (postBoard (entityVal e)) boardsWhereShowDate
-          ^{postWidget e files False True True geoIpEnabled' showPostDate permissions 0}
+          $with enablePM  <- elem (postBoard (entityVal e)) boardsWhereEnablePM
+            ^{postWidget e files False True True geoIpEnabled' showPostDate permissions 0 enablePM}

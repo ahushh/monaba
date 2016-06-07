@@ -177,6 +177,7 @@ PostEditing: Post editing
 OpEditing: OP editing
 ShowEditHistory: Show editing history
 ShowPostDate: Show post date
+BoardEnablePM: Private messages
 ## board list
 NewBoard: New board
 AllBoards: All boards

@@ -39,7 +39,8 @@
             #{number}
         $if canPost
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
-            <i title=_{MsgPrivateMessage} onclick="showQuickPostForm('p#{sPostId}',true);insertQuoted('>>#{sPostLocalId}','post-form');" .fa .fa-envelope-square .clickable>
+            $if enablePM
+              <i title=_{MsgPrivateMessage} onclick="showQuickPostForm('p#{sPostId}',true);insertQuoted('>>#{sPostLocalId}','post-form');" .fa .fa-envelope-square .clickable>
             <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .text-reply>
               _{MsgReplyIcon}
         <span .cpanel>

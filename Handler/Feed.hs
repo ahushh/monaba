@@ -30,7 +30,8 @@ getAjaxFeedOffsetR offset = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getFeedBoards
-  let boardsWhereShowDate = map boardName $ filter boardShowPostDate    $ map entityVal boards
+  let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
+      boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
       boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
@@ -68,7 +69,8 @@ getAjaxNewFeedR lastPostId = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getFeedBoards
-  let boardsWhereShowDate    = map boardName $ filter boardShowPostDate    $ map entityVal boards
+  let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
+      boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
       boards'                = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostDate >. lastPostDate]

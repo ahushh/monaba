@@ -6,6 +6,6 @@
       <a onclick="filterDeletedPosts()">_{MsgAdminDeletedFilter}
       <input type=submit value=_{MsgAdminRecoverDeletedPosts}>
     $forall (e, files) <- postsAndFiles
-      ^{postWidget e files False False True True True permissions 0}
+      ^{postWidget e files False False True True True permissions 0 False}
 
 ^{paginationWidget page pages (AdminDeletedFilteredR board thread)}

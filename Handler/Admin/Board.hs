@@ -77,6 +77,7 @@ updateBoardForm board action bCategories groups extra = do
   (showPostDateRes     , showPostDateView     ) <- mopt (selectFieldList onoff) "" (helper'  boardShowPostDate "Enable")
   (enableForcedAnonRes , enableForcedAnonView ) <- mopt (selectFieldList onoff) "" (helper' boardEnableForcedAnon "Disable")
   (requiredThreadTitleRes, requiredThreadTitleView ) <- mopt (selectFieldList onoff) "" (helper' boardRequiredThreadTitle "Disable")
+  (enablePMRes         , enablePMView         ) <- mopt (selectFieldList onoff) "" (helper' boardEnablePM "Disable")
   (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex 0)
   let result = BoardConfigurationForm <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
@@ -88,7 +89,8 @@ updateBoardForm board action bCategories groups extra = do
                threadAccessRes      <*> opModerationRes    <*> extraRulesRes     <*>
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> showPostDateRes    <*> summaryRes        <*>
-               enableForcedAnonRes  <*> requiredThreadTitleRes <*>  indexRes
+               enableForcedAnonRes  <*> requiredThreadTitleRes <*>  indexRes     <*>
+               enablePMRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -109,6 +111,7 @@ postNewBoardsR = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
+                 bEnablePM
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -145,6 +148,7 @@ postNewBoardsR = do
                            , boardShowPostDate      = onoff bShowPostDate
                            , boardEnableForcedAnon  = onoff bEnableForcedAnon
                            , boardRequiredThreadTitle = onoff bRequiredThreadTitle
+                           , boardEnablePM          = onoff bEnablePM
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       void $ runDB $ insert newBoard
@@ -167,6 +171,7 @@ postAllBoardsR = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
+                 bEnablePM
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -202,6 +207,7 @@ postAllBoardsR = do
                              , boardShowPostDate      = onoff bShowPostDate    boardShowPostDate
                              , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                              , boardRequiredThreadTitle= onoff bRequiredThreadTitle boardRequiredThreadTitle
+                             , boardEnablePM          = onoff bEnablePM boardEnablePM
                              , boardIndex             = fromMaybe 0 bIndex
                              }
           in runDB $ replace oldBoardId newBoard)
@@ -225,6 +231,7 @@ postUpdateBoardsR board = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
+                 bEnablePM
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -260,6 +267,7 @@ postUpdateBoardsR board = do
                            , boardShowEditHistory   = onoff bShowEditHistory boardShowEditHistory
                            , boardEnableForcedAnon  = onoff bEnableForcedAnon boardEnableForcedAnon
                            , boardRequiredThreadTitle= onoff bRequiredThreadTitle boardRequiredThreadTitle
+                           , boardEnablePM          = onoff bEnablePM boardEnablePM
                            , boardIndex             = fromMaybe 0 bIndex
                            }
       runDB $ replace oldBoardId newBoard

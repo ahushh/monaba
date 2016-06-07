@@ -21,6 +21,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   checkViewAccess mgroup boardVal
   let permissions   = getPermissions   mgroup
       geoIpEnabled  = boardEnableGeoIp boardVal
+      enablePM      = boardEnablePM boardVal
       selectPosts   = if elem HellBanP permissions then selectPostsAll else selectPostsHB 
       selectFiles p = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
       showPostDate    = boardShowPostDate boardVal
@@ -38,7 +39,7 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
-                                   ^{postWidget post files True True False geoIpEnabled showPostDate permissions 0}
+                                   ^{postWidget post files True True False geoIpEnabled showPostDate permissions 0 enablePM}
                                |]
           provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
@@ -101,11 +102,12 @@ getAjaxPostByIdR postId = do
   checkViewAccess mgroup boardVal
   let geoIpEnabled    = boardEnableGeoIp boardVal
       showPostDate    = boardShowPostDate boardVal
+      enablePM        = boardEnablePM boardVal
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal post) == 0
-                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0
-                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles
@@ -118,7 +120,8 @@ getAjaxPostR board postId = do
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
       geoIpEnabled = boardEnableGeoIp boardVal
-      showPostDate    = boardShowPostDate boardVal
+      showPostDate = boardShowPostDate boardVal
+      enablePM     = boardEnablePM boardVal
   posterId  <- getPosterId
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
   when (isNothing maybePost) notFound
@@ -128,8 +131,8 @@ getAjaxPostR board postId = do
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
   let postAndFiles = (entityVal post, map entityVal files)
       widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0
-                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0
+                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
+                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
   selectRep $ do
     provideRep $ bareLayout widget
     provideJson postAndFiles

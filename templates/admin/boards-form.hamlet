@@ -92,6 +92,10 @@
             <td>^{fvInput enableGeoIpView}
             <td>&nbsp;
         <tr>
+            <td>_{MsgBoardEnablePM}
+            <td>^{fvInput enablePMView}
+            <td>&nbsp;
+        <tr>
             <td>_{MsgBoardEnableForcedAnon}
             <td>^{fvInput enableForcedAnonView}
             <td>&nbsp;

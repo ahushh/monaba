@@ -8,5 +8,5 @@ $if not $ T.null boardSummaryVal
   ]
 <form .delete-form method=get action=@{DeleteR}>
     $forall (eReply, files) <- allPosts
-        ^{postWidget eReply files True False False geoIpEnabled showPostDate permissions 0}
+        ^{postWidget eReply files True False False geoIpEnabled showPostDate permissions 0 False}
     ^{deleteWidget permissions}

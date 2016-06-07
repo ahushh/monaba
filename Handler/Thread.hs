@@ -47,7 +47,8 @@ getThreadR board thread = do
       boardTitleVal    = boardTitle        boardVal
       boardSummaryVal  = boardSummary      boardVal
       geoIpEnabled     = boardEnableGeoIp  boardVal
-      showPostDate     = boardShowPostDate  boardVal
+      showPostDate     = boardShowPostDate boardVal
+      enablePM         = boardEnablePM     boardVal
   -------------------------------------------------------------------------------------------------------
   posterId <- getPosterId
   allPosts <- selectThread board thread
@@ -94,6 +95,7 @@ postThreadR board thread = do
       replyFile        = boardReplyFile        boardVal
       enableCaptcha    = boardEnableCaptcha    boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
+      enablePM         = boardEnablePM         boardVal
       threadUrl        = ThreadR board thread
       boardUrl         = BoardNoPageR board
   -------------------------------------------------------------------------------------------------------         
@@ -157,7 +159,7 @@ postThreadR board thread = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            , postLockEditing  = False
-                           , postDestUID      = destUID
+                           , postDestUID      = if enablePM then destUID else Nothing
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------

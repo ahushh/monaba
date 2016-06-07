@@ -42,6 +42,7 @@ Board
     showEditHistory   Bool     
     showPostDate      Bool default=true
     enableForcedAnon  Bool default=false
+    enablePM          Bool default=false
     requiredThreadTitle Bool default=false
 Post json
     board        Text

@@ -87,8 +87,7 @@
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
          $else
              <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>#{postParentTitle postVal} >>/#{board}/#{sThreadLocalId}
-    $if itsforMe posterId
-      $forall Entity fileKey file <- eFiles
+    $forall Entity fileKey file <- eFiles
         $with fKey <- fromIntegral $ fromSqlKey fileKey
           $with c <- ifelse (length eFiles == 1) "file" "multi-file"
             $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
@@ -173,6 +172,7 @@
                             <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
                         $else
                             <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+    $if itsforMe posterId
       $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
           <div .message>#{m}
       $maybe lm <- postLastModified postVal

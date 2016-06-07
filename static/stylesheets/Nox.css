@@ -168,11 +168,11 @@ pre {
     border: 1px dotted rgba(50,50,50,0.5);
 }
 
-#latest-news {
+.block {
     border: 1px dotted rgba(50,50,50,0.5);
 }
 
-#latest-news > .title {
+.block > .title {
     font-weight: bold;
     background: none repeat scroll 0 0 #202020;
 }

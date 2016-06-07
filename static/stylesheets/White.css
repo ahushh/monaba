@@ -57,14 +57,14 @@ pre {
 #home-content hr {
   border-color: transparent;
 }
-#latest-news {
+.block {
   border: 1px solid rgba(0,0,0,0.1);
 }
-#latest-news > .title {
+.block > .title {
   background: rgba(0,0,0,0.1);
   font-weight: bold;
 }
-#latest-news hr {
+.block hr {
   height: 1px;
   border: none;
   background: rgba(0,0,0,0.1);

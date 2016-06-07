@@ -21,12 +21,12 @@
 hr {
     border: none;
 }
-#latest-news {
+.block {
     background: #daf0d6;
     padding: 10px;
     border-radius: 4px;
 }
-#latest-news > .title {
+.block > .title {
     background: #88dd88;
     border-radius: 4px;
     text-align: center;

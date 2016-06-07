@@ -251,6 +251,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         initPopupsCache();
                         refreshMathjax();
                     } else {
+                        // todo error handling
                     }
                 }
             });

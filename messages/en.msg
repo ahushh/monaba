@@ -511,3 +511,12 @@ CssHideFilesNames: css_hide_files_names
 CssHideFilesInfo: css_hide_files_info
 CssHideMarkupButtons: css_hide_markup_buttons
 CssCustom: css_custom
+######################################################################################
+## Statistics
+######################################################################################
+Statistics: Statistics
+StatsAllPosts: All posts
+StatsAllPostsDeleted del@Int: (not including #{show del} deleted)
+StatsMonth: Last month's posts
+StatsDay: Last day's posts
+StatsAllFiles: All files

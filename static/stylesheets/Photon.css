@@ -34,7 +34,7 @@ pre {
 
 /* home page */
 
-#board-list-full, #latest-news {
+#board-list-full, .block {
 	background: #DDDDDD;
 	border: 1px solid #CCCCCC;
 }
@@ -45,7 +45,7 @@ pre {
 	background: #CCCCCC;
 	margin-left: -2px !important;
 }
-#latest-news > .title {
+.block > .title {
 	background: #CCCCCC;
 	font-weight: bold;
 }

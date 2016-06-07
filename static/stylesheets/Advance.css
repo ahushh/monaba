@@ -28,16 +28,16 @@ pre {
 #board-list-full .board-category {
   display: none;
 }
-#latest-news {
+.block {
   background: rgba(20,20,20,0.95);
 }
-#latest-news > .title {
+.block > .title {
   font-weight: bold;
 }
 .news > .title {
   text-align: left !important;
 }
-#latest-news hr {
+.block hr {
   border : none;
   border-top : 1px solid #282a2e;
   height : 0;

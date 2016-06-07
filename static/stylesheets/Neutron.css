@@ -20,7 +20,7 @@ pre {
 
 /* home */
 
-#board-list-full, #latest-news {
+#board-list-full, .block {
 	background: #2C2C2C;
 	border: solid 1px #575757;
 	border-radius: 5px;
@@ -28,7 +28,7 @@ pre {
 #board-list-full .board-category {
 	display: none;
 }
-#latest-news > .title {
+.block > .title {
 	font-weight: bold;
 }
 .news > .title {

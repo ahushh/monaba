@@ -74,12 +74,12 @@ a:hover, .fa:hover, .spoiler:hover a {
 #board-list-full > .title {
   color: #ECCA74;
 }
-#latest-news {
+.block {
   background: #292825 url('https://i.imgur.com/F2AZvqs.jpg');
   border: 1px solid #34352D;
   border-radius: 5px;
 }
-#latest-news > .title {
+.block > .title {
   font-weight: bold;
   color: #ECCA74
 }

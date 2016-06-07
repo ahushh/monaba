@@ -11,10 +11,10 @@
 .board-category {
     display: none;
 }
-#latest-news {
+.block {
     border: 2px dashed #0cd264;
 }
-#latest-news > .title {
+.block > .title {
     background: #001400;
 }
 .news > .title {

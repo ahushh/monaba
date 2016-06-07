@@ -19,11 +19,11 @@ hr {
   height: 1px;
   border: none;
 }
-#latest-news {
+.block {
   background: #d9af9e;
   border: 1px solid #ca927b;
 }
-#latest-news > .title {
+.block > .title {
   background: #ca927b;
   font-weight: bold;
 }

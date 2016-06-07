@@ -10,10 +10,10 @@
 .board-category {
   display: none;
 }
-#latest-news {
+.block {
   background: #00796b;
 }
-#latest-news > .title {
+.block > .title {
   background: #00695c;
   font-weight: bold;
 }

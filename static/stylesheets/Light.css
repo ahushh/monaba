@@ -21,7 +21,7 @@ pre {
 
 /* home */
 
-#board-list-full, #latest-news {
+#board-list-full, .block {
   border-top: 1px solid #d1d1d1;
   border-right: 1px solid #c6c6c6;
   border-bottom: 1px solid #c6c6c6;
@@ -31,7 +31,7 @@ pre {
 #board-list-full .board-category {
   display: none;
 }
-#latest-news > .title {
+.block > .title {
   font-weight: bold;
 }
 .news > .title {

@@ -16,7 +16,7 @@
   <div #home-content>
     #{preEscapedToHtml $ unTextarea homeContent}
   $if not $ null newsAndFiles
-    <div #latest-news>
+    <div .block>
       <div .title>_{MsgNews}
       $forall (Entity pKey t, eFiles) <- newsAndFiles
         $if not $ t == entityVal (fst $ head newsAndFiles)
@@ -52,3 +52,14 @@
               <span .last-modified>
                   <i .fa .fa-history>
                   <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey pKey}>_{MsgLastModified} #{myFormatTime timeZone lm}
+  <div .block>
+    <div .title>_{MsgStatistics}
+    <div .stats>
+      <p>
+        _{MsgStatsAllPosts}: #{statsAllPosts} _{MsgStatsAllPostsDeleted statsAllDeleted}
+      <p>
+        _{MsgStatsMonth}: #{statsMonth}
+      <p>
+        _{MsgStatsDay}: #{statsDay}
+      <p>
+        _{MsgStatsAllFiles}: #{statsAllFiles}

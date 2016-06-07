@@ -43,11 +43,11 @@
     margin: 3px 3px 3px -4px;
     padding: 3px 3px 3px 5px;
 }
-#latest-news > .title {
+.block > .title {
     padding: 3px 3px 3px 5px;
     text-align: center;
 }
-#latest-news {
+.block {
     margin-top: 3%;
     padding-bottom: 2%;
 }
@@ -56,6 +56,10 @@
     overflow: hidden;
     word-wrap: break-word;
     width: 100%;
+}
+.stats {
+    margin: 5px;
+    text-align: center;
 }
 .news > .title {
     display: inline-block;

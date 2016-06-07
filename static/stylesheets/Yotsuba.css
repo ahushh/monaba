@@ -14,15 +14,15 @@
 #board-list-full .board-category {
     display: none;
 }
-#latest-news {
+.block {
     border: 1px solid;
 }
-#latest-news > .title {
+.block > .title {
     background: #ffccaa;
     font-weight: bold;
     font-size: 15px;
 }
-#latest-news hr {
+.block hr {
     height: 1px;
     border: none;
     background: #880000;

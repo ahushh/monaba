@@ -1,6 +1,6 @@
 /* home page */
 
-#board-list-full, #latest-news {
+#board-list-full, .block {
   background: #546471;
   border: 1px solid #37414a;
 }
@@ -16,7 +16,7 @@ hr {
   border: none !important;
   height: 1px
 }
-#latest-news > .title {
+.block > .title {
   background: #37414a;
   font-weight: bold;
 }

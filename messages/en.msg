@@ -330,6 +330,7 @@ CloseOnePopupIcon: Close one
 MarkToDeleteIcon: Mark to delete
 EditIcon: Edit
 ReplyIcon: Reply
+PrivateMessage: Private message
 RemoveFileIcon: Remove file
 CloseIcon: Close
 

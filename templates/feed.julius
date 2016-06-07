@@ -54,7 +54,7 @@ function refreshFeed(nopopup, updateTitle) {
     });
 }
 
-function showQuickPostForm(postId) {
+function showQuickPostForm(postId, isPrivate) {
     var postform = document.getElementById('post-form');    
     if (postform) {
         var previousMessage = postform.getElementsByTagName("textarea")[0].value;
@@ -116,6 +116,13 @@ function showQuickPostForm(postId) {
             span.className = 'reply-to';
             span.innerHTML = #{toJSON $ msgrender MsgReplyToThread}+threadLocalId;
             insertAfter( span, postform.querySelector('input[type=submit]') );
+
+            var inp = postform.getElementsByClassName("dest-input")[0];
+            if (isPrivate) {
+                inp.value = postId.substring(1);
+            } else {
+                inp.value = "";
+            }
         }
     });
 } 

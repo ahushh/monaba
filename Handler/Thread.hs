@@ -71,6 +71,10 @@ getThreadR board thread = do
     defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
     $(widgetFile "thread")
 -------------------------------------------------------------------------------------------------------------------
+getDestinationUID :: Maybe Text -> Handler (Maybe Text)
+getDestinationUID (Just postId) = fmap (Just . postPosterId) $ runDB $ get404 ((toSqlKey $ fromIntegral $ tread postId) :: Key Post)
+getDestinationUID Nothing = return Nothing
+
 postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
   when (thread <= 0) notFound
@@ -98,7 +102,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
     FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" MsgNoFormData threadUrl
-    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, nobump)
+    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, nobump, destPost)
       | isNothing maybeParent                             -> trickyRedirect "error" MsgNoSuchThread        boardUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
@@ -122,6 +126,8 @@ postThreadR board thread = do
         when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
         ------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" MsgPostingTooFast threadUrl
+        ------------------------------------------------------------------------------------------------------
+        destUID <- getDestinationUID destPost
         ------------------------------------------------------------------------------------------------------
         messageFormatted  <- doYobaMarkup message board thread
         AppSettings{..}   <- appSettings <$> getYesod
@@ -151,6 +157,7 @@ postThreadR board thread = do
                            , postPosterId     = posterId
                            , postLastModified = Nothing                                                
                            , postLockEditing  = False
+                           , postDestUID      = destUID
                            }
         void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
         -------------------------------------------------------------------------------------------------------

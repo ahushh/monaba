@@ -289,9 +289,12 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
       board          = postBoard $ entityVal ePost
       isThread       = sThreadLocalId == "0"
       pClass         = (if isThread then "op" else "reply") :: Text
+      itsforMe uid   = maybe True (==uid) (postDestUID $ entityVal ePost) || uid == (postPosterId $ entityVal ePost)
+      destUID        = postDestUID $ entityVal ePost
   in do
     timeZone        <- handlerToWidget getTimeZone
     rating          <- handlerToWidget getCensorshipRating
+    posterId        <- handlerToWidget getPosterId
     AppSettings{..} <- handlerToWidget $ appSettings <$> getYesod
     $(widgetFile "post")
 

@@ -1,5 +1,6 @@
 #{extra}
 <div #post-form-inputs>
+  ^{fvInput destView}
   $if not forcedAnon
       ^{fvInput nameView}#
   ^{fvInput passwordView}#

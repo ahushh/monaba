@@ -94,7 +94,7 @@ function truncateThread(threadLocalId,board,scrollToThreadBottom) {
     }
 }
 
-function showQuickPostForm(postId) {
+function showQuickPostForm(postId, isPrivate) {
     var spf = document.getElementById('show-plain-form');
     if (spf) spf.style.display = 'block';
 
@@ -154,6 +154,12 @@ function showQuickPostForm(postId) {
 
     document.getElementById('no-bump-block').style.display = '';
     postform.action = "/"+board+"/"+threadLocalId;
+    var inp = pf.getElementsByClassName("dest-input")[0];
+    if (isPrivate) {
+        inp.value = postId.substring(1);
+    } else {
+        inp.value = "";
+    }
 } 
 
 function showPlainPostForm() {

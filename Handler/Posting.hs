@@ -25,6 +25,7 @@ postForm :: Bool  -> -- ^ Is a new thread
                                      , [FormResult Censorship]       -- ^ Censorship ratings
                                      , GoBackTo       -- ^ Go back to
                                      , Maybe Bool     -- ^ No bump
+                                     , Maybe Text     -- ^ Destination post ID
                                      )
                          , Widget)
 postForm isNewThread boardVal muser extra = do
@@ -54,6 +55,7 @@ postForm isNewThread boardVal muser extra = do
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage)] }
       nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",tshow appMaxLenOfPostName ),("placeholder",msgrender MsgName)] }
       gobackInput  lbl = lbl { fsAttrs = [("class","goback-input")] }
+      destInput lbl = lbl { fsAttrs = [("class","dest-input")] }
       subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("maxlength",tshow appMaxLenOfPostTitle),
                                           if isNewThread then ("placeholder",msgrender MsgThreadSubject) else ("placeholder",msgrender MsgPostSubject)]++
                                          [("required","required") | boardRequiredThreadTitle boardVal && isNewThread] }
@@ -67,8 +69,9 @@ postForm isNewThread boardVal muser extra = do
   (nobumpRes   , nobumpView  ) <- mopt checkBoxField                        ""  Nothing
   (fileresults , fileviews   ) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mopt fileField "File" Nothing)
   (ratingresults, ratingviews) <- unzip <$> forM ([1..numberFiles] :: [Int]) (\_ -> mreq (selectFieldList ratings) (ratingInput "") Nothing)
-  let result = (,,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
-               FormSuccess fileresults <*> FormSuccess ratingresults <*> gobackRes  <*> nobumpRes
+  (destRes     , destView    ) <- mopt hiddenField            (destInput "") Nothing
+  let result = (,,,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
+               FormSuccess fileresults <*> FormSuccess ratingresults <*> gobackRes  <*> nobumpRes <*> destRes
       widget = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------

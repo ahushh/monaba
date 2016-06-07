@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 });
 
-function showQuickPostForm(postId) {
+function showQuickPostForm(postId, isPrivate) {
     closePostForm();
     var p = document.getElementById(postId);
     var pf = document.getElementById('post-form');
@@ -59,6 +59,12 @@ function showQuickPostForm(postId) {
     // p.parentNode.insertBefore( pf, p.nextSibling );
     pf.style.display = 'table';
     // document.getElementById("go-back-block").style.display = 'none';
+    var inp = pf.getElementsByClassName("dest-input")[0];
+    if (isPrivate) {
+        inp.value = postId.substring(1);
+    } else {
+        inp.value = "";
+    }
 } 
 
 function showPlainPostForm(bottom) {

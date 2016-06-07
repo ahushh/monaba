@@ -12,6 +12,8 @@
               <i title=_{MsgLockEditing} .fa .fa-lock>
         $if isThread
           <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread .clickable>
+        $if isJust destUID
+          <i .fa .fa-envelope-o title=_{MsgPrivateMessage}>
         $if geoIp
             $maybe GeoCountry code name <- postCountry postVal
                 <img src=#{geoIconPath appStaticDir code} title=#{name}>
@@ -37,6 +39,7 @@
             #{number}
         $if canPost
             <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
+            <i title=_{MsgPrivateMessage} onclick="showQuickPostForm('p#{sPostId}',true);insertQuoted('>>#{sPostLocalId}','post-form');" .fa .fa-envelope-square .clickable>
             <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .text-reply>
               _{MsgReplyIcon}
         <span .cpanel>
@@ -83,94 +86,95 @@
              <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
          $else
              <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>#{postParentTitle postVal} >>/#{board}/#{sThreadLocalId}
-
-    $forall Entity fileKey file <- eFiles
-      $with fKey <- fromIntegral $ fromSqlKey fileKey
-        $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-          $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
-            $with up <- attachedfilePath file
-              $with fi <- makeFileInfo file
-                <div class=#{c} id="file-#{fKey}">
-                  <div .file-name>
-                      <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
-                      <a onclick="return confirm('_{MsgDeleteFileConfirm}')" href=@{DeleteFileR fKey}>
-                        <i title=_{MsgDeleteFile} .fa .fa-trash>
-                      $if attachedfileFiletype file == FileImage
-                        <ul .dropdown-menu>
-                          <li>
-                            <i title=_{MsgImageSource} .fa .fa-search .clickable>
-                            <ul>
-                              <li>
-                                <a title=Google target=_blank href="//www.google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
-                              <li>
-                                <a title=Yandex target=_blank href="//yandex.ru/images/search?rpt=imageview&img_url=#{appRoot}/#{up}">Y
-                              <li>
-                                <a title=TinEye target=_blank href="//tineye.com/search/?url=#{appRoot}/#{up}">T
-                              <li>
-                                <a title=SauceNAO target=_blank href="//saucenao.com/search.php?url=#{appRoot}/#{up}">S
-                              <li>
-                                <a title=Iqdb target=_blank href="//iqdb.org/?url=#{appRoot}/#{up}">Iq
-                  <div .file-info>
-                    $if attachedfileFiletype file == FileVideo
-                      <i .fa .fa-video-camera>
-                    $elseif attachedfileFiletype file == FileAudio
-                      <i .fa .fa-music>
-                    $elseif attachedfileFiletype file == FileImage
-                      <i .fa .fa-photo>
-                    $elseif attachedfileFiletype file == FileFlash
-                      <i .fa .fa-file-flash>
-                    $else
-                      <i .fa .fa-file-o>
-                    #{fi}
-                  $if elem ChangeFileRatingP permissions
-                     <div .rating-management>
-                       $with fRating <- tread (attachedfileRating file)
-                         $if fRating == SFW
-                             SFW&nbsp;
-                         $else
-                             <a href=@{ManageCensorshipR fKey SFW}>SFW
-                         $if fRating == R15
-                             R-15&nbsp;
-                         $else
-                             <a href=@{ManageCensorshipR fKey R15}>R-15
-                         $if fRating == R18
-                             R-18&nbsp;
-                         $else
-                             <a href=@{ManageCensorshipR fKey R18}>R-18
-                         $if fRating == R18G
-                             R-18G&nbsp;
-                         $else
-                             <a href=@{ManageCensorshipR fKey R18G}>R-18G
-                  $with fRating <- tread (attachedfileRating file)
-                    $if fRating > rating
-                      $case fRating
-                        $of R15
-                          <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
-                        $of R18
-                          <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
-                        $of R18G
-                          <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
-                        $of SFW
-                          Suppress warnings.
-                    $else
-                      $if attachedfileThumbWidth file == -1
-                          <img src="#{tp}" .thumb title="#{fi}">
-                      $elseif attachedfileFiletype file == FileVideo
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
+    $if itsforMe posterId
+      $forall Entity fileKey file <- eFiles
+        $with fKey <- fromIntegral $ fromSqlKey fileKey
+          $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+            $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
+              $with up <- attachedfilePath file
+                $with fi <- makeFileInfo file
+                  <div class=#{c} id="file-#{fKey}">
+                    <div .file-name>
+                        <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
+                        <a onclick="return confirm('_{MsgDeleteFileConfirm}')" href=@{DeleteFileR fKey}>
+                          <i title=_{MsgDeleteFile} .fa .fa-trash>
+                        $if attachedfileFiletype file == FileImage
+                          <ul .dropdown-menu>
+                            <li>
+                              <i title=_{MsgImageSource} .fa .fa-search .clickable>
+                              <ul>
+                                <li>
+                                  <a title=Google target=_blank href="//www.google.com/searchbyimage?image_url=#{appRoot}/#{up}">G
+                                <li>
+                                  <a title=Yandex target=_blank href="//yandex.ru/images/search?rpt=imageview&img_url=#{appRoot}/#{up}">Y
+                                <li>
+                                  <a title=TinEye target=_blank href="//tineye.com/search/?url=#{appRoot}/#{up}">T
+                                <li>
+                                  <a title=SauceNAO target=_blank href="//saucenao.com/search.php?url=#{appRoot}/#{up}">S
+                                <li>
+                                  <a title=Iqdb target=_blank href="//iqdb.org/?url=#{appRoot}/#{up}">Iq
+                    <div .file-info>
+                      $if attachedfileFiletype file == FileVideo
+                        <i .fa .fa-video-camera>
                       $elseif attachedfileFiletype file == FileAudio
-                          <audio controls>
-                            <source src="/#{up}">
-                          <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        <i .fa .fa-music>
                       $elseif attachedfileFiletype file == FileImage
-                          <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        <i .fa .fa-photo>
                       $elseif attachedfileFiletype file == FileFlash
-                          <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
+                        <i .fa .fa-file-flash>
                       $else
-                          <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
-    $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
-        <div .message>#{m}
-    $maybe lm <- postLastModified postVal
-        <span .last-modified>
-            <i .fa .fa-history>
-            <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime timeZone lm}
-            
+                        <i .fa .fa-file-o>
+                      #{fi}
+                    $if elem ChangeFileRatingP permissions
+                       <div .rating-management>
+                         $with fRating <- tread (attachedfileRating file)
+                           $if fRating == SFW
+                               SFW&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey SFW}>SFW
+                           $if fRating == R15
+                               R-15&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R15}>R-15
+                           $if fRating == R18
+                               R-18&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R18}>R-18
+                           $if fRating == R18G
+                               R-18G&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R18G}>R-18G
+                    $with fRating <- tread (attachedfileRating file)
+                      $if fRating > rating
+                        $case fRating
+                          $of R15
+                            <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18
+                            <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18G
+                            <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of SFW
+                            Suppress warnings.
+                      $else
+                        $if attachedfileThumbWidth file == -1
+                            <img src="#{tp}" .thumb title="#{fi}">
+                        $elseif attachedfileFiletype file == FileVideo
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileAudio
+                            <audio controls>
+                              <source src="/#{up}">
+                            <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileImage
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileFlash
+                            <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
+                        $else
+                            <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+      $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
+          <div .message>#{m}
+      $maybe lm <- postLastModified postVal
+          <span .last-modified>
+              <i .fa .fa-history>
+              <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime timeZone lm}
+    $else
+      <div .message>_{MsgPrivateMessage}

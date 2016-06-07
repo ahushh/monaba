@@ -332,6 +332,7 @@ CloseOnePopupIcon: Закрыть
 MarkToDeleteIcon: Отметить к удалению
 EditIcon: Редактировать
 ReplyIcon: Ответить
+PrivateMessage: Личное сообщение
 RemoveFileIcon: Убрать файл
 CloseIcon: Закрыть
 

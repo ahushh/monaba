@@ -63,6 +63,7 @@ Post json
     lastModified UTCTime Maybe 
     lockEditing  Bool default=false
     hellbanned   Bool default=false
+    destUID      Text Maybe default=null
     -- form's values
     message      Textarea
     rawMessage   Text

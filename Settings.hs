@@ -103,6 +103,7 @@ data AppSettings = AppSettings
     , appJsCssHideFilesNames :: Bool
     , appJsCssHideFilesInfo :: Bool
     , appJsCssHideMarkupButtons :: Bool
+    , appJsCssAttachmentThumbWidth :: Int
     , appJsCssCustom :: Text
     }
 
@@ -182,6 +183,7 @@ instance FromJSON AppSettings where
         appJsCssHideFilesNames <- o .: "jsCssHideFilesNames"
         appJsCssHideFilesInfo <- o .: "jsCssHideFilesInfo"
         appJsCssHideMarkupButtons <- o .: "jsCssHideMarkupButtons"
+        appJsCssAttachmentThumbWidth <- o .: "jsCssAttachmentThumbWidth"
         appJsCssCustom <- o .: "jsCssCustom"
 
         return AppSettings {..}

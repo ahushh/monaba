@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 ["checkbox", "css_hide_files_names"              , #{toJSON $ msgrender MsgCssHideFilesNames}],
                 ["checkbox", "css_hide_files_info"               , #{toJSON $ msgrender MsgCssHideFilesInfo}],
                 ["checkbox", "css_hide_markup_buttons"           , #{toJSON $ msgrender MsgCssHideMarkupButtons}],
+                ["number"  , "css_attachment_thumb_width"        , #{toJSON $ msgrender MsgCssAttachmentThumbWidth}],
                 ["text"    , "css_custom"                        , #{toJSON $ msgrender MsgCssCustom}],
                ];
     console.log(opts);

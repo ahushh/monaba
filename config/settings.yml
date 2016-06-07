@@ -80,4 +80,5 @@ jsCssSideMargin:                  0
 jsCssHideFilesNames:              false
 jsCssHideFilesInfo:               false
 jsCssHideMarkupButtons:           false
+jsCssAttachmentThumbWidth:        0
 jsCssCustom:                      ""

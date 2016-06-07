@@ -402,6 +402,7 @@ function loadConfig() {
     setConfigIfNull("css_hide_files_names", #{toJSON $ appJsCssHideFilesNames settings});
     setConfigIfNull("css_hide_files_info", #{toJSON $ appJsCssHideFilesInfo settings});
     setConfigIfNull("css_hide_markup_buttons", #{toJSON $ appJsCssHideMarkupButtons settings});
+    setConfigIfNull("css_attachment_thumb_width", #{toJSON $ appJsCssAttachmentThumbWidth settings});
     setConfigIfNull("css_custom", #{toJSON $ appJsCssCustom settings});
 }
 
@@ -439,6 +440,7 @@ function resetConfig() {
     setConfig("css_hide_files_names", #{toJSON $ appJsCssHideFilesNames settings});
     setConfig("css_hide_files_info", #{toJSON $ appJsCssHideFilesInfo settings});
     setConfig("css_hide_markup_buttons", #{toJSON $ appJsCssHideMarkupButtons settings});
+    setConfig("css_attachment_thumb_width", #{toJSON $ appJsCssAttachmentThumbWidth settings});
     setConfig("css_custom", #{toJSON $ appJsCssCustom settings});
 }
 
@@ -470,6 +472,11 @@ function applyCSSSettings() {
     var hide_markup_buttons = getConfig("css_hide_markup_buttons");
     if (hide_markup_buttons) {
         style.sheet.insertRule(".markup-buttons { display: none; }", index);
+        index++;
+    }
+    var attachment_thumb_width = getConfig("css_attachment_thumb_width");
+    if (attachment_thumb_width && attachment_thumb_width > 0) {
+        style.sheet.insertRule(".attachment-thumb { width: "+attachment_thumb_width+"% !important; }", index);
         index++;
     }
     var custom = getConfig("css_custom");

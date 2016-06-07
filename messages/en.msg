@@ -510,6 +510,7 @@ CssSideMargin: css_side_margin
 CssHideFilesNames: css_hide_files_names
 CssHideFilesInfo: css_hide_files_info
 CssHideMarkupButtons: css_hide_markup_buttons
+CssAttachmentThumbWidth: css_attachment_thumb_width
 CssCustom: css_custom
 ######################################################################################
 ## Statistics

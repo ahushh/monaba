@@ -69,6 +69,7 @@ getThreadR board thread = do
   AppSettings{..} <- appSettings <$> getYesod
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   bookmarksUpdateLastReply eOpPost
+  ((_, searchWidget), _) <- runFormGet $ searchForm $ Just board
   defaultLayout $ do
     setUltDestCurrent
     defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]

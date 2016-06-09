@@ -534,3 +534,12 @@ StatsAllFiles: Всего файлов
 BookmarksAdd: Добавить в закладки
 BookmarksDel: Удалить из закладок
 BookmarksNewPosts: Новых постов
+######################################################################################
+## Search
+######################################################################################
+SearchFound nnn@Int: #{i18nFoundPostsRus nnn}
+SearchDoc: Полный синтаксис Sphinx
+SearchHelpOr: слово "hello" или "world"
+SearchHelpMaybe: "hello" за которым может следовать слово "world"
+SearchHelpNot: слово "hello" за которым нет "world"
+SearchHelpPhrase: фраза "hello world" целиком

@@ -1,0 +1,12 @@
+<h2 style="text-align: center">_{MsgSearchFound $ length searchResults}
+$if not $ null searchResults
+    $forall result <- searchResults
+      $with post <- searchResultPost result
+        $with postId <- fromSqlKey $ searchResultPostId result
+          <div .result .reply .post>
+            <span .reply-title>#{postTitle post}
+            $if postParent post == 0
+              <a onmouseover="showPopupPost(this,event,null,#{postLocalId post},'#{postBoard post}')" onclick="highlightPost('p#{postId}')" href=@{ThreadR (postBoard post) (postLocalId post)}#p#{postId}>#{postTitle post} >>/#{postBoard post}/#{postLocalId post}
+            $else
+              <a onmouseover="showPopupPost(this,event,null,#{postLocalId post},'#{postBoard post}')" onclick="highlightPost('p#{postId}')" href=@{ThreadR (postBoard post) (postParent post)}#p#{postId}>#{postTitle post} >>/#{postBoard post}/#{postParent post}/#{postLocalId post}
+            <div .excerpt>#{searchResultExcerpt result}

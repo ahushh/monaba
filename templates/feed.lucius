@@ -5,3 +5,6 @@
 #go-back-block {
     display: none;
 }
+#refresh-feed {
+    text-align: center;
+}

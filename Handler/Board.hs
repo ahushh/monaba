@@ -89,6 +89,7 @@ getBoardR board page = do
   msgrender       <- getMessageRender
   AppSettings{..} <- appSettings <$> getYesod
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
+  ((_, searchWidget), _) <- runFormGet $ searchForm $ Just board
   defaultLayout $ do
     setUltDestCurrent
     let p = if page > 0 then T.concat [" (", tshow page, ") "] else ""

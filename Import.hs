@@ -33,7 +33,7 @@ trickyRedirect status msg url = do
   if t
     then redirect (JsonFromMsgR status)
     else redirect url
--------------------------------------------------------------------------------------------------------------------      
+-------------------------------------------------------------------------------------------------------------------
 showPermission :: Permission -> AppMessage
 showPermission p = fromJust $ lookup p xs
   where xs = [(ManageThreadP    , MsgManageThread    )
@@ -103,6 +103,19 @@ data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text  ) -- ^ Required thread title
                               (Maybe Int   ) -- ^ Index
                               (Maybe Text  ) -- ^ Enable private messages
+-------------------------------------------------------------------------------------------------------------------
+-- Search
+-------------------------------------------------------------------------------------------------------------------
+data SearchResult = SearchResult
+    { searchResultPostId  :: PostId
+    , searchResultPost    :: Post
+    , searchResultExcerpt :: Html
+    }
+
+searchForm :: Maybe Text -> Html -> MForm Handler (FormResult (Text, Maybe Text), Widget)
+searchForm board = renderDivs $ (,)
+                     <$> areq (searchField False) "" Nothing
+                     <*> aopt hiddenField "" (Just board)
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------

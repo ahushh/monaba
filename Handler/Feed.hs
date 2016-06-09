@@ -49,6 +49,7 @@ getAjaxFeedOffsetR offset = do
   msgrender        <- getMessageRender
   mBanner          <- if appRandomBanners then randomBanner else takeBanner "feed"
   (editFormWidget, _) <- generateFormPost $ editForm permissions
+  ((_, searchWidget), _) <- runFormGet $ searchForm $ Just ""
   if offset == 0
      then defaultLayout $ do
             setUltDestCurrent
@@ -89,5 +90,6 @@ getAjaxNewFeedR lastPostId = do
   (editFormWidget, _) <- generateFormPost $ editForm permissions
   let offset  = -1 :: Int
       mBanner = Nothing :: Maybe (String, String)
+  ((_, searchWidget), _) <- runFormGet $ searchForm $ Just ""
   bareLayout $(widgetFile "feed")
 

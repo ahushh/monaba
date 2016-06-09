@@ -16,6 +16,7 @@
 
 /help                HelpR         GET
 /help/markup         HelpMarkupR   GET
+/help/search         HelpSearchR   GET
 
 /online              OnlineR       GET
 /event               EventR        GET
@@ -26,6 +27,9 @@
 /bookmarks/add/#Int  BookmarksAddR GET
 /bookmarks/del/#Int  BookmarksDelR GET
 /bookmarks/upd/#Int  BookmarksUpdR GET
+
+/search         SearchR  GET
+/search/xmlpipe XmlpipeR GET
 
 /ajax/post/preview                AjaxPostPreviewR  POST
 /ajax/postform/#Text              AjaxGetPostFormR  GET

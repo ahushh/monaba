@@ -1,0 +1,23 @@
+<h2 style=text-align:center>
+  <a href=@{HelpR}>
+    _{MsgHelp} 
+  / 
+  <a href=@{HelpMarkupR}>
+    _{MsgMarkup}
+  / 
+  _{MsgSearch}
+
+<p>_{MsgSearchHelpOr}
+<pre>hello | world
+<p>_{MsgSearchHelpMaybe}
+<pre>hello MAYBE world
+<p>_{MsgSearchHelpNot}
+<pre>hello -world
+<pre>hello !world
+<p>_{MsgSearchHelpPhrase}
+<pre>"hello world"
+
+<div style="text-align: center" >
+  <a href="http://sphinxsearch.com/docs/current.html#extended-syntax">
+    _{MsgSearchDoc}
+

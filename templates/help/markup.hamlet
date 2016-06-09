@@ -1,7 +1,9 @@
 <h2 style=text-align:center>
   <a href=@{HelpR}>
     _{MsgHelp} 
-  / _{MsgMarkup}
+  / _{MsgMarkup} /
+  <a href=@{HelpSearchR}>
+    _{MsgSearch}
 
 <div .markup-wrapper>
     $if elem AdditionalMarkupP permissions

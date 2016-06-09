@@ -13,6 +13,7 @@ $maybe banner <- mBanner
     <i .fa .fa-table>
 $if not $ T.null summary
     <div id="board-summary">#{summary}
+
 $if hasAccessToNewThread
     <div #show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
@@ -46,5 +47,9 @@ $else
         ^{deleteWidget permissions}
     <div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
         ^{editFormWidget}
+
+<form .search-form method=get action=@{SearchR}>
+  ^{searchWidget}
+  <input type=submit value=_{MsgSearch}>
 
 ^{paginationWidget page pages (BoardR board)}

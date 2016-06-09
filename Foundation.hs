@@ -47,6 +47,18 @@ data Censorship = SFW | R15 | R18 | R18G
     deriving (Show, Read, Eq, Enum, Bounded, Ord)
 
 -- i18n helpers
+i18nFoundPostsRus :: Int -> String
+i18nFoundPostsRus n
+  | n == 1               = "Найден "++show n++" пост"
+  | n `elem` [2..4]     = "Найдено "++show n++" поста"
+  | n `elem` [5..19]    = "Найдено "++show n++" постов"
+  | lastN == 0           = "Найдено "++show n++" постов"
+  | lastN == 1           = "Найден "++show n++" пост"
+  | lastN `elem` [2..4] = "Найдено "++show n++" поста"
+  | lastN `elem` [5..9] = "Найдено "++show n++" постов"
+  | otherwise           = "Найдено "++show n++" постов"
+    where lastN = (head $ ((++)[0]) $ map (`mod`10) $ takeWhile (>0) $ iterate (`div`10) n)
+
 omittedRus :: Int -> String
 omittedRus n
   | n == 1               = "пост пропущен"

@@ -497,3 +497,9 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
     margin: 7px;
 }
 
+.search-form {
+    text-align: right;
+}
+.search-form .required, .search-form .optional {
+    display: inline-block;
+}

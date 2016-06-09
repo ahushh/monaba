@@ -532,3 +532,12 @@ StatsAllFiles: All files
 BookmarksAdd: Add to bookmarks
 BookmarksDel: Remove from bookmarks
 BookmarksNewPosts: New posts
+######################################################################################
+## Search
+######################################################################################
+SearchFound nnn@Int: Found #{show nnn} posts
+SearchDoc: Full sphinx syntax
+SearchHelpOr: operator OR
+SearchHelpMaybe: operator MAYBE
+SearchHelpNot: operator NOT
+SearchHelpPhrase: phrase search operator

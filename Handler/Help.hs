@@ -15,3 +15,10 @@ getHelpMarkupR = do
   defaultLayout $ do
     defaultTitleMsg MsgMarkup
     $(widgetFile "help/markup")
+
+getHelpSearchR :: Handler Html
+getHelpSearchR = do
+  permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  defaultLayout $ do
+    defaultTitleMsg MsgSearch
+    $(widgetFile "help/search")

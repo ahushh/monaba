@@ -47,6 +47,7 @@ library
                      Handler.Settings
                      Handler.Captcha
                      Handler.RSS
+                     Handler.Search
                      Utils.File
                      Utils.YobaMarkup
 
@@ -142,6 +143,9 @@ library
                  , base64-bytestring
                  , mtl
                  , yesod-newsfeed
+                 , sphinx
+                 , xml-conduit
+                 , xml-types
 
 
 executable         Monaba

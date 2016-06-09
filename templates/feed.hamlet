@@ -8,8 +8,9 @@ $if offset == 0
       _{MsgFeed}
       <a title="RSS" href=@{RssR "feed"}>
         <i .fa .fa-rss>
+
     <div .feed>
-      <div #refresh-feed style=text-align:center onclick="refreshFeed()">
+      <div #refresh-feed onclick="refreshFeed()">
         [ 
           <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
           <i .icon-thread-refresh .fa .fa-refresh>
@@ -28,6 +29,10 @@ $if offset == 0
           _{MsgIwantmore}
           <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
         ]
+      <form .search-form method=get action=@{SearchR}>
+        ^{searchWidget}
+        <input type=submit value=_{MsgSearch}>
+
     <div #edit-form style=display:none>
       ^{editFormWidget}
 $else

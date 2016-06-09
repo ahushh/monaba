@@ -2,4 +2,7 @@
   _{MsgHelp} /
   <a href=@{HelpMarkupR}>
     _{MsgMarkup}
+  / 
+  <a href=@{HelpSearchR}>
+    _{MsgSearch}
 #{preEscapedToHtml $ unTextarea about}

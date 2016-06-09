@@ -248,9 +248,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var post = document.getElementById('p'+msg.data);
                         var indexNum = post.getElementsByClassName("index-number");
                         if (indexNum.length) {
-                            var newPost = parseDOMElement(request.responseText);
                             addPostCounter(newPost, indexNum[0].innerHTML);
                         }
+                        post.parentNode.replaceChild(newPost, post);
                         makeRefmap();
                         initPopupsCache();
                         refreshMathjax();
@@ -1257,9 +1257,9 @@ function showEditForm(postId) {
                             action: "/ajax/post/"+board+"/"+localId,
                             onload: function(request) {
                                 hideEditForm();
+                                var newPost = parseDOMElement(request.responseText);
                                 var indexNum = post.getElementsByClassName("index-number");
                                 if (indexNum.length) {
-                                    var newPost = parseDOMElement(request.responseText);
                                     addPostCounter(newPost, indexNum[0].innerHTML);
                                 }
                                 initOnePost(newPost);

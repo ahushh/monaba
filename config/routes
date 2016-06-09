@@ -22,6 +22,11 @@
 
 /catalog/#Text       CatalogR      GET
 
+/bookmarks           BookmarksR    GET
+/bookmarks/add/#Int  BookmarksAddR GET
+/bookmarks/del/#Int  BookmarksDelR GET
+/bookmarks/upd/#Int  BookmarksUpdR GET
+
 /ajax/post/preview                AjaxPostPreviewR  POST
 /ajax/postform/#Text              AjaxGetPostFormR  GET
 /ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET

@@ -87,6 +87,7 @@ Manage: Manage
 Login: Log in
 Logout: Log out
 Home: Home
+Bookmarks: Bookmarks
 ### admin buttons
 BanPoster: Ban poster
 StickThread: Stick
@@ -525,3 +526,9 @@ StatsAllPostsDeleted del@Int: (not including #{show del} deleted)
 StatsMonth: Last month's posts
 StatsDay: Last day's posts
 StatsAllFiles: All files
+######################################################################################
+## Bookmarks
+######################################################################################
+BookmarksAdd: Add to bookmarks
+BookmarksDel: Remove from bookmarks
+BookmarksNewPosts: New posts

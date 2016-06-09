@@ -27,6 +27,7 @@ library
                      Handler.Thread
                      Handler.Board
                      Handler.Catalog
+                     Handler.Bookmarks
                      Handler.Edit
                      Handler.Feed
                      Handler.Posting

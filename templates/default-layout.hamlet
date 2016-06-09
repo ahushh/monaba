@@ -2,6 +2,8 @@
   <div #control-panel>
     <a href=@{HomeR} title=_{MsgHome}>
       <i .fa .fa-home>
+    <a href=@{BookmarksR} title=_{MsgBookmarks}>
+      <i .fa .fa-star>
     <a href=@{HelpR} title=_{MsgHelp}>
       <i .fa .fa-question-circle>
     <a href=@{SettingsR} title=_{MsgSettings}>

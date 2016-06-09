@@ -12,6 +12,12 @@
               <i title=_{MsgLockEditing} .fa .fa-lock>
         $if isThread
           <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread .clickable>
+        $if inBookmarks
+          <i title=_{MsgBookmarksDel} onclick="bookmarks('#{sPostId}','del')" .fa .fa-star .bookmarks-del .clickable>
+          <i title=_{MsgBookmarksAdd} onclick="bookmarks('#{sPostId}','add')" .fa .fa-star-o style="display:none" .bookmarks-add .clickable>
+        $else
+          <i title=_{MsgBookmarksDel} onclick="bookmarks('#{sPostId}','del')" .fa .fa-star style="display:none" .bookmarks-del .clickable>
+          <i title=_{MsgBookmarksAdd} onclick="bookmarks('#{sPostId}','add')" .fa .fa-star-o .bookmarks-add .clickable>
         $if isJust destUID
           <i .fa .fa-envelope-o title=_{MsgPrivateMessage}>
         $if geoIp

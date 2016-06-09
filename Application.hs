@@ -44,6 +44,7 @@ import Handler.Help
 import Handler.Thread
 import Handler.Board
 import Handler.Catalog
+import Handler.Bookmarks
 import Handler.Edit
 import Handler.Feed
 import Handler.Delete

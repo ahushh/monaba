@@ -30,6 +30,31 @@ var Monaba = {
 };
 loadConfig();
 applyCSSSettings();
+
+//-----------------------------------------------------------------
+// Bookmarks
+//-----------------------------------------------------------------
+function bookmarks(postId, action) {
+    httpRequest({
+        action: '/bookmarks/'+action+'/'+postId,
+        headers: { 'Accept': 'application/json' },
+        onload: function(request) {
+            if (request.status >= 200 && request.status < 400) {
+                var data = JSON.parse(request.responseText);
+                if (data.ok) {
+                    var post = document.getElementById("p"+postId);
+                    toggleInline(  post.getElementsByClassName("bookmarks-add")[0] );
+                    toggleInline(  post.getElementsByClassName("bookmarks-del")[0] );
+                } else {
+                    // todo error handling
+                }
+            } else {
+                // todo error handling
+            }
+        }
+    });
+}
+
 //-----------------------------------------------------------------
 // Hellban form
 //-----------------------------------------------------------------
@@ -1989,6 +2014,7 @@ function refreshThread(board, threadLocalId, nopopup, updateTitle) {
                 initPopupsCache();
                 refreshMathjax();
                 if (updateTitle) updateTitle(n);
+                httpRequest({ action: "/bookmarks/upd/"+document.querySelector("#thread-"+threadLocalId+"-"+board+" .op.post").id.substring(1) });
             } else if (data == "No such thread ") {
                 if (!nopopup) popupMessage(#{toJSON $ msgrender MsgThreadNotExist}, getConfig("popup_message_display_time"));
             } else if (data == "No new posts ") {

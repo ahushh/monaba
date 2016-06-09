@@ -7,6 +7,7 @@ import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
 import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
+import           Handler.Bookmarks  (bookmarksUpdateLastReply)
 import           Handler.Posting
 import           Handler.Captcha    (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
@@ -67,6 +68,7 @@ getThreadR board thread = do
   msgrender       <- getMessageRender
   AppSettings{..} <- appSettings <$> getYesod
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
+  bookmarksUpdateLastReply eOpPost
   defaultLayout $ do
     setUltDestCurrent
     defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]

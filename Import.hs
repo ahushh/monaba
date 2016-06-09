@@ -307,6 +307,9 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
     rating          <- handlerToWidget getCensorshipRating
     posterId        <- handlerToWidget getPosterId
     AppSettings{..} <- handlerToWidget $ appSettings <$> getYesod
+    inBookmarks     <- handlerToWidget $ do
+      bm <- getBookmarks
+      return $ isJust $ lookup (fromIntegral postId) bm
     $(widgetFile "post")
 
 paginationWidget page pages route = $(widgetFile "pagination")
@@ -412,6 +415,14 @@ getAllHiddenThreads = do
   case ht of
    Just xs -> return $ read $ unpack xs
    Nothing -> setSession "hidden-threads" "[]" >> return []
+
+getBookmarks :: Handler [(Int, Int)]
+getBookmarks = do
+  bm <- lookupSession "bookmarks"
+  case bm of
+   Just xs -> return $ read $ unpack xs
+   Nothing -> setSession "bookmarks" "[]" >> return []
+
 
 getAllHiddenPostsIds :: [Text] -> Handler [Key Post]
 getAllHiddenPostsIds boards = do

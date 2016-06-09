@@ -29,9 +29,10 @@ bookmarksUpdateLastReply ePost = do
   case bm of
     Just bm' ->
      let xs' = tread bm' :: [(Int, Int)]
+         isInBookmarks = (/=0) $ length $ filter ((==postId).fst) xs'
          xs  = filter ((/=postId).fst) xs'
          new = tshow ( (postId, replyLocalId) : xs)
-      in setSession "bookmarks" new
+      in if isInBookmarks then setSession "bookmarks" new else return ()
     Nothing -> setSession "bookmarks" $ T.concat [ "[(",tshow postId,",",tshow replyLocalId,")]" ]
 
 getBookmarksUpdR :: Int -> Handler TypedContent

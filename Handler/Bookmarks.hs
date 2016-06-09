@@ -6,12 +6,14 @@ import qualified Data.Text       as T
 getBookmarksR :: Handler Html
 getBookmarksR = do
   permissions <- ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  posterId    <- getPosterId
   bm <- getBookmarks
   let toKey = toSqlKey . fromIntegral . fst
       toKey :: (Int, Int) -> Key Post
       postIds       = map toKey bm
       postsLastSeen = map snd bm
-  posts      <- catMaybes <$> forM postIds  (runDB . get)
+  posts'      <- catMaybes <$> forM postIds  (runDB . get)
+  let posts = filter (\p -> and [not (postDeleted p), ( not (postHellbanned p) || (postHellbanned p && postPosterId p == posterId))]) posts'
   postFiles  <- forM postIds $ \p -> runDB $ selectList [AttachedfileParentId ==. p] []
   newReplies <- forM (zip posts postsLastSeen) $ \(p,r) -> runDB $ count [PostParent ==. postLocalId p, PostBoard ==. postBoard p, PostLocalId >. r]
   let postsAndFiles = zip3 (zipWith Entity postIds posts) postFiles newReplies

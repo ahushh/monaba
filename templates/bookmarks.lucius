@@ -1,3 +1,6 @@
 h2 {
     text-align: center;
 }
+.mark-to-delete, .icon-edit-post, .ajax-admin {
+    display: none;
+}

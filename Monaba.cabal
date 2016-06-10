@@ -133,7 +133,7 @@ library
                  , hs-GeoIP                      
                  , tagsoup                       
                  , parsec                        
-                 , yesod-auth-hashdb
+                 , yesod-auth-hashdb < 1.5
                  , random
                  , imagemagick
                  , resourcet

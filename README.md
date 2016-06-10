@@ -23,6 +23,10 @@ Features
 * Switchable stylesheets
 * YouTube, vimeo, coub embedding
 * Works fine with JavaScript disabled
+* Thread catalog
+* Bookmarks
+* Full-text search
+* Private messages
 * Administration
     - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session
     - Banning by IP
@@ -34,14 +38,15 @@ Features
     - Modlog which allows to view previous actions
     - Post search by ID and UID
 
-Dependencies
+Requirements
 ------
-* Nginx for serving uploaded files
+* Nginx (for serving uploaded files)
 * Postgresql >= 9.1
 * PHP5 to use GeSHi for code highlighting
-* Imagemagick library
-* ffmpeg/libav (thumbnails for webm)
-* exiftool
+* Imagemagick (image thumbnails)
+* ffmpeg/libav (webm thumbnails)
+* exiftool (for audio and webm files)
+* Sphinx (post search)
 
 Required for builiding from source:
 
@@ -51,30 +56,34 @@ Required for builiding from source:
 Installation
 ======
 
+Open the prompt and type:
+
     git clone https://github.com/ahushh/Monaba
     cd Monaba
 
-Main config file `config/settings.yml`
+Main configuration file `config/settings.yml`
 
 The maximum files size is hard coded and can be changed in `Foundation.hs` before building. Default value is 25 MB.
 
 Default login/password: admin
 
-### Download GeoIPCity
+### Geolocation
+
+Download GeoIPCity by running the following commands:
 
     wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
     gzip -d GeoLiteCity.dat.gz
-    cp GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
+    cp GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat # or whatever path you want
 
-Or it can be installed from repositories. You can change the path in `config/settings.yml`
+Or it can be installed from repositories. You can change the  in `config/settings.yml`
 
 ### Download GeSHi
 
     wget http://sourceforge.net/projects/geshi/files/geshi/GeSHi%201.0.8.11/GeSHi-1.0.8.11.tar.gz
     tar -zxvf GeSHi-1.0.8.11.tar.gz
-    mv geshi /your/path/to/geshi
+    mv geshi ~/
 
-Set your path to GeSHi in `highlight.php`
+Set your path to GeSHi in `highlight.php`. Home directory is usually good.
 
 ## Using binary packages
 
@@ -84,20 +93,26 @@ If it's not working or outdated, try to build from source.
 
 ## Building from source
 
-Sample list of required packages for debian (probably outdated and not full):
+Sample list of required packages for debian:
 
-    apt-get install ghc cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev
+    apt-get install ghc cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev libicu-dev
 
 ### Execute the following commands
 
     cabal update
     cabal sandbox init
+
+    cabal install happy alex
+
     cabal fetch nano-md5
     tar -zxvf ~/.cabal/packages/hackage.haskell.org/nano-md5/0.1.2/nano-md5-0.1.2.tar.gz
     patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < extra/MD5.hs.patch
     cabal sandbox add-source nano-md5-0.1.2
+
     cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
     cabal clean && cabal configure && cabal build # and this too
+
+Monaba and Captcha binaries are located at ./dist/build/Monaba/
 
 ## Setup database
 
@@ -114,6 +129,16 @@ Wait until it finish (a few seconds) then stop with Ctrl+C
 Fill the database with default values:
 
      psql -U postgres monabas < init-db.sql
+
+## Configuring Sphinx search
+
+See `extra/sphinx.conf`
+
+Create the search index by running `indexer monaba` and add this command to cron job so the index is regulary updated
+
+Start `searchd` service:
+
+`systemctl start search`
 
 ## Configuring Nginx for serving uploaded files
 

@@ -49,7 +49,7 @@ header a, header .fa {
     margin-top: 15px !important;
 }
 #board-header {
-    font-family: FixedSys;
+    font-family: FixedSys, Courier New;
     font-size: 24pt;
     margin-top: 10px;
 }
@@ -68,6 +68,9 @@ textarea, input, select {
 }
 a, .fa {
     color: #0cd264;
+}
+.message a {
+    text-shadow: 1px 0px 0px #0cd264;
 }
 a:hover, .fa:hover {
     color: #208448;
@@ -156,7 +159,7 @@ footer {
 /* h's on feed, home, help, settings and login pages */
 
 h1, h2 {
-    font-family: FixedSys;
+    font-family: FixedSys, Courier New;
     font-size: 18pt;
 }
 
@@ -164,7 +167,7 @@ h1, h2 {
 
 #message {
     color: #0cd264;
-    font-family: FixedSys;
+    font-family: FixedSys, Courier New;
     font-size: 20pt;
     border: 2px dashed #0cd264;
 }

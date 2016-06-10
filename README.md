@@ -25,7 +25,6 @@ Features
 * Works fine with JavaScript disabled
 * Thread catalog
 * Bookmarks
-* Full-text search
 * Private messages
 * Administration
     - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session
@@ -138,7 +137,7 @@ Create the search index by running `indexer monaba` and add this command to cron
 
 Start `searchd` service:
 
-`systemctl start search`
+`systemctl start sphinxsearch.service`
 
 ## Configuring Nginx for serving uploaded files
 

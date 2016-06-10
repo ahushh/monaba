@@ -156,7 +156,7 @@ executable         Monaba
     hs-source-dirs:    app
     build-depends:     base, Monaba
 
-    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N -static -pthread
+    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
 
 executable         Captcha
     if flag(library-only)

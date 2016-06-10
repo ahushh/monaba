@@ -55,7 +55,7 @@ library
         cpp-options:   -DDEVELOPMENT
         ghc-options:   -Wall -fwarn-tabs -O0
     else
-        ghc-options:   -Wall -fwarn-tabs -O2
+        ghc-options:   -Wall -fwarn-tabs -O1
 
     extensions: TemplateHaskell
                 QuasiQuotes
@@ -156,7 +156,7 @@ executable         Monaba
     hs-source-dirs:    app
     build-depends:     base, Monaba
 
-    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+    ghc-options:       -threaded -O1 -rtsopts -with-rtsopts=-N
 
 executable         Captcha
     if flag(library-only)
@@ -165,7 +165,7 @@ executable         Captcha
     main-is:           PlainCaptcha.hs
     hs-source-dirs:    Utils
     build-depends:     base
-    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+    ghc-options:       -threaded -O1 -rtsopts -with-rtsopts=-N
     build-depends: random
                  , imagemagick
                  , system-filepath

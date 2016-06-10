@@ -1,5 +1,5 @@
 name:              Monaba
-version:           2.4.5
+version:           2.4.6
 cabal-version:     >= 1.8
 build-type:        Simple
 
@@ -156,7 +156,7 @@ executable         Monaba
     hs-source-dirs:    app
     build-depends:     base, Monaba
 
-    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N -static -pthread
 
 executable         Captcha
     if flag(library-only)

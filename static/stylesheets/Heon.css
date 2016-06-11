@@ -41,6 +41,9 @@ a:hover, .fa:hover {
 .message a {
   text-shadow: 0 0 1px rgb(255,255,255);
 }
+.message a:hover {
+  text-shadow: 0 0 1px #343855;
+}
 pre {
   background-color: #2c2c2c;
   padding: 10px;
@@ -89,6 +92,12 @@ textarea, input, select {
 .spoiler:hover, .spoiler a:hover {
   color: #48b0fd;
   background-color: #212121;
+}
+.message .spoiler a {
+  text-shadow: 0 0 1px #212121;
+}
+.message .spoiler a:hover {
+  text-shadow: 0 0 1px #48b0fd;
 }
 .quote, .symbol-counter {
   color: #81b1ff !important;

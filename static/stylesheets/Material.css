@@ -57,6 +57,9 @@ a, .fa {
 .message a {
   text-shadow: 0.75px 0px 0px #e0f2f1;
 }
+.message a:hover {
+  text-shadow: 0.75px 0px 0px #1de9b6;
+}
 a:hover, .fa:hover {
   color: #1de9b6;
 }
@@ -78,6 +81,12 @@ pre {
 .spoiler a:hover {
   color: #1de9b6;
   background: transparent;
+}
+.message .spoiler a {
+  text-shadow: 0.75px 0px 0px #00695c;
+}
+.message .spoiler a:hover {
+  text-shadow: 0.75px 0px 0px #1de9b6;
 }
 .thread {
   padding: 10px 0px;

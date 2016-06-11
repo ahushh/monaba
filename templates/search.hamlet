@@ -1,4 +1,7 @@
-<h2 style="text-align: center">_{MsgSearchFound $ length searchResults}
+<h2 style="text-align: center">
+  _{MsgSearchFound $ length searchResults}. 
+  $if not $ null searchResults
+    <a href=@{SearchMoreR qstring board ((+) offset searchLimit)}>_{MsgIwantmore}
 $if not $ null searchResults
     $forall result <- searchResults
       $with post <- searchResultPost result

@@ -10,19 +10,37 @@ import qualified Text.Search.Sphinx.Types                as ST
 import           Text.XML.Stream.Render                  (def, renderBuilder)
 import           Text.HTML.TagSoup  (escapeHTML)
 --------------------------------------------------------------------------------------------------------- 
+searchLimit :: Int
+searchLimit = 50
+
 getSearchR :: Handler Html
 getSearchR = do
   ((formRes, searchWidget), _) <- runFormGet $ searchForm Nothing
-  searchResults <-
-    case formRes of
-      FormSuccess (qstring, board) -> getResults qstring board
-      _ -> return []
+  let offset = 0
+  case formRes of
+    FormSuccess (qstring, mBoard) -> do
+      searchResults <- getResults qstring mBoard 0
+      let board = fromMaybe "" mBoard
+      defaultLayout $ do
+        defaultTitleMsg MsgSearch
+        $(widgetFile "search")
+    _ -> do
+      let searchResults = []
+          qstring       = ""
+          board         = ""
+      defaultLayout $ do
+        defaultTitleMsg MsgSearch
+        $(widgetFile "search")
+
+getSearchMoreR :: Text -> Text -> Int -> Handler Html
+getSearchMoreR qstring board offset = do
+  searchResults <- getResults qstring (Just board) offset
   defaultLayout $ do
     defaultTitleMsg MsgSearch
     $(widgetFile "search")
 
-getResults :: Text -> Maybe Text -> Handler [SearchResult]
-getResults qstring board = do
+getResults :: Text -> Maybe Text -> Int -> Handler [SearchResult]
+getResults qstring board offset = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
   let permissions = getPermissions mgroup
@@ -46,8 +64,10 @@ getResults qstring board = do
         _ -> error $ show sphinxRes'
   where
     config = S.defaultConfig
-        { S.port = 9312
-        , S.mode = ST.Extended
+        { S.port   = 9312
+        , S.mode   = ST.Extended
+        , S.offset = offset
+        , S.limit  = searchLimit
         }
 
 getResult :: PostId -> Post -> Text -> IO SearchResult
@@ -68,10 +88,10 @@ getResult postId post qstring = do
         }
   where
     excerptConfig = E.altConfig { E.port = 9312
---                                , E.htmlStripMode = "strip" -- "none", "strip", "index", and "retain". 
                                 , E.beforeMatch = "<span class='match'>"
                                 , E.afterMatch = "</span>"
-                                , E.around = 50
+                                , E.around = 10
+                                , E.forceAllWords = False
                                 }
 --------------------------------------------------------------------------------------------------------- 
 getXmlpipeR :: Handler TypedContent

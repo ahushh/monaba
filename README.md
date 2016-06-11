@@ -26,7 +26,7 @@ Features
 * Thread catalog
 * Bookmarks
 * Private messages (buggy for now)
-* Full-text search (buggy for now)
+* Full-text search
 * Administration
     - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session
     - Banning by IP
@@ -134,7 +134,7 @@ Fill the database with default values:
 
 See `extra/sphinx.conf`
 
-Create the search index by running `sudo indexer monaba` and add this command to cron job so the index is regulary updated
+Create the search index by running `sudo indexer --rotate monaba` and add this command to cron job so the index is regulary updated
 
 Start `searchd` service:
 

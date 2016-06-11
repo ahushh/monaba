@@ -54,6 +54,9 @@ textarea, input, select {
 a, .fa {
   color: #e0f2f1;
 }
+.message a {
+  text-shadow: 0.75px 0px 0px #e0f2f1;
+}
 a:hover, .fa:hover {
   color: #1de9b6;
 }

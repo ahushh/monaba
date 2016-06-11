@@ -72,6 +72,9 @@ a, .fa {
 .message a {
     text-shadow: 1px 0px 0px #0cd264;
 }
+.message a:hover {
+    text-shadow: 1px 0px 0px #208448;
+}
 a:hover, .fa:hover {
     color: #208448;
 }

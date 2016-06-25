@@ -9,8 +9,17 @@ getRssR board' = do
   AppSettings{..} <- appSettings <$> getYesod
   now       <- liftIO getCurrentTime
   msgrender <- getMessageRender
-
-  let selector = if board' == "feed" then [PostDeleted ==. False, PostHellbanned ==. False] else [PostBoard ==. board', PostDeleted ==. False, PostHellbanned ==. False]
+  -------------------------------------------------------------------------------------------------------------------      
+  muser  <- maybeAuth
+  mgroup <- getMaybeGroup muser
+  let permissions = getPermissions mgroup
+      group       = (groupName . entityVal) <$> mgroup
+  boards    <- runDB $ selectList ([]::[Filter Board]) []
+  ignoredBoards <- getFeedBoards
+  let boards' = mapMaybe (getIgnoredBoard group) boards
+  when (board' `elem` boards') notFound
+  -------------------------------------------------------------------------------------------------------------------      
+  let selector = if board' == "feed" then [PostDeleted ==. False, PostHellbanned ==. False, PostBoard /<-. (boards'++ignoredBoards)] else [PostBoard ==. board', PostDeleted ==. False, PostHellbanned ==. False]
   posts'    <- runDB $ selectList selector [Desc PostDate, LimitTo 20]
 --  renderedPosts <- mapM (\p -> bareLayout $ postWidget p [] False False False False False []) posts'
   let renderedPosts = map (preEscapedToHtml . unTextarea . postMessage . entityVal) posts'

@@ -96,7 +96,7 @@ function showQuickPostForm(postId, isPrivate) {
                         closePopupMessage(pmsg);
                     },
                     onprogress: function(event) {
-                        pmsg.querySelector(".popup-message-text").innerHTML = #{toJSON $ msgrender MsgLoading} + (event.loaded*100)/event.total + "%";
+                        pmsg.querySelector(".popup-message-text").innerHTML = #{toJSON $ msgrender MsgLoading} + Math.round((event.loaded*100)/event.total) + "%";
                     },
                     onloadOk: function(request) {
                         var data = JSON.parse(request.responseText);

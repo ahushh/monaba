@@ -2192,6 +2192,7 @@ function httpRequest(cnf) {
     var onloadAfter  = cnf.onloadAfter || function() {};
     var onloadstart  = cnf.onloadstart;
     var onloadend    = cnf.onloadend;
+    var onprogress   = cnf.onprogress || function() {};
     var onerror = cnf.onerror;
     var onerrorBefore = cnf.onerrorBefore || function() {};
     var onerrorAfter = cnf.onerrorAfter || function() {};
@@ -2222,6 +2223,7 @@ function httpRequest(cnf) {
     if (onerror) request.onerror = function(){ onerror(request) };
     if (onloadstart) request.onloadstart = function(){ onloadstart(request) };
     if (onloadend  ) request.onloadend = function(){ onloadend(request) };
+    if (onprogress ) request.upload.onprogress = onprogress;
     if (data)
         request.send(data);
     else

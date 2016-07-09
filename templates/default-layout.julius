@@ -1702,7 +1702,6 @@ function expandImage(post) {
                 img.style.bottom = (wHeight-height)/2 +'px';
                 img.style.left   = (wWidth-width)/2 +'px';
                 img.style.right  = (wWidth-width)/2 +'px';
-                img.style.border = '1px dotted black';
                 Monaba.zindex += 1;
 
                 img.onload = function() {

@@ -45,6 +45,7 @@ showWordfilterAction a = let m = lookup a xs
              ,(WordfilterHB    , MsgWordfilterHB     )
              ,(WordfilterHBHide, MsgWordfilterHBHide )
              ,(WordfilterDeny  , MsgWordfilterDeny   )
+             ,(WordfilterReplace, MsgWordfilterReplace   )
              ]
 
 showWordfilterType :: WordfilterDataType -> AppMessage

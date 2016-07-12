@@ -41,7 +41,8 @@ postPostEditR = do
 
       checkWordfilter (Just newMessage) (postBoard post) $ \m -> trickyRedirect "error" m HomeR
 
-      messageFormatted <- doYobaMarkup (Just newMessage) (postBoard post) (postParent post)
+      filteredMsg <- lookupSession "filtered-message"
+      messageFormatted <- doYobaMarkup (maybe (Just newMessage) (Just . Textarea) filteredMsg) (postBoard post) (postParent post)
       history <- runDB $ getBy $ HistoryUniqPostId postKey
       unless (EditPostsP `elem` permissions) $ 
         let z = maybe 0 (length . historyMessages . entityVal) history
@@ -57,7 +58,7 @@ postPostEditR = do
                                , historyDates    = oldDate    : oldDates
                                }
       runDB $ update postKey ([PostMessage =. messageFormatted
-                             , PostRawMessage =. unTextarea newMessage]
+                             , PostRawMessage =. fromMaybe (unTextarea newMessage) filteredMsg]
                              ++[PostLastModified =. Just now | not (ShadowEditP `elem` permissions && shadowEdit)])
       unless (ShadowEditP `elem` permissions && shadowEdit) $
         if isJust history

@@ -146,14 +146,15 @@ postBoardR board _ = do
         checkWordfilter message board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
-        messageFormatted  <- doYobaMarkup message board 0
+        newMsg <- lookupSession "filtered-message"
+        messageFormatted  <- doYobaMarkup (maybe message (Just . Textarea) newMsg) board 0
         AppSettings{..}   <- appSettings <$> getYesod
         let newPost = Post { postBoard        = board
                            , postLocalId      = nextId
                            , postParent       = 0
                            , postParentTitle  = ""
                            , postMessage      = messageFormatted
-                           , postRawMessage   = maybe "" unTextarea message
+                           , postRawMessage   = fromMaybe (maybe "" unTextarea message) newMsg
                            , postTitle        = maybe ("" :: Text) (T.take appMaxLenOfPostTitle) title
                            , postName         = if forcedAnon then defaultName else maybe defaultName (T.take appMaxLenOfPostName) name
                            , postDate         = now
@@ -188,6 +189,7 @@ postBoardR board _ = do
         case name of
           Just name' -> setSession "name" name'
           Nothing    -> deleteSession "name"
+        deleteSession "filtered-message"
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board

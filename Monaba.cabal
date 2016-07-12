@@ -147,7 +147,7 @@ library
                  , sphinx
                  , xml-conduit
                  , xml-types
-
+                 , iproute
 
 executable         Monaba
     if flag(library-only)

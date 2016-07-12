@@ -6,8 +6,10 @@
         <th> ID 
         <th>_{MsgWordfilterDataType}
         <th>_{MsgWordfilterData}
+        <th>_{MsgWordfilterReplace}
         <th>_{MsgWordfilterAction}
         <th>_{MsgWordfilterBoard}
+
     $forall Entity bId b <- bs
         <tr>
             <td>
@@ -15,6 +17,7 @@
             <td>##{fromSqlKey bId} 
             <td>_{showWordfilterType $ wordfilterDataType b}
             <td>#{wordfilterData b}
+            <td>#{fromMaybe "" $ wordfilterReplacement b}
             <td>#{T.intercalate ", " $ map (msgrender . showWordfilterAction) $ wordfilterAction b}
             $if isJust $ wordfilterBoard b
                 <td>#{fromJust $ wordfilterBoard b}

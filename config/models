@@ -125,3 +125,4 @@ Wordfilter
     data        Text
     action      [WordfilterAction]
     actionMsg   Text
+    replacement Text Maybe

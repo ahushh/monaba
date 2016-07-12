@@ -150,19 +150,23 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
   ip  <- pack <$> getIp
   bs  <- runDB $ selectList ([]::[Filter Wordfilter]) []
   forM_ bs $ \(Entity _ b) -> case wordfilterDataType b of
-     WordfilterWords -> when (maybe True ((==)board) (wordfilterBoard b) && or (map (\m -> T.isInfixOf m (wordfilterData b)) (T.words msg)) ) $ do
-                        let as = wordfilterAction b
-                            m  = wordfilterActionMsg b
-                        when (WordfilterBan `elem` as) $ do
-                          void $ addBan ip m Nothing Nothing
-                        when (WordfilterDeny `elem` as) $ 
-                          redirectSomewhere $ Right m
-                        when (WordfilterHB `elem` as) $ do
-                          hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
-                          when (not hellbanned) $ 
-                            void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = ip }
-                        when (WordfilterHBHide `elem` as) $ do
-                          setSession "hide-this-post" "True"
+     WordfilterWords -> do
+       when (maybe True ((==)board) (wordfilterBoard b) && or (map (\m -> T.isInfixOf m msg) (T.words $ wordfilterData b)) ) $ do
+         let as = wordfilterAction b
+             m  = wordfilterActionMsg b
+         when (WordfilterBan `elem` as) $ do
+           void $ addBan ip m Nothing Nothing
+         when (WordfilterDeny `elem` as) $ 
+           redirectSomewhere $ Right m
+         when (WordfilterHB `elem` as) $ do
+           hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+           when (not hellbanned) $ 
+             void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = ip }
+         when (WordfilterHBHide `elem` as) $ do
+           setSession "hide-this-post" "True"
+         when (elem WordfilterReplace as && isJust (wordfilterReplacement b)) $ do
+           let newMsg = foldr (\x m -> T.replace x (fromJust $ wordfilterReplacement b) m) msg (T.words $ wordfilterData b)
+           setSession "filtered-message" newMsg
 
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes

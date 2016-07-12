@@ -315,6 +315,7 @@ WordfilterHB: to hellban user
 WordfilterHBHide: hide post
 WordfilterDeny: deny post
 WordfilterDenied: your post is denied
+WordfilterReplace: Replace
 ######################################################################################
 #### Help
 ######################################################################################

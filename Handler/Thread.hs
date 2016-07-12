@@ -137,7 +137,11 @@ postThreadR board thread = do
         ------------------------------------------------------------------------------------------------------
         destUID <- getDestinationUID destPost
         ------------------------------------------------------------------------------------------------------
-        messageFormatted  <- doYobaMarkup message board thread
+        newMsg <- lookupSession "filtered-message"
+        liftIO $ print ("############################"::Text)
+        liftIO $ print newMsg
+        liftIO $ print ("############################"::Text)
+        messageFormatted  <- doYobaMarkup (maybe message (Just . Textarea) newMsg) board thread
         AppSettings{..}   <- appSettings <$> getYesod
         lastPost          <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         let nextId  = 1 + postLocalId (entityVal $ fromJust lastPost)
@@ -146,7 +150,7 @@ postThreadR board thread = do
                            , postParent       = thread
                            , postParentTitle  = postTitle $ entityVal $ fromJust $ maybeParent
                            , postMessage      = messageFormatted
-                           , postRawMessage   = maybe "" unTextarea message
+                           , postRawMessage   = fromMaybe (maybe "" unTextarea message) newMsg
                            , postTitle        = maybe ("" :: Text) (T.take appMaxLenOfPostTitle) title
                            , postName         =  if forcedAnon then defaultName else maybe defaultName (T.take appMaxLenOfPostName) name
                            , postDate         = now
@@ -181,6 +185,7 @@ postThreadR board thread = do
         case name of
           Just name' -> setSession "name" name'
           Nothing    -> deleteSession "name"
+        deleteSession "filtered-message"
         -- everything went well, delete these values
         deleteSession "message"
         deleteSession "post-title"

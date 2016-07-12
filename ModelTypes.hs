@@ -49,7 +49,7 @@ data Permission = ManageThreadP
 data WordfilterDataType = WordfilterWords -- | WordfilterRegex
                    deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
-data WordfilterAction = WordfilterBan | WordfilterHB | WordfilterHBHide | WordfilterDeny
+data WordfilterAction = WordfilterBan | WordfilterHB | WordfilterHBHide | WordfilterDeny | WordfilterReplace
                      deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
 data Ternary = Enabled | Disabled | Required

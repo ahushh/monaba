@@ -39,6 +39,8 @@ postPostEditR = do
         in when (tooLongMessage maxMessageLength newMessage) $
             trickyRedirect "error" (Left $ MsgTooLongMessage maxMessageLength) HomeR
 
+      checkWordfilter (Just newMessage) (postBoard post) $ \m -> trickyRedirect "error" m HomeR
+
       messageFormatted <- doYobaMarkup (Just newMessage) (postBoard post) (postParent post)
       history <- runDB $ getBy $ HistoryUniqPostId postKey
       unless (EditPostsP `elem` permissions) $ 

@@ -503,3 +503,6 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .search-form .required, .search-form .optional {
     display: inline-block;
 }
+.js #message {
+    display: none;
+}

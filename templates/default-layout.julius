@@ -222,6 +222,11 @@ function isEventSourceSupported() {
 }
 document.addEventListener("DOMContentLoaded", function(event) {
     //-----------------------------------------------------------------
+    // Message
+    //-----------------------------------------------------------------
+    var m = document.getElementById("message");
+    if (m) popupMessage(m.innerText, false, false, true);
+    //-----------------------------------------------------------------
     // Desktop notification
     //-----------------------------------------------------------------
     if (getConfig('desktop_notification')) {

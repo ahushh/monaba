@@ -2,6 +2,10 @@
     <a href=@{AdminR}>    
       <i .fa .fa-dashboard>
     | 
+    $if elem WordfilterP permissions
+        <i .fa .fa-filter>
+        <a href=@{AdminWordfilterR}>_{MsgWordfilter} #
+        | 
     $if elem DeletePostsP permissions
         <i .fa .fa-trash>
         <a href=@{AdminDeletedR 0}>_{MsgAdminDeletedPosts} #

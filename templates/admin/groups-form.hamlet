@@ -49,5 +49,8 @@
        <tr>
             <td>_{MsgAppControl           }
             <td>^{fvInput applControlView }
+      <tr>
+            <td>_{MsgWordfilter           }
+            <td>^{fvInput wordfilterView  }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

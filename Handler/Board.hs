@@ -8,6 +8,7 @@ import           Handler.Captcha (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
+import           Data.Either
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -135,12 +136,14 @@ postBoardR board _ = do
         posterId <- getPosterId
         hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
         -------------------------------------------------------------------------------------------------------
-        checkBan ip $ \m -> setMessageI m >> redirect (BoardNoPageR board)
+        checkBan ip $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
         when (enableCaptcha && isNothing muser) $ 
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent ==. 0) ip now $ setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
+        ------------------------------------------------------------------------------------------------------
+        checkWordfilter message board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         messageFormatted  <- doYobaMarkup message board 0
@@ -171,7 +174,12 @@ postBoardR board _ = do
                            , postLockEditing  = False
                            , postDestUID      = Nothing
                            }
-        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
+        postKey <- runDB (insert newPost)
+        void $ insertFiles files ratings thumbSize postKey
+        hb <- lookupSession "hide-this-post"
+        when (isJust hb) $ do
+          void $ runDB $ update postKey [PostHellbanned =. True]
+          deleteSession "hide-this-post"
         -- delete old threads
         let tl = boardThreadLimit boardVal
           in when (tl >= 0) $
@@ -187,4 +195,4 @@ postBoardR board _ = do
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)
-          ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" MsgPostSent FeedR
+          ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" (Left MsgPostSent) FeedR

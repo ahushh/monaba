@@ -1,0 +1,22 @@
+^{adminNavbarWidget}
+^{formWidget}
+<table .admin-table>
+    <tr>
+        <th>         
+        <th> ID 
+        <th>_{MsgWordfilterDataType}
+        <th>_{MsgWordfilterData}
+        <th>_{MsgWordfilterAction}
+        <th>_{MsgWordfilterBoard}
+    $forall Entity bId b <- bs
+        <tr>
+            <td>
+                <a href=@{AdminWordfilterDeleteR $ fromIntegral $ fromSqlKey bId}>_{MsgDeleteBtn}
+            <td>##{fromSqlKey bId} 
+            <td>_{showWordfilterType $ wordfilterDataType b}
+            <td>#{wordfilterData b}
+            <td>#{T.intercalate ", " $ map (msgrender . showWordfilterAction) $ wordfilterAction b}
+            $if isJust $ wordfilterBoard b
+                <td>#{fromJust $ wordfilterBoard b}
+            $else
+                <td>_{MsgAllBoards}

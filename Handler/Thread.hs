@@ -5,6 +5,7 @@ import           Import
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
+import           Data.Either        (Either(..))
 import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Bookmarks  (bookmarksUpdateLastReply)
@@ -104,16 +105,16 @@ postThreadR board thread = do
   -------------------------------------------------------------------------------------------------------         
   ((result, _), _) <- runFormPost $ postForm False boardVal muser
   case result of
-    FormFailure []                     -> trickyRedirect "error" MsgBadFormData threadUrl
-    FormFailure xs                     -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) threadUrl
-    FormMissing                        -> trickyRedirect "error" MsgNoFormData threadUrl
+    FormFailure []                     -> trickyRedirect "error" (Left MsgBadFormData) threadUrl
+    FormFailure xs                     -> trickyRedirect "error" (Left $ MsgError $ T.intercalate "; " xs) threadUrl
+    FormMissing                        -> trickyRedirect "error" (Left MsgNoFormData) threadUrl
     FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, nobump, destPost)
-      | isNothing maybeParent                             -> trickyRedirect "error" MsgNoSuchThread        boardUrl
-      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" MsgLockedThread        threadUrl
-      | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" MsgReplyFileIsDisabled threadUrl
-      | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" MsgNoFile              threadUrl
-      | noMessage message && noFiles files                 -> trickyRedirect "error" MsgNoFileOrText        threadUrl
-      | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" MsgTypeNotAllowed      threadUrl
+      | isNothing maybeParent                             -> trickyRedirect "error" (Left MsgNoSuchThread)        boardUrl
+      | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" (Left MsgLockedThread)        threadUrl
+      | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" (Left MsgReplyFileIsDisabled) threadUrl
+      | replyFile == "Required"&& noFiles files             -> trickyRedirect "error" (Left MsgNoFile)              threadUrl
+      | noMessage message && noFiles files                 -> trickyRedirect "error" (Left MsgNoFileOrText)        threadUrl
+      | not $ all (isFileAllowed allowedTypes) files        -> trickyRedirect "error" (Left MsgTypeNotAllowed)      threadUrl
       | otherwise                                         -> do
         ------------------------------------------------------------------------------------------------------
         setSession "message"    (maybe     "" unTextarea message)
@@ -128,9 +129,11 @@ postThreadR board thread = do
         checkBan ip $ \m -> trickyRedirect "error" m threadUrl
         unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
-        when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" MsgWrongCaptcha threadUrl)
+        when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
         ------------------------------------------------------------------------------------------------------
-        checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" MsgPostingTooFast threadUrl
+        checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" (Left MsgPostingTooFast) threadUrl
+        ------------------------------------------------------------------------------------------------------
+        checkWordfilter message board $ \m -> trickyRedirect "error" m threadUrl
         ------------------------------------------------------------------------------------------------------
         destUID <- getDestinationUID destPost
         ------------------------------------------------------------------------------------------------------
@@ -164,7 +167,12 @@ postThreadR board thread = do
                            , postLockEditing  = False
                            , postDestUID      = if enablePM then destUID else Nothing
                            }
-        void $ insertFiles files ratings thumbSize =<< runDB (insert newPost)
+        postKey <- runDB (insert newPost)
+        void $ insertFiles files ratings thumbSize postKey
+        hb <- lookupSession "hide-this-post"
+        when (isJust hb) $ do
+          void $ runDB $ update postKey [PostHellbanned =. True]
+          deleteSession "hide-this-post"
         -------------------------------------------------------------------------------------------------------
         -- bump thread if necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
@@ -179,6 +187,6 @@ postThreadR board thread = do
         cleanBoardStats board
         unless hellbanned $ sendNewPostES board
         case goback of
-          ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" MsgPostSent (BoardNoPageR board)
-          ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" MsgPostSent threadUrl
-          ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" MsgPostSent FeedR
+          ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" (Left MsgPostSent) (BoardNoPageR board)
+          ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" (Left MsgPostSent) threadUrl
+          ToFeed   -> setSession "goback" "ToFeed"   >> trickyRedirect "ok" (Left MsgPostSent) FeedR

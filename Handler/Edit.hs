@@ -12,9 +12,9 @@ postPostEditR = do
   permissions <- getPermissions <$> getMaybeGroup muser
   ((result, _), _) <- runFormPost $ editForm permissions
   case result of
-    FormFailure []                  -> trickyRedirect "error" MsgBadFormData HomeR
-    FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) HomeR
-    FormMissing                     -> trickyRedirect "error" MsgNoFormData  HomeR
+    FormFailure []                  -> trickyRedirect "error" (Left MsgBadFormData) HomeR
+    FormFailure xs                  -> trickyRedirect "error" (Left $ MsgError $ T.intercalate "; " xs) HomeR
+    FormMissing                     -> trickyRedirect "error" (Left MsgNoFormData)  HomeR
     FormSuccess (newMessage, pswd, postId, mShadowEdit) -> do
       let postKey = (toSqlKey . fromIntegral) postId :: Key Post
           shadowEdit = fromMaybe False mShadowEdit
@@ -25,25 +25,25 @@ postPostEditR = do
 
       unless (EditPostsP `elem` permissions) $ do
         when (postParent post == 0 && not (boardOpEditing   boardVal)) $
-          trickyRedirect "error" MsgThreadEditingIsDisabled HomeR
+          trickyRedirect "error" (Left MsgThreadEditingIsDisabled) HomeR
         when (postParent post /= 0 && not (boardPostEditing boardVal)) $
-          trickyRedirect "error" MsgPostEditingIsDisabled   HomeR
+          trickyRedirect "error" (Left MsgPostEditingIsDisabled)   HomeR
         when (postLockEditing post) $ 
-          trickyRedirect "error" MsgDisabledEditing HomeR
+          trickyRedirect "error" (Left MsgDisabledEditing) HomeR
   
         when (postPosterId post /= posterId &&
               postPassword post /= pswd
-             ) $ trickyRedirect "error" MsgPostNotYours HomeR
+             ) $ trickyRedirect "error" (Left MsgPostNotYours) HomeR
 
       let maxMessageLength = boardMaxMsgLength boardVal
         in when (tooLongMessage maxMessageLength newMessage) $
-            trickyRedirect "error" (MsgTooLongMessage maxMessageLength) HomeR
+            trickyRedirect "error" (Left $ MsgTooLongMessage maxMessageLength) HomeR
 
       messageFormatted <- doYobaMarkup (Just newMessage) (postBoard post) (postParent post)
       history <- runDB $ getBy $ HistoryUniqPostId postKey
       unless (EditPostsP `elem` permissions) $ 
         let z = maybe 0 (length . historyMessages . entityVal) history
-          in when (z >= maxTimes) $ trickyRedirect "error" (MsgYouAlreadyEditedPost maxTimes) HomeR
+          in when (z >= maxTimes) $ trickyRedirect "error" (Left $ MsgYouAlreadyEditedPost maxTimes) HomeR
         
       now     <- liftIO getCurrentTime
       let oldMessage = postMessage post
@@ -62,7 +62,7 @@ postPostEditR = do
           then runDB $ replace (entityKey $ fromJust history) newHistory
           else void $ runDB $ insert newHistory
       sendEditedPostES postId
-      trickyRedirect "ok" MsgPostEdited HomeR
+      trickyRedirect "ok" (Left MsgPostEdited) HomeR
   
 getEditHistoryR :: Int -> Handler Html
 getEditHistoryR postId = do

@@ -22,14 +22,16 @@ groupsForm extra = do
   (viewIPAndIDRes  , viewIPAndIDView ) <- mreq checkBoxField "" Nothing
   (hellbanningRes  , hellbanningView ) <- mreq checkBoxField "" Nothing 
   (ratingRes       , ratingView      ) <- mreq checkBoxField "" Nothing
-  (applControlRes  , applControlView  ) <- mreq checkBoxField "" Nothing
+  (applControlRes  , applControlView ) <- mreq checkBoxField "" Nothing
+  (wordfilterRes   , wordfilterView  ) <- mreq checkBoxField "" Nothing
 
   let result = GroupConfigurationForm <$> nameRes <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
                manageConfigRes <*> deletePostsRes <*> managePanelRes <*>
                manageBanRes    <*> editPostsRes   <*> shadowEditRes  <*>
                aMarkupRes      <*> viewModlogRes  <*> viewIPAndIDRes <*>
-               hellbanningRes  <*> ratingRes      <*> applControlRes
+               hellbanningRes  <*> ratingRes      <*> applControlRes <*>
+               wordfilterRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -51,13 +53,14 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (GroupConfigurationForm name manageThread manageBoard manageUsers
                  manageConfig  deletePostsP managePanel manageBan editPosts shadowEdit
-                 aMarkup viewModLog  viewIPAndID hellbanning changeFileRating applControl
+                 aMarkup viewModLog  viewIPAndID hellbanning changeFileRating applControl wordfilter
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
                         ,(ShadowEditP  ,shadowEdit ) , (ViewModlogP ,viewModLog  ), (ViewIPAndIDP,viewIPAndID )
                         ,(HellBanP,hellbanning)      , (ChangeFileRatingP, changeFileRating), (AppControlP,applControl)
+                        ,(WordfilterP,wordfilter)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

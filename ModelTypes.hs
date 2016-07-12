@@ -3,6 +3,8 @@ module ModelTypes
          Permission(..)
        , FileType(..)
        , GeoCountry(..)
+       , WordfilterAction(..)
+       , WordfilterDataType(..)
        ) where
 
 import Prelude
@@ -41,8 +43,15 @@ data Permission = ManageThreadP
                 | ChangeFileRatingP
                 | ShadowEditP
                 | AppControlP
+                | WordfilterP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
+data WordfilterDataType = WordfilterWords -- | WordfilterRegex
+                   deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
+data WordfilterAction = WordfilterBan | WordfilterHB | WordfilterHBHide | WordfilterDeny
+                     deriving (Show, Ord, Read, Eq, Bounded, Enum)
+
 data Ternary = Enabled | Disabled | Required
              deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
@@ -59,3 +68,5 @@ instance FromJSON FileType where
 derivePersistField "Permission"
 derivePersistField "FileType"
 derivePersistField "GeoCountry"
+derivePersistField "WordfilterDataType"
+derivePersistField "WordfilterAction"

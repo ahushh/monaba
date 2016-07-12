@@ -1,9 +1,12 @@
 module Handler.Posting where
 
 import           Import
+import           Handler.Admin.Ban
 import qualified Data.Text as T
 import           System.Directory (doesDirectoryExist, createDirectory, getDirectoryContents)
 import           System.FilePath ((</>))
+import           Data.List (isInfixOf)
+import           Data.Either
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -119,14 +122,14 @@ randomBanner = do
         Nothing -> return Nothing
      Nothing -> return Nothing
 
-checkBan :: Text -> (AppMessage -> HandlerT App IO ()) -> HandlerT App IO ()
+checkBan :: Text -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
 checkBan ip redirectSomewhere = do
   mBan <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
   msgrender <- getMessageRender  
   timeZone  <- getTimeZone
   case mBan of
    Just eBan@(Entity _ ban) -> unlessM (isBanExpired eBan) $ do
-     let m = MsgYouAreBanned (banReason ban) (maybe (msgrender MsgNeverExpires) (pack . myFormatTime timeZone) (banExpires ban))
+     let m = Left $ MsgYouAreBanned (banReason ban) (maybe (msgrender MsgNeverExpires) (pack . myFormatTime timeZone) (banExpires ban))
      redirectSomewhere m
    Nothing -> return ()
 
@@ -138,6 +141,28 @@ checkTooFastPosting cond ip now redirectSomewhere = do
      let diff = ceiling ((realToFrac $ diffUTCTime now (postDate post)) :: Double)
      whenM ((>diff) <$> getConfig configReplyDelay) redirectSomewhere
    Nothing             -> return ()
+
+
+checkWordfilter :: Maybe Textarea -> Text -> (Either AppMessage Text -> HandlerT App IO ()) -> Handler ()
+checkWordfilter Nothing _ _ = return ()
+checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
+  posterId <- getPosterId
+  ip  <- pack <$> getIp
+  bs  <- runDB $ selectList ([]::[Filter Wordfilter]) []
+  forM_ bs $ \(Entity _ b) -> case wordfilterDataType b of
+     WordfilterWords -> when (maybe True ((==)board) (wordfilterBoard b) && or (map (\m -> T.isInfixOf m (wordfilterData b)) (T.words msg)) ) $ do
+                        let as = wordfilterAction b
+                            m  = wordfilterActionMsg b
+                        when (WordfilterBan `elem` as) $ do
+                          void $ addBan ip m Nothing Nothing
+                        when (WordfilterDeny `elem` as) $ 
+                          redirectSomewhere $ Right m
+                        when (WordfilterHB `elem` as) $ do
+                          hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+                          when (not hellbanned) $ 
+                            void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = ip }
+                        when (WordfilterHBHide `elem` as) $ do
+                          setSession "hide-this-post" "True"
 
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes

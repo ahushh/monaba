@@ -59,6 +59,7 @@ import Handler.Admin.User
 import Handler.Admin.Modlog
 import Handler.Admin.Search
 import Handler.Admin.Delete
+import Handler.Admin.Wordfilter
 import Handler.Ajax
 import Handler.Settings
 import Handler.Captcha

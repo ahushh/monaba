@@ -1,0 +1,16 @@
+<form method=post action=@{AdminWordfilterR}>
+    #{extra}
+    _{MsgWordfilterBoard}: ^{fvInput boardView}
+    _{MsgLeaveEmptyToSelectAllBoards}
+    <br>
+    ^{fvInput typeView}
+    <input type=submit value=_{MsgSubmitBtn}>
+    <br>
+    ^{fvInput dataView}
+    _{MsgWordfilterData}
+    <br>
+    ^{fvInput actionView}
+    _{MsgWordfilterAction}
+    <br>
+    ^{fvInput msgView}
+    _{MsgWordfilterActionMsg}

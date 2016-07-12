@@ -299,6 +299,23 @@ PostIsVisibleOnlyForAuthor: This post is visible only for its author
 HellbanAllPosts: All hidden posts
 
 ######################################################################################
+#### Wordfilter
+######################################################################################
+LeaveEmptyToSelectAllBoards: leave empty to select all boards
+Wordfilter: Wordfilter
+WordfilterBoard: board
+WordfilterWords: words separated by space
+WordfilterRegex: regex
+WordfilterDataType: Type
+WordfilterData: What to filter
+WordfilterAction: Action
+WordfilterActionMsg: Message for user
+WordfilterBan: to ban IP
+WordfilterHB: to hellban user
+WordfilterHBHide: hide post
+WordfilterDeny: deny post
+WordfilterDenied: your post is denied
+######################################################################################
 #### Help
 ######################################################################################
 Help: Help

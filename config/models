@@ -119,3 +119,9 @@ Modlog
 Hellban
     uid         Text
     ip          Text
+Wordfilter
+    board       Text Maybe
+    dataType    WordfilterDataType
+    data        Text
+    action      [WordfilterAction]
+    actionMsg   Text

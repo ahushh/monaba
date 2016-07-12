@@ -23,19 +23,43 @@ import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Ta
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append, take)
-
+import           Data.Either
 -------------------------------------------------------------------------------------------------------------------
 -- | If ajax request, redirects to page that makes JSON from message and status string.
 --   If regular request, redirects to given URL.
 trickyRedirect status msg url = do
-  setMessageI msg
+  let th t = toHtml t
+      th :: Text -> Html
+  either setMessageI (setMessage . th) msg
   t <- isAjaxRequest
   if t
     then redirect (JsonFromMsgR status)
     else redirect url
 -------------------------------------------------------------------------------------------------------------------
+showWordfilterAction :: WordfilterAction -> AppMessage
+showWordfilterAction a = let m = lookup a xs
+                     in case m of
+                       Just m  -> m
+                       Nothing -> error "case-of failed at showWordfilterAction"
+  where xs = [(WordfilterBan   , MsgWordfilterBan    )
+             ,(WordfilterHB    , MsgWordfilterHB     )
+             ,(WordfilterHBHide, MsgWordfilterHBHide )
+             ,(WordfilterDeny  , MsgWordfilterDeny   )
+             ]
+
+showWordfilterType :: WordfilterDataType -> AppMessage
+showWordfilterType t = let m = lookup t xs
+                     in case m of
+                       Just m  -> m
+                       Nothing -> error "case-of failed at showWordfilterType"
+  where xs = [(WordfilterWords,MsgWordfilterWords)
+             ]
+
 showPermission :: Permission -> AppMessage
-showPermission p = fromJust $ lookup p xs
+showPermission p = let m = lookup p xs
+                     in case m of
+                       Just m  -> m
+                       Nothing -> error "case-of failed at showPermission"
   where xs = [(ManageThreadP    , MsgManageThread    )
              ,(ManageBoardP     , MsgManageBoard     )
              ,(ManageUsersP     , MsgManageUsers     )
@@ -51,6 +75,7 @@ showPermission p = fromJust $ lookup p xs
              ,(HellBanP         , MsgHellbanning     )
              ,(ChangeFileRatingP, MsgChangeFileRating)
              ,(AppControlP      , MsgAppControl)
+             ,(WordfilterP      , MsgWordfilter)
              ]
 
 data GroupConfigurationForm = GroupConfigurationForm
@@ -70,6 +95,7 @@ data GroupConfigurationForm = GroupConfigurationForm
                               Bool -- ^ to use hellbanning 
                               Bool -- ^ to change censorship rating
                               Bool -- ^ to control application
+                              Bool -- ^ to configure wordfilter
 
 data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text)   -- ^ Name

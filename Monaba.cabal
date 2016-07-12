@@ -43,6 +43,7 @@ library
                      Handler.Admin.Modlog
                      Handler.Admin.Search
                      Handler.Admin.Delete
+                     Handler.Admin.Wordfilter
                      Handler.Ajax
                      Handler.Settings
                      Handler.Captcha

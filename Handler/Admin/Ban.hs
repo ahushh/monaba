@@ -41,13 +41,7 @@ postBanByIpR _ _ = do
     FormFailure xs                  -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing                     -> msgRedirect MsgNoFormData
     FormSuccess (ip, reason, board, expires) -> do
-      now <- liftIO getCurrentTime
-      let newBan = Ban { banIp      = ip
-                       , banReason  = reason
-                       , banBoard   = board
-                       , banExpires = (\n -> addUTCTime' (60*60*n) now) <$> expires
-                       }
-      bId <- runDB $ insert newBan
+      bId <- addBan ip reason board expires
       addModlogEntry $ MsgModlogBanAdded ip reason (fromIntegral $ fromSqlKey bId)
       msgRedirect MsgBanAdded
 
@@ -56,3 +50,14 @@ getBanDeleteR bId = do
   runDB $ delete ((toSqlKey . fromIntegral) bId :: Key Ban)
   addModlogEntry $ MsgModlogDelBan bId
   setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")
+
+addBan :: Text -> Text -> Maybe Text -> Maybe Int -> Handler BanId
+addBan ip reason board expires = do
+  now <- liftIO getCurrentTime
+  let newBan = Ban { banIp      = ip
+                   , banReason  = reason
+                   , banBoard   = board
+                   , banExpires = (\n -> addUTCTime' (60*60*n) now) <$> expires
+                   }
+  runDB $ insert newBan
+  

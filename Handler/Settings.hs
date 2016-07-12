@@ -38,16 +38,16 @@ postSettingsR = do
   oldRating     <- getCensorshipRating
   ((result, _), _) <- runFormPost $ settingsForm  allBoards ignoredBoards oldRating
   case result of
-    FormFailure []                  -> trickyRedirect "error" MsgBadFormData SettingsR
-    FormFailure xs                  -> trickyRedirect "error" (MsgError $ T.intercalate "; " xs) SettingsR
-    FormMissing                     -> trickyRedirect "error1" MsgNoFormData  SettingsR
+    FormFailure []                  -> trickyRedirect "error" (Left MsgBadFormData) SettingsR
+    FormFailure xs                  -> trickyRedirect "error" (Left $ MsgError $ T.intercalate "; " xs) SettingsR
+    FormMissing                     -> trickyRedirect "error" (Left MsgNoFormData)  SettingsR
     FormSuccess (timezone, stylesheet, lang, boards, rating) -> do
       setSession "timezone"   $ tshow timezone
       setSession "stylesheet" stylesheet
       setSession "feed-ignore-boards" $ tshow $ fromMaybe [] boards
       setSession "censorship-rating" $ tshow rating
       Foldable.forM_ lang setLanguage
-      trickyRedirect "ok" MsgApplied SettingsR
+      trickyRedirect "ok" (Left MsgApplied) SettingsR
 
 getSettingsR :: Handler Html
 getSettingsR = do

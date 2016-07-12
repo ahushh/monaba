@@ -93,6 +93,8 @@
 /admin/account             AccountR      GET
 /admin/account/password    NewPasswordR  POST
 
+/admin/wordfilter           AdminWordfilterR GET POST
+/admin/wordfilter/del/#Int  AdminWordfilterDeleteR GET
 
 /admin/rating/#Int/#Censorship ManageCensorshipR GET
 

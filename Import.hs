@@ -28,7 +28,7 @@ import           Data.Either
 -- | If ajax request, redirects to page that makes JSON from message and status string.
 --   If regular request, redirects to given URL.
 trickyRedirect status msg url = do
-  let th t = toHtml t
+  let th t = preEscapedToHtml t
       th :: Text -> Html
   either setMessageI (setMessage . th) msg
   t <- isAjaxRequest

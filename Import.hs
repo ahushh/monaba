@@ -338,7 +338,7 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
       threadLocalId  = postParent  $ entityVal ePost
       board          = postBoard $ entityVal ePost
       isThread       = sThreadLocalId == "0"
-      pClass         = (if isThread then "op" else "reply") :: Text
+      pClass         = (if isThread then "op" else "reply") <> (if elem HellBanP permissions && postHellbanned postVal then " hellbanned" else "")  :: Text
       itsforMe uid   = maybe True (==uid) (postDestUID $ entityVal ePost) || uid == (postPosterId $ entityVal ePost)
       destUID        = postDestUID $ entityVal ePost
   in do

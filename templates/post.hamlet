@@ -86,6 +86,7 @@
                $if postHellbanned postVal
                   <i title=_{MsgPostIsVisibleOnlyForAuthor} title=_{MsgPostIsVisibleOnlyForAuthor} .fa .fa-eye-slash>
                <a title="_{MsgHellbanning}" onclick="showHellbanForm( '#{sPostId}' )">HB
+               <a title="_{MsgShkrinkHellbanned}" onclick="shrinkHellbanned()">S
                ]
        $if showParent
          &nbsp;

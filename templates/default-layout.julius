@@ -58,6 +58,16 @@ function bookmarks(postId, action) {
 //-----------------------------------------------------------------
 // Hellban form
 //-----------------------------------------------------------------
+function shrinkHellbanned() {
+    var s = getItem("shrink-hellbanned");
+    if (s) {
+        setItem("shrink-hellbanned", false);
+        Array.prototype.forEach.call(document.querySelectorAll(".post.hellbanned > *:not(:first-child)"), function(el){ el.style.display = "block" });
+    } else {
+        setItem("shrink-hellbanned", true);
+        Array.prototype.forEach.call(document.querySelectorAll(".post.hellbanned > *:not(:first-child)"), function(el){ el.style.display = "none" });w
+    }
+}
 function showHellbanForm( postId ) {
     var f = document.getElementById("hb-form-"+postId);
     if (f) {
@@ -519,6 +529,11 @@ function applyCSSSettings() {
         css.type = "text/css";
         css.innerHTML = custom;
         document.body.appendChild(css);
+    }
+    var hb = getItem("shrink-hellbanned");
+    if (hb) {
+        style.sheet.insertRule(".post.hellbanned > *:not(:first-child) { display: none;  }", index);
+        index++;
     }
 }
 

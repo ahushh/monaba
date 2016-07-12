@@ -297,7 +297,7 @@ HideAllAndHellban: Hide all user's posts and hellban him/her
 PostIsVisibleOnlyForAuthor: This post is visible only for its author
 
 HellbanAllPosts: All hidden posts
-
+ShkrinkHellbanned: Shrink hellbanned
 ######################################################################################
 #### Wordfilter
 ######################################################################################

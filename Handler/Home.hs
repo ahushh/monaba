@@ -24,8 +24,8 @@ getHomeR = do
       day   = addUTCTime' (-60*60*24*1 ) now
   statsAllPosts   <- runDB $ count [PostDeleted ==. False]
   statsAllDeleted <- runDB $ count [PostDeleted ==. True]
-  statsMonth      <- runDB $ count [PostDate >. month]
-  statsDay        <- runDB $ count [PostDate >. day]
+  statsMonth      <- runDB $ count [PostDate >. month, PostDeleted ==. False]
+  statsDay        <- runDB $ count [PostDate >. day, PostDeleted ==. False]
   statsAllFiles   <- runDB $ count ([]::[Filter Attachedfile])
 
   defaultLayout $ do

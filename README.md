@@ -50,8 +50,7 @@ Requirements
 
 Required for builiding from source:
 
-* GHC >= 7.10
-* cabal-install >= 1.20
+* stack
 
 Installation
 ======
@@ -95,22 +94,16 @@ If it's not working or outdated, try to build from source.
 
 Sample list of required packages for debian:
 
-    apt-get install ghc cabal-install zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev libicu-dev
+    apt-get install haskell-stack zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev libicu-dev
 
 ### Execute the following commands
-
-    cabal update
-    cabal sandbox init
-
-    cabal install happy alex
 
     cabal fetch nano-md5
     tar -zxvf ~/.cabal/packages/hackage.haskell.org/nano-md5/0.1.2/nano-md5-0.1.2.tar.gz
     patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < extra/MD5.hs.patch
-    cabal sandbox add-source nano-md5-0.1.2
 
-    cabal install --only-dependencies --force-reinstalls # this takes a while, be patient
-    cabal clean && cabal configure && cabal build # and this too
+    stack setup
+    stack build
 
 Monaba and Captcha binaries are located at ./dist/build/Monaba/
 

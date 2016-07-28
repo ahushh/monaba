@@ -4,7 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.HashDB    (authHashDB, getAuthIdHashDB, HashDBUser(..))
+import Yesod.Auth.HashDB    (authHashDB, HashDBUser(..))
 import Yesod.Auth.Message
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -296,7 +296,6 @@ instance YesodAuth App where
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _   = [authHashDB (Just . UserUniqName)]
-    getAuthId creds = getAuthIdHashDB AuthR (Just . UserUniqName) creds
 
     authHttpManager = getHttpManager
     onLogin  = setMessageI NowLoggedIn >> redirect ModlogLoginR

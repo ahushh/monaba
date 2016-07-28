@@ -17,6 +17,6 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 instance HashDBUser User where
     userPasswordHash = Just . userPassword
     userPasswordSalt = Just . userSalt
-    setSaltAndPasswordHash s h p = p { userSalt     = s
-                                     , userPassword = h
-                                     }
+    setPasswordHash h p = p { userSalt     = ""
+                            , userPassword = h
+                            }

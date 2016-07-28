@@ -92,13 +92,13 @@ library
                  , persistent-template           >= 2.0        && < 2.3
                  , template-haskell
                  , shakespeare                   >= 2.0        && < 2.1
-                 , hjsmin                        >= 0.1        && < 0.2
+                 , hjsmin
                  , monad-control                 >= 0.3        && < 1.1
                  , wai-extra                     >= 3.0        && < 3.1
                  , yaml                          >= 0.8        && < 0.9
                  , http-conduit                  >= 2.1        && < 2.2
                  , directory                     >= 1.1        && < 1.3
-                 , warp                          >= 3.0        && < 3.2
+                 , warp
                  , data-default
                  , aeson                         >= 0.6
                  , conduit                       >= 1.0        && < 2.0
@@ -115,7 +115,6 @@ library
                  , wai                           
                  , unix-time                     
                  , unix                          
-                 , nano-md5                      
                  , process                       
                  , system-filepath
                  , blaze-markup                  
@@ -130,11 +129,11 @@ library
                  , esqueleto                     
                  , containers                    
                  , http-types                    
-                 , yesod-routes                  
+                 , nano-md5
                  , hs-GeoIP                      
                  , tagsoup                       
                  , parsec                        
-                 , yesod-auth-hashdb < 1.5
+                 , yesod-auth-hashdb
                  , random
                  , imagemagick
                  , resourcet
@@ -197,7 +196,7 @@ test-suite test
 
     build-depends: base
                  , Monaba
-                 , yesod-test >= 1.4.3 && < 1.5
+                 , yesod-test
                  , yesod-core
                  , yesod
                  , persistent

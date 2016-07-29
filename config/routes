@@ -108,6 +108,8 @@
 /admin/restart             AdminRestartR GET
 /admin/git/pull            AdminGitPullR GET
 
+/admin/setup               AdminSetupR GET
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST

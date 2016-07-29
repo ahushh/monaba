@@ -4,7 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.HashDB    (authHashDB, HashDBUser(..))
+import Yesod.Auth.HashDB    (authHashDB, authHashDBWithForm, HashDBUser(..))
 import Yesod.Auth.Message
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -284,6 +284,9 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
+authForm :: Route App -> Widget
+authForm action = $(whamletFile "templates/loginform.hamlet")
+
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -295,7 +298,17 @@ instance YesodAuth App where
     redirectToReferer _ = True
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _   = [authHashDB (Just . UserUniqName)]
+    authPlugins _ = [ authHashDBWithForm authForm (Just . UserUniqName) ]
+    authenticate creds = runDB $ do
+        x <- getBy $ UserUniqName $ credsIdent creds
+        case x of
+            Just (Entity uid _) -> return $ Authenticated uid
+            Nothing -> Authenticated <$> insert User
+                { userName     = credsIdent creds
+                , userPassword = Nothing
+                , userGroup    = ""
+                }
+
 
     authHttpManager = getHttpManager
     onLogin  = setMessageI NowLoggedIn >> redirect ModlogLoginR

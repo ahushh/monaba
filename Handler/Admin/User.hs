@@ -42,19 +42,23 @@ postUsersR = do
     FormSuccess (name, mPassword, group) -> do
       mUser <- runDB $ getBy $ UserUniqName name
       let newUser = User { userName     = name
-                         , userPassword = ""
-                         , userSalt     = ""
+                         , userPassword = Nothing
                          , userGroup    = group
                          }
       case mUser of
         Just (Entity key user) -> do -- update user
-          let password = fromMaybe (userPassword user) mPassword
-          userWithPassword <- liftIO $ setPassword password newUser
-          void $ runDB $ replace key userWithPassword
-          when (isJust mPassword) $
-            addModlogEntry $ MsgModlogChangeUserPassword name
-          when (group /= (userGroup user)) $
-            addModlogEntry $ MsgModlogChangeUserGroup name group
+          case mPassword of
+            Just password -> do
+              userWithPassword <- liftIO $ setPassword (fromJust mPassword) newUser
+              void $ runDB $ replace key userWithPassword
+              when (isJust mPassword) $
+                addModlogEntry $ MsgModlogChangeUserPassword name
+              when (group /= (userGroup user)) $
+                addModlogEntry $ MsgModlogChangeUserGroup name group
+            Nothing -> do
+              when (group /= (userGroup user)) $
+                addModlogEntry $ MsgModlogChangeUserGroup name group
+              void $ runDB $ replace key newUser
           msgRedirect MsgUsersUpdated
         Nothing -> do -- new user
           case mPassword of

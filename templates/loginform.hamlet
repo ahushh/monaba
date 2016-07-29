@@ -1,0 +1,4 @@
+<form method="post" action="@{action}">
+    <input name="username">
+    <input type="password" name="password">
+    <input type="submit" value="Login">

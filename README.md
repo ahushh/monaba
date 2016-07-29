@@ -64,8 +64,6 @@ Main configuration file `config/settings.yml`
 
 The maximum files size is hard coded and can be changed in `Foundation.hs` before building. Default value is 25 MB.
 
-Default login/password: admin
-
 ### Geolocation
 
 Download GeoIPCity by running the following commands:
@@ -105,8 +103,6 @@ Sample list of required packages for debian:
     stack setup
     stack build
 
-Monaba and Captcha binaries are located at ./dist/build/Monaba/
-
 ## Setup database
 
 Create a database:
@@ -117,11 +113,9 @@ Run the application to initialize database schema:
 
     ./dist/build/Monaba/Monaba config/settings.yml
 
-Wait until it finish (a few seconds) then stop with Ctrl+C
+Wait until it finish (a few seconds) and fill the database with default values by visiting `/admin/setup` page. Now you're ready to log in.
 
-Fill the database with default values:
-
-     psql -U postgres monabas < init-db.sql
+Default login/password: admin
 
 ## Configuring Sphinx search
 

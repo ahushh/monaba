@@ -4,6 +4,7 @@ import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (fixReferences, doYobaMarkup, makeExternalRef)
 import           System.Process       (readProcess, runCommand)
+import           Yesod.Auth.HashDB    (setPassword)
 -------------------------------------------------------------------------------------------------------------
 -- Main page
 -------------------------------------------------------------------------------------------------------------
@@ -13,6 +14,55 @@ getAdminR = do
   defaultLayout $ do
     defaultTitleMsg MsgManagement
     $(widgetFile "admin")
+
+getAdminSetupR :: Handler Html
+getAdminSetupR = do
+  runDB $ do
+    storage <- count ([]::[Filter Storage])
+    when (storage == 0) $ void $ insert $ Storage { storageUploadDir = 1 }
+    config <- count ([]::[Filter Config])
+    when (config == 0) $ void $ insert $ Config { configReplyDelay = 7
+                                               , configThreadDelay = 30
+                                               , configBoardCategories = []
+                                               , configNewsBoard = "news"
+                                               , configShowNews = 2
+                                               , configMaxEditings = 10
+                                               , configShowLatestPosts = 15
+                                               , configAbout = Textarea "nothing to see here"
+                                               , configHome = Textarea "<img id=\"main-image\" style=\"display:block; margin: 0 auto;\" src=\"static/home.jpg\">"
+                                               , configModlogMaxEntries = 3000
+                                               , configModlogEntriesPerPage =30
+                                               }
+    group <- count ([]::[Filter Group])
+    when (group == 0) $ void $ insert $ Group { groupName = "Admin"
+                                             , groupPermissions = [ ManageThreadP
+                                                                  , ManageBoardP
+                                                                  , ManageUsersP
+                                                                  , ManageConfigP
+                                                                  , DeletePostsP
+                                                                  , ManagePanelP
+                                                                  , ManageBanP
+                                                                  , EditPostsP
+                                                                  , ViewModlogP
+                                                                  , AdditionalMarkupP
+                                                                  , ViewIPAndIDP
+                                                                  , HellBanP
+                                                                  , ChangeFileRatingP
+                                                                  , ShadowEditP
+                                                                  , AppControlP
+                                                                  , WordfilterP
+                                                                  ]
+                                             }
+    user <- count ([]::[Filter User])
+    when (user == 0) $ do
+      let u = User { userName = "admin"
+                   , userPassword = Nothing
+                   , userGroup = "Admin"
+                   }
+      u' <- liftIO $ setPassword "admin" u
+      void $ insert u'
+  redirect $ AuthR LoginR
+
 -------------------------------------------------------------------------------------------------------------
 -- Lock editing
 -------------------------------------------------------------------------------------------------------------

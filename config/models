@@ -9,8 +9,8 @@ User
     name             Text
     UserUniqName     name
     group            Text
-    password         Text
-    salt             Text
+    password         Text Maybe
+    deriving         Typeable
 Board
     index             Int default=0
     name              Text

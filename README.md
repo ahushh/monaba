@@ -96,8 +96,8 @@ Sample list of required packages for debian:
 
 ### Execute the following commands
 
-    cabal fetch nano-md5
-    tar -zxvf ~/.cabal/packages/hackage.haskell.org/nano-md5/0.1.2/nano-md5-0.1.2.tar.gz
+    wget https://hackage.haskell.org/package/nano-md5-0.1.2/nano-md5-0.1.2.tar.gz
+    tar -zxvf nano-md5-0.1.2.tar.gz
     patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < extra/MD5.hs.patch
 
     stack setup

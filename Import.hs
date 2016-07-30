@@ -164,6 +164,9 @@ tshow = pack . show
 tread :: Read a => Text -> a
 tread = read . unpack
 
+readIP :: String -> IP
+readIP = read
+
 pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
 pair f g x = (f x, g x)
 

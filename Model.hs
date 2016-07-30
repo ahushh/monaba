@@ -5,6 +5,7 @@ import ClassyPrelude.Yesod
 import Database.Persist.Quasi
 
 import ModelTypes
+import Data.IP
 import Yesod.Auth.HashDB (HashDBUser(..))
 
 -- You can define all of your database entities in the entities file.

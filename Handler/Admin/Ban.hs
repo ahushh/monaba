@@ -3,22 +3,25 @@ module Handler.Admin.Ban where
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate)
+import           Data.IP
 -------------------------------------------------------------------------------------------------------------
 banByIpForm :: Text -> -- ^ IP adress
               Text -> -- ^ Board name
               Html -> -- ^ Extra token
               MForm Handler (FormResult
-                             ( Text       -- ^ IP
+                             ( Text       -- ^ IP range start
+                             , Text       -- ^ IP range end
                              , Text       -- ^ Reason
                              , Maybe Text -- ^ Board name
                              , Maybe Int  -- ^ Expires in hours
                              ), Widget)
 banByIpForm ip board extra = do
-  (ipRes     , ipView     ) <- mreq textField  "" (Just ip)
+  (ipBegRes  , ipBegView  ) <- mreq textField  "" (Just ip)
+  (ipEndRes  , ipEndView  ) <- mreq textField  "" (Just ip)
   (reasonRes , reasonView ) <- mreq textField  "" Nothing
   (boardRes  , boardView  ) <- mopt textField  "" (Just $ Just board)
   (expiresRes, expiresView) <- mopt intField   "" Nothing
-  let result = (,,,) <$> ipRes <*> reasonRes <*> boardRes <*> expiresRes
+  let result = (,,,,) <$> ipBegRes <*> ipEndRes <*> reasonRes <*> boardRes <*> expiresRes
       widget = $(widgetFile "admin/ban-form")
   return (result, widget)
                                           
@@ -40,9 +43,9 @@ postBanByIpR _ _ = do
     FormFailure []                  -> msgRedirect MsgBadFormData
     FormFailure xs                  -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing                     -> msgRedirect MsgNoFormData
-    FormSuccess (ip, reason, board, expires) -> do
-      bId <- addBan ip reason board expires
-      addModlogEntry $ MsgModlogBanAdded ip reason (fromIntegral $ fromSqlKey bId)
+    FormSuccess (ipBegin, ipEnd, reason, board, expires) -> do
+      bId <- addBan (tread ipBegin) (tread ipEnd) reason board expires
+      addModlogEntry $ MsgModlogBanAdded (tshow ipBegin <> tshow ipEnd) reason (fromIntegral $ fromSqlKey bId)
       msgRedirect MsgBanAdded
 
 getBanDeleteR :: Int -> Handler Html
@@ -51,10 +54,11 @@ getBanDeleteR bId = do
   addModlogEntry $ MsgModlogDelBan bId
   setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")
 
-addBan :: Text -> Text -> Maybe Text -> Maybe Int -> Handler BanId
-addBan ip reason board expires = do
+addBan :: IP -> IP -> Text -> Maybe Text -> Maybe Int -> Handler BanId
+addBan ipBegin ipEnd reason board expires = do
   now <- liftIO getCurrentTime
-  let newBan = Ban { banIp      = ip
+  let newBan = Ban { banIpBegin = ipBegin
+                   , banIpEnd   = ipEnd
                    , banReason  = reason
                    , banBoard   = board
                    , banExpires = (\n -> addUTCTime' (60*60*n) now) <$> expires

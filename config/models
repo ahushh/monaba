@@ -93,7 +93,8 @@ Attachedfile json
     info         String
     rating       Text default='SFW'
 Ban
-    ip           Text
+    ipBegin      IP
+    ipEnd        IP
     reason       Text
     expires      UTCTime Maybe
     board        Text Maybe

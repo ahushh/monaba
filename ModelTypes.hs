@@ -5,6 +5,7 @@ module ModelTypes
        , GeoCountry(..)
        , WordfilterAction(..)
        , WordfilterDataType(..)
+       , IP.IP(..)
        ) where
 
 import Prelude
@@ -12,6 +13,7 @@ import Data.Text (unpack, Text)
 import Control.Monad (mzero)
 import Control.Applicative ((<$>), (<*>))
 import Yesod
+import  qualified Data.IP as IP
 
 -- | Contains country code and name
 data GeoCountry = GeoCountry { geoCountryCode' :: Text
@@ -70,3 +72,4 @@ derivePersistField "FileType"
 derivePersistField "GeoCountry"
 derivePersistField "WordfilterDataType"
 derivePersistField "WordfilterAction"
+derivePersistField "IP.IP"

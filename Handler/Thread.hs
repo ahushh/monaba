@@ -126,7 +126,7 @@ postThreadR board thread = do
         country   <- getCountry ip
         hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
         ------------------------------------------------------------------------------------------------------
-        checkBan ip $ \m -> trickyRedirect "error" m threadUrl
+        checkBan (tread ip) $ \m -> trickyRedirect "error" m threadUrl
         unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
         when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)

@@ -5,8 +5,8 @@ import           Handler.Admin.Ban
 import qualified Data.Text as T
 import           System.Directory (doesDirectoryExist, createDirectory, getDirectoryContents)
 import           System.FilePath ((</>))
-import           Data.List (isInfixOf)
-import           Data.Either
+--import           Data.List (isInfixOf)
+--import           Data.Either
 -------------------------------------------------------------------------------------------------------------------
 -- This file contains some common forms and helpers for Thread.hs, Board.hs and Edit.hs
 -------------------------------------------------------------------------------------------------------------------
@@ -122,9 +122,9 @@ randomBanner = do
         Nothing -> return Nothing
      Nothing -> return Nothing
 
-checkBan :: Text -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
+checkBan :: IP -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
 checkBan ip redirectSomewhere = do
-  mBan <- runDB $ selectFirst [BanIp ==. ip] [Desc BanId]
+  mBan <- runDB $ selectFirst [BanIpBegin <=. ip, BanIpEnd >=. ip] [Desc BanId]
   msgrender <- getMessageRender  
   timeZone  <- getTimeZone
   case mBan of
@@ -155,7 +155,7 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
          let as = wordfilterAction b
              m  = wordfilterActionMsg b
          when (WordfilterBan `elem` as) $ do
-           void $ addBan ip m Nothing Nothing
+           void $ addBan (tread ip) (tread ip) m Nothing Nothing
          when (WordfilterDeny `elem` as) $ 
            redirectSomewhere $ Right m
          when (WordfilterHB `elem` as) $ do

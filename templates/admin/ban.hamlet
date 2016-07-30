@@ -13,7 +13,7 @@
             <td>
                 <a href=@{BanDeleteR $ fromIntegral $ fromSqlKey bId}>_{MsgDeleteBtn}
             <td>##{fromSqlKey bId} 
-            <td>#{banIp b}
+            <td>#{show $ banIpBegin b} - #{show $ banIpEnd b}
             <td>#{banReason b}
             $if isJust $ banExpires b
                 <td>#{myFormatTime timeZone $ fromJust $ banExpires b}

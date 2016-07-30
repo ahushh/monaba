@@ -61,8 +61,8 @@
 /admin/move/#Text/#Int/#Text  MoveThreadR   GET 
 /admin/changethread/#Int/#Int ChangeThreadR GET 
 
-/admin/ban/#Text/#Text     BanByIpR      GET POST
-/admin/bandelete/#Int      BanDeleteR    GET
+/admin/ban/#Text/#Text       BanByIpR      GET POST
+/admin/bandelete/#Int        BanDeleteR    GET
 
 /admin/hellban                     HellBanNoPageR GET
 /admin/hellban/#Int                HellBanR       GET

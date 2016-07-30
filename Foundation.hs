@@ -4,7 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.HashDB    (authHashDB, authHashDBWithForm, HashDBUser(..))
+import Yesod.Auth.HashDB    (authHashDBWithForm, HashDBUser(..))
 import Yesod.Auth.Message
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -266,6 +266,13 @@ isAuthorized' permissions = do
             else return $ Unauthorized "Not permitted"
 
 -- Path pieces
+instance PathPiece IP where 
+  toPathPiece     = pack . show
+  fromPathPiece s =
+    case reads $ unpack s of
+      (i,""):_ -> Just i
+      _        -> Nothing
+
 instance PathPiece Censorship where 
   toPathPiece     = pack . show
   fromPathPiece s =

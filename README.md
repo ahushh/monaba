@@ -35,8 +35,9 @@ Features
     - Ability to stick and lock threads and to put on auto-sage
     - Moving threads between boards
     - Changing post's parent
-    - Modlog which allows to view previous actions
+    - Modlog which allows to view previous actions done by staff
     - Post search by ID and UID
+    - Wordfilter with regex support
 
 Requirements
 ------
@@ -82,15 +83,15 @@ Or it can be installed from repositories. You can change the  in `config/setting
 
 Set your path to GeSHi in `highlight.php`. Home directory is usually good.
 
-## Using binary packages
+## Using a binary packages
 
-Download archive of the latest verion of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
+Download an archive of the latest verion of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
 
 If it's not working or outdated, try to build from source.
 
 ## Building from source
 
-Sample list of required packages for debian:
+Sample list of the required packages on debian:
 
     apt-get install haskell-stack zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev libicu-dev
 
@@ -146,6 +147,8 @@ Configure `extra/monaba.service` and put this file into `/etc/systemd/user/` or 
 Example of usage:
 
 `systemctl --user start monaba`
+
 `systemctl --user stop monaba`
+
 `systemctl --user restart monaba`
 

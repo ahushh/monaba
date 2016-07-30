@@ -1,6 +1,6 @@
 input.bad {
-    border: 2px solid red;
+    border: 2px solid red !important;
 }
 input.good {
-    border: 2px solid green;
+    border: 2px solid green !important;
 }

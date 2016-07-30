@@ -45,7 +45,7 @@ showWordfilterAction a = let m = lookup a xs
              ,(WordfilterHB    , MsgWordfilterHB     )
              ,(WordfilterHBHide, MsgWordfilterHBHide )
              ,(WordfilterDeny  , MsgWordfilterDeny   )
-             ,(WordfilterReplace, MsgWordfilterReplace   )
+             ,(WordfilterReplace, MsgWordfilterReplace )
              ]
 
 showWordfilterType :: WordfilterDataType -> AppMessage
@@ -53,7 +53,9 @@ showWordfilterType t = let m = lookup t xs
                      in case m of
                        Just m  -> m
                        Nothing -> error "case-of failed at showWordfilterType"
-  where xs = [(WordfilterWords,MsgWordfilterWords)
+  where xs = [(WordfilterWords     , MsgWordfilterWords)
+             ,(WordfilterExactMatch, MsgWordfilterExactMatch)
+             ,(WordfilterRegex     , MsgWordfilterRegex)
              ]
 
 showPermission :: Permission -> AppMessage

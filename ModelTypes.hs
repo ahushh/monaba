@@ -48,7 +48,7 @@ data Permission = ManageThreadP
                 | WordfilterP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
-data WordfilterDataType = WordfilterWords -- | WordfilterRegex
+data WordfilterDataType = WordfilterWords | WordfilterExactMatch | WordfilterRegex
                    deriving (Show, Ord, Read, Eq, Bounded, Enum)
 
 data WordfilterAction = WordfilterBan | WordfilterHB | WordfilterHBHide | WordfilterDeny | WordfilterReplace

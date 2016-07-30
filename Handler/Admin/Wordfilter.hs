@@ -8,7 +8,7 @@ form :: Html -> MForm Handler (FormResult (Maybe Text, WordfilterDataType, Texta
 form extra = do
   msgrender <- getMessageRender
   let types :: [(Text, WordfilterDataType)]
-      types = map (first msgrender) [(MsgWordfilterWords, WordfilterWords)]--, (MsgWordfilterRegex, WordfilterRegex)]
+      types = map (first msgrender) [(MsgWordfilterWords, WordfilterWords),(MsgWordfilterExactMatch,WordfilterExactMatch), (MsgWordfilterRegex, WordfilterRegex)]
       actions :: [(Text, WordfilterAction)]
       actions = map (first msgrender) [(MsgWordfilterBan, WordfilterBan), (MsgWordfilterHB, WordfilterHB), (MsgWordfilterHBHide, WordfilterHBHide), (MsgWordfilterDeny, WordfilterDeny),(MsgWordfilterReplace, WordfilterReplace)]
   (boardRes , boardView ) <- mopt textField "" Nothing

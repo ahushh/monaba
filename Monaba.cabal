@@ -149,6 +149,7 @@ library
                  , xml-conduit
                  , xml-types
                  , iproute
+                 , pcre-heavy
 
 executable         Monaba
     if flag(library-only)

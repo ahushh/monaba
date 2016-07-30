@@ -5,6 +5,8 @@ import           Handler.Admin.Ban
 import qualified Data.Text as T
 import           System.Directory (doesDirectoryExist, createDirectory, getDirectoryContents)
 import           System.FilePath ((</>))
+import           Data.Text.Encoding (encodeUtf8)
+import           Text.Regex.PCRE.Heavy
 --import           Data.List (isInfixOf)
 --import           Data.Either
 -------------------------------------------------------------------------------------------------------------------
@@ -151,9 +153,9 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
   posterId <- getPosterId
   ip  <- pack <$> getIp
   bs  <- runDB $ selectList ([]::[Filter Wordfilter]) []
-  forM_ bs $ \(Entity _ b) -> case wordfilterDataType b of
-     WordfilterWords -> do
-       when (maybe True ((==)board) (wordfilterBoard b) && or (map (\m -> T.isInfixOf m msg) (T.words $ wordfilterData b)) ) $ do
+  forM_ bs $ \(Entity _ b) -> do
+       let regex = compileM (encodeUtf8 $ wordfilterData b) []
+       when (maybe True ((==)board) (wordfilterBoard b) && checkText msg b regex) $ do
          let as = wordfilterAction b
              m  = wordfilterActionMsg b
          when (WordfilterBan `elem` as) $ do
@@ -167,9 +169,24 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
          when (WordfilterHBHide `elem` as) $ do
            setSession "hide-this-post" "True"
          when (elem WordfilterReplace as && isJust (wordfilterReplacement b)) $ do
-           let newMsg = foldr (\x m -> T.replace x (fromJust $ wordfilterReplacement b) m) msg (T.words $ wordfilterData b)
-           setSession "filtered-message" newMsg
+           let replacement = fromJust $ wordfilterReplacement b
+           case  wordfilterDataType b of
+             WordfilterWords ->
+               let newMsg = foldr (\x m -> T.replace x replacement m) msg (T.words $ wordfilterData b)
+                 in setSession "filtered-message" newMsg
+             WordfilterExactMatch -> let newMsg = T.replace (wordfilterData b) replacement msg
+                                      in setSession "filtered-message" newMsg
+             WordfilterRegex      -> case regex of
+                                      Left _    -> return ()
+                                      Right reg -> let newMsg = gsub reg replacement msg
+                                                    in setSession "filtered-message" newMsg
 
+  where checkText msg b regex = case wordfilterDataType b of
+                                  WordfilterWords      -> or (map (\m -> T.isInfixOf m msg) (T.words $ wordfilterData b))
+                                  WordfilterExactMatch -> T.isInfixOf (wordfilterData b) msg
+                                  WordfilterRegex      -> case regex of
+                                                           Right r -> encodeUtf8 msg =~ r
+                                                           Left _  -> False
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes
 isFileAllowed _            _                      = True

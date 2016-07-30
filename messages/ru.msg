@@ -311,6 +311,7 @@ LeaveEmptyToSelectAllBoards: для выбора всех досок остав�
 Wordfilter: Вордфильтер
 WordfilterBoard: Доска
 WordfilterWords: слова через пробел
+WordfilterExactMatch: точное совпадение
 WordfilterRegex: regex
 WordfilterDataType: Тип
 WordfilterData: Значение
@@ -320,8 +321,8 @@ WordfilterBan: забанить IP
 WordfilterHB: на премодерацию
 WordfilterHBHide: скрыть пост
 WordfilterDeny: отклонить сообщение
+WordfilterReplace: замена
 WordfilterDenied: Сообщение отклонено
-WordfilterReplace: Замена
 ######################################################################################
 #### Help
 ######################################################################################

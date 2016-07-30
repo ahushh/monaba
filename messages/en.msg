@@ -308,6 +308,7 @@ LeaveEmptyToSelectAllBoards: leave empty to select all boards
 Wordfilter: Wordfilter
 WordfilterBoard: board
 WordfilterWords: words separated by space
+WordfilterExactMatch: exact match
 WordfilterRegex: regex
 WordfilterDataType: Type
 WordfilterData: What to filter
@@ -318,7 +319,7 @@ WordfilterHB: to hellban user
 WordfilterHBHide: hide post
 WordfilterDeny: deny post
 WordfilterDenied: your post is denied
-WordfilterReplace: Replace
+WordfilterReplace: replace
 ######################################################################################
 #### Help
 ######################################################################################

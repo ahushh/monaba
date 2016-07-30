@@ -107,7 +107,12 @@ instance Yesod App where
     maximumContentLength _ _ = Just $ maxFileSize * (1024^(2 :: Word64))
     -- Controls the base of generated URLs. For more information on modifying,
     -- see: https://github.com/yesodweb/yesod/wiki/Overriding-approot
-    approot = ApprootMaster $ appRoot . appSettings
+    -- Controls the base of generated URLs. For more information on modifying,
+    -- see: https://github.com/yesodweb/yesod/wiki/Overriding-approot
+    approot = ApprootRequest $ \app req ->
+        case appRoot $ appSettings app of
+            Nothing -> getApprootText guessApproot app req
+            Just root -> root
 
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes

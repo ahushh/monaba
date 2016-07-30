@@ -350,6 +350,12 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
     inBookmarks     <- handlerToWidget $ do
       bm <- getBookmarks
       return $ isJust $ lookup (fromIntegral postId) bm
+
+    req <- handlerToWidget $ waiRequest
+    app <- handlerToWidget $ getYesod
+    let approot' =  case appRoot of
+                      Nothing -> getApprootText guessApproot app req
+                      Just root -> root
     $(widgetFile "post")
 
 paginationWidget page pages route = $(widgetFile "pagination")

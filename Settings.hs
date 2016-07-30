@@ -28,7 +28,7 @@ data AppSettings = AppSettings
     -- ^ Directory for storing uploaded files
     , appDatabaseConf           :: PostgresConf
     -- ^ Configuration settings for accessing the database.
-    , appRoot                   :: Text
+    , appRoot                   :: Maybe Text
     -- ^ Base for all generated URLs.
     , appHost                   :: HostPreference
     -- ^ Host/interface the server should bind to.
@@ -118,7 +118,7 @@ instance FromJSON AppSettings where
         appUploadDir              <- o .: "upload-dir"
         appStaticDir              <- o .: "static-dir"
         appDatabaseConf           <- o .: "database"
-        appRoot                   <- o .: "approot"
+        appRoot                   <- o .:? "approot"
         appHost                   <- fromString <$> o .: "host"
         appPort                   <- o .: "port"
         appIpFromHeader           <- o .: "ip-from-header"

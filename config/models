@@ -97,7 +97,7 @@ Ban
     ipEnd        IP
     reason       Text
     expires      UTCTime Maybe
-    board        Text Maybe
+    boards       [Text]
 Config
     replyDelay      Int
     threadDelay     Int 

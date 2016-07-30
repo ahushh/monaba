@@ -136,7 +136,7 @@ postBoardR board _ = do
         posterId <- getPosterId
         hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
         -------------------------------------------------------------------------------------------------------
-        checkBan (tread ip) $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
+        checkBan (tread ip) board $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
         when (enableCaptcha && isNothing muser) $ 
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))

@@ -158,6 +158,7 @@ instance Yesod App where
       ChangeThreadR{} -> isAuthorized' [ManageThreadP]
 
       BanByIpR{}      -> isAuthorized' [ManageBanP]
+      BanByIpAndDeleteR{} -> isAuthorized' [ManageBanP, DeletePostsP]
       BanDeleteR{}    -> isAuthorized' [ManageBanP]
 
       ManageBoardsR{} -> isAuthorized' [ManageBoardP]

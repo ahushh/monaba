@@ -90,6 +90,8 @@ Home: Домой
 Bookmarks: Закладки
 ### admin buttons
 BanPoster: Забанить!
+DeleteByIP: Удалить все посты по IP
+BanPosterAndDelete: Удалить все посты по IP и забанить
 StickThread: Прикрепить
 UnstickThread: Открепить
 LockThread: Заблокировать

@@ -2,33 +2,57 @@ module Handler.Admin.Ban where
 
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
-import qualified Data.Text as T (intercalate)
+import           Utils.YobaMarkup     (makeExternalRef)
+import           Handler.Delete       (deletePosts)
+import qualified Data.Text          as T
 import           Data.IP
 -------------------------------------------------------------------------------------------------------------
-banByIpForm :: Text -> -- ^ IP adress
-              Text -> -- ^ Board name
-              Html -> -- ^ Extra token
+banByIpForm :: Text          -> -- ^ IP adress
+              [(Text,Text)] -> -- ^ All boards
+              Maybe Text    -> -- ^ Board 
+              Html          -> -- ^ Extra token
               MForm Handler (FormResult
                              ( Text       -- ^ IP range start
                              , Text       -- ^ IP range end
                              , Text       -- ^ Reason
-                             , Maybe Text -- ^ Board name
+                             , [Text]      -- ^ Board name
                              , Maybe Int  -- ^ Expires in hours
                              ), Widget)
-banByIpForm ip board extra = do
+banByIpForm ip allBoards board extra = do
   (ipBegRes  , ipBegView  ) <- mreq textField  "" (Just ip)
   (ipEndRes  , ipEndView  ) <- mreq textField  "" (Just ip)
   (reasonRes , reasonView ) <- mreq textField  "" Nothing
-  (boardRes  , boardView  ) <- mopt textField  "" (Just $ Just board)
+  (boardRes  , boardView  ) <- mreq (multiSelectFieldList allBoards)   "" ((:[])<$>board)
   (expiresRes, expiresView) <- mopt intField   "" Nothing
   let result = (,,,,) <$> ipBegRes <*> ipEndRes <*> reasonRes <*> boardRes <*> expiresRes
       widget = $(widgetFile "admin/ban-form")
   return (result, widget)
                                           
+fetchAllBoards = do
+  mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
+  map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+
+delPosts ip = do
+  posts <- runDB $ selectList [PostIp ==. ip] []
+  bt <- forM posts $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           
+  addModlogEntry $ MsgModlogDeletePosts $ T.concat bt
+  deletePosts posts False
+
+getBanByIpAndDeleteR :: Text -> Text -> Handler Html
+getBanByIpAndDeleteR board ip = do
+  delPosts ip
+  getBanByIpR board ip
+
+getDeletePostsByIPR :: Text -> Handler Html
+getDeletePostsByIPR ip = do
+  delPosts ip
+  redirectUltDest HomeR
+
 getBanByIpR :: Text -> Text -> Handler Html
 getBanByIpR board ip = do
-  timeZone        <- getTimeZone
-  (formWidget, _) <- generateFormPost $ banByIpForm ip board
+  timeZone  <- getTimeZone
+  allBoards <- fetchAllBoards
+  (formWidget, _) <- generateFormPost $ banByIpForm ip allBoards (if (T.length board == 0) then Nothing else Just board)
   bans            <- runDB $ selectList ([]::[Filter Ban]) []
   defaultLayout $ do
     setUltDestCurrent
@@ -37,14 +61,15 @@ getBanByIpR board ip = do
 
 postBanByIpR :: Text -> Text -> Handler Html
 postBanByIpR _ _ = do
-  ((result, _), _) <- runFormPost $ banByIpForm "" ""
+  allBoards     <- fetchAllBoards
+  ((result, _), _) <- runFormPost $ banByIpForm "" allBoards Nothing
   let msgRedirect msg = setMessageI msg >> redirect (BanByIpR "" "")
   case result of
     FormFailure []                  -> msgRedirect MsgBadFormData
     FormFailure xs                  -> msgRedirect (MsgError $ T.intercalate "; " xs) 
     FormMissing                     -> msgRedirect MsgNoFormData
-    FormSuccess (ipBegin, ipEnd, reason, board, expires) -> do
-      bId <- addBan (tread ipBegin) (tread ipEnd) reason board expires
+    FormSuccess (ipBegin, ipEnd, reason, boards, expires) -> do
+      bId <- addBan (tread ipBegin) (tread ipEnd) reason boards expires
       addModlogEntry $ MsgModlogBanAdded (tshow ipBegin <> tshow ipEnd) reason (fromIntegral $ fromSqlKey bId)
       msgRedirect MsgBanAdded
 
@@ -54,13 +79,13 @@ getBanDeleteR bId = do
   addModlogEntry $ MsgModlogDelBan bId
   setMessageI MsgBanDeleted >> redirect (BanByIpR "" "")
 
-addBan :: IP -> IP -> Text -> Maybe Text -> Maybe Int -> Handler BanId
-addBan ipBegin ipEnd reason board expires = do
+addBan :: IP -> IP -> Text -> [Text] -> Maybe Int -> Handler BanId
+addBan ipBegin ipEnd reason boards expires = do
   now <- liftIO getCurrentTime
   let newBan = Ban { banIpBegin = ipBegin
                    , banIpEnd   = ipEnd
                    , banReason  = reason
-                   , banBoard   = board
+                   , banBoards  = boards
                    , banExpires = (\n -> addUTCTime' (60*60*n) now) <$> expires
                    }
   runDB $ insert newBan

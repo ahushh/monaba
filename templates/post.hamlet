@@ -69,8 +69,15 @@
                <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h .clickable>
                <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows .clickable>
            $if elem ManageBanP permissions
+               [ 
                <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
-                 <i .fa .fa-ban>
+                 B 
+               $if elem DeletePostsP permissions
+                 <a title=_{MsgBanPosterAndDelete} href=@{BanByIpAndDeleteR board (postIp postVal)}>
+                   & 
+                 <a title=_{MsgDeleteByIP} href=@{DeletePostsByIPR (postIp postVal)}>
+                   D 
+               ]
            $if elem ViewIPAndIDP permissions
              [
              <a title="IP & UID" onclick="toggleInline( document.querySelector('#p#{sPostId} .id-container') )">IP & UID

@@ -90,6 +90,8 @@ Home: Home
 Bookmarks: Bookmarks
 ### admin buttons
 BanPoster: Ban poster
+DeleteByIP: Delete all posts by IP
+BanPosterAndDelete: Delete all posts by IP and ban poster
 StickThread: Stick
 UnstickThread: Unstick
 LockThread: Lock

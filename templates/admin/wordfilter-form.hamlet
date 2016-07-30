@@ -13,7 +13,7 @@
     _{MsgWordfilterAction}
     <br>
     ^{fvInput msgView}
-    _{MsgWordfilterActionMsg}
+    _{MsgWordfilterActionMsg} (_{MsgWordfilterBan}, _{MsgWordfilterDeny})
     <br>
     ^{fvInput replaceView}
     _{MsgWordfilterReplace}

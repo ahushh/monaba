@@ -19,7 +19,4 @@
                 <td>#{myFormatTime timeZone $ fromJust $ banExpires b}
             $else
                 <td>_{MsgNeverExpires}
-            $if isJust $ banBoard b
-                <td>#{fromJust $ banBoard b}
-            $else
-                <td>_{MsgAllBoards}
+            <td>#{T.intercalate ", " $ banBoards b}

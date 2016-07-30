@@ -122,9 +122,11 @@ randomBanner = do
         Nothing -> return Nothing
      Nothing -> return Nothing
 
-checkBan :: IP -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
-checkBan ip redirectSomewhere = do
-  mBan <- runDB $ selectFirst [BanIpBegin <=. ip, BanIpEnd >=. ip] [Desc BanId]
+checkBan :: IP -> Text -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
+checkBan ip board redirectSomewhere = do
+  bans <- runDB $ selectList [BanIpBegin <=. ip, BanIpEnd >=. ip] [Desc BanId]
+  let bans' = flip filter bans $ \(Entity _ b) -> board `elem` banBoards b
+      mBan  = if (0 == length bans') then Nothing else Just (head bans')
   msgrender <- getMessageRender  
   timeZone  <- getTimeZone
   case mBan of
@@ -155,7 +157,7 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
          let as = wordfilterAction b
              m  = wordfilterActionMsg b
          when (WordfilterBan `elem` as) $ do
-           void $ addBan (tread ip) (tread ip) m Nothing Nothing
+           void $ addBan (tread ip) (tread ip) m [] Nothing
          when (WordfilterDeny `elem` as) $ 
            redirectSomewhere $ Right m
          when (WordfilterHB `elem` as) $ do

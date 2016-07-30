@@ -70,13 +70,13 @@
                <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows .clickable>
            $if elem ManageBanP permissions
                [ 
-               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
-                 B 
                $if elem DeletePostsP permissions
-                 <a title=_{MsgBanPosterAndDelete} href=@{BanByIpAndDeleteR board (postIp postVal)}>
-                   & 
                  <a title=_{MsgDeleteByIP} href=@{DeletePostsByIPR (postIp postVal)}>
                    D 
+                 <a title=_{MsgBanPosterAndDelete} href=@{BanByIpAndDeleteR board (postIp postVal)}>
+                   & 
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
+                 B 
                ]
            $if elem ViewIPAndIDP permissions
              [

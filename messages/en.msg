@@ -81,6 +81,7 @@ Back: Back
 Next: Next
 Previous: Previous
 DeleteBtn: Delete
+MarkAllPosts: Mark all posts
 OnlyFiles: Only files
 ## panel
 Manage: Manage

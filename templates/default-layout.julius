@@ -746,6 +746,12 @@ function getUpdateTitle() {
 //-----------------------------------------------------------------
 // deletion checkboxes
 //-----------------------------------------------------------------
+function markAllPosts() {
+    Array.prototype.forEach.call(document.getElementsByClassName("mark-to-delete"), function(el,i) {
+        markToDelete(el);
+    });
+}
+
 function markToDelete(container) {
     var input = container.querySelector('input');
     var icon   = container.querySelector('i');

@@ -43,6 +43,10 @@ $if hasAccessToReply
     [ <a href=@{BoardNoPageR board }> _{MsgBack} </a> ]
 
     <div #delete-container>
+        [ 
+        <a onclick="markAllPosts()">
+          _{MsgMarkAllPosts} 
+        ]
         <label>
           _{MsgOnlyFiles}
           <input type=checkbox name=onlyfiles value=1>

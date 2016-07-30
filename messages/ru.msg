@@ -81,6 +81,7 @@ Back: Назад
 Next: Вперед
 Previous: Назад
 DeleteBtn: Удалить
+MarkAllPosts: Отметить все посты
 OnlyFiles: Только файлы
 ## panel
 Manage: Управление

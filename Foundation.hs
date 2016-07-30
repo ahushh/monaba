@@ -197,6 +197,8 @@ instance Yesod App where
       AdminDeletedFilteredR{} -> isAuthorized' [DeletePostsP]
       AdminRecoverDeletedR{}  -> isAuthorized' [DeletePostsP]
 
+      DeletePostsByIPR{}      -> isAuthorized' [DeletePostsP]
+
       AdminLockEditingR{}     -> isAuthorized' [EditPostsP]
 
       ConfigR{}       -> isAuthorized' [ManageConfigP]

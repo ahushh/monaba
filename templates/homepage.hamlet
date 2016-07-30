@@ -1,20 +1,21 @@
 <div #main-title>
   <h1>#{appSiteName}
 <div #home-container>
-  <div #board-list-full>
+  <div #home-content .block>
+    #{preEscapedToHtml $ unTextarea homeContent}
+  <div #board-list-full .block>
     <div .title>_{MsgHomeBoards}
     $forall c <- boardCategories
-      $with bs <- filterBoards boards c group
-        $if not (null bs)
-          $if not (T.null c)
-            <div .board-category>#{c}
-          $forall Entity _ b <- sortBoards bs
-            <p>
-              <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ 
-              —
-              <a href=@{BoardNoPageR $ boardName b}> #{boardTitle b}
-  <div #home-content>
-    #{preEscapedToHtml $ unTextarea homeContent}
+      <div .row>
+        $with bs <- filterBoards boards c group
+          $if not (null bs)
+            $if not (T.null c)
+              <div .board-category>#{c}
+            $forall Entity _ b <- sortBoards bs
+              <p>
+                <a href=@{BoardNoPageR $ boardName b}>/#{boardName b}/ 
+                —
+                <a href=@{BoardNoPageR $ boardName b}> #{boardTitle b}
   $if not $ null newsAndFiles
     <div .block>
       <div .title>_{MsgNews}
@@ -52,6 +53,19 @@
               <span .last-modified>
                   <i .fa .fa-history>
                   <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey pKey}>_{MsgLastModified} #{myFormatTime timeZone lm}
+  <div .block #recent-images>
+      <div .title>_{MsgRecentImages}
+      $forall Entity _ file <- recentImages
+        $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
+          $with up <- attachedfilePath file
+            $with fi <- makeFileInfo file
+              <div class="multi-file">
+                $if attachedfileThumbWidth file == -1
+                  <img src="#{tp}" .thumb title="#{fi}">
+                $elseif attachedfileFiletype file == FileImage
+                  <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                $else
+                  <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
   <div .block>
     <div .title>_{MsgStatistics}
     <div .stats>

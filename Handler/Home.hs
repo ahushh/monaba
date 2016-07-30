@@ -28,6 +28,7 @@ getHomeR = do
   statsDay        <- runDB $ count [PostDate >. day, PostDeleted ==. False]
   statsAllFiles   <- runDB $ count ([]::[Filter Attachedfile])
 
+  recentImages    <- runDB $ selectList [AttachedfileFiletype ==. FileImage] [Desc AttachedfileId, LimitTo 5]
   defaultLayout $ do
     setTitle $ toHtml appSiteName
     $(widgetFile "homepage")

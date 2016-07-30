@@ -542,6 +542,7 @@ CssCustom: css_custom
 ######################################################################################
 ## Statistics
 ######################################################################################
+RecentImages: Recent images
 Statistics: Statistics
 StatsAllPosts: All posts
 StatsAllPostsDeleted del@Int: (not including #{show del} deleted)

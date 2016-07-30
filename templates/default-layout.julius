@@ -1749,22 +1749,21 @@ function expandImage(post) {
                     document.body.removeChild(img);
                     img = undefined;
                 }, false);
-                var imgHeight = img.height;
-                var imgWidth  = img.width;
-                var ratio  = imgHeight > wHeight || imgWidth > wWidth ? Math.min(wWidth/imgWidth, wHeight/imgHeight) : 1;
-                var height = imgHeight*ratio;
-                var width  = imgWidth*ratio;
-                img.style.height = height+'px';
-                img.style.width  = width+'px';
-                img.style.position = 'fixed';
-                img.style['z-index'] = Monaba.zindex + 1;
-                img.style.top    = (wHeight-height)/2 +'px';
-                img.style.bottom = (wHeight-height)/2 +'px';
-                img.style.left   = (wWidth-width)/2 +'px';
-                img.style.right  = (wWidth-width)/2 +'px';
-                Monaba.zindex += 1;
-
                 img.onload = function() {
+                    var imgHeight = img.height;
+                    var imgWidth  = img.width;
+                    var ratio  = imgHeight > wHeight || imgWidth > wWidth ? Math.min(wWidth/imgWidth, wHeight/imgHeight) : 1;
+                    var height = imgHeight*ratio;
+                    var width  = imgWidth*ratio;
+                    img.style.height = height+'px';
+                    img.style.width  = width+'px';
+                    img.style.position = 'fixed';
+                    img.style['z-index'] = Monaba.zindex + 1;
+                    img.style.top    = (wHeight-height)/2 +'px';
+                    img.style.bottom = (wHeight-height)/2 +'px';
+                    img.style.left   = (wWidth-width)/2 +'px';
+                    img.style.right  = (wWidth-width)/2 +'px';
+                    Monaba.zindex += 1;
                     document.body.appendChild(img);
                 };
             }

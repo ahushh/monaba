@@ -6,6 +6,7 @@
 
 /                    HomeR         GET
 /captcha             CaptchaR      GET
+/captcha/check/#Text CheckCaptchaR GET
 /feed                FeedR         GET
 /delete              DeleteR       GET 
 /delete/file/#Int    DeleteFileR   GET

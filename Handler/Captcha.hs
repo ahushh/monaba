@@ -26,6 +26,13 @@ getCaptchaR = do
   setSession "captchaValue" value
   sendFile typePng $ captchaFilePath appStaticDir (show cId) ++ captchaExt
 
+getCheckCaptchaR :: Text -> Handler TypedContent
+getCheckCaptchaR captcha = do
+  mCaptchaValue <- lookupSession "captchaValue"
+  case mCaptchaValue of
+    Just c  -> selectRep $ provideJson $ object [("result", if (T.toLower captcha) == (T.toLower c) then "true" else "false" )]
+    Nothing -> selectRep $ provideJson $ object [("result", "false" )]
+
 checkCaptcha :: Maybe Text -> Handler () -> Handler ()
 checkCaptcha mCaptcha wrongCaptchaRedirect = do
   mCaptchaValue <- lookupSession "captchaValue"
@@ -38,5 +45,5 @@ checkCaptcha mCaptcha wrongCaptchaRedirect = do
      let path = captchaFilePath appStaticDir (unpack cId) ++ captchaExt
      whenM (liftIO $ doesFileExist path) $
        liftIO $ removeFile path
-     when (mCaptchaValue /= (T.toLower <$> mCaptcha)) wrongCaptchaRedirect
+     when ((T.toLower <$>  mCaptchaValue) /= (T.toLower <$> mCaptcha)) wrongCaptchaRedirect
    _        -> wrongCaptchaRedirect

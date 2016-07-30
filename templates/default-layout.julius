@@ -766,8 +766,11 @@ function refreshCaptcha() {
     if (captcha != null)
         captcha.src = "@{CaptchaR}" + "?" + new Date().getTime();
     var captchaInput = document.getElementsByClassName("captcha-input");
-    if (captchaInput.length)
+    if (captchaInput.length) {
         captchaInput[0].value = "";
+        removeClass(captchaInput[0], "bad");
+        removeClass(captchaInput[0], "good");
+    }
 }
 
 function clearPostFormFields() {
@@ -1093,6 +1096,43 @@ function initPostForm() {
         if (e.keyCode == 13 && e.ctrlKey)
             pf.querySelector("input[type='submit']").click();
     });
+    // thx stackoverflow
+    var delay = (function(){
+        var timer = 0;
+        return function(callback, ms){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+    var caps = document.getElementsByClassName("captcha-input");
+    if (caps.length) {
+        var cap = caps[0];
+        removeClass(cap, "bad");
+        removeClass(cap, "good");
+        cap.onkeyup = function() {
+            delay(function() {
+            if (/^\s*$/.test( cap.value ) ) return true;
+            httpRequest({
+                action: "/captcha/check/"+cap.value,
+                headers: { 'Accept': 'application/json' },
+                onload: function(request) {
+                    if (request.status >= 200 && request.status < 400) {
+                        var data = JSON.parse(request.responseText);
+                        if (data.result == "true") {
+                            removeClass(cap, "bad");
+                            if (!hasClass(cap, "good")) addClass(cap, "good");
+                        } else {
+                            removeClass(cap, "good");
+                            if (!hasClass(cap, "bad")) addClass(cap, "bad");
+                        }
+                    } else {
+                        // todo error handling
+                    }
+                }
+            });
+            }, 500)
+        };
+    }
 }
 
 function initDragAndDrop(postform) {
@@ -2250,7 +2290,7 @@ function httpRequest(cnf) {
 }
 
 function hasClass(el, cl) {
-    return new RegExp('(?:^|\s)'+cl+'( |$)', 'gi').test(el.className);
+    return new RegExp(cl, 'gi').test(el.className);
 }
 
 function removeClass(el, cl) {

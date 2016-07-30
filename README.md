@@ -102,6 +102,8 @@ Sample list of required packages for debian:
 
     stack setup
     stack build
+    stack install
+    cp ~/.local/bin/{Captcha,Monaba} .
 
 ## Setup database
 
@@ -111,7 +113,7 @@ Create a database:
 
 Run the application to initialize database schema:
 
-    ./dist/build/Monaba/Monaba config/settings.yml
+    ./Monaba config/settings.yml
 
 Wait until it finish (a few seconds) and fill the database with default values by visiting `/admin/setup` page. Now you're ready to log in.
 

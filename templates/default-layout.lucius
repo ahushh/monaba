@@ -506,3 +506,9 @@ ul.dropdown-menu, .dropdown-menu li, .dropdown-menu ul {
 .js #message {
     display: none;
 }
+input.bad {
+    border: 2px solid red !important;
+}
+input.good {
+    border: 2px solid green !important;
+}

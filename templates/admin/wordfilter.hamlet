@@ -9,7 +9,7 @@
         <th>_{MsgWordfilterReplace}
         <th>_{MsgWordfilterAction}
         <th>_{MsgWordfilterBoard}
-
+        <th>_{MsgWordfilterActionMsg}
     $forall Entity bId b <- bs
         <tr>
             <td>
@@ -23,3 +23,4 @@
                 <td>#{fromJust $ wordfilterBoard b}
             $else
                 <td>_{MsgAllBoards}
+            <td>#{wordfilterActionMsg b}

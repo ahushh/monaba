@@ -8,7 +8,6 @@ import           Handler.Captcha (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
-import           Data.Either
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -112,7 +111,6 @@ postBoardR board _ = do
       opFile           = boardOpFile        boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
       enableCaptcha    = boardEnableCaptcha boardVal
-      showPostDate     = boardShowPostDate  boardVal
   -------------------------------------------------------------------------------------------------------       
   ((result, _),   _) <- runFormPost $ postForm True boardVal muser
   case result of
@@ -143,6 +141,7 @@ postBoardR board _ = do
         -------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent ==. 0) ip now $ setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
+        checkWordfilter (Textarea <$> title) board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
         checkWordfilter message board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
         ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])

@@ -304,22 +304,24 @@ ShkrinkHellbanned: Shrink hellbanned
 ######################################################################################
 #### Wordfilter
 ######################################################################################
+WordfilterAddBtn: Add
 LeaveEmptyToSelectAllBoards: leave empty to select all boards
 Wordfilter: Wordfilter
 WordfilterBoard: board
 WordfilterWords: words separated by space
 WordfilterExactMatch: exact match
-WordfilterRegex: regex
+WordfilterRegex: regex (PCRE)
 WordfilterDataType: Type
 WordfilterData: What to filter
-WordfilterAction: Action
-WordfilterActionMsg: Message for user
+WordfilterAction: What to do
+WordfilterActionMsg: Message displayed to user
 WordfilterBan: to ban IP
 WordfilterHB: to hellban user
-WordfilterHBHide: hide post
-WordfilterDeny: deny post
+WordfilterHBHide: to hide post
+WordfilterDeny: to deny post
+WordfilterReplace: to replace
 WordfilterDenied: your post is denied
-WordfilterReplace: replace
+WordfilterReplacedBy: Replaced by
 ######################################################################################
 #### Help
 ######################################################################################

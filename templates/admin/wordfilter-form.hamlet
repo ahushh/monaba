@@ -1,19 +1,24 @@
 <form method=post action=@{AdminWordfilterR}>
     #{extra}
-    _{MsgWordfilterBoard}: ^{fvInput boardView}
-    _{MsgLeaveEmptyToSelectAllBoards}
-    <br>
-    ^{fvInput typeView}
-    <input type=submit value=_{MsgSubmitBtn}>
-    <br>
-    ^{fvInput dataView}
-    _{MsgWordfilterData}
-    <br>
-    ^{fvInput actionView}
-    _{MsgWordfilterAction}
-    <br>
-    ^{fvInput msgView}
-    _{MsgWordfilterActionMsg} (_{MsgWordfilterBan}, _{MsgWordfilterDeny})
-    <br>
-    ^{fvInput replaceView}
-    _{MsgWordfilterReplace}
+    <table>
+      <tr>
+        <td>
+          <input type=submit value=_{MsgWordfilterAddBtn}>
+        <td>^{fvInput typeView}
+      <tr>
+        <td>_{MsgWordfilterBoard}
+        <td>^{fvInput boardView}
+        <td>_{MsgLeaveEmptyToSelectAllBoards}
+      <tr>
+        <td>_{MsgWordfilterData}
+        <td>^{fvInput dataView}
+      <tr>
+        <td>_{MsgWordfilterAction}
+        <td>^{fvInput actionView}
+      <tr>
+        <td>_{MsgWordfilterActionMsg}
+        <td>^{fvInput msgView}
+        <td>(_{MsgWordfilterBan}, _{MsgWordfilterDeny})
+      <tr>
+        <td>_{MsgWordfilterReplacedBy}
+        <td>^{fvInput replaceView}

@@ -49,10 +49,9 @@ postUsersR = do
         Just (Entity key user) -> do -- update user
           case mPassword of
             Just password -> do
-              userWithPassword <- liftIO $ setPassword (fromJust mPassword) newUser
+              userWithPassword <- liftIO $ setPassword password newUser
               void $ runDB $ replace key userWithPassword
-              when (isJust mPassword) $
-                addModlogEntry $ MsgModlogChangeUserPassword name
+              addModlogEntry $ MsgModlogChangeUserPassword name
               when (group /= (userGroup user)) $
                 addModlogEntry $ MsgModlogChangeUserGroup name group
             Nothing -> do

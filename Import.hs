@@ -23,7 +23,6 @@ import           Text.HTML.TagSoup       (parseTagsOptions, parseOptionsFast, Ta
 import qualified Data.ByteString.UTF8    as B
 import qualified Data.Map.Strict         as MapS
 import qualified Data.Text               as T (concat, toLower, append, take)
-import           Data.Either
 -------------------------------------------------------------------------------------------------------------------
 -- | If ajax request, redirects to page that makes JSON from message and status string.
 --   If regular request, redirects to given URL.
@@ -37,8 +36,8 @@ trickyRedirect status msg url = do
     else redirect url
 -------------------------------------------------------------------------------------------------------------------
 showWordfilterAction :: WordfilterAction -> AppMessage
-showWordfilterAction a = let m = lookup a xs
-                     in case m of
+showWordfilterAction a = let m' = lookup a xs
+                     in case m' of
                        Just m  -> m
                        Nothing -> error "case-of failed at showWordfilterAction"
   where xs = [(WordfilterBan   , MsgWordfilterBan    )
@@ -49,8 +48,8 @@ showWordfilterAction a = let m = lookup a xs
              ]
 
 showWordfilterType :: WordfilterDataType -> AppMessage
-showWordfilterType t = let m = lookup t xs
-                     in case m of
+showWordfilterType t = let m' = lookup t xs
+                     in case m' of
                        Just m  -> m
                        Nothing -> error "case-of failed at showWordfilterType"
   where xs = [(WordfilterWords     , MsgWordfilterWords)
@@ -59,8 +58,8 @@ showWordfilterType t = let m = lookup t xs
              ]
 
 showPermission :: Permission -> AppMessage
-showPermission p = let m = lookup p xs
-                     in case m of
+showPermission p = let m' = lookup p xs
+                     in case m' of
                        Just m  -> m
                        Nothing -> error "case-of failed at showPermission"
   where xs = [(ManageThreadP    , MsgManageThread    )
@@ -238,10 +237,10 @@ getIgnoredBoard :: Maybe Text -> Entity Board -> Maybe Text
 getIgnoredBoard group board@(Entity _ b) = if isBoardHidden group board then Just $ boardName b else Nothing
 
 isBoardHidden :: Maybe Text -> Entity Board -> Bool
-isBoardHidden group (Entity _ b) = boardHidden b ||
-                                   ( (isJust (boardViewAccess b) && isNothing group) ||
-                                     (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
-                                   )
+isBoardHidden  group x@(Entity _ b) = boardHidden b && isBoardHidden' group x
+isBoardHidden' :: Maybe Text -> Entity Board -> Bool
+isBoardHidden' group   (Entity _ b) =  (isJust (boardViewAccess b) && isNothing group) || (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
+
 
 -- | Remove all HTML tags
 stripTags :: Text -> Text

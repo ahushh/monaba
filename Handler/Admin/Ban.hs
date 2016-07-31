@@ -5,7 +5,6 @@ import           Handler.Admin.Modlog (addModlogEntry)
 import           Utils.YobaMarkup     (makeExternalRef)
 import           Handler.Delete       (deletePosts)
 import qualified Data.Text          as T
-import           Data.IP
 -------------------------------------------------------------------------------------------------------------
 banByIpForm :: Text          -> -- ^ IP adress
               [(Text,Text)] -> -- ^ All boards
@@ -30,8 +29,9 @@ banByIpForm ip allBoards board extra = do
                                           
 fetchAllBoards = do
   mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
-  map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
+  map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
 
+delPosts :: Text -> Handler ()
 delPosts ip = do
   posts <- runDB $ selectList [PostIp ==. ip] []
   bt <- forM posts $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           

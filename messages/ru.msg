@@ -307,22 +307,24 @@ ShkrinkHellbanned: Скукожить посты на премодерации
 ######################################################################################
 #### Wordfilter
 ######################################################################################
+WordfilterAddBtn: Добавить
 LeaveEmptyToSelectAllBoards: для выбора всех досок оставить поле пустым
 Wordfilter: Вордфильтер
 WordfilterBoard: Доска
 WordfilterWords: слова через пробел
 WordfilterExactMatch: точное совпадение
-WordfilterRegex: regex
+WordfilterRegex: regex (PCRE)
 WordfilterDataType: Тип
 WordfilterData: Значение
 WordfilterAction: Действие
-WordfilterActionMsg: Сообщение для постера
+WordfilterActionMsg: Сообщение для пользователя
 WordfilterBan: забанить IP
 WordfilterHB: на премодерацию
 WordfilterHBHide: скрыть пост
 WordfilterDeny: отклонить сообщение
-WordfilterReplace: замена
+WordfilterReplace: заменить
 WordfilterDenied: Сообщение отклонено
+WordfilterReplacedBy: Замена
 ######################################################################################
 #### Help
 ######################################################################################

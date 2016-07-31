@@ -101,7 +101,7 @@ takeBanner b = do
   dirExists <- liftIO $ doesDirectoryExist (appStaticDir </> "banners" </> board)
   if dirExists
     then do
-      banners <- filter (\b->b/="."&&b/="..") <$> liftIO (getDirectoryContents (appStaticDir </> "banners" </> board))
+      banners <- filter (\b'->b'/="."&&b'/="..") <$> liftIO (getDirectoryContents (appStaticDir </> "banners" </> board))
       mBanner <- liftIO $ pick banners
       case mBanner of
         Just banner -> return $ Just ("/" ++ appStaticDir </> "banners" </> board </> banner, "/" ++ board)
@@ -181,11 +181,11 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
                                       Right reg -> let newMsg = gsub reg replacement msg
                                                     in setSession "filtered-message" newMsg
 
-  where checkText msg b regex = case wordfilterDataType b of
-                                  WordfilterWords      -> or (map (\m -> T.isInfixOf m msg) (T.words $ wordfilterData b))
-                                  WordfilterExactMatch -> T.isInfixOf (wordfilterData b) msg
+  where checkText msg' b regex = case wordfilterDataType b of
+                                  WordfilterWords      -> or (map (\m -> T.isInfixOf m msg') (T.words $ wordfilterData b))
+                                  WordfilterExactMatch -> T.isInfixOf (wordfilterData b) msg'
                                   WordfilterRegex      -> case regex of
-                                                           Right r -> encodeUtf8 msg =~ r
+                                                           Right r -> encodeUtf8 msg' =~ r
                                                            Left _  -> False
 isFileAllowed :: [String] -> FormResult (Maybe FileInfo) -> Bool
 isFileAllowed allowedTypes (FormSuccess (Just x)) = fileExt x `elem` allowedTypes

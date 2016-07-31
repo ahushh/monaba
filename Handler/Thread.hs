@@ -5,7 +5,6 @@ import           Import
 import qualified Data.Text          as T
 import qualified Database.Esqueleto as E
 import qualified Data.Map.Strict    as Map
-import           Data.Either        (Either(..))
 import           Utils.File         (insertFiles)
 import           Utils.YobaMarkup   (doYobaMarkup)
 import           Handler.Bookmarks  (bookmarksUpdateLastReply)
@@ -133,14 +132,12 @@ postThreadR board thread = do
         ------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" (Left MsgPostingTooFast) threadUrl
         ------------------------------------------------------------------------------------------------------
+        checkWordfilter (Textarea <$> title) board $ \m -> trickyRedirect "error" m threadUrl
         checkWordfilter message board $ \m -> trickyRedirect "error" m threadUrl
         ------------------------------------------------------------------------------------------------------
         destUID <- getDestinationUID destPost
         ------------------------------------------------------------------------------------------------------
         newMsg <- lookupSession "filtered-message"
-        liftIO $ print ("############################"::Text)
-        liftIO $ print newMsg
-        liftIO $ print ("############################"::Text)
         messageFormatted  <- doYobaMarkup (maybe message (Just . Textarea) newMsg) board thread
         AppSettings{..}   <- appSettings <$> getYesod
         lastPost          <- runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])

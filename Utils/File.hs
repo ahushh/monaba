@@ -10,7 +10,7 @@ import           Data.Ratio
 import           Data.Text                       (isPrefixOf)
 import           Text.Printf
 import           System.Directory                (copyFile, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
-import           Filesystem.Path.CurrentOS       (fromText)
+--import           Filesystem.Path.CurrentOS       (fromText)
 import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
 import qualified Graphics.ImageMagick.MagickWand as IM
 import           Control.Monad.Trans.Resource    (release)

@@ -4,7 +4,7 @@ import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate)
 
-form :: Html -> MForm Handler (FormResult (Maybe Text, WordfilterDataType, Textarea, [WordfilterAction], Maybe Textarea, Maybe Textarea) , Widget)
+form :: Html -> MForm Handler (FormResult (Maybe Text, WordfilterDataType, Textarea, [WordfilterAction], Textarea, Maybe Textarea) , Widget)
 form extra = do
   msgrender <- getMessageRender
   let types :: [(Text, WordfilterDataType)]
@@ -15,7 +15,7 @@ form extra = do
   (typeRes  , typeView  ) <- mreq (selectFieldList types) "" Nothing
   (dataRes  , dataView  ) <- mreq textareaField "" Nothing
   (actionRes, actionView) <- mreq (multiSelectFieldList actions) "" Nothing
-  (msgRes   , msgView   ) <- mopt textareaField "" Nothing
+  (msgRes   , msgView   ) <- mreq textareaField "" Nothing
   (replaceRes, replaceView   ) <- mopt textareaField "" Nothing
   let result = (,,,,,) <$> boardRes <*> typeRes <*> dataRes <*> actionRes <*> msgRes <*> replaceRes
       widget = $(widgetFile "admin/wordfilter-form")
@@ -23,10 +23,8 @@ form extra = do
 
 getAdminWordfilterR :: Handler Html
 getAdminWordfilterR = do
-  muser    <- maybeAuth
-  mgroup   <- getMaybeGroup muser
-  (formWidget, formEnctype) <- generateFormPost form
-  bs       <- runDB $ selectList ([]::[Filter Wordfilter]) []
+  (formWidget, _) <- generateFormPost form
+  bs        <- runDB $ selectList ([]::[Filter Wordfilter]) []
   msgrender <- getMessageRender
   defaultLayout $ do
     setUltDestCurrent
@@ -46,7 +44,7 @@ postAdminWordfilterR = do
                                   , wordfilterDataType = typeVal
                                   , wordfilterData     = unTextarea dataVal
                                   , wordfilterAction   = actionVal
-                                  , wordfilterActionMsg = fromMaybe "" $ unTextarea <$> msg
+                                  , wordfilterActionMsg= unTextarea msg
                                   , wordfilterReplacement  = unTextarea <$> replaceVal
                                   }
       void $ runDB $ insert wordfilter

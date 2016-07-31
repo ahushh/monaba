@@ -44,7 +44,7 @@ EditingHistory: Editing history
 EditingHistoryIsDisabled: Editing history is disabled
 GoTo: Go to
 EditingHistoryOfPost post@Int: Editing history of post ##{show post}
-YouAlreadyEditedPost n@Int: You havee already edited this post #{show n} times.
+YouAlreadyEditedPost n@Int: You have already edited this post #{show n} times.
 
 ### Markup
 PlainText: Plain text
@@ -90,11 +90,11 @@ Logout: Log out
 Home: Home
 Bookmarks: Bookmarks
 ### admin buttons
-BanPoster: Ban poster
+BanPoster: Ban this poster
 DeleteByIP: Delete all posts by IP
 BanPosterAndDelete: Delete all posts by IP and ban poster
-StickThread: Stick
-UnstickThread: Unstick
+StickThread: Sticky thread
+UnstickThread: Unsticky thread
 LockThread: Lock
 UnlockThread: Unlock
 Autosage: Autosage
@@ -144,7 +144,7 @@ Bans: Bans
 MoveThread: Move thread
 WhichBoard: Which board?
 ChangeThread: Move post to another thread
-WhichThread: Which thread? Input 0 to create new thread
+WhichThread: Which thread? Input 0 to create a new thread
 
 ### Boards
 BoardIndexNumber: Index number
@@ -484,12 +484,12 @@ AdminDeletedFromBoard: from board
 AdminDeletedFromThread: from thread 
 AdminDeletedFilter: Filter posts
 AdminDeletedWhichBoard: from which board?
-AdminDeletedWhichThread: from which thread? 0 - display only threads, -1 - from all threads
+AdminDeletedWhichThread: from which thread? 0 — display only OPs, -1 — replies to all threads
 ######################################################################################
 ImageSource: Source
 PostPreview: Preview
 DeleteFile: Delete file
-DeleteFileConfirm: This cannot be undone. Continue?
+DeleteFileConfirm: This action cannot be undone. Continue?
 FileNotYours: Wrong session. You can't delete this file.
 DisabledEditing: Editing of this post is disabled
 LockEditing: Disable editing of this post for users
@@ -500,7 +500,7 @@ RssFeed s@Text b@Text: #{s} /#{b}/ RSS feed
 RssRecentPosts b@Text: Recents posts from /#{b}/
 SuccessEx: Success!
 ErrorEx: Error!
-AppRestart: Restart engine
+AppRestart: Restart Monaba
 AppGitPull: Execute 'git pull'
 MoveElement: Move
 ######################################################################################

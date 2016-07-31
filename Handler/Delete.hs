@@ -61,11 +61,10 @@ getDeleteR = do
   mgroup <- getMaybeGroup muser
   let errorRedirect msg = setMessageI msg >> redirectUltDest HomeR
       nopasreq          = maybe False ((DeletePostsP `elem`) . groupPermissions . entityVal) mgroup
-      helper x          = (toSqlKey . fromIntegral) ((read $ unpack $ snd x) :: Int )
+      readSqlKey x      = (toSqlKey . fromIntegral) ((read $ unpack $ snd x) :: Int )
   case reverse query of
     ("postpassword",pswd):("opmoderation",threadId):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                                                        | otherwise -> do
-      let xs = if fst (head zs) == "onlyfiles" then tail zs else zs
       thread   <- runDB $ get ((toSqlKey . fromIntegral $ ((read $ unpack threadId) :: Int)) :: Key Post)
       when (isNothing thread) notFound
 
@@ -77,7 +76,7 @@ getDeleteR = do
       when (postPosterId (fromJust thread) /= posterId &&
             postPassword (fromJust thread) /= pswd
            ) $ errorRedirect MsgYouAreNotOp
-      let requestIds = map helper xs
+      let requestIds = map readSqlKey $ filter ((=="postdelete").fst) zs
           myFilterPr (Entity _ p) = postBoard       p == board &&
                                     postParent      p == postLocalId (fromJust thread) &&
                                     postDeletedByOp p == False
@@ -88,21 +87,20 @@ getDeleteR = do
 
     ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
-      let onlyfiles    = fst (head zs) == "onlyfiles"
-          xs           = if onlyfiles then tail zs else zs
-          requestIds   = map helper xs
+      let onlyfiles    = lookup "onlyfiles" zs :: Maybe Text
+          requestIds   = map readSqlKey $ filter ((=="postdelete").fst) zs
           myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
-
       posterId <- getPosterId
-      let posts' = filter (\(Entity _ p) -> postPosterId p /= posterId) posts
+
       when nopasreq $ do
+        let posts' = filter (\(Entity _ p) -> postPosterId p /= posterId) posts
         bt <- forM posts' $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           
         addModlogEntry $ MsgModlogDeletePosts $ T.concat bt
 
       case posts of
         [] -> errorRedirect MsgDeleteWrongPassword
-        _  -> deletePosts posts onlyfiles >> redirectUltDest HomeR
+        _  -> deletePosts posts (isJust onlyfiles) >> redirectUltDest HomeR
     _                           -> errorRedirect MsgUnknownError
 
 

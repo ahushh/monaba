@@ -62,7 +62,11 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
-  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
+  adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+  pc <- lookupSession "post-count"
+  let isCaptchaEnabled = boardEnableCaptcha boardVal && maybe True (\x -> tread x <= adaptiveCaptcha) pc && isNothing muser
+  captchaImg <- if isCaptchaEnabled then Just <$> widgetToPageContent captchaWidget else return Nothing
+  -------------------------------------------------------------------------------------------------------
   (postFormWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
 
@@ -130,7 +134,9 @@ postThreadR board thread = do
         checkBan (tread ip) board $ \m -> trickyRedirect "error" m threadUrl
         unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
-        when (enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
+        adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+        pc <- lookupSession "post-count"
+        when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
         ------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" (Left MsgPostingTooFast) threadUrl
         ------------------------------------------------------------------------------------------------------
@@ -190,6 +196,7 @@ postThreadR board thread = do
         deleteSession "post-title"
         cleanBoardStats board
         unless hellbanned $ sendNewPostES board
+        incPostCount
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> trickyRedirect "ok" (Left MsgPostSent) (BoardNoPageR board)
           ToThread -> setSession "goback" "ToThread" >> trickyRedirect "ok" (Left MsgPostSent) threadUrl

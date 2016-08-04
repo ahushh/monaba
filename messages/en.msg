@@ -260,6 +260,7 @@ AdminAboutPage: HTML of about page
 AdminHomePage: HTML of home page
 ModlogMaxEntriesView: Max modlog entries
 ModlogEntriesPerPage: Modlog entries per page
+AdaptiveCaptcha: The number of sent posts required to disable the captcha
 ## Messages
 ConfigUpdated: Config has been updated successfully
 

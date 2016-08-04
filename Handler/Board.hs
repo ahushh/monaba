@@ -85,7 +85,11 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
-  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
+  adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+  pc <- lookupSession "post-count"
+  let isCaptchaEnabled = boardEnableCaptcha boardVal && maybe True (\x -> tread x <= adaptiveCaptcha) pc && isNothing muser
+  captchaImg <- if isCaptchaEnabled  then Just <$> widgetToPageContent captchaWidget else return Nothing
+  ------------------------------------------------------------------------------------------------------- 
   (postFormWidget, formEnctype) <- generateFormPost $ postForm True boardVal muser
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
   msgrender       <- getMessageRender
@@ -138,7 +142,9 @@ postBoardR board _ = do
         -------------------------------------------------------------------------------------------------------
         checkBan (tread ip) board $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
-        when (enableCaptcha && isNothing muser) $ 
+        adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+        pc <- lookupSession "post-count"
+        when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ 
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent ==. 0) ip now $ setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)
@@ -195,6 +201,7 @@ postBoardR board _ = do
         deleteSession "post-title"
         cleanBoardStats board
         unless hellbanned $ sendNewPostES board
+        incPostCount
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )
           ToThread -> setSession "goback" "ToThread" >> redirect (ThreadR      board nextId)

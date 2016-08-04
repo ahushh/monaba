@@ -53,11 +53,10 @@
       ^{fvInput fv}
       ^{fvInput rv}
           <!-- <i title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" .fa .fa-close .icon-close> -->
-  $if enableCaptcha
-    $if isNothing muser
-      ^{fvInput captchaView} 
-      <div .captcha-content>
-        ^{pageBody $ fromJust captchaImg}
+  $maybe c <- captchaImg
+    ^{fvInput captchaView} 
+    <div .captcha-content>
+      ^{pageBody c}
   <label #go-back-block>
     _{MsgGoback}
     ^{fvInput gobackView}

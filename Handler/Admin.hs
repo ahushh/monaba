@@ -32,6 +32,7 @@ getAdminSetupR = do
                                                , configHome = Textarea "<img id=\"main-image\" style=\"display:block; margin: 0 auto;\" src=\"static/home.jpg\">"
                                                , configModlogMaxEntries = 3000
                                                , configModlogEntriesPerPage =30
+                                               , configAdaptiveCaptcha = 5
                                                }
     group <- count ([]::[Filter Group])
     when (group == 0) $ void $ insert $ Group { groupName = "Admin"

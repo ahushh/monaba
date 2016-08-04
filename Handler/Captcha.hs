@@ -19,8 +19,10 @@ captchaWidget = do
   (path, hint) <- handlerToWidget $ do
     AppSettings{..} <- appSettings <$> getYesod
     oldCId <- lookupSession "captchaId"
-    let path = captchaFilePath appStaticDir (unpack $ fromJust oldCId) ++ captchaExt
-      in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
+    case oldCId of
+      Just c -> let path = captchaFilePath appStaticDir (unpack c) ++ captchaExt
+                 in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
+      Nothing -> return ()
     cId <- liftIO (abs <$> randomIO :: IO Int)
     setSession "captchaId" (tshow cId)
     (value, hint) <- makeCaptcha $ captchaFilePath appStaticDir (show cId) ++ captchaExt
@@ -33,7 +35,13 @@ captchaWidget = do
   |]
 
 getCaptchaR :: Handler Html
-getCaptchaR = bareLayout $ toWidget captchaWidget
+getCaptchaR = do
+  adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+  bareLayout $ toWidget captchaWidget
+  pc <- lookupSession "post-count"
+  if maybe True (\x -> tread x <= adaptiveCaptcha) pc
+    then bareLayout $ toWidget captchaWidget
+    else bareLayout [whamlet| |]
 
 getCheckCaptchaR :: Text -> Handler TypedContent
 getCheckCaptchaR captcha = do

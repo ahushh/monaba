@@ -16,7 +16,12 @@ getAjaxGetPostFormR board = do
   unless (checkAccessToReply mgroup boardVal) notFound
   let maxMessageLength = boardMaxMsgLength boardVal
   (formWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
-  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
+
+  adaptiveCaptcha <- getConfig configAdaptiveCaptcha
+  pc <- lookupSession "post-count"
+  let isCaptchaEnabled = boardEnableCaptcha boardVal && maybe True (\x -> tread x <= adaptiveCaptcha) pc && isNothing muser
+  captchaImg <- if isCaptchaEnabled then Just <$> widgetToPageContent captchaWidget else return Nothing
+
   bareLayout [whamlet|<form .quick-post-form #post-form method=post enctype=#{formEnctype} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
                         ^{formWidget captchaImg}
                      |]

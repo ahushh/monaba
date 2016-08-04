@@ -226,6 +226,13 @@ thumbFilePath uploadDir staticDir size filetype fileext hashsum
 -------------------------------------------------------------------------------------------------------------------
 -- Handler helpers
 -------------------------------------------------------------------------------------------------------------------
+incPostCount :: Handler ()
+incPostCount = do
+  pc <- lookupSession "post-count"
+  case pc of
+    Just n -> setSession "post-count" $ tshow $ ((+)1) $ tread n
+    Nothing -> setSession "post-count" "1"
+
 listPages :: Int -> Int -> [Int]
 listPages elemsPerPage numberOfElems =
   [0..pagesFix $ floor $ (fromIntegral numberOfElems :: Double) / (fromIntegral elemsPerPage :: Double)]

@@ -35,3 +35,6 @@
         <tr>
             <td>_{MsgModlogEntriesPerPage}
             <td>^{fvInput modlogEntriesPerPageView}
+        <tr>
+            <td>_{MsgAdaptiveCaptcha}
+            <td>^{fvInput adaptiveCaptchaView}

@@ -38,9 +38,10 @@ getCaptchaR :: Handler Html
 getCaptchaR = do
   adaptiveCaptcha <- getConfig configAdaptiveCaptcha
   pc <- lookupSession "post-count"
-  if maybe True (\x -> tread x <= adaptiveCaptcha) pc
-    then bareLayout $ toWidget captchaWidget
-    else bareLayout [whamlet| |]
+  bareLayout $ toWidget captchaWidget
+  -- if maybe True (\x -> tread x <= adaptiveCaptcha) pc
+  --   then bareLayout $ toWidget captchaWidget
+  --   else bareLayout [whamlet| |]
 
 getCheckCaptchaR :: Text -> Handler TypedContent
 getCheckCaptchaR captcha = do

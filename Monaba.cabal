@@ -161,11 +161,25 @@ executable         Monaba
 
     ghc-options:       -threaded -O1 -rtsopts -with-rtsopts=-N
 
-executable         Captcha
+executable         PlainCaptcha
     if flag(library-only)
         Buildable: False
 
     main-is:           PlainCaptcha.hs
+    hs-source-dirs:    Utils
+    build-depends:     base
+    ghc-options:       -threaded -O1 -rtsopts -with-rtsopts=-N
+    build-depends: random
+                 , imagemagick
+                 , system-filepath
+                 , text
+                 , transformers
+
+executable         YobaCaptcha
+    if flag(library-only)
+        Buildable: False
+
+    main-is:           YobaCaptcha.hs
     hs-source-dirs:    Utils
     build-depends:     base
     ghc-options:       -threaded -O1 -rtsopts -with-rtsopts=-N

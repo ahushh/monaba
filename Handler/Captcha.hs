@@ -29,7 +29,7 @@ captchaWidget = do
     return (captchaFilePath appStaticDir (show cId) ++ captchaExt, hint)
   [whamlet|
     <img #captcha onclick="refreshCaptcha()" src=#{path}>
-    #{hint}
+    #{preEscapedToHtml hint}
   |]
 
 getCaptchaR :: Handler Html

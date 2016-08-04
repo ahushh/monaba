@@ -8,3 +8,6 @@
 #refresh-feed {
     text-align: center;
 }
+.captcha-content {
+    display: inline-block;
+}

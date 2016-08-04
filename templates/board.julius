@@ -129,7 +129,6 @@ function showQuickPostForm(postId, isPrivate) {
                 postform.querySelector("input[type='submit']").removeAttribute('disabled');
             },
             onloadBefore: function() {
-                refreshCaptcha();
                 closePopupMessage(pmsg);
             },
             onprogress: function(event) {
@@ -166,6 +165,7 @@ function showQuickPostForm(postId, isPrivate) {
 } 
 
 function showPlainPostForm() {
+    refreshCaptcha()
     var subjectInput = document.getElementsByClassName("subject-input")[0];
     subjectInput.required = 'required';
     subjectInput.placeholder = #{toJSON $ msgrender MsgThreadSubject};

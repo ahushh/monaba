@@ -1129,7 +1129,9 @@ function initPostForm() {
             if (/^\s*$/.test( cap.value ) ) return true;
             httpRequest({
                 action: "/captcha/check/"+cap.value,
-                headers: { 'Accept': 'application/json' },
+                headers: { 'Accept': 'application/json',
+                           'Cache-Control': 'no-cache',
+                         },
                 onload: function(request) {
                     if (request.status >= 200 && request.status < 400) {
                         var data = JSON.parse(request.responseText);

@@ -28,7 +28,7 @@ captchaWidget = do
     (value, hint) <- makeCaptcha $ captchaFilePath appStaticDir (show cId) ++ captchaExt
     setSession "captchaValue" value
     setSession "captchaHint"  hint
-    return (captchaFilePath appStaticDir (show cId) ++ captchaExt, hint)
+    return ("/"++captchaFilePath appStaticDir (show cId) ++ captchaExt, hint)
   [whamlet|
     <img #captcha onclick="refreshCaptcha()" src=#{path}>
     #{preEscapedToHtml hint}
@@ -37,7 +37,6 @@ captchaWidget = do
 getCaptchaR :: Handler Html
 getCaptchaR = do
   adaptiveCaptcha <- getConfig configAdaptiveCaptcha
-  bareLayout $ toWidget captchaWidget
   pc <- lookupSession "post-count"
   if maybe True (\x -> tread x <= adaptiveCaptcha) pc
     then bareLayout $ toWidget captchaWidget
@@ -54,8 +53,6 @@ checkCaptcha :: Maybe Text -> Handler () -> Handler ()
 checkCaptcha mCaptcha wrongCaptchaRedirect = do
   mCaptchaValue <- lookupSession "captchaValue"
   mCaptchaId    <- lookupSession "captchaId"
-  deleteSession "captchaValue"
-  deleteSession "captchaId"
   AppSettings{..} <- appSettings <$> getYesod
   case mCaptchaId of
    Just cId -> do

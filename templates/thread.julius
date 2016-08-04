@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 postform.querySelector("input[type='submit']").removeAttribute('disabled');
             },
             onloadBefore: function() {
-                refreshCaptcha();
                 closePopupMessage(pmsg);
             },
             onprogress: function(event) {
@@ -55,6 +54,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 function showQuickPostForm(postId, isPrivate) {
     closePostForm();
+    refreshCaptcha()
     var p = document.getElementById(postId);
     var pf = document.getElementById('post-form');
     pf.className = "quick-post-form";
@@ -71,6 +71,7 @@ function showQuickPostForm(postId, isPrivate) {
 } 
 
 function showPlainPostForm(bottom) {
+    refreshCaptcha()
     var pf = document.getElementById('post-form');
     pf.className = "plain-post-form";
     var spf = document.getElementById(bottom ? 'show-plain-form-bottom' : 'show-plain-form');

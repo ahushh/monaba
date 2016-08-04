@@ -32,7 +32,7 @@ postForm :: Bool  -> -- ^ Is a new thread
                                      , Maybe Bool     -- ^ No bump
                                      , Maybe Text     -- ^ Destination post ID
                                      )
-                         , Widget)
+                         , Maybe (PageContent (Route App)) -> Widget)
 postForm isNewThread boardVal muser extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
@@ -77,7 +77,7 @@ postForm isNewThread boardVal muser extra = do
   (destRes     , destView    ) <- mopt hiddenField            (destInput "") Nothing
   let result = (,,,,,,,,,) <$>   nameRes <*> subjectRes <*> messageRes <*> captchaRes <*> passwordRes <*>
                FormSuccess fileresults <*> FormSuccess ratingresults <*> gobackRes  <*> nobumpRes <*> destRes
-      widget = $(widgetFile "post-form")
+      widget captchaImg = $(widgetFile "post-form")
   return (result, widget)
 -------------------------------------------------------------------------------------------------------------------
 editForm :: [Permission] -> Html -> MForm Handler (FormResult (Textarea, Text, Int, Maybe Bool), Widget)

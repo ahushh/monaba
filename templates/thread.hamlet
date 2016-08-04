@@ -23,7 +23,7 @@ $if hasAccessToReply
     <div #show-plain-form>
         [ <a onclick="showPlainPostForm();">_{MsgReply}</a> ]
     <form .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{ThreadR board thread} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
-        ^{postFormWidget}
+        ^{postFormWidget captchaImg}
 <form .delete-form method=get action=@{DeleteR}>
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}" data-board=#{board}>
         ^{postWidget eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions 0 enablePM}

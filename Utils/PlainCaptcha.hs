@@ -20,7 +20,7 @@ colors = ["AliceBlue","AntiqueWhite","aqua","aquamarine","azure","beige","bisque
 chars = filter (`notElem`("Il"::String)) $ ['a'..'x']++['A'..'X']++['1'..'9']
 
 makeCaptcha :: String    -> -- ^ Path to captcha
-              IO String   -- ^ captcha value
+              IO (String, String)   -- ^ captcha value and hint
 makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
   (_, w) <- magickWand
   (_,dw) <- drawingWand
@@ -46,7 +46,7 @@ makeCaptcha path = withMagickWandGenesis $ localGenesis $ do
   drawImage w dw
   trimImage w 0
   writeImage w $ Just $ pack path
-  return text
+  return (text, "")
 ------------------------------------------------------------------------------------------------
 main = do
-  putStrLn =<< makeCaptcha . head =<< getArgs
+  putStrLn . show =<< makeCaptcha . head =<< getArgs

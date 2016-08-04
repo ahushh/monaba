@@ -11,6 +11,7 @@ import           Handler.Bookmarks  (bookmarksUpdateLastReply)
 import           Handler.Posting
 import           Handler.Captcha    (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
+import           Handler.Captcha (captchaWidget)
 import           Text.Blaze.Html.Renderer.String
 -------------------------------------------------------------------------------------------------------------------
 getJsonFromMsgR :: Text -> Handler TypedContent
@@ -61,6 +62,7 @@ getThreadR board thread = do
   -------------------------------------------------------------------------------------------------------
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
   -------------------------------------------------------------------------------------------------------
+  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
   (postFormWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
 

@@ -2,6 +2,7 @@ module Handler.Feed where
 
 import           Import
 import           Handler.Posting (takeBanner, randomBanner, postForm, editForm)
+import           Handler.Captcha (captchaWidget)
 -------------------------------------------------------------------------------------------------------------
 getFeedR :: Handler Html
 getFeedR = getAjaxFeedOffsetR 0
@@ -15,8 +16,9 @@ getAjaxGetPostFormR board = do
   unless (checkAccessToReply mgroup boardVal) notFound
   let maxMessageLength = boardMaxMsgLength boardVal
   (formWidget, formEnctype) <- generateFormPost $ postForm False boardVal muser
+  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
   bareLayout [whamlet|<form .quick-post-form #post-form method=post enctype=#{formEnctype} data-board=#{board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
-                        ^{formWidget}
+                        ^{formWidget captchaImg}
                      |]
 
 getAjaxFeedOffsetR :: Int -> Handler Html

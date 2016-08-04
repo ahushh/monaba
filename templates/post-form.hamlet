@@ -56,7 +56,8 @@
   $if enableCaptcha
     $if isNothing muser
       ^{fvInput captchaView} 
-      <img #captcha onclick="refreshCaptcha()" src=@{CaptchaR}>
+      <div .captcha-content>
+        ^{pageBody $ fromJust captchaImg}
   <label #go-back-block>
     _{MsgGoback}
     ^{fvInput gobackView}

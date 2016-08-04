@@ -768,15 +768,24 @@ function markToDelete(container) {
 // Forms
 //-----------------------------------------------------------------
 function refreshCaptcha() {
-    var captcha = document.getElementById("captcha");
-    if (captcha != null)
-        captcha.src = "@{CaptchaR}" + "?" + new Date().getTime();
-    var captchaInput = document.getElementsByClassName("captcha-input");
-    if (captchaInput.length) {
-        captchaInput[0].value = "";
-        removeClass(captchaInput[0], "bad");
-        removeClass(captchaInput[0], "good");
-    }
+    var captcha = document.querySelector("form .captcha-content");
+    if (captcha == null) return
+    httpRequest({
+        action: "@{CaptchaR}",
+        onload: function(request) {
+            if (request.status >= 200 && request.status < 400) {
+                captcha.innerHTML = request.responseText;
+                var captchaInput = document.getElementsByClassName("captcha-input");
+                if (captchaInput.length) {
+                    captchaInput[0].value = "";
+                    removeClass(captchaInput[0], "bad");
+                    removeClass(captchaInput[0], "good");
+                }
+            } else {
+                // todo error handling
+            }
+        }
+    });
 }
 
 function clearPostFormFields() {

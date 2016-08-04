@@ -6,6 +6,7 @@ import           Handler.Delete  (deletePosts)
 import           Handler.Posting
 import           Handler.Captcha (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)
+import           Handler.Captcha (captchaWidget)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
 --------------------------------------------------------------------------------------------------------- 
@@ -84,6 +85,7 @@ getBoardR board page = do
       pages             = listPages threadsPerPage numberOfThreads
   threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
   ------------------------------------------------------------------------------------------------------- 
+  captchaImg <- if boardEnableCaptcha boardVal then Just <$> widgetToPageContent captchaWidget else return Nothing
   (postFormWidget, formEnctype) <- generateFormPost $ postForm True boardVal muser
   (editFormWidget, _)           <- generateFormPost $ editForm permissions
   msgrender       <- getMessageRender

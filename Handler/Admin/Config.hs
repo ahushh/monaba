@@ -20,6 +20,7 @@ configForm :: Config ->
                                        , Maybe Int  -- ^ Max modlog entries
                                        , Maybe Int  -- ^ Modlog entries per page
                                        , Maybe Int  -- ^ The number of sent posts required to disable the captcha
+                                       , Maybe Int  -- ^ The number of recent pics displayd on the home page
                                        )
                            , Widget)
 configForm config extra = do
@@ -39,12 +40,14 @@ configForm config extra = do
   (modlogMaxEntriesRes    , modlogMaxEntriesView    ) <- mopt intField "" (f configModlogMaxEntries)
   (modlogEntriesPerPageRes, modlogEntriesPerPageView) <- mopt intField "" (f configModlogEntriesPerPage)
   (adaptiveCaptchaRes     , adaptiveCaptchaView     ) <- mopt intField "" (f configAdaptiveCaptcha)
+  (recentPicsRes          , recentPicsView     ) <- mopt intField "" (f configHomeRecentPics)
 
-  let result = (,,,,,,,,,,,) <$>
+  let result = (,,,,,,,,,,,,) <$>
                replyDelayRes      <*> threadDelayRes    <*> boardCategoriesRes <*>
                newsBoardRes       <*> showNewsRes       <*> maxEditingsRes     <*>
                showLatestPostsRes <*> aboutRes          <*> homeRes            <*>
-               modlogMaxEntriesRes <*> modlogEntriesPerPageRes <*> adaptiveCaptchaRes
+               modlogMaxEntriesRes <*> modlogEntriesPerPageRes <*> adaptiveCaptchaRes <*>
+               recentPicsRes
       widget = $(widgetFile "admin/config-form")
   return (result, widget)
   
@@ -70,7 +73,7 @@ postConfigR = do
     FormMissing                        -> msgRedirect MsgNoFormData
     FormSuccess (replyDelay , threadDelay, boardCategories,
                  newsBoard  , showNews   , maxEditings    , showLatestPosts, about, home,
-                 modlogMaxEntries, modlogEntriesPerPage , adaptiveCaptcha
+                 modlogMaxEntries, modlogEntriesPerPage , adaptiveCaptcha, recentPics
                 ) -> do
       let newConfig = Config { configReplyDelay      = fromMaybe (configReplyDelay      oldConfigVal) replyDelay
                              , configThreadDelay     = fromMaybe (configThreadDelay     oldConfigVal) threadDelay
@@ -84,6 +87,7 @@ postConfigR = do
                              , configModlogMaxEntries     = fromMaybe (configModlogMaxEntries     oldConfigVal) modlogMaxEntries
                              , configModlogEntriesPerPage = fromMaybe (configModlogEntriesPerPage oldConfigVal) modlogEntriesPerPage
                              , configAdaptiveCaptcha = fromMaybe (configAdaptiveCaptcha oldConfigVal) adaptiveCaptcha
+                             , configHomeRecentPics = fromMaybe (configHomeRecentPics oldConfigVal) recentPics
                              }
       void $ runDB $ replace oldConfigKey newConfig
       addModlogEntry MsgModlogUpdateConfig 

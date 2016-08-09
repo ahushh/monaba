@@ -111,6 +111,7 @@ Config
     modlogMaxEntries     Int default=3000
     modlogEntriesPerPage Int default=30
     adaptiveCaptcha Int default=5
+    homeRecentPics  Int default=4
 Storage
     uploadDir       Int default=1
 Modlog

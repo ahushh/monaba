@@ -13,6 +13,7 @@ getHomeR = do
       newsBoard       = configNewsBoard       config
       showNews        = configShowNews        config
       homeContent     = configHome            config
+      lastPics        = configHomeRecentPics  config
       selectFiles p   = runDB $ selectList [AttachedfileParentId ==. entityKey p] []
       selectNews      = selectList [PostBoard ==. newsBoard, PostParent ==. 0, PostDeleted ==. False]
                                    [Desc PostLocalId, LimitTo showNews]
@@ -28,7 +29,7 @@ getHomeR = do
   statsDay        <- runDB $ count [PostDate >. day, PostDeleted ==. False]
   statsAllFiles   <- runDB $ count ([]::[Filter Attachedfile])
 
-  recentImages    <- runDB $ selectList [AttachedfileFiletype ==. FileImage] [Desc AttachedfileId, LimitTo 5]
+  recentImages    <- runDB $ selectList [AttachedfileFiletype ==. FileImage] [Desc AttachedfileId, LimitTo lastPics]
   defaultLayout $ do
     setTitle $ toHtml appSiteName
     $(widgetFile "homepage")

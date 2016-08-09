@@ -38,3 +38,6 @@
         <tr>
             <td>_{MsgAdaptiveCaptcha}
             <td>^{fvInput adaptiveCaptchaView}
+        <tr>
+            <td>_{MsgHomeRecentPics}
+            <td>^{fvInput recentPicsView}

@@ -6,9 +6,9 @@
   <div #board-list-full .block>
     <div .title>_{MsgHomeBoards}
     $forall c <- boardCategories
-      <div .row>
-        $with bs <- filterBoards boards c group
-          $if not (null bs)
+      $with bs <- filterBoards boards c group
+        $if not (null bs)
+          <div .row>
             $if not (T.null c)
               <div .board-category>#{c}
             $forall Entity _ b <- sortBoards bs

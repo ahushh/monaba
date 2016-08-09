@@ -263,6 +263,7 @@ AdminHomePage: Html домашней страницы
 ModlogMaxEntriesView: Максимальное количество записей в мод-логе
 ModlogEntriesPerPage: Сколько показывать мод-лог записей на странице
 AdaptiveCaptcha: Сколько постов необходимо отправить для отключения капчи
+HomeRecentPics: Сколько последних картинок отображать на домашней странице
 ## Messages
 ConfigUpdated: Настройки обновлены
 

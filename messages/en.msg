@@ -261,6 +261,7 @@ AdminHomePage: HTML of home page
 ModlogMaxEntriesView: Max modlog entries
 ModlogEntriesPerPage: Modlog entries per page
 AdaptiveCaptcha: The number of sent posts required to disable the captcha
+HomeRecentPics: The number of recent pics displayd on the home page
 ## Messages
 ConfigUpdated: Config has been updated successfully
 

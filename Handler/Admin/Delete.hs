@@ -14,7 +14,7 @@ getAdminDeletedFilteredR board thread page = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. True, PostBoard ==. board, PostParent ==. thread]
-  let boards'      = mapMaybe (getIgnoredBoard group) boards
+  let boards'      = mapMaybe (getIgnoredBoard' group) boards
       selectPosts' = [PostBoard /<-. boards', PostDeleted ==. True, PostBoard ==. board]
       selectPosts  = if thread == -1 then selectPosts' else (PostParent ==. thread):selectPosts'
       pages        = listPages showPosts numberOfPosts
@@ -34,7 +34,7 @@ getAdminDeletedR page = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. True]
-  let boards'     = mapMaybe (getIgnoredBoard group) boards
+  let boards'     = mapMaybe (getIgnoredBoard' group) boards
       selectPosts = [PostBoard /<-. boards', PostDeleted ==. True]
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]

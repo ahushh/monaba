@@ -39,7 +39,7 @@ getAjaxFeedOffsetR offset = do
   ignoredBoards <- getFeedBoards
   let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
       boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
-      boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards ++ (map (boardName . entityVal) $ filter (boardHidden . entityVal) boards)
+      boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
       selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False] ||.
@@ -79,7 +79,7 @@ getAjaxNewFeedR lastPostId = do
   ignoredBoards <- getFeedBoards
   let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
       boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
-      boards'                = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards ++ (map (boardName . entityVal) $ filter (boardHidden . entityVal) boards)
+      boards'                = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostDate >. lastPostDate]
       selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False, PostDate >. lastPostDate] ||.

@@ -243,8 +243,12 @@ listPages elemsPerPage numberOfElems =
 getIgnoredBoard :: Maybe Text -> Entity Board -> Maybe Text
 getIgnoredBoard group board@(Entity _ b) = if isBoardHidden group board then Just $ boardName b else Nothing
 
+getIgnoredBoard' :: Maybe Text -> Entity Board -> Maybe Text
+getIgnoredBoard' group board@(Entity _ b) = if isBoardHidden' group board then Just $ boardName b else Nothing
+
 isBoardHidden :: Maybe Text -> Entity Board -> Bool
-isBoardHidden  group x@(Entity _ b) = boardHidden b && isBoardHidden' group x
+isBoardHidden  group x@(Entity _ b) = boardHidden b || isBoardHidden' group x
+
 isBoardHidden' :: Maybe Text -> Entity Board -> Bool
 isBoardHidden' group   (Entity _ b) =  (isJust (boardViewAccess b) && isNothing group) || (isJust (boardViewAccess b) && notElem (fromJust group) (fromJust $ boardViewAccess b))
 

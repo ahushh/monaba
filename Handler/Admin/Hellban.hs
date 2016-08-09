@@ -15,7 +15,7 @@ getHellBanR page = do
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   numberOfPosts <- runDB $ count [PostDeleted ==. False, PostHellbanned ==. True]
-  let boards'     = mapMaybe (getIgnoredBoard group) boards
+  let boards'     = mapMaybe (getIgnoredBoard' group) boards
       selectPosts = [PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. True]
       pages       = listPages showPosts numberOfPosts
   posts     <- runDB $ selectList selectPosts [Desc PostDate, LimitTo showPosts, OffsetBy $ page*showPosts]

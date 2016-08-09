@@ -123,8 +123,9 @@ getAjaxPostR board postId = do
       showPostDate = boardShowPostDate boardVal
       enablePM     = boardEnablePM boardVal
   posterId  <- getPosterId
-  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId, PostDeleted ==. False] []
+  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
   when (isNothing maybePost) notFound
+  when (postDeleted (entityVal $ fromJust maybePost) && DeletePostsP `notElem` permissions) $ notFound
   unless (checkHellbanned (entityVal $ fromJust maybePost) permissions posterId) $ notFound
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost

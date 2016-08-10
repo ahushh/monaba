@@ -32,16 +32,16 @@ getPostsHelper selectPostsAll selectPostsHB board thread errorString = do
   case () of
     _ | t == 0              -> selectRep $ do
           provideRep  $ bareLayout [whamlet|No such thread|]
-          provideJson $ object [("error", toJSON ("No such thread"::Text))]
+--          provideJson $ object [("error", toJSON ("No such thread"::Text))]
       | null postsAndFiles -> selectRep $ do
           provideRep  $ bareLayout [whamlet|#{errorString}|]
-          provideJson $ object [("error", toJSON errorString)]
+--          provideJson $ object [("error", toJSON errorString)]
       | otherwise          -> selectRep $ do
           provideRep  $ bareLayout [whamlet|
                                $forall (post, files) <- postsAndFiles
                                    ^{postWidget post files True True False geoIpEnabled showPostDate permissions 0 enablePM}
                                |]
-          provideJson $ map (entityVal *** map entityVal) postsAndFiles
+--          provideJson $ map (entityVal *** map entityVal) postsAndFiles
 
 getAjaxDeletedPostsR :: Text -> Int -> Handler TypedContent
 getAjaxDeletedPostsR board thread = do
@@ -135,7 +135,26 @@ getAjaxPostR board postId = do
                        else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
   selectRep $ do
     provideRep $ bareLayout widget
-    provideJson postAndFiles
+
+getAjaxPostRawMsgR :: Text -> Int -> Handler TypedContent
+getAjaxPostRawMsgR board postId = do
+  muser    <- maybeAuth
+  mgroup   <- getMaybeGroup muser
+  boardVal <- getBoardVal404 board
+  checkViewAccess mgroup boardVal
+  let permissions  = getPermissions   mgroup
+      geoIpEnabled = boardEnableGeoIp boardVal
+      showPostDate = boardShowPostDate boardVal
+      enablePM     = boardEnablePM boardVal
+  posterId  <- getPosterId
+  maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
+  when (isNothing maybePost) notFound
+  when (postDeleted (entityVal $ fromJust maybePost) && DeletePostsP `notElem` permissions) $ notFound
+  unless (checkHellbanned (entityVal $ fromJust maybePost) permissions posterId) $ notFound
+  let post         = fromJust maybePost
+      itsforMe uid = maybe True (==uid) (postDestUID $ entityVal post) || uid == (postPosterId $ entityVal post)
+  selectRep $ do
+    provideJson $ object [("rawMessage" .= if enablePM && not (itsforMe posterId) then (""::Text) else postRawMessage $ entityVal post)]
 ---------------------------------------------------------------------------------------------------------
 -- Thread hiding
 ---------------------------------------------------------------------------------------------------------

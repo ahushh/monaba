@@ -39,8 +39,9 @@
 /ajax/thread/#Text/#Int/last/#Int AjaxLastPostsR    GET
 /ajax/thread/#Text/#Int/all       AjaxAllPostsR     GET
 /ajax/thread/#Text/#Int/deleted   AjaxDeletedPostsR GET
-/ajax/postbyid/#Int                AjaxPostByIdR     GET
+/ajax/postbyid/#Int               AjaxPostByIdR     GET
 /ajax/post/#Text/#Int             AjaxPostR         GET
+/ajax/post/#Text/#Int/rawmsg      AjaxPostRawMsgR   GET
 /ajax/feed/#Int                   AjaxFeedOffsetR   GET
 /ajax/newfeed/#Int                AjaxNewFeedR      GET
 /ajax/hide/thread/#Text/#Int/#Int AjaxHideThreadR   GET

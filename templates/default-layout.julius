@@ -1381,12 +1381,12 @@ function showEditForm(postId) {
     };
 
     httpRequest({
-        action: '/ajax/post/'+board+'/'+localId,
+        action: '/ajax/post/'+board+'/'+localId+'/rawmsg',
         headers: { 'Accept': 'application/json' },
         onload: function(request) {
             if (request.status >= 200 && request.status < 400) {
                 var data = JSON.parse(request.responseText);
-                var raw = data[0].rawMessage;
+                var raw = data.rawMessage;
                 ta.value = raw;
                 countSymbols('edit-form');
                 ef.style.display = 'block';

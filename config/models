@@ -44,7 +44,7 @@ Board
     enableForcedAnon  Bool default=false
     enablePM          Bool default=false
     requiredThreadTitle Bool default=false
-Post json
+Post
     board        Text
     localId      Int
     parent       Int
@@ -79,7 +79,7 @@ History
     HistoryUniqPostId postId
     messages     [Textarea]
     dates        [UTCTime]
-Attachedfile json
+Attachedfile
     parentId     PostId
     hashsum      String
     name         String

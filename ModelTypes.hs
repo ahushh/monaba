@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-} 
 module ModelTypes
        (
          Permission(..)

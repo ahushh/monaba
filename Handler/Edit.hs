@@ -5,6 +5,9 @@ import           Handler.Posting
 import           Handler.EventSource (sendEditedPostES)
 import           Utils.YobaMarkup (doYobaMarkup)
 import qualified Data.Text as T (intercalate)
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+import qualified Data.ByteString.UTF8    as B
+
 -------------------------------------------------------------------------------------------------------------------
 postPostEditR :: Handler TypedContent
 postPostEditR = do
@@ -32,7 +35,7 @@ postPostEditR = do
           trickyRedirect "error" (Left MsgDisabledEditing) HomeR
   
         when (postPosterId post /= posterId &&
-              postPassword post /= pswd
+              postPassword post /= (pack $ md5sum $ B.fromString $ unpack pswd)
              ) $ trickyRedirect "error" (Left MsgPostNotYours) HomeR
 
       let maxMessageLength = boardMaxMsgLength boardVal

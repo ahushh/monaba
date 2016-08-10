@@ -7,6 +7,8 @@ import qualified Data.Map.Strict    as Map
 import           System.Directory   (removeFile)--, removeDirectory, getDirectoryContents)
 import           Handler.Admin.Modlog (addModlogEntry)
 import           Utils.YobaMarkup     (makeExternalRef)
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+import qualified Data.ByteString.UTF8    as B
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -74,7 +76,7 @@ getDeleteR = do
 
       posterId <- getPosterId
       when (postPosterId (fromJust thread) /= posterId &&
-            postPassword (fromJust thread) /= pswd
+            (unpack $ postPassword $ fromJust thread) /= (md5sum $ B.fromString $ unpack pswd)
            ) $ errorRedirect MsgYouAreNotOp
       let requestIds = map readSqlKey $ filter ((=="postdelete").fst) zs
           myFilterPr (Entity _ p) = postBoard       p == board &&
@@ -89,7 +91,7 @@ getDeleteR = do
                              | otherwise -> do
       let onlyfiles    = lookup "onlyfiles" zs :: Maybe Text
           requestIds   = map readSqlKey $ filter ((=="postdelete").fst) zs
-          myFilterPr e = nopasreq || (postPassword (entityVal e) == pswd)
+          myFilterPr e = nopasreq || ((unpack $ postPassword $ entityVal e) == (md5sum $ B.fromString $ unpack $ pswd))
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       posterId <- getPosterId
 

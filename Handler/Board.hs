@@ -9,6 +9,8 @@ import           Handler.EventSource (sendNewPostES)
 import           Handler.Captcha (captchaWidget)
 import           Utils.File            (insertFiles)
 import           Utils.YobaMarkup      (doYobaMarkup)
+import           Data.Digest.OpenSSL.MD5 (md5sum)
+import qualified Data.ByteString.UTF8    as B
 --------------------------------------------------------------------------------------------------------- 
 getBoardNoPageR :: Text -> Handler Html
 getBoardNoPageR board = getBoardR board 0
@@ -165,7 +167,7 @@ postBoardR board _ = do
                            , postTitle        = maybe ("" :: Text) (T.take appMaxLenOfPostTitle) title
                            , postName         = if forcedAnon then defaultName else maybe defaultName (T.take appMaxLenOfPostName) name
                            , postDate         = now
-                           , postPassword     = pswd
+                           , postPassword     = pack $ md5sum $ B.fromString $ unpack pswd
                            , postBumped       = Just now
                            , postIp           = ip
                            , postCountry      = (\(code,name') -> GeoCountry code name') <$> country

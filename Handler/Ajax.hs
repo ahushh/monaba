@@ -110,7 +110,6 @@ getAjaxPostByIdR postId = do
                        else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
   selectRep $ do
     provideRep $ bareLayout widget
-    provideJson postAndFiles
 
 getAjaxPostR :: Text -> Int -> Handler TypedContent
 getAjaxPostR board postId = do

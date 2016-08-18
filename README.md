@@ -15,10 +15,10 @@ Features
 * Thread and image expanding
 * Thread hiding
 * Post deletion and editing by user
-* Prooflabes as replacement of tripcodes
+* Prooflables as replacement of tripcodes
 * Kusaba-like formatting with code highlighting and LaTeX support
 * Custom CAPTCHA
-* Internationalization (English, Русский, Português Brasil)
+* Internationalization (English, Русский, Português, Brasil)
 * Country flag support
 * Switchable stylesheets
 * YouTube, vimeo, coub embedding
@@ -49,7 +49,7 @@ Requirements
 * exiftool (for audio and webm files)
 * Sphinx (post search)
 
-Required for builiding from source:
+Required for building from source:
 
 * stack
 
@@ -85,7 +85,7 @@ Set your path to GeSHi in `highlight.php`. Home directory is usually good.
 
 ## Using a binary packages
 
-Download an archive of the latest verion of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
+Download an archive of the latest version of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
 
 If it's not working or outdated, try to build from source.
 
@@ -124,7 +124,7 @@ Default login/password: admin
 
 See `extra/sphinx.conf`
 
-Create the search index by running `sudo indexer --rotate monaba` and add this command to cron job so the index is regulary updated
+Create the search index by running `sudo indexer --rotate monaba` and add this command to cron job so the index is regularly updated
 
 Start `searchd` service:
 

@@ -53,7 +53,7 @@ updateBoardForm board action bCategories groups extra = do
   (summaryRes          , summaryView          ) <- mopt textField     "" (helper boardSummary "")
   (bumpLimitRes        , bumpLimitView        ) <- mopt intField      "" (helper boardBumpLimit 500)
   (numberFilesRes      , numberFilesView      ) <- mopt intField      "" (helper boardNumberFiles 10)
-  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes) "jpg jpeg png gif webm swf rar zip 7z mp3 flaac ogv txt")
+  (allowedTypesRes     , allowedTypesView     ) <- mopt textField     "" (helper (pack . unwords . boardAllowedTypes) "jpg jpeg png gif webm swf rar zip 7z mp3 flac ogv txt")
   (defaultNameRes      , defaultNameView      ) <- mopt textField     "" (helper boardDefaultName "Anonymous")
   (maxMsgLengthRes     , maxMsgLengthView     ) <- mopt intField      "" (helper boardMaxMsgLength 20000)
   (thumbSizeRes        , thumbSizeView        ) <- mopt intField      "" (helper boardThumbSize 200)

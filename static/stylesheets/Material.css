@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
+
 /* home page */
 
 #board-list-full {
@@ -29,8 +31,8 @@ hr {
 html, body {
   background-color: #009688;
   color: #e0f2f1;
-  font-family: Century Gothic,sans-serif;
-  font-size: 10pt;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-size: 11pt;
   padding: 10px;
 }
 header {
@@ -45,8 +47,8 @@ textarea, input, select {
   border: none;
   background-color: #00796b;
   color: #e0f2f1;
-  font-family: Century Gothic,sans-serif;
-  font-size: small;
+  font-family: 'Roboto Condensed',sans-serif;
+  font-size: 11pt;
 }
 .quick-post-form {
   padding: 2px;
@@ -142,6 +144,10 @@ footer {
 
 #message {
   font-size: 20pt;
+}
+.pagination {
+  background: #00796b;
+  padding: 0px 4px;
 }
 
 /* h's on feed, home, help, settings and login pages */

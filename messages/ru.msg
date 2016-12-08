@@ -83,6 +83,7 @@ Previous: Назад
 DeleteBtn: Удалить
 MarkAllPosts: Отметить все посты
 OnlyFiles: Только файлы
+Wipe: Вайп! (IP B&D)
 ## panel
 Manage: Управление
 Login: Войти

@@ -57,6 +57,11 @@ $if hasAccessToReply
             $if not noDeletedPosts
                 [ <a href=@{DeletedByOpR board thread}>_{MsgShowDeletedPosts}</a>
                 \ ]
+        $if elem DeletePostsP permissions
+          $if elem ManageBanP permissions
+            <label>
+              _{MsgWipe}
+              <input type=checkbox name=wipe value=1>
         $with nopas <- elem DeletePostsP permissions
             <label :nopas:style=display:none>
                 _{MsgPassword}: <input type=password value="" size=15 name=postpassword>

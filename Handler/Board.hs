@@ -2,7 +2,7 @@ module Handler.Board where
 
 import           Import
 import qualified Data.Text       as T
-import           Handler.Delete  (deletePosts)
+import           Handler.Common  (deletePosts)
 import           Handler.Posting
 import           Handler.Captcha (checkCaptcha)
 import           Handler.EventSource (sendNewPostES)

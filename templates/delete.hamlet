@@ -3,6 +3,11 @@
     <a onclick="markAllPosts()">
       _{MsgMarkAllPosts} 
     ]
+    $if elem DeletePostsP permissions
+      $if elem ManageBanP permissions
+        <label>
+          _{MsgWipe}
+          <input type=checkbox name=wipe value=1>
     <label>
       _{MsgOnlyFiles}
       <input type=checkbox name=onlyfiles value=1>

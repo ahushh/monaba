@@ -83,6 +83,7 @@ Previous: Previous
 DeleteBtn: Delete
 MarkAllPosts: Mark all posts
 OnlyFiles: Only files
+Wipe: Wipe! (IP B&D)
 ## panel
 Manage: Manage
 Login: Log in

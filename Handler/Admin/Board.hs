@@ -4,7 +4,7 @@ module Handler.Admin.Board where
 
 import           Import
 import qualified Data.Text         as T
-import           Handler.Delete    (deletePosts)
+import           Handler.Common    (deletePosts)
 import           Utils.YobaMarkup  (doYobaMarkup)
 import           Handler.Admin.Modlog (addModlogEntry) 
 -------------------------------------------------------------------------------------------------------------

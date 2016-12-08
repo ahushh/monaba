@@ -4,11 +4,12 @@ import           Import
 import qualified Database.Esqueleto as E
 import qualified Data.Text          as T
 import qualified Data.Map.Strict    as Map
-import           System.Directory   (removeFile)--, removeDirectory, getDirectoryContents)
 import           Handler.Admin.Modlog (addModlogEntry)
+import           Handler.Admin.Ban (addBan)
 import           Utils.YobaMarkup     (makeExternalRef)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import qualified Data.ByteString.UTF8    as B
+import           Handler.Common
 ---------------------------------------------------------------------------------------------
 getDeletedByOpR :: Text -> Int -> Handler Html
 getDeletedByOpR board thread = do
@@ -86,7 +87,20 @@ getDeleteR = do
       case posts of
         [] -> errorRedirect MsgDeleteNoPosts
         _  -> deletePostsByOp posts >> redirectUltDest HomeR
-
+    ---------------------------------------------------------------------------------------------
+    ("postpassword",_):("wipe",_):zs | null zs   -> errorRedirect MsgDeleteNoPosts
+                                     | otherwise -> do
+      let requestIds  = map readSqlKey $ filter ((=="postdelete").fst) zs
+          permissions = getPermissions mgroup
+      posts <- runDB (selectList [PostId <-. requestIds] [])
+      when (nopasreq && elem ManageBanP permissions) $ do
+        void $ forM posts $ \(Entity _ p) -> do
+          deletePostsByIP $ postIp p
+          let ip = postIp p
+          bId <- addBan (tread ip) (tread ip) "wipe" [] Nothing
+          addModlogEntry $ MsgModlogBanAdded (ip <> " - " <> ip) "wipe" (fromIntegral $ fromSqlKey bId)
+      redirectUltDest HomeR
+    ---------------------------------------------------------------------------------------------
     ("postpassword",pswd):zs | null zs   -> errorRedirect MsgDeleteNoPosts
                              | otherwise -> do
       let onlyfiles    = lookup "onlyfiles" zs :: Maybe Text
@@ -95,7 +109,7 @@ getDeleteR = do
       posts <- filter myFilterPr <$> runDB (selectList [PostId <-. requestIds] [])
       posterId <- getPosterId
 
-      when nopasreq $ do
+      when nopasreq  $ do
         let posts' = filter (\(Entity _ p) -> postPosterId p /= posterId) posts
         bt <- forM posts' $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           
         addModlogEntry $ MsgModlogDeletePosts $ T.concat bt
@@ -105,66 +119,3 @@ getDeleteR = do
         _  -> deletePosts posts (isJust onlyfiles) >> redirectUltDest HomeR
     _                           -> errorRedirect MsgUnknownError
 
-
-deleteFiles :: [Key Post] -> Handler ()
-deleteFiles idsToRemove = do  
-  AppSettings{..} <- appSettings <$> getYesod
-  -- let removeDirIfEmpty d = whenM ( ((==0) . length . filter (`notElem`[".",".."])) <$> liftIO (getDirectoryContents d)) $ liftIO (removeDirectory d)
-  files <- runDB $ selectList [AttachedfileParentId <-. idsToRemove] []
-  forM_ files $ \(Entity fId f) -> do
-    sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
-    let ft = attachedfileFiletype f
-        fe = attachedfileExtension f
-        hs = attachedfileHashsum f
-        ts = attachedfileThumbSize f
-    case sameFilesCount `compare` 0 of
-      GT -> do -- this file belongs to several posts so don't delete it from disk
-        filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
-        unless (filesWithSameThumbSize > 0) $
-          when (ft `elem` thumbFileTypes) $ do
-            void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
-        runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
-      _  -> do
-        liftIO $ removeFile $ attachedfilePath f
-        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
-        runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
-
-deleteFile :: Entity Attachedfile -> Handler ()
-deleteFile (Entity fId f) = do
-  AppSettings{..} <- appSettings <$> getYesod
-  sameFilesCount <- runDB $ count [AttachedfileHashsum ==. attachedfileHashsum f, AttachedfileId !=. fId]
-  let ft = attachedfileFiletype f
-      fe = attachedfileExtension f
-      hs = attachedfileHashsum f
-      ts = attachedfileThumbSize f
-  case sameFilesCount `compare` 0 of
-    GT -> do -- this file belongs to several posts so don't delete it from disk
-      filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
-      unless (filesWithSameThumbSize > 0) $
-        when (ft `elem` thumbFileTypes) $ do
-          void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
-      runDB $ delete fId
-    _  -> do
-      liftIO $ removeFile $ attachedfilePath f
-      when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
-      runDB $ delete fId
-
----------------------------------------------------------------------------------------------
--- used by Handler/Admin and Handler/Board
----------------------------------------------------------------------------------------------
-deletePostsByOp :: [Entity Post] -> Handler ()
-deletePostsByOp = runDB . mapM_ (\(Entity pId _) -> update pId [PostDeletedByOp =. True])
-
-deletePosts :: [Entity Post] -> Bool -> Handler ()
-deletePosts posts onlyfiles = do
-  let boards         = nub $ map (postBoard . entityVal) posts
-      boardsAndPosts = map (\b -> (b, filter ((==b) . postBoard . entityVal) posts)) boards
-      boardsAndPosts :: [(Text,[Entity Post])]
-
-  childs <- runDB $ forM boardsAndPosts $ \(b,ps) ->
-    selectList [PostBoard ==. b, PostParent <-. map (postLocalId . entityVal) ps] []
-
-  let idsToRemove = concat (map (map entityKey . snd) boardsAndPosts) ++ map entityKey (concat childs)
-  unless onlyfiles $
-    runDB (updateWhere [PostId <-. idsToRemove] [PostDeleted =. True])
-  deleteFiles idsToRemove

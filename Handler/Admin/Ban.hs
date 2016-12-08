@@ -2,8 +2,7 @@ module Handler.Admin.Ban where
 
 import           Import
 import           Handler.Admin.Modlog (addModlogEntry) 
-import           Utils.YobaMarkup     (makeExternalRef)
-import           Handler.Delete       (deletePosts)
+import           Handler.Common       (deletePostsByIP)
 import qualified Data.Text          as T
 -------------------------------------------------------------------------------------------------------------
 banByIpForm :: Text          -> -- ^ IP adress
@@ -31,21 +30,14 @@ fetchAllBoards = do
   mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
   map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])
 
-delPosts :: Text -> Handler ()
-delPosts ip = do
-  posts <- runDB $ selectList [PostIp ==. ip] []
-  bt <- forM posts $ \(Entity _ p) -> makeExternalRef (postBoard p) (postLocalId p)           
-  addModlogEntry $ MsgModlogDeletePosts $ T.concat bt
-  deletePosts posts False
-
 getBanByIpAndDeleteR :: Text -> Text -> Handler Html
 getBanByIpAndDeleteR board ip = do
-  delPosts ip
+  deletePostsByIP ip
   getBanByIpR board ip
 
 getDeletePostsByIPR :: Text -> Handler Html
 getDeletePostsByIPR ip = do
-  delPosts ip
+  deletePostsByIP ip
   redirectUltDest HomeR
 
 getBanByIpR :: Text -> Text -> Handler Html
@@ -70,7 +62,7 @@ postBanByIpR _ _ = do
     FormMissing                     -> msgRedirect MsgNoFormData
     FormSuccess (ipBegin, ipEnd, reason, boards, expires) -> do
       bId <- addBan (tread ipBegin) (tread ipEnd) reason boards expires
-      addModlogEntry $ MsgModlogBanAdded (tshow ipBegin <> tshow ipEnd) reason (fromIntegral $ fromSqlKey bId)
+      addModlogEntry $ MsgModlogBanAdded (tshow ipBegin <> " - " <> tshow ipEnd) reason (fromIntegral $ fromSqlKey bId)
       msgRedirect MsgBanAdded
 
 getBanDeleteR :: Int -> Handler Html

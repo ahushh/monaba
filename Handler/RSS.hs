@@ -10,13 +10,15 @@ getRssR board' = do
   now       <- liftIO getCurrentTime
   msgrender <- getMessageRender
   -------------------------------------------------------------------------------------------------------------------      
+  ip     <- pack <$> getIp
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getFeedBoards
-  let boards' = mapMaybe (getIgnoredBoard group) boards
+  let onionBoards = if not (isOnion ip) then map boardName $ filter boardOnion $ map entityVal boards else []
+      boards'     = mapMaybe (getIgnoredBoard group) boards ++ onionBoards
   when (board' `elem` boards') notFound
   -------------------------------------------------------------------------------------------------------------------      
   let selector = if board' == "feed" then [PostDeleted ==. False, PostHellbanned ==. False, PostBoard /<-. (boards'++ignoredBoards)] else [PostBoard ==. board', PostDeleted ==. False, PostHellbanned ==. False]

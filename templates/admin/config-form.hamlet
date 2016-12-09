@@ -41,3 +41,6 @@
         <tr>
             <td>_{MsgHomeRecentPics}
             <td>^{fvInput recentPicsView}
+        <tr>
+            <td>_{MsgGlobalHellban}
+            <td>^{fvInput globalHellbanView}

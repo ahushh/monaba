@@ -34,6 +34,7 @@ getAdminSetupR = do
                                                , configModlogEntriesPerPage =30
                                                , configAdaptiveCaptcha = 5
                                                , configHomeRecentPics = 4
+                                               , configGlobalHellban = False
                                                }
     group <- count ([]::[Filter Group])
     when (group == 0) $ void $ insert $ Group { groupName = "Admin"

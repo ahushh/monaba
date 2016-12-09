@@ -131,14 +131,12 @@ postThreadR board thread = do
         ip        <- pack <$> getIp
         now       <- liftIO getCurrentTime
         country   <- getCountry ip
-        hellbannedUID  <- (>0) <$> runDB (count [HellbanUid ==. posterId])
-        hellbannedIP  <- (>0) <$> runDB (count [HellbanIp ==. ip])
+        pc        <- lookupSession "post-count"
         ------------------------------------------------------------------------------------------------------
         checkBan (tread ip) board $ \m -> trickyRedirect "error" m threadUrl
         unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
         adaptiveCaptcha <- getConfig configAdaptiveCaptcha
-        pc <- lookupSession "post-count"
         when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
         ------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" (Left MsgPostingTooFast) threadUrl
@@ -147,6 +145,12 @@ postThreadR board thread = do
         checkWordfilter message board $ \m -> trickyRedirect "error" m threadUrl
         ------------------------------------------------------------------------------------------------------
         destUID <- getDestinationUID destPost
+        ------------------------------------------------------------------------------------------------------
+        globalHB <- getConfig configGlobalHellban
+        when (globalHB && maybe True ((==0).tread) pc) $
+          void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = "" }
+        hellbannedUID <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+        hellbannedIP  <- (>0) <$> runDB (count [HellbanIp ==. ip])
         ------------------------------------------------------------------------------------------------------
         newMsg <- lookupSession "filtered-message"
         messageFormatted  <- doYobaMarkup (maybe message (Just . Textarea) newMsg) board thread

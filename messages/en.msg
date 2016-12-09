@@ -263,6 +263,7 @@ ModlogMaxEntriesView: Max modlog entries
 ModlogEntriesPerPage: Modlog entries per page
 AdaptiveCaptcha: The number of sent posts required to disable the captcha
 HomeRecentPics: The number of recent pics displayd on the home page
+GlobalHellban: Hellban new UIDs with no posts
 ## Messages
 ConfigUpdated: Config has been updated successfully
 

@@ -140,13 +140,11 @@ postBoardR board _ = do
         now      <- liftIO getCurrentTime
         country  <- getCountry ip
         posterId <- getPosterId
-        hellbannedUID <- (>0) <$> runDB (count [HellbanUid ==. posterId])
-        hellbannedIP  <- (>0) <$> runDB (count [HellbanIp ==. ip])
+        pc <- lookupSession "post-count"
         -------------------------------------------------------------------------------------------------------
         checkBan (tread ip) board $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
         adaptiveCaptcha <- getConfig configAdaptiveCaptcha
-        pc <- lookupSession "post-count"
         when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ 
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
@@ -154,6 +152,12 @@ postBoardR board _ = do
         ------------------------------------------------------------------------------------------------------
         checkWordfilter (Textarea <$> title) board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
         checkWordfilter message board $ \(Right m) -> setMessage (toHtml m) >> redirect (BoardNoPageR board)
+        ------------------------------------------------------------------------------------------------------
+        globalHB <- getConfig configGlobalHellban
+        when (globalHB && maybe True ((==0).tread) pc) $
+          void $ runDB $ insert $ Hellban { hellbanUid = posterId, hellbanIp = "" }
+        hellbannedUID <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+        hellbannedIP  <- (>0) <$> runDB (count [HellbanIp ==. ip])
         ------------------------------------------------------------------------------------------------------
         nextId <- maybe 1 ((+1) . postLocalId . entityVal) <$> runDB (selectFirst [PostBoard ==. board] [Desc PostLocalId])
         newMsg <- lookupSession "filtered-message"

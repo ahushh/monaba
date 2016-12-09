@@ -44,6 +44,7 @@ Board
     enableForcedAnon  Bool default=false
     enablePM          Bool default=false
     requiredThreadTitle Bool default=false
+    onion             Bool default=false
 Post
     board        Text
     localId      Int

@@ -24,15 +24,17 @@ insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
               [FormResult Censorship]       -> -- ^ Censorship ratings
               Int      -> -- ^ Thumbnail height and width
               Key Post -> -- ^ Post key
+              Bool     -> -- ^ Onion
               Handler ()
-insertFiles []    _       _         _      = return ()
-insertFiles files ratings thumbSize postId = do
+insertFiles []    _       _         _      _     = return ()
+insertFiles files ratings thumbSize postId onion = do
   AppSettings{..} <- appSettings <$> getYesod
+  let appUploadDir' = if onion then appUploadDir </> "onion" else appUploadDir
   forM_ (zip files ratings) (\(formfile, rating) ->
     case formfile of
       FormSuccess (Just f) -> do
         hashsum    <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
-        uploadPath <- saveFile f hashsum
+        uploadPath <- saveFile f hashsum onion
         filesize   <- liftIO $ formatFileSize <$> getFileSize uploadPath
         let filetype = detectFileType f
             filename = sanitizeFileName $ unpack $ fileName f
@@ -53,15 +55,15 @@ insertFiles files ratings thumbSize postId = do
         case filetype of
           FileImage -> do
             (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath
-            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs
+            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs
             void $ runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
                                             , attachedfileThumbWidth  = thumbW
                                             , attachedfileThumbHeight = thumbH
                                             }
           FileVideo -> do
-            liftIO $ unlessM (doesDirectoryExist $ appUploadDir </> thumbDirectory) $ createDirectory (appUploadDir </> thumbDirectory)
+            liftIO $ unlessM (doesDirectoryExist $ appUploadDir' </> thumbDirectory) $ createDirectory (appUploadDir' </> thumbDirectory)
             -- make thumbnail
-            let thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
+            let thumbpath = appUploadDir' </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
             void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
             (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False
             -- get video info
@@ -86,23 +88,24 @@ insertFiles files ratings thumbSize postId = do
           _         -> void $ runDB $ insert newFile
       _                    -> return ())
 
-saveFile :: FileInfo -> String -> Handler FilePath
-saveFile file hashsum = do
+saveFile :: FileInfo -> String -> Bool -> Handler FilePath
+saveFile file hashsum onion = do
   AppSettings{..} <- appSettings <$> getYesod
+  let appUploadDir' = if onion then appUploadDir </> "onion" else appUploadDir
   let fn = sanitizeFileName $ unpack $ fileName file
   n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
-  dirExists'  <- liftIO $ doesDirectoryExist appUploadDir
+  dirExists'  <- liftIO $ doesDirectoryExist appUploadDir'
   unless dirExists' $ liftIO $ createDirectory appUploadDir
-  dirExists  <- liftIO $ doesDirectoryExist (appUploadDir </> show n)
-  unless dirExists $ liftIO $ createDirectory (appUploadDir </> show n)
-  files <- liftIO $ getDirectoryContents (appUploadDir </> show n)
+  dirExists  <- liftIO $ doesDirectoryExist (appUploadDir' </> show n)
+  unless dirExists $ liftIO $ createDirectory (appUploadDir' </> show n)
+  files <- liftIO $ getDirectoryContents (appUploadDir' </> show n)
   let sameName = (>0) $ length $ filter ((==) fn) files
   if sameName
     then do
       runDB $ updateWhere ([]::[Filter Storage]) [StorageUploadDir +=. 1]
-      dirExists'' <- liftIO $ doesDirectoryExist (appUploadDir </> show (n+1))
-      unless dirExists'' $ liftIO $ createDirectory (appUploadDir </> show (n+1))
-      let path = appUploadDir </> show (n+1) </> fn
+      dirExists'' <- liftIO $ doesDirectoryExist (appUploadDir' </> show (n+1))
+      unless dirExists'' $ liftIO $ createDirectory (appUploadDir' </> show (n+1))
+      let path = appUploadDir' </> show (n+1) </> fn
       liftIO $ fileMove file path
       return path
     else do
@@ -111,11 +114,11 @@ saveFile file hashsum = do
         then do
           cd <- liftIO $ getCurrentDirectory
           let oldPath = cd ++ "/" ++ (attachedfilePath . entityVal . fromJust $ fileExists)
-              path    = appUploadDir </> show n </> fn
+              path    = appUploadDir' </> show n </> fn
           liftIO $ createSymbolicLink oldPath path
           return path
         else do
-          let path = appUploadDir </> show n </> fn
+          let path = appUploadDir' </> show n </> fn
           liftIO $ fileMove file path
           return path
 -------------------------------------------------------------------------------------------------------------------

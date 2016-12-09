@@ -184,7 +184,7 @@ postThreadR board thread = do
                            , postDestUID      = if enablePM then destUID else Nothing
                            }
         postKey <- runDB (insert newPost)
-        void $ insertFiles files ratings thumbSize postKey
+        void $ insertFiles files ratings thumbSize postKey (boardOnion boardVal)
         hb <- lookupSession "hide-this-post"
         when (isJust hb) $ do
           void $ runDB $ update postKey [PostHellbanned =. True]

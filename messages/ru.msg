@@ -178,6 +178,7 @@ BoardReplyAccess: Для ответа в тред нужно быть
 BoardThreadAccess: Для создание треда нужно быть
 BoardEnableForcedAnon: Принудительная анонимность (отключение ввода имени)
 BoardRequiredThreadTitle: Обязательное название треда
+BoardOnion: Доступ только через TOR
 WontBeUpdatedIfNone: Эти настройки не будут обновлены при значении <None>
 OpModeration: ОП-модерация
 PostEditing: Редактирование постов

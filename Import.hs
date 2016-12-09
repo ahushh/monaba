@@ -131,6 +131,7 @@ data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text  ) -- ^ Required thread title
                               (Maybe Int   ) -- ^ Index
                               (Maybe Text  ) -- ^ Enable private messages
+                              (Maybe Text  ) -- ^ Onion access only
 -------------------------------------------------------------------------------------------------------------------
 -- Search
 -------------------------------------------------------------------------------------------------------------------
@@ -407,12 +408,16 @@ checkAccessToNewThread mgroup boardVal =
   in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
 checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
-checkViewAccess mgroup boardVal =
+checkViewAccess mgroup boardVal = do
   let group  = (groupName . entityVal) <$> mgroup
       access = boardViewAccess boardVal
-  in when ( (isJust access && isNothing group) ||
-            (isJust access && notElem (fromJust group) (fromJust access))
-          ) notFound
+  ip <- pack <$> getIp
+  when ( (isJust access && isNothing group) ||
+         (isJust access && notElem (fromJust group) (fromJust access)) ||
+         (boardOnion boardVal && not (isOnion ip))
+       ) notFound
+
+isOnion = (=="127.0.0.1")
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)

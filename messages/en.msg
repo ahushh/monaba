@@ -176,6 +176,7 @@ BoardReplyAccess: To reply you must be a
 BoardThreadAccess: To create new thread you must be a
 BoardEnableForcedAnon: Force anonymity (disable name input)
 BoardRequiredThreadTitle: Required thread title
+BoardOnion: TOR access only
 WontBeUpdatedIfNone: These settings won't be updated if their value is <None>
 OpModeration: OP moderation
 PostEditing: Post editing

@@ -17,6 +17,7 @@ static/tmp/
 static/combined/
 static/upload/*
 !static/upload/.keep
+!static/upload/onion/.keep
 static/captcha/*
 !static/captcha/.keep
 static/thumb/*

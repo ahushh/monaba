@@ -33,13 +33,15 @@ getAjaxFeedOffsetR offset = do
   let permissions = getPermissions mgroup
       group       = (groupName . entityVal) <$> mgroup
   -------------------------------------------------------------------------------------------------------------------      
+  ip        <- pack <$> getIp
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getFeedBoards
   let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
       boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
-      boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
+      onionBoards         = if not (isOnion ip) then map boardName $ filter boardOnion $ map entityVal boards else []
+      boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards ++ onionBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False]
       selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False] ||.
@@ -73,13 +75,15 @@ getAjaxNewFeedR lastPostId = do
       group       = (groupName . entityVal) <$> mgroup
       lastPostDate= postDate lastPost
   -------------------------------------------------------------------------------------------------------------------      
+  ip        <- pack <$> getIp
   posterId  <- getPosterId
   showPosts <- getConfig configShowLatestPosts
   boards    <- runDB $ selectList ([]::[Filter Board]) []
   ignoredBoards <- getFeedBoards
   let boardsWhereShowDate = map boardName $ filter boardShowPostDate $ map entityVal boards
       boardsWhereEnablePM = map boardName $ filter boardEnablePM     $ map entityVal boards
-      boards'                = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards
+      onionBoards         = if not (isOnion ip) then map boardName $ filter boardOnion $ map entityVal boards else []
+      boards'             = mapMaybe (getIgnoredBoard group) boards ++ ignoredBoards ++ onionBoards
   ignoredPostsIds <- getAllHiddenPostsIds $ filter (`notElem`boards') $ map (boardName . entityVal) boards
   let selectPostsAll = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostDate >. lastPostDate]
       selectPostsHB  = [PostId /<-. ignoredPostsIds, PostDeletedByOp ==. False, PostBoard /<-. boards', PostDeleted ==. False, PostHellbanned ==. False, PostDate >. lastPostDate] ||.

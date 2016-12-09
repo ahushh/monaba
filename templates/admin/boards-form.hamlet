@@ -144,3 +144,7 @@
             <td>_{MsgBoardThreadAccess}
             <td> ^{fvInput threadAccessView}
             <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardOnion}
+            <td> ^{fvInput onionView}
+            <td>&nbsp;

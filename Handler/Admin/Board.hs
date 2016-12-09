@@ -79,6 +79,7 @@ updateBoardForm board action bCategories groups extra = do
   (requiredThreadTitleRes, requiredThreadTitleView ) <- mopt (selectFieldList onoff) "" (helper' boardRequiredThreadTitle "Disable")
   (enablePMRes         , enablePMView         ) <- mopt (selectFieldList onoff) "" (helper' boardEnablePM "Disable")
   (indexRes            , indexView            ) <- mopt intField      "" (helper boardIndex 0)
+  (onionRes            , onionView            ) <- mopt (selectFieldList onoff) "" (helper' boardOnion "Disable")
   let result = BoardConfigurationForm <$>
                nameRes              <*> titleRes           <*> bumpLimitRes      <*>
                numberFilesRes       <*> allowedTypesRes    <*> defaultNameRes    <*>
@@ -90,7 +91,7 @@ updateBoardForm board action bCategories groups extra = do
                enableGeoIpRes       <*> opEditingRes       <*> postEditingRes    <*>
                showEditHistoryRes   <*> showPostDateRes    <*> summaryRes        <*>
                enableForcedAnonRes  <*> requiredThreadTitleRes <*>  indexRes     <*>
-               enablePMRes
+               enablePMRes          <*> onionRes
       bname  = (boardName . entityVal) <$> board
       widget = $(widgetFile "admin/boards-form")
   return (result, widget)
@@ -111,7 +112,7 @@ postNewBoardsR = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
-                 bEnablePM
+                 bEnablePM         bOnion
                 ) -> do
       when (any isNothing [bName, bTitle, bAllowedTypes, bOpFile, bReplyFile] ||
             any isNothing [bThreadLimit , bBumpLimit, bNumberFiles, bMaxMsgLen, bThumbSize, bThreadsPerPage, bPrevPerThread]) $
@@ -150,6 +151,7 @@ postNewBoardsR = do
                            , boardRequiredThreadTitle = onoff bRequiredThreadTitle
                            , boardEnablePM          = onoff bEnablePM
                            , boardIndex             = fromMaybe 0 bIndex
+                           , boardOnion             = onoff bOnion
                            }
       void $ runDB $ insert newBoard
       addModlogEntry $ MsgModlogNewBoard (fromJust bName) 
@@ -171,7 +173,7 @@ postAllBoardsR = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
-                 bEnablePM
+                 bEnablePM         bOnion
                 ) -> do
       boards <- runDB $ selectList ([]::[Filter Board]) []
       forM_ boards (\(Entity oldBoardId oldBoard) ->
@@ -209,6 +211,7 @@ postAllBoardsR = do
                              , boardRequiredThreadTitle= onoff bRequiredThreadTitle boardRequiredThreadTitle
                              , boardEnablePM          = onoff bEnablePM boardEnablePM
                              , boardIndex             = fromMaybe 0 bIndex
+                             , boardOnion             = onoff bOnion boardOnion
                              }
           in runDB $ replace oldBoardId newBoard)
       addModlogEntry $ MsgModlogUpdateAllBoards 
@@ -231,7 +234,7 @@ postUpdateBoardsR board = do
                  bCategory         bViewAccess   bReplyAccess      bThreadAccess        bOpModeration
                  bExtraRules       bEnableGeoIp  bOpEditing        bPostEditing         bShowEditHistory
                  bShowPostDate     bSummary      bEnableForcedAnon bRequiredThreadTitle bIndex
-                 bEnablePM
+                 bEnablePM         bOnion
                 ) -> do
       let oldBoard   = entityVal $ fromJust maybeBoard
           oldBoardId = entityKey $ fromJust maybeBoard
@@ -269,6 +272,7 @@ postUpdateBoardsR board = do
                            , boardRequiredThreadTitle= onoff bRequiredThreadTitle boardRequiredThreadTitle
                            , boardEnablePM          = onoff bEnablePM boardEnablePM
                            , boardIndex             = fromMaybe 0 bIndex
+                           , boardOnion             = onoff bOnion boardOnion
                            }
       runDB $ replace oldBoardId newBoard
       addModlogEntry $ MsgModlogUpdateBoard (fromJust bName) 

@@ -104,7 +104,7 @@
     $forall Entity fileKey file <- eFiles
         $with fKey <- fromIntegral $ fromSqlKey fileKey
           $with c <- ifelse (length eFiles == 1) "file" "multi-file"
-            $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
+            $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file) (attachedfileOnion file)
               $with up <- attachedfilePath file
                 $with fi <- makeFileInfo file
                   <div class=#{c} id="file-#{fKey}">

@@ -215,8 +215,8 @@ thumbIconExt = "png"
 thumbDirectory :: FilePath
 thumbDirectory = "thumb"
 
-thumbUrlPath :: String -> String -> Int -> FileType -> String -> String -> FilePath
-thumbUrlPath uploadDir staticDir size filetype fileext hashsum = "/" </> (thumbFilePath uploadDir staticDir size filetype fileext hashsum)
+thumbUrlPath :: String -> String -> Int -> FileType -> String -> String -> Bool -> FilePath
+thumbUrlPath uploadDir staticDir size filetype fileext hashsum onion = "/" </> (thumbFilePath (if onion then uploadDir </> "onion" else uploadDir) staticDir size filetype fileext hashsum)
 
 thumbFilePath :: String -> String -> Int -> FileType -> String -> String -> FilePath
 thumbFilePath uploadDir staticDir size filetype fileext hashsum

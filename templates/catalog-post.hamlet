@@ -1,7 +1,7 @@
 <a href=@{ThreadR (postBoard post) (postLocalId post)}>
   <div .post>  
     $maybe Entity _ file <- mFile
-      $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file)
+      $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file) (attachedfileOnion file)
         $with up <- attachedfilePath file
           $with fi <- makeFileInfo file
             $with fRating <- tread (attachedfileRating file)

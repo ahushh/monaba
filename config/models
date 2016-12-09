@@ -93,6 +93,7 @@ Attachedfile
     thumbHeight  Int      
     info         String
     rating       Text default='SFW'
+    onion        Bool default=false
 Ban
     ipBegin      IP
     ipEnd        IP

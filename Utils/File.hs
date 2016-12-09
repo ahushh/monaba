@@ -51,6 +51,7 @@ insertFiles files ratings thumbSize postId onion = do
                                     , attachedfileThumbHeight = 0
                                     , attachedfileInfo        = ""
                                     , attachedfileRating      = (\(FormSuccess r) -> tshow r) rating
+                                    , attachedfileOnion       = onion
                                     }
         case filetype of
           FileImage -> do

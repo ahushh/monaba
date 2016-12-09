@@ -29,7 +29,8 @@ getHomeR = do
   statsDay        <- runDB $ count [PostDate >. day, PostDeleted ==. False]
   statsAllFiles   <- runDB $ count ([]::[Filter Attachedfile])
 
-  recentImages    <- runDB $ selectList [AttachedfileFiletype ==. FileImage] [Desc AttachedfileId, LimitTo lastPics]
+  ip              <- pack <$> getIp
+  recentImages    <- runDB $ selectList ([AttachedfileFiletype ==. FileImage]++ if not (isOnion ip) then [AttachedfileOnion ==. False] else []) [Desc AttachedfileId, LimitTo lastPics]
   defaultLayout $ do
     setTitle $ toHtml appSiteName
     $(widgetFile "homepage")

@@ -6,6 +6,7 @@ import Handler.Admin.Modlog (addModlogEntry)
 import Utils.YobaMarkup     (makeExternalRef)
 import Data.FileEmbed (embedFile)
 import qualified Data.Text          as T
+import           System.FilePath                 ((</>))
 import Import
 
 -- These handlers embed files in the executable at compile time to avoid a
@@ -33,16 +34,17 @@ deleteFiles idsToRemove = do
         fe = attachedfileExtension f
         hs = attachedfileHashsum f
         ts = attachedfileThumbSize f
+        o  = attachedfileOnion f
     case sameFilesCount `compare` 0 of
       GT -> do -- this file belongs to several posts so don't delete it from disk
         filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
         unless (filesWithSameThumbSize > 0) $
           when (ft `elem` thumbFileTypes) $ do
-            void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+            void $ liftIO $ removeFile $ thumbFilePath (if o then appUploadDir </> "onion" else appUploadDir) appStaticDir ts ft fe hs
         runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
       _  -> do
         liftIO $ removeFile $ attachedfilePath f
-        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+        when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath (if o then appUploadDir </> "onion" else appUploadDir) appStaticDir ts ft fe hs
         runDB $ deleteWhere [AttachedfileParentId <-. idsToRemove]
 
 deleteFile :: Entity Attachedfile -> Handler ()
@@ -53,16 +55,17 @@ deleteFile (Entity fId f) = do
       fe = attachedfileExtension f
       hs = attachedfileHashsum f
       ts = attachedfileThumbSize f
+      o  = attachedfileOnion f
   case sameFilesCount `compare` 0 of
     GT -> do -- this file belongs to several posts so don't delete it from disk
       filesWithSameThumbSize <- runDB $ count [AttachedfileThumbSize ==. ts, AttachedfileId !=. fId]
       unless (filesWithSameThumbSize > 0) $
         when (ft `elem` thumbFileTypes) $ do
-          void $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+          void $ liftIO $ removeFile $ thumbFilePath (if o then appUploadDir </> "onion" else appUploadDir) appStaticDir ts ft fe hs
       runDB $ delete fId
     _  -> do
       liftIO $ removeFile $ attachedfilePath f
-      when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath appUploadDir appStaticDir ts ft fe hs
+      when (ft `elem` thumbFileTypes) $ liftIO $ removeFile $ thumbFilePath (if o then appUploadDir </> "onion" else appUploadDir) appStaticDir ts ft fe hs
       runDB $ delete fId
 
 

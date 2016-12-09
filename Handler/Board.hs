@@ -140,7 +140,8 @@ postBoardR board _ = do
         now      <- liftIO getCurrentTime
         country  <- getCountry ip
         posterId <- getPosterId
-        hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+        hellbannedUID <- (>0) <$> runDB (count [HellbanUid ==. posterId])
+        hellbannedIP  <- (>0) <$> runDB (count [HellbanIp ==. ip])
         -------------------------------------------------------------------------------------------------------
         checkBan (tread ip) board $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
@@ -178,7 +179,7 @@ postBoardR board _ = do
                            , postDeletedByOp  = False
                            , postOwner        = userGroup . entityVal <$> muser
                            , postOwnerUser    = userName . entityVal <$> muser
-                           , postHellbanned   = hellbanned
+                           , postHellbanned   = hellbannedUID || hellbannedIP
                            , postPosterId     = posterId
                            , postLastModified = Nothing
                            , postLockEditing  = False
@@ -202,7 +203,7 @@ postBoardR board _ = do
         deleteSession "message"
         deleteSession "post-title"
         cleanBoardStats board
-        unless hellbanned $ sendNewPostES board
+        unless (hellbannedUID || hellbannedIP) $ sendNewPostES board
         incPostCount
         case goback of
           ToBoard  -> setSession "goback" "ToBoard"  >> redirect (BoardNoPageR board )

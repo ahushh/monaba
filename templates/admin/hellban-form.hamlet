@@ -1,4 +1,6 @@
 #{extra}
+IP ^{fvInput hbIPView}
+UID ^{fvInput hbUIDView}
 ^{fvInput hbView}
 ^{fvInput displayView}
 <input type=submit value=_{MsgSubmitBtn}>

@@ -65,7 +65,7 @@ function shrinkHellbanned() {
         Array.prototype.forEach.call(document.querySelectorAll(".post.hellbanned > *:not(:first-child)"), function(el){ el.style.display = "block" });
     } else {
         setItem("shrink-hellbanned", true);
-        Array.prototype.forEach.call(document.querySelectorAll(".post.hellbanned > *:not(:first-child)"), function(el){ el.style.display = "none" });w
+        Array.prototype.forEach.call(document.querySelectorAll(".post.hellbanned > *:not(:first-child)"), function(el){ el.style.display = "none" });
     }
 }
 function showHellbanForm( postId ) {
@@ -83,8 +83,13 @@ function showHellbanForm( postId ) {
                 insertAfter(form, p);
                 form.onsubmit = function(event) {
                     event.preventDefault();
-                    var inputs = form.getElementsByTagName("select");
                     var formData = new FormData();
+                    var inputs = form.getElementsByTagName("input");
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (inputs[i].type == "checkbox" && inputs[i].checked)
+                            formData.append(inputs[i].name, inputs[i].value);
+                    }
+                    inputs = form.getElementsByTagName("select");
                     for (var i = 0; i < inputs.length; i++) {
                         formData.append(inputs[i].name, inputs[i].value);
                     }
@@ -744,7 +749,7 @@ function getUpdateTitle() {
     return updateTitle;
 }
 //-----------------------------------------------------------------
-// deletion checkboxes
+// deletion checkboxses
 //-----------------------------------------------------------------
 function markAllPosts() {
     Array.prototype.forEach.call(document.getElementsByClassName("mark-to-delete"), function(el,i) {

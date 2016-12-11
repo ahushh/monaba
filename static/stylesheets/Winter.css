@@ -3,7 +3,7 @@
 /* global style */
 
 html, body {
-  background: #fcfcfc url('https://i.imgur.com/R9io2mr.gif) repeat fixed center;
+  background: #fcfcfc url('https://i.imgur.com/R9io2mr.gif') repeat fixed center;
   color: #333;
   font-family: Calibri;
   font-size: 10.5pt;

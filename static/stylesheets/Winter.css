@@ -71,6 +71,7 @@ textarea {
 .spoiler, .spoiler a {
   background: rgba(230,230,230,0.75);
   color: rgba(230,230,230,0.75);
+  text-shadow: none !important;
 }
 .spoiler:hover {
   background: none;
@@ -79,7 +80,7 @@ textarea {
 .spoiler a:hover {
   background: none;
   color: #999;
-  text-shadow: 0 0 1px #999;
+  text-shadow: 0 0 1px #999 !important;
 }
 .quote, .symbol-counter {
   color: #81b1ff !important;

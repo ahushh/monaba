@@ -29,9 +29,7 @@ footer {
   text-align: center;
   font-size: 10pt;
 }
-
 /* home page */
-
 #home-container .block {
   background: rgba(250,250,250,0.75);
   border: 1px solid rgba(230,230,230,0.75);
@@ -51,9 +49,7 @@ hr {
   height: 1px;
   background: rgba(230,230,230,0.75);
 }
-
 /* board */
-
 header {
   border: none !important;
   background: rgba(250,250,250,0.75);
@@ -89,7 +85,7 @@ textarea {
   padding: 2px;
 }
 .reply.post, .feed .post, .popup-post {
-  background: rgb(250,250,250) url('http://24.media.tumblr.com/tumblr_mef299uPsQ1r7y61oo1_400.gif') repeat fixed center;
+  background: rgb(250,250,250) url('https://i.imgur.com/R9io2mr.gif') repeat fixed center;
   border: 1px solid rgba(230,230,230,0.75);
   margin: 3px;
   padding: 5px;
@@ -134,7 +130,7 @@ textarea {
   padding: 10px 0px;
 }
 .pagination {
-  background: rgb(250,250,250) url('http://24.media.tumblr.com/tumblr_mef299uPsQ1r7y61oo1_400.gif') repeat fixed center;
+  background: rgb(250,250,250) url('https://i.imgur.com/R9io2mr.gif') repeat fixed center;
   border: 1px solid rgba(230,230,230,0.75);
   padding: 3px;
 }

@@ -113,7 +113,7 @@ textarea {
 .quick-post-form {
   padding: 2px;
 }
-.reply.post, .feed .post, .popup-post {
+.hist-msg, .reply.post, .feed .post, .popup-post {
   background-color: rgb(214,214,214);
   background-image: url('https://i.imgur.com/YFhfZNz.png'), url('https://i.imgur.com/BPySOkm.png'), url('https://i.imgur.com/2ARguPW.png');
 	background-position: center;

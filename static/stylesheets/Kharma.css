@@ -1,0 +1,255 @@
+/* kharma.css 16.02.2016*/
+
+html, body {
+    background: rgb(0, 0, 0) url("http://kharma.us/cyberpunk.jpg") no-repeat fixed 0% 0% / 100% auto;
+    color: #0cc;
+    font-family: serif;
+    font-size: 1em;
+    padding: 15px;
+}
+
+body {
+    background: rgba(0, 0, 0, 0.5)
+}
+
+header, .pagination {
+    background-color: #000505;
+}
+
+#message {
+    font-size: 1.7em;
+    border: 1px dashed red;
+    color: red;
+}
+
+* {
+    font-family: terminus, Arial, sans-serif;
+    font-size: 10pt;
+}
+
+form {
+    font-size: 0.9em;
+}
+
+textarea {
+    background-color: #001010;
+    border: 1px solid #00cccc;
+    box-shadow: 0 0 3px #0CC;
+    color: #00cccc;
+}
+
+input {
+    background-color: #001010;
+    border: 1px solid #00cccc;
+    box-shadow: 0 0 3px #0CC;
+    color: #00cccc;
+}
+
+input.submit {
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.poster-name {
+  
+}
+
+.post-block-named {
+    background-color: #001010;
+    font-weight: bold;
+    padding: 5px;
+}
+
+a {
+    color: #0cc;
+    padding: 0;
+    border-bottom: #0cc 1px solid;
+}
+
+a:hover {
+    color: #0cc;
+}
+
+header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    clear: both;
+    color: #995b46;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    margin: 2em 0 0;
+    text-align: center;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
+}
+
+.reflink {
+    font-size: 85%;
+    font-weight: bold;
+}
+
+.file-info {
+    color: #666666;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.quote {
+    color: #B5BD68;
+}
+.spoiler, .spoiler a {
+    color: #ccc;
+    background-color: #ccc;
+    border-bottom: none;
+}
+.spoiler a:hover {
+    color: #dd0000;
+    border-bottom: #cc0000 1px dotted;
+}
+.spoiler:hover {
+  background-color: #000;
+    color:#0cc;
+}
+
+.reply.post, .feed .post {
+    background: none repeat scroll 0 0 #001010;
+    margin: 6px;
+    padding: 5px;
+    box-shadow: 0 0 3px #0CC;
+}
+
+.popup-post {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    margin: 4px;
+    padding: 5px;
+}
+
+.reply.post.highlighted, .feed .post.highlighted {
+    background: none repeat scroll 0 0 #000505;
+    border: 1px double #00cccc;
+}
+
+.op.post.highlighted {
+    background: none repeat scroll 0 0 #000505;
+}
+
+.thread {
+    margin: 2px;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding: 25px 2px;
+}
+
+.reply-title {
+    color: #0cc;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+hr {
+    border-style: solid none #bbbbbb;
+    border-width: 1px;
+}
+
+table {
+    border-style: none;
+}
+
+table td {
+    border-style: none;
+}
+
+#delete-container {
+    text-align: right;
+}
+
+pre {
+    background-color: #eeeeee;
+    border: 1px dashed #dfdfdf;
+    padding: 10px;
+}
+
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #001010;
+}
+
+#board-list-full {
+    border: 1px solid #001010;
+}
+
+#latest-news {
+    border: 1px solid #001010;
+}
+
+#news-title {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #001010;
+}
+
+.popup-message {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+}
+
+.quick-post-form {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    padding: 5px;
+}
+
+.hist-msg {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    margin: 4px;
+    padding: 5px;
+}
+
+.admin-navbar {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    margin-bottom: 10px;
+    padding: 3px;
+    background-color: #001010;
+}
+
+#delete-container {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
+}
+
+.show-plain-form {
+    margin-bottom: 10px;
+}
+
+.markup-wrapper {
+    background-color: #001010;
+}
+
+.expand-post {
+    color: #666666;
+}
+
+.reply-title {
+    color: #cc1105;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#pages-list {
+    border: 1px solid grey;
+    padding: 0 3px;
+}
+.dropdown-menu ul li {
+    background-color: #001010;
+}

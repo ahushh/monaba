@@ -108,7 +108,7 @@ textarea {
   text-shadow: 0 0 1px #aaa !important;
 }
 .quote, .symbol-counter {
-  color: #81b1ff !important;
+  color: #749fe5 !important;
 }
 .quick-post-form {
   padding: 2px;
@@ -116,7 +116,7 @@ textarea {
 .hist-msg, .reply.post, .feed .post, .popup-post {
   background-color: rgb(214,214,214);
   background-image: url('https://i.imgur.com/YFhfZNz.png'), url('https://i.imgur.com/BPySOkm.png'), url('https://i.imgur.com/2ARguPW.png');
-	background-position: center;
+  background-position: center;
   background-attachment: fixed;
   background-repeat: repeat;
   -webkit-animation: snow 20s linear infinite;

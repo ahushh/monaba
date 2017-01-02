@@ -1,0 +1,180 @@
+/* С наступающим. */
+
+/* снежок был %спизжен% нагло взят с designshack.net */
+
+/*Keyframes*/
+@keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+@-moz-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+@-webkit-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+
+@-ms-keyframes snow {
+0% {background-position: 0px 0px, 0px 0px, 0px 0px;}
+ 100% {background-position: 500px 1000px, 400px 400px, 300px 300px;}
+}
+/* global style */
+html, body {
+  background-color: rgb(224,224,224);
+  background-image: url('https://i.imgur.com/YFhfZNz.png'), url('https://i.imgur.com/BPySOkm.png'), url('https://i.imgur.com/2ARguPW.png');
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: repeat;
+	-webkit-animation: snow 20s linear infinite;
+	-moz-animation: snow 20s linear infinite;
+	-ms-animation: snow 20s linear infinite;
+	animation: snow 20s linear infinite;
+  color: #444;
+  font-family: Calibri;
+  font-size: 10.5pt;
+}
+a, .fa {
+  color: #444;
+}
+.post .message a {
+  text-shadow: 0 0 1px #444;
+}
+a:hover, .fa:hover {
+  color: #aaa;
+}
+.post .message a:hover {
+  text-shadow: 0 0 1px #aaa;
+}
+pre {
+  background: rgba(34,34,34,0.25);
+  border: 1px solid rgba(14,14,14,0.25);
+  padding: 10px;
+}
+footer {
+  text-align: center;
+  font-size: 10pt;
+}
+/* home page */
+#home-container .block {
+  background: rgba(214,214,214,0.75);
+  border: 1px solid rgba(204,204,204,0.75);
+}
+#board-list-full .title {
+  margin-left: -2px !important;
+}
+.block > .title {
+  font-weight: bold;
+  background: rgba(194,194,194,0.25);
+}
+.news .title {
+  text-align: left !important;
+}
+hr {
+  border: none !important;
+  height: 1px;
+  background: rgba(204,204,204,0.75);
+}
+/* board */
+header {
+  border: none !important;
+  background: rgba(214,214,214,0.75);
+}
+textarea, input, select {
+  background: rgba(214,214,214,0.75);
+  border: 1px solid rgba(194,194,194,0.75);
+  color: #444;
+  margin: 1px;
+  font-family: Calibri;
+}
+textarea {
+  font-size: 10.5pt;
+}
+.spoiler, .spoiler a {
+  background: rgba(194,194,194,0.75);
+  color: rgba(194,194,194,0);
+  text-shadow: none !important;
+}
+.spoiler:hover {
+  background: none;
+  color: #444;
+}
+.spoiler a:hover {
+  background: none;
+  color: #aaa;
+  text-shadow: 0 0 1px #aaa !important;
+}
+.quote, .symbol-counter {
+  color: #749fe5 !important;
+}
+.quick-post-form {
+  padding: 2px;
+}
+.hist-msg, .reply.post, .feed .post, .popup-post {
+  background-color: rgb(214,214,214);
+  background-image: url('https://i.imgur.com/YFhfZNz.png'), url('https://i.imgur.com/BPySOkm.png'), url('https://i.imgur.com/2ARguPW.png');
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: repeat;
+  -webkit-animation: snow 20s linear infinite;
+	-moz-animation: snow 20s linear infinite;
+	-ms-animation: snow 20s linear infinite;
+	animation: snow 20s linear infinite;
+  border: 1px solid rgba(194,194,194,0.75);
+  margin: 3px;
+  padding: 5px;
+}
+.reply.post.highlighted, .feed .post.highlighted {
+  border: 1px solid rgba(0,0,230,0.25);
+}
+.op.post.highlighted {
+  background: rgba(214,214,214,0.75);
+}
+.popup-message {
+  background: rgba(214,214,214,0.75);
+  border: 1px solid rgba(194,194,194,0.75);
+  margin-top: 15px !important;
+}
+.reply-title {
+  font-size: 12pt;
+  font-weight: bold;
+}
+.reflink {
+  font-size: 85%;
+  font-weight: bold;
+}
+.index-number {
+  font: bold 13px Calibri !important;
+  color: #888;
+}
+.file-info, .file-name {
+  font-size: 8pt;
+}
+.reply.post .dropdown-menu li ul {
+  background: rgb(214,214,214);
+  padding: 2px;
+}
+.op.post .dropdown-menu li ul {
+  background: rgb(224,224,224);
+  padding: 2px;
+}
+#delete-container {
+  text-align: right;
+  padding: 10px 0px;
+}
+.pagination {
+  background: rgb(214,214,214);
+  border: 1px solid rgba(194,194,194,0.75);
+  padding: 3px;
+}
+.pagination .next {
+  border-left: 1px solid rgba(194,194,194,0.75);
+  padding-left: 5px;
+}
+.pagination .previous {
+  border-right: 1px solid rgba(194,194,194,0.75);
+  padding-right: 5px;
+}

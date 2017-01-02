@@ -25,7 +25,7 @@ Features
 * Works fine with JavaScript disabled
 * Thread catalog
 * Bookmarks
-* Private messages (buggy for now)
+* Private messages
 * Full-text search
 * Administration
     - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session

@@ -160,8 +160,6 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
              m  = wordfilterActionMsg b
          when (WordfilterBan `elem` as) $ do
            void $ addBan (tread ip) (tread ip) m [] Nothing
-         when (WordfilterDeny `elem` as) $ 
-           redirectSomewhere $ Right m
          when (WordfilterHB `elem` as) $ do
            hellbanned <- (>0) <$> runDB (count [HellbanUid ==. posterId])
            when (not hellbanned) $ 
@@ -180,7 +178,8 @@ checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
                                       Left _    -> return ()
                                       Right reg -> let newMsg = gsub reg replacement msg
                                                     in setSession "filtered-message" newMsg
-
+         when (WordfilterDeny `elem` as) $ 
+           redirectSomewhere $ Right m
   where checkText msg' b regex = case wordfilterDataType b of
                                   WordfilterWords      -> or (map (\m -> T.isInfixOf m msg') (T.words $ wordfilterData b))
                                   WordfilterExactMatch -> T.isInfixOf (wordfilterData b) msg'

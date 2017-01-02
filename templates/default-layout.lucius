@@ -512,3 +512,6 @@ input.bad {
 input.good {
     border: 2px solid green !important;
 }
+.my {
+    border-left: 2px solid green !important;
+}

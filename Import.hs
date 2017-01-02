@@ -355,7 +355,7 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
       threadLocalId  = postParent  $ entityVal ePost
       board          = postBoard $ entityVal ePost
       isThread       = sThreadLocalId == "0"
-      pClass         = (if isThread then "op" else "reply") <> (if elem HellBanP permissions && postHellbanned postVal then " hellbanned" else "")  :: Text
+      pClass'        = (if isThread then "op" else "reply") <> (if elem HellBanP permissions && postHellbanned postVal then " hellbanned" else "")  :: Text
       itsforMe uid   = maybe True (==uid) (postDestUID $ entityVal ePost) || uid == (postPosterId $ entityVal ePost)
       destUID        = postDestUID $ entityVal ePost
   in do
@@ -369,6 +369,7 @@ postWidget ePost eFiles inThread canPost showParent geoIp showPostDate permissio
 
     req <- handlerToWidget $ waiRequest
     app <- handlerToWidget $ getYesod
+    let pClass   = pClass' <> if posterId == postPosterId postVal then " my" else ""
     let approot' =  case appRoot of
                       Nothing -> getApprootText guessApproot app req
                       Just root -> root

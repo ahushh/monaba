@@ -50,7 +50,9 @@ insertFiles files ratings thumbSize postId onion = do
                                     , attachedfileThumbWidth  = 0
                                     , attachedfileThumbHeight = 0
                                     , attachedfileInfo        = ""
-                                    , attachedfileRating      = (\(FormSuccess r) -> tshow r) rating
+                                    , attachedfileRating      = (\form -> case form of
+                                                                    FormSuccess r -> tshow r
+                                                                    FormFailure _ -> "SFW") rating
                                     , attachedfileOnion       = onion
                                     }
         case filetype of

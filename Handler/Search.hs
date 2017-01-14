@@ -47,9 +47,11 @@ getResults qstring board offset = do
       group       = (groupName . entityVal) <$> mgroup
   posterId <- getPosterId
   boards   <- runDB $ selectList ([]::[Filter Board]) []
+  ip       <- pack <$> getIp
   let ignoredBoards  = mapMaybe (getIgnoredBoard group) boards
+      onionBoards    = if not (isOnion ip) then map boardName $ filter boardOnion $ map entityVal boards else []
       checkBoard   p = (isJust board && (fromJust board == postBoard p || fromJust board == "")) || isNothing board
-      checkAccess  p = postBoard p `notElem` ignoredBoards
+      checkAccess  p = postBoard p `notElem` (ignoredBoards ++ onionBoards)
       checkDeleted p = not $ postDeleted p
       checkPM      p = (isNothing $ postDestUID p) || (isJust (postDestUID p) && fromJust (postDestUID p) == posterId)
       checkHB      p = not (postHellbanned p) || (postHellbanned p || postPosterId p == posterId) || elem HellBanP permissions

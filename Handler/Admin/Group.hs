@@ -24,6 +24,7 @@ groupsForm extra = do
   (ratingRes       , ratingView      ) <- mreq checkBoxField "" Nothing
   (applControlRes  , applControlView ) <- mreq checkBoxField "" Nothing
   (wordfilterRes   , wordfilterView  ) <- mreq checkBoxField "" Nothing
+  (reportsRes      , reportsView     ) <- mreq checkBoxField "" Nothing
 
   let result = GroupConfigurationForm <$> nameRes <*>
                manageThreadRes <*> manageBoardRes <*> manageUsersRes <*>
@@ -31,7 +32,7 @@ groupsForm extra = do
                manageBanRes    <*> editPostsRes   <*> shadowEditRes  <*>
                aMarkupRes      <*> viewModlogRes  <*> viewIPAndIDRes <*>
                hellbanningRes  <*> ratingRes      <*> applControlRes <*>
-               wordfilterRes
+               wordfilterRes   <*> reportsRes
       widget = $(widgetFile "admin/groups-form")
   return (result, widget)
 
@@ -53,14 +54,14 @@ postManageGroupsR = do
     FormMissing    -> msgRedirect MsgNoFormData
     FormSuccess (GroupConfigurationForm name manageThread manageBoard manageUsers
                  manageConfig  deletePostsP managePanel manageBan editPosts shadowEdit
-                 aMarkup viewModLog  viewIPAndID hellbanning changeFileRating applControl wordfilter
+                 aMarkup viewModLog  viewIPAndID hellbanning changeFileRating applControl wordfilter reports
                 ) -> do
       let permissions = [(ManageThreadP,manageThread), (ManageBoardP,manageBoard ), (ManageUsersP,manageUsers)
                         ,(ManageConfigP,manageConfig), (DeletePostsP,deletePostsP), (ManagePanelP,managePanel)
                         ,(ManageBanP   ,manageBan   ), (EditPostsP  ,editPosts   ), (AdditionalMarkupP,aMarkup)
                         ,(ShadowEditP  ,shadowEdit ) , (ViewModlogP ,viewModLog  ), (ViewIPAndIDP,viewIPAndID )
                         ,(HellBanP,hellbanning)      , (ChangeFileRatingP, changeFileRating), (AppControlP,applControl)
-                        ,(WordfilterP,wordfilter)
+                        ,(WordfilterP,wordfilter)    , (ReportsP         , reports)
                         ]
           newGroup = Group { groupName        = name
                            , groupPermissions = map fst $ filter snd permissions

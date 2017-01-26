@@ -115,8 +115,14 @@
 
 /admin/setup               AdminSetupR GET
 
+
+/admin/reports          AdminReportsR    GET
+/admin/reports/del/#Int AdminReportsDelR GET
+/reprot                 ReportPostR      POST
+/report/form/#Int       ReportFormR      GET
+
+/rss/#Text        RssR     GET
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST
-
-/rss/#Text        RssR     GET

@@ -132,3 +132,6 @@ Wordfilter
     action      [WordfilterAction]
     actionMsg   Text
     replacement Text Maybe
+Report
+    postId      PostId
+    reason      Text

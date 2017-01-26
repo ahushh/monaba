@@ -286,6 +286,7 @@ AppControl: Управление приложением
 ViewModlog: Просматривать мод-логи 
 ViewIPAndID: Просматривать IP и ID постеров
 Hellbanning: Премодерация
+Reports: Жалобы
 ChangeFileRating: Изменять рейтинг цензуры у файлов 
 
 DontSaveHistory: Не сохранять историю изменений
@@ -574,3 +575,10 @@ SearchHelpOr: слово "hello" или "world"
 SearchHelpMaybe: "hello" за которым может следовать слово "world"
 SearchHelpNot: слово "hello" за которым нет "world"
 SearchHelpPhrase: фраза "hello world" целиком
+######################################################################################
+## Reports
+######################################################################################
+ReportDelete: Удалить жалобу
+ReportPostId: Пост
+ReportReason: Причина
+ToReport: Пожаловаться на пост

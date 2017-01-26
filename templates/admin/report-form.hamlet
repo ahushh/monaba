@@ -1,0 +1,6 @@
+<form method=post action=@{ReportPostR}>
+    #{extra}
+    ^{fvInput idView}
+    ^{fvInput reasonView}
+    <input type=submit value=_{MsgToReport}>
+

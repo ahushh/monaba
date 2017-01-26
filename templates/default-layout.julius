@@ -1894,6 +1894,21 @@ function removePostHighlight() {
     });
 }
 //-----------------------------------------------------------------
+// Reports
+//-----------------------------------------------------------------
+function reportPost(postId) {
+    httpRequest({
+        action: "/report/form/"+postId,
+        headers: { 'Accept': 'application/json' },
+        onloadOk: function(request) {
+            var el = parseDOMElement(request.responseText);
+            var p = document.getElementById('p'+postId);
+            insertAfter(el,p);
+        }
+    });
+
+}
+//-----------------------------------------------------------------
 // Reference map
 //-----------------------------------------------------------------
 function makeRefmap(postSelector) {

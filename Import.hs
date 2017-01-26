@@ -78,6 +78,7 @@ showPermission p = let m' = lookup p xs
              ,(ChangeFileRatingP, MsgChangeFileRating)
              ,(AppControlP      , MsgAppControl)
              ,(WordfilterP      , MsgWordfilter)
+             ,(ReportsP         , MsgReports)
              ]
 
 data GroupConfigurationForm = GroupConfigurationForm
@@ -98,6 +99,7 @@ data GroupConfigurationForm = GroupConfigurationForm
                               Bool -- ^ to change censorship rating
                               Bool -- ^ to control application
                               Bool -- ^ to configure wordfilter
+                              Bool -- ^ to use reports
 
 data BoardConfigurationForm = BoardConfigurationForm
                               (Maybe Text)   -- ^ Name

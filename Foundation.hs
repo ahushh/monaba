@@ -208,6 +208,9 @@ instance Yesod App where
     
       AdminWordfilterR{} -> isAuthorized' [WordfilterP]
       AdminWordfilterDeleteR{} -> isAuthorized' [WordfilterP]
+
+      AdminReportsR{}    -> isAuthorized' [ReportsP]
+      AdminReportsDelR{} -> isAuthorized' [ReportsP]
       _               -> return Authorized
 
     -- This function creates static content files in the static folder

@@ -47,6 +47,7 @@ data Permission = ManageThreadP
                 | ShadowEditP
                 | AppControlP
                 | WordfilterP
+                | ReportsP
                 deriving (Show, Ord, Read, Eq, Bounded, Enum)
            
 data WordfilterDataType = WordfilterWords | WordfilterExactMatch | WordfilterRegex

@@ -52,5 +52,8 @@
       <tr>
             <td>_{MsgWordfilter           }
             <td>^{fvInput wordfilterView  }
+      <tr>
+            <td>_{MsgReports           }
+            <td>^{fvInput reportsView  }
 
     <input type=submit value=_{MsgGroupAddOrUpdate}>

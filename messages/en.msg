@@ -284,6 +284,7 @@ AppControl: Application control
 ViewModlog: View moderation log 
 ViewIPAndID: View poster's IP and ID
 Hellbanning: Hellbanning
+Reports: Reports
 ChangeFileRating: Change file's censorship rating
 
 DontSaveHistory: Do not save editing history
@@ -571,3 +572,10 @@ SearchHelpOr: operator OR
 SearchHelpMaybe: operator MAYBE
 SearchHelpNot: operator NOT
 SearchHelpPhrase: phrase search operator
+######################################################################################
+## Reports
+######################################################################################
+ReportDelete: Delete report
+ReportPostId: Post
+ReportReason: Reason
+ToReport: Report this post

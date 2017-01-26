@@ -2,6 +2,10 @@
     <a href=@{AdminR}>    
       <i .fa .fa-dashboard>
     | 
+    $if elem ReportsP permissions
+        <i .fa .fa-filter>
+        <a href=@{AdminReportsR}>_{MsgReports} #
+        | 
     $if elem WordfilterP permissions
         <i .fa .fa-filter>
         <a href=@{AdminWordfilterR}>_{MsgWordfilter} #

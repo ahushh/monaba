@@ -23,6 +23,7 @@
         $if geoIp
             $maybe GeoCountry code name <- postCountry postVal
                 <img src=#{geoIconPath appStaticDir code} title=#{name}>
+        <i title=_{MsgToReport} onclick="reportPost(#{sPostId});" .fa .fa-exclamation-circle .clickable>
         <span .reply-title>#{postTitle $ postVal}
         <span .poster-name>#{postName $ postVal}
         $if showPostDate

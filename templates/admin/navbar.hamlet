@@ -3,7 +3,9 @@
       <i .fa .fa-dashboard>
     | 
     $if elem ReportsP permissions
-        <i .fa .fa-filter>
+        <i .fa .fa-exclamation>
+        $if reports > 0
+           (#{reports}) #
         <a href=@{AdminReportsR}>_{MsgReports} #
         | 
     $if elem WordfilterP permissions

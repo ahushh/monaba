@@ -385,6 +385,7 @@ deleteWidget permissions = $(widgetFile "delete")
 adminNavbarWidget :: Widget
 adminNavbarWidget = do
   permissions <- handlerToWidget $ ((fmap getPermissions) . getMaybeGroup) =<< maybeAuth
+  reports <- handlerToWidget $ runDB $ count ([]::[Filter Report])
   $(widgetFile "admin/navbar")
 -------------------------------------------------------------------------------------------------------------------
 bareLayout :: Yesod site => WidgetT site IO () -> HandlerT site IO Html

@@ -57,7 +57,7 @@ library
         cpp-options:   -DDEVELOPMENT
         ghc-options:   -Wall -fwarn-tabs -O0
     else
-        ghc-options:   -Wall -fwarn-tabs -O1
+        ghc-options:   -Wall -fwarn-tabs -O0
 
     extensions: TemplateHaskell
                 QuasiQuotes

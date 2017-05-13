@@ -1,3 +1,18 @@
+Promise.sequence = function (chain) {
+    var results = [];
+    var entries = chain;
+    if (entries.entries) entries = entries.entries();
+    return new Promise(function (yes, no) {
+        var next = function () {
+            var entry = entries.next();
+            if(entry.done) yes(results);
+            else {
+                results.push(entry.value[1]().then(next, function() { no(results); } ));
+            }
+        };
+        next();
+    });
+};
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
@@ -30,6 +45,8 @@ var Monaba = {
 };
 loadConfig();
 applyCSSSettings();
+
+var tasks = [];
 
 //-----------------------------------------------------------------
 // Bookmarks
@@ -1504,6 +1521,7 @@ function initUrlVideoPlayer(selector) {
         addVimeoVideoPlayer(post);
         addCoubVideoPlayer(post);
     });
+    Promise.sequence(tasks).then(function(){ tasks = [] });
 }
 
 function addUrlVideoPlayer(data) {
@@ -1591,25 +1609,33 @@ function addYoutubeVideoPlayer(post) {
         }
 
         if (getConfig("youtube_load_titles") || !getConfig("youtube_height") || !getConfig("youtube_height")) {
-            var request = new XMLHttpRequest({mozSystem: true});
-            request.open("GET","https://www.googleapis.com/youtube/v3/videos?id="+ videoId +"&key="+getConfig('youtube_API_key')+"&part=snippet,contentDetails,statistics,status",true);
-            request.onload = function() {
-                var data = JSON.parse(request.responseText);
-                addUrlVideoPlayer({ width:  getConfig("url_video_width") || data.items[0].snippet.thumbnails.high.width,
-                                    height: getConfig("url_video_height") || data.items[0].snippet.thumbnails.high.height,
-                                    title:  getConfig("youtube_load_titles") && data ? data.items[0].snippet.title : url,
-                                    thumb_url: "https://i.ytimg.com/vi/"+videoId+"/0.jpg",
-                                    iframe_url: "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" + (getConfig("youtube_html5") ? "&html5=1" : ""),
-                                    icon_class: "fa-youtube-play",
-                                    link: link,
-                                    post: post,
-                                    first1: first1
-                                  });
-            };
-            request.onerror = function() {
-                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-            };
-            request.send();
+            tasks.push(function(){ return new Promise(function(resolve) {
+                var request = new XMLHttpRequest({mozSystem: true});
+                request.open("GET", "https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + getConfig('youtube_API_key') + "&part=snippet,contentDetails,statistics,status", true);
+                request.onload = function () {
+                    var data = JSON.parse(request.responseText);
+                    if (!data.items.length[0])
+                        resolve();
+                    addUrlVideoPlayer({
+                        width: getConfig("url_video_width") || data.items[0].snippet.thumbnails.high.width,
+                        height: getConfig("url_video_height") || data.items[0].snippet.thumbnails.high.height,
+                        title: getConfig("youtube_load_titles") && data ? data.items[0].snippet.title : url,
+                        thumb_url: "https://i.ytimg.com/vi/" + videoId + "/0.jpg",
+                        iframe_url: "https://www.youtube.com/embed/" + videoId + "?&autohide=1&border=0&wmode=opaque&enablejsapi=1" + (getConfig("youtube_html5") ? "&html5=1" : ""),
+                        icon_class: "fa-youtube-play",
+                        link: link,
+                        post: post,
+                        first1: first1
+                    });
+                    resolve();
+                };
+                request.onerror = function () {
+                    popupMessage(#{toJSON $ msgrender MsgConnectionError}+" (" + request.statusText + ")", 0, false, true);
+                        resolve();
+                };
+                request.send();
+            })
+            });
         } else {
             addUrlVideoPlayer({ width:  getConfig("url_video_width"),
                                 height: getConfig("url_video_height"),
@@ -1645,26 +1671,30 @@ function addVimeoVideoPlayer(post) {
             first = false;
             first1 = true;
         }
-
-        var request = new XMLHttpRequest({mozSystem: true});
-        request.open("GET","https://vimeo.com/api/v2/video/"+videoId+".json",true);
-        request.onload = function() {
-            var data = JSON.parse(request.responseText);
-            addUrlVideoPlayer({ width:  getConfig("url_video_width"),
-                                height: getConfig("url_video_height"),
-                                title:  data[0].title,
-                                thumb_url: data[0].thumbnail_medium,
-                                iframe_url: "https://player.vimeo.com/video/" + videoId,
-                                icon_class: "fa-vimeo-square",
-                                link: link,
-                                post: post,
-                                first1: first1
-                         });
-        };
-        request.onerror = function() {
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-        };
-        request.send();
+        tasks.push(function(){ return new Promise(function(resolve) {
+            var request = new XMLHttpRequest({mozSystem: true});
+            request.open("GET", "https://vimeo.com/api/v2/video/" + videoId + ".json", true);
+            request.onload = function () {
+                var data = JSON.parse(request.responseText);
+                addUrlVideoPlayer({
+                    width: getConfig("url_video_width"),
+                    height: getConfig("url_video_height"),
+                    title: data[0].title,
+                    thumb_url: data[0].thumbnail_medium,
+                    iframe_url: "https://player.vimeo.com/video/" + videoId,
+                    icon_class: "fa-vimeo-square",
+                    link: link,
+                    post: post,
+                    first1: first1
+                });
+                resolve();
+            };
+            request.onerror = function () {
+                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" (" + request.statusText + ")", 0, false, true);
+                resolve()
+            };
+            request.send();
+        }) });
     });
 }
 
@@ -1688,26 +1718,30 @@ function addCoubVideoPlayer(post) {
             first = false;
             first1 = true;
         }
-
-        var request = new XMLHttpRequest({mozSystem: true});
-        request.open("GET","//iframe.ly/api/oembed?url="+url+"&api_key="+ getConfig('iframely_API_key'), true);
-        request.onload = function() {
-            var data = JSON.parse(request.responseText);
-            addUrlVideoPlayer({ width:  getConfig("url_video_width"),
-                                // height: getConfig("url_video_height"),
-                                title:  data.title,
-                                thumb_url: data.thumbnail_url,
-                                iframe_url: "https://coub.com/embed/"+videoId,
-                                icon_class: "fa-cube",
-                                link: link,
-                                post: post,
-                                first1: first1
-                         });
-        };
-        request.onerror = function() {
-            popupMessage(#{toJSON $ msgrender MsgConnectionError}+" ("+request.statusText+")", 0, false, true);
-        };
-        request.send();
+        tasks.push(function(){ return new Promise(function(resolve) {
+            var request = new XMLHttpRequest({mozSystem: true});
+            request.open("GET", "//iframe.ly/api/oembed?url=" + url + "&api_key=" + getConfig('iframely_API_key'), true);
+            request.onload = function () {
+                var data = JSON.parse(request.responseText);
+                addUrlVideoPlayer({
+                    width: getConfig("url_video_width"),
+                    // height: getConfig("url_video_height"),
+                    title: data.title,
+                    thumb_url: data.thumbnail_url,
+                    iframe_url: "https://coub.com/embed/" + videoId,
+                    icon_class: "fa-cube",
+                    link: link,
+                    post: post,
+                    first1: first1
+                });
+                resolve();
+            };
+            request.onerror = function () {
+                popupMessage(#{toJSON $ msgrender MsgConnectionError}+" (" + request.statusText + ")", 0, false, true);
+                resolve();
+            };
+            request.send();
+        }) });
     });
 }
 //-----------------------------------------------------------------

@@ -52,6 +52,7 @@ Requirements
 Required for building from source:
 
 * stack
+* cabal-install 1.22.8
 
 Installation
 ======

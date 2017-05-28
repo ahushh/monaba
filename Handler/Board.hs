@@ -153,7 +153,7 @@ postBoardR board _ = do
         checkBan (tread ip) board $ \(Left m) -> setMessageI m >> redirect (BoardNoPageR board)
         -------------------------------------------------------------------------------------------------------
         adaptiveCaptcha <- getConfig configAdaptiveCaptcha
-        when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ 
+        when (maybe True (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ 
           checkCaptcha captcha (setMessageI MsgWrongCaptcha >> redirect (BoardNoPageR board))
         -------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent ==. 0) ip now $ setMessageI MsgPostingTooFast >> redirect (BoardNoPageR board)

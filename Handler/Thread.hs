@@ -137,7 +137,7 @@ postThreadR board thread = do
         unless (checkHellbanned (entityVal $ fromJust maybeParent) permissions posterId) notFound
         ------------------------------------------------------------------------------------------------------
         adaptiveCaptcha <- getConfig configAdaptiveCaptcha
-        when (maybe False (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
+        when (maybe True (\x -> tread x < adaptiveCaptcha) pc && enableCaptcha && isNothing muser) $ checkCaptcha captcha (trickyRedirect "error" (Left MsgWrongCaptcha) threadUrl)
         ------------------------------------------------------------------------------------------------------
         checkTooFastPosting (PostParent !=. 0) ip now $ trickyRedirect "error" (Left MsgPostingTooFast) threadUrl
         ------------------------------------------------------------------------------------------------------

@@ -8,15 +8,16 @@ import Data.Text
 import Data.Aeson
 import GHC.Generics
 
-data PostRequest = PostRequest { name :: Maybe Text
-                               , title :: Maybe Text
-                               , message :: Maybe Text
-                               , captcha :: Text
+data PostRequest = PostRequest { name :: Text
+                               , title :: Text
+                               , message :: Text
+                               , captcha :: Maybe Text
                                , password :: Text
-                               , dest :: Maybe Int
+                               , destPost :: Maybe Int
                                , files :: [Int]
                                , parent :: Int
-                               , board :: Text  
+                               , board :: Text
+                               , nobump :: Bool
                                } deriving Generic
 
 instance FromJSON PostRequest

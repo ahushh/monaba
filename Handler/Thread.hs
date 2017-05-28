@@ -96,7 +96,7 @@ getThreadR board thread = do
 getDestinationUID :: Maybe Text -> Handler (Maybe Text)
 getDestinationUID (Just postId) = fmap (Just . postPosterId) $ runDB $ get404 ((toSqlKey $ fromIntegral $ tread postId) :: Key Post)
 getDestinationUID Nothing = return Nothing
-  
+
 postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
   when (thread <= 0) notFound
@@ -202,7 +202,7 @@ postThreadR board thread = do
         -------------------------------------------------------------------------------------------------------
         -- bump thread if necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
-        unless ((fromMaybe False nobump) || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
+        unless (isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         -------------------------------------------------------------------------------------------------------
         case name of
           Just name' -> setSession "name" name'

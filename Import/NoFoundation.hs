@@ -34,6 +34,7 @@ import Network.HTTP.Types as Import
     , status400
     , status403
     , status404
+    , status412
     )
 ---------------------------------------------------------------------------------------------------------
 -- Template helpers

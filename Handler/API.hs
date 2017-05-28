@@ -4,8 +4,11 @@ module Handler.API where
 import           Import
 import           Data.Aeson
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import           Data.Digest.OpenSSL.MD5 (md5sum)
-import qualified Data.ByteString.UTF8    as B
+import qualified Data.ByteString.UTF8   as B
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Base64 as BS
 
 import Handler.Thread  (getThreadR)
 import Handler.Board   (getBoardR)
@@ -19,6 +22,7 @@ import Handler.Captcha (checkCaptcha, updateCaptcha)
 import Handler.Common  (deletePosts) -- TODO: merge Posting and Common
 
 import Utils.YobaMarkup (doYobaMarkup)
+import Utils.File       (createTempFile, insertTempFile)
 
 getApiThreadR      = getThreadR
 getApiBoardR       = getBoardR
@@ -134,6 +138,11 @@ putApiPostR = do
                      , postDestUID      = if boardEnablePM && isReply then mDestUID else Nothing
                      }
   postKey <- runDB (insert newPost)
+  insertedFiles <- forM files $ \fileId -> do
+    mFile <- runDB $ get $ toSqlKey $ fromIntegral fileId
+    case mFile of
+      Just file -> insertTempFile file boardThumbSize postKey boardOnion
+      Nothing   -> return Nothing
   when isReply $ do
     isBumpLimit <- (\x -> x >= boardBumpLimit && boardBumpLimit > 0) <$> runDB (count [PostParent ==. parent])
     unless (nobump || isBumpLimit || postAutosage parentVal) $ bumpThread board parent now
@@ -143,6 +152,7 @@ putApiPostR = do
   incPostCount
   sendResponseStatus status201 (object [ "message" .= ("CREATED"::Text)
                                        , "post"    .= Entity postKey newPost
+                                       , "files"   .= catMaybes insertedFiles
                                        ])
 
 patchApiPostByIdR :: Int -> Handler TypedContent
@@ -201,3 +211,23 @@ patchApiPostByIdR editId = do
         Nothing -> sendResponseStatus status404 $ object ["message" .= ("BOARD NOT FOUND"::Text)]
     Nothing -> sendResponseStatus status404 $ object ["message" .= ("POST NOT FOUND"::Text)]
 
+putApiFileR :: Handler TypedContent
+putApiFileR = do
+  mFile   <- lookupFile "file"
+  mRating <- lookupPostParam "rating"
+  case mFile of
+    Just file -> do
+      case mRating of
+        Just rating -> do
+          key <- createTempFile file (tread rating)
+          sendResponse $ object ["id" .= ((fromIntegral $ fromSqlKey key)::Int)]
+        Nothing ->  sendResponse $ object ["message" .= ("INVALID RATING"::Text)]
+    Nothing  -> sendResponse $ object ["message" .= ("INVALID FILE"::Text)]
+
+  -- file@FileRequest{..} <- requireJsonBody
+  -- let fileData = BS.decode (T.encodeUtf8 fcontent)
+  -- case fileData of
+  --   Left err -> sendResponseStatus status400 $ object ["message" .= ("CANT DECODE BASE64"::Text)]
+  --   Right f  -> do
+  --     liftIO $ BS.writeFile "/home/user/testfile" f
+  --     liftIO $ print f

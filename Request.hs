@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 module Request ( PostRequest(..)
                , EditPostRequest(..)
+               , FileRequest(..)
                ) where
 
 import Prelude
@@ -25,5 +26,12 @@ data EditPostRequest = EditPostRequest { editMessage :: Text
                                        , editPassword :: Text
                                        }  deriving Generic
 
+data FileRequest = FileRequest { fname :: Text
+                               , fcontent :: Text
+                               , fmimetype :: Text
+                               , frating :: Text
+                               } deriving (Show, Generic)
+
 instance FromJSON PostRequest
 instance FromJSON EditPostRequest
+instance FromJSON FileRequest

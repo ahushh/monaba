@@ -153,6 +153,7 @@ library
                  , xml-types
                  , iproute
                  , pcre-heavy
+                 , temporary
 
 executable         Monaba
     if flag(library-only)

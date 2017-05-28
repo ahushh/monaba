@@ -94,6 +94,14 @@ Attachedfile
     info         String
     rating       Text default='SFW'
     onion        Bool default=false
+TempFile
+    hashsum     String
+    name        String
+    extension   String
+    filetype    FileType
+    path        FilePath
+    size        String
+    rating      Text
 Ban
     ipBegin      IP
     ipEnd        IP

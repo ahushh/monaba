@@ -133,6 +133,7 @@
 /api/home                    ApiHomeR GET
 /api/list/boards             ApiListBoardsR GET
 /api/captcha                 ApiCaptchaR GET
+/api/file                    ApiFileR PUT
 
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST

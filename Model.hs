@@ -21,7 +21,7 @@ instance HashDBUser User where
 instance ToJSON Post where
     toJSON Post {..} = object
         [ "board"       .= postBoard
-        , "id"          .= postLocalId
+        , "id"    .= postLocalId
         , "parent"      .= postParent
         , "date"        .= postDate
         , "bumped"      .= postBumped
@@ -34,7 +34,7 @@ instance ToJSON Post where
         , "name"        .= postName
         , "deletedByOp" .= postDeletedByOp
         ]
-
+    
 instance ToJSON Attachedfile where
     toJSON Attachedfile {..} = object
         [ "hashsum"         .= attachedfileHashsum
@@ -45,4 +45,19 @@ instance ToJSON Attachedfile where
         , "thumbHeight" .= attachedfileThumbHeight
         , "size"        .= attachedfileSize
         , "info"        .= attachedfileInfo
+        , "path"        .= attachedfilePath
+        , "rating"      .= attachedfileRating  
+        -- , "thumb_path"  .= thumbUrlPath appUploadDir appStaticDir attachedfileThumbSiz attachedfileFiletype attachedfileExtension attachedfileHashsum attachedfileOnion 
         ]
+
+instance ToJSON (Entity Attachedfile) where
+    toJSON (Entity k v) = object
+           [ "id"    .= k
+           , "value" .= v
+           ]
+
+instance ToJSON (Entity Post) where
+    toJSON (Entity k v) = object
+           [ "id"    .= k
+           , "value" .= v
+           ]

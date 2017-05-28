@@ -11,7 +11,7 @@ User
     group            Text
     password         Text Maybe
     deriving         Typeable
-Board
+Board json
     index             Int default=0
     name              Text
     BoardUniqName     name

@@ -411,6 +411,16 @@ checkAccessToNewThread mgroup boardVal =
       access = boardThreadAccess boardVal
   in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
+checkViewAccess' :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m Bool
+checkViewAccess' mgroup boardVal = do
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess boardVal
+  ip <- pack <$> getIp
+  return $ not ( (isJust access && isNothing group) ||
+               (isJust access && notElem (fromJust group) (fromJust access)) ||
+               (boardOnion boardVal && not (isOnion ip))
+             )
+
 checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
 checkViewAccess mgroup boardVal = do
   let group  = (groupName . entityVal) <$> mgroup

@@ -37,7 +37,7 @@ selectThread board thread = do
   let t = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
   return $ (filter (\((Entity _ p1),_) -> postParent p1 == 0) t) ++ (filter (\((Entity _ p1),_) -> postParent p1 /= 0) t)
 
-getThreadR :: Text -> Int -> Handler Html
+getThreadR :: Text -> Int -> Handler TypedContent
 getThreadR board thread = do
   when (thread == 0) notFound
   muser    <- maybeAuth
@@ -78,15 +78,25 @@ getThreadR board thread = do
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   bookmarksUpdateLastReply eOpPost
   ((_, searchWidget), _) <- runFormGet $ searchForm $ Just board
-  defaultLayout $ do
-    setUltDestCurrent
-    defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
-    $(widgetFile "thread")
+  let title = T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+      setUltDestCurrent
+      defaultTitleReverse $ title
+      $(widgetFile "thread")
+    provideJson $ object [ "replies" .= repliesAndFiles
+                         , "op"      .= (eOpPost, opPostFiles)
+                         , "title"   .= title
+                         , "banner"  .= mBanner
+                         , "can_reply" .= hasAccessToReply
+                         , "board" .= boardVal
+                         ]
+
 -------------------------------------------------------------------------------------------------------------------
 getDestinationUID :: Maybe Text -> Handler (Maybe Text)
 getDestinationUID (Just postId) = fmap (Just . postPosterId) $ runDB $ get404 ((toSqlKey $ fromIntegral $ tread postId) :: Key Post)
 getDestinationUID Nothing = return Nothing
-
+  
 postThreadR :: Text -> Int -> Handler Html
 postThreadR board thread = do
   when (thread <= 0) notFound

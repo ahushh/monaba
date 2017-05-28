@@ -91,7 +91,6 @@ Attachedfile
     thumbSize    Int   -- just thumbSize from Board table
     thumbWidth   Int      
     thumbHeight  Int      
-    thumbPath    FilePath default=''
     info         String
     rating       Text default='SFW'
     onion        Bool default=false

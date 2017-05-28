@@ -47,7 +47,7 @@ instance ToJSON Attachedfile where
         , "info"        .= attachedfileInfo
         , "path"        .= attachedfilePath
         , "rating"      .= attachedfileRating  
-        , "thumb_path"  .= attachedfileThumbPath
+        -- , "thumb_path"  .= thumbUrlPath appUploadDir appStaticDir attachedfileThumbSiz attachedfileFiletype attachedfileExtension attachedfileHashsum attachedfileOnion 
         ]
 
 instance ToJSON (Entity Attachedfile) where

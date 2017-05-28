@@ -46,7 +46,6 @@ createTempFile file rating = do
 
 insertTempFile :: TempFile -> Int -> Key Post -> Bool -> Handler (Maybe (Entity Attachedfile))
 insertTempFile file thumbSize postId onion = do
-  AppSettings{..} <- appSettings <$> getYesod
   uploadPath <- saveFile (pack $ tempFileName file) (tempFileHashsum file) onion (renameFile (tempFilePath file))
   let newFile  = Attachedfile { attachedfileParentId    = postId
                               , attachedfileHashsum     = tempFileHashsum file
@@ -61,10 +60,9 @@ insertTempFile file thumbSize postId onion = do
                               , attachedfileInfo        = ""
                               , attachedfileRating      = tempFileRating file
                               , attachedfileOnion       = onion
-                              , attachedfileThumbPath   = thumbUrlPath appUploadDir appStaticDir thumbSize (tempFileFiletype file) (tempFileExtension file) (tempFileHashsum file) onion
                               }
   -- TODO: make a function from the code below
-  -- AppSettings{..} <- appSettings <$> getYesod
+  AppSettings{..} <- appSettings <$> getYesod
   let appUploadDir' = if onion then appUploadDir </> "onion" else appUploadDir
       hashsum       = tempFileHashsum file
       filetype      = tempFileFiletype file 
@@ -143,7 +141,6 @@ insertFiles files ratings thumbSize postId onion = do
                                                                     FormSuccess r -> tshow r
                                                                     FormFailure _ -> "SFW") rating
                                     , attachedfileOnion       = onion
-                                    , attachedfileThumbPath   = thumbUrlPath appUploadDir appStaticDir thumbSize filetype fileext hashsum onion -- TODO: thums for old files
                                     }
         case filetype of
           FileImage -> do

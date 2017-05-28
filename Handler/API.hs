@@ -9,12 +9,14 @@ import Handler.Feed
 import Handler.Catalog
 import Handler.Home
 import Handler.Ajax
+import Handler.Delete
 
-getApiThreadR  = getThreadR
-getApiBoardR   = getBoardR
-getApiFeedR    = getAjaxFeedOffsetR
-getApiCatalogR = getCatalogR
-getApiHomeR    = getHomeR
+getApiThreadR      = getThreadR
+getApiBoardR       = getBoardR
+getApiFeedR        = getAjaxFeedOffsetR
+getApiCatalogR     = getCatalogR
+getApiHomeR        = getHomeR
+getApiDeletedPosts = getDeletedByOpR
 
 getApiListBoardsR :: Handler TypedContent
 getApiListBoardsR = do

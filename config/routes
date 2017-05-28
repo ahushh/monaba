@@ -127,6 +127,7 @@
 /api/post/#Int               ApiPostByIdR GET
 /api/board/#Text/#Int        ApiBoardR GET
 /api/board/#Text/thread/#Int ApiThreadR GET
+/api/board/#Text/thread/#Int/deleted ApiDeletedPosts GET
 /api/feed/#Int               ApiFeedR GET
 /api/catalog/#Text           ApiCatalogR GET
 /api/home                    ApiHomeR GET

@@ -15,7 +15,7 @@ import Handler.Home    (getHomeR)
 import Handler.Ajax    (getAjaxPostByIdR)
 import Handler.Delete  (getDeletedByOpR)
 import Handler.Posting (checkBan, checkWordfilter, checkTooFastPosting, bumpThread)
-import Handler.Captcha (checkCaptcha)
+import Handler.Captcha (checkCaptcha, updateCaptcha)
 import Handler.Common  (deletePosts) -- TODO: merge Posting and Common
 
 import Utils.YobaMarkup (doYobaMarkup)
@@ -26,6 +26,12 @@ getApiFeedR        = getAjaxFeedOffsetR
 getApiCatalogR     = getCatalogR
 getApiHomeR        = getHomeR
 getApiDeletedPosts = getDeletedByOpR
+
+getApiCaptchaR :: Handler TypedContent
+getApiCaptchaR = do
+ (path, hint) <- updateCaptcha
+ selectRep $ do
+   provideJson $ object ["path" .= path, "hint" .= hint]
 
 getApiListBoardsR :: Handler TypedContent
 getApiListBoardsR = do
@@ -75,8 +81,8 @@ putApiPostR = do
   ----------------------------------------------------------------------------------------------------
   postCount <- lookupSession "post-count"
   Config{..} <- getConfigEntity
-  when (maybe True (\x -> tread x < configAdaptiveCaptcha) postCount && boardEnableCaptcha && isNothing muser) $ 
-       checkCaptcha captcha (sendResponse $ object ["message" .= msgrender MsgWrongCaptcha])
+  when (maybe True (\x -> tread x < configAdaptiveCaptcha) postCount && boardEnableCaptcha && isNothing muser) $ do
+    checkCaptcha captcha (sendResponse $ object ["message" .= msgrender MsgWrongCaptcha])
   ----------------------------------------------------------------------------------------------------
   now <- liftIO getCurrentTime
   when isNewThread $ checkTooFastPosting (PostParent ==. 0) ip now $ (sendResponse $ object ["message" .= msgrender MsgPostingTooFast])

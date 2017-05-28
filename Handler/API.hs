@@ -14,7 +14,7 @@ import Handler.Catalog (getCatalogR)
 import Handler.Home    (getHomeR)
 import Handler.Ajax    (getAjaxPostByIdR)
 import Handler.Delete  (getDeletedByOpR)
-import Handler.Posting (checkBan, checkWordfilter, checkTooFastPosting, bumpThread)
+import Handler.Posting (checkBan, checkWordfilter, checkTooFastPosting, bumpThread, tooLongMessage)
 import Handler.Captcha (checkCaptcha, updateCaptcha)
 import Handler.Common  (deletePosts) -- TODO: merge Posting and Common
 
@@ -141,4 +141,63 @@ putApiPostR = do
   when (isNewThread && boardThreadLimit >= 0) $
     flip deletePosts False =<< runDB (selectList [PostBoard ==. board, PostParent ==. 0] [Desc PostBumped, OffsetBy boardThreadLimit])
   incPostCount
-  sendResponseStatus status201 (object ["message" .= ("CREATED"::Text)])
+  sendResponseStatus status201 (object [ "message" .= ("CREATED"::Text)
+                                       , "post"    .= Entity postKey newPost
+                                       ])
+
+patchApiPostByIdR :: Int -> Handler TypedContent
+patchApiPostByIdR editId = do
+  muser       <- maybeAuth
+  permissions <- getPermissions <$> getMaybeGroup muser
+  EditPostRequest{..} <- (requireJsonBody :: Handler EditPostRequest)
+  let postKey = (toSqlKey . fromIntegral) editId :: Key Post
+  mPost <- runDB $ get postKey
+  let shadowEdit = False
+  case mPost of
+    Just post -> do
+      posterId <- getPosterId
+      mBoard <- runDB (getBy $ BoardUniqName $ postBoard post)
+      case mBoard of
+        Just (Entity _ boardVal) -> do
+          msgrender<- getMessageRender
+          maxTimes <- getConfig configMaxEditings
+          unless (EditPostsP `elem` permissions) $ do
+            when (postParent post == 0 && not (boardOpEditing   boardVal)) $
+              sendResponse $ object ["message" .= msgrender MsgThreadEditingIsDisabled]
+            when (postParent post /= 0 && not (boardPostEditing boardVal)) $
+              sendResponse $ object ["message" .= ("MsgPostEditingIsDisabled"::Text)]
+            when (postLockEditing post) $ 
+              sendResponse $ object ["message" .= msgrender MsgDisabledEditing]
+            when (postPosterId post /= posterId &&
+                  postPassword post /= (pack $ md5sum $ B.fromString $ unpack editPassword)
+                 ) $ sendResponse $ object ["message" .= msgrender MsgPostNotYours]
+          let maxMessageLength = boardMaxMsgLength boardVal
+            in when (tooLongMessage maxMessageLength (Textarea editMessage)) $
+                 sendResponse $ object ["message" .= msgrender (MsgTooLongMessage maxMessageLength)]
+          checkWordfilter (Just $ Textarea editMessage) (postBoard post) $ \(Right m) -> sendResponse $ object ["message" .= m]
+          filteredMsg <- lookupSession "filtered-message"
+          messageFormatted <- doYobaMarkup (maybe (Just $ Textarea editMessage) (Just . Textarea) filteredMsg) (postBoard post) (postParent post)
+          history <- runDB $ getBy $ HistoryUniqPostId postKey
+          unless (EditPostsP `elem` permissions) $ 
+            let z = maybe 0 (length . historyMessages . entityVal) history
+              in when (z >= maxTimes) $ sendResponseStatus status200 $ object ["message" .= msgrender (MsgYouAlreadyEditedPost maxTimes)]
+          now     <- liftIO getCurrentTime
+          let oldMessage = postMessage post
+              oldDate    = fromMaybe (postDate post) (postLastModified post)
+              oldMessages= maybe [] (historyMessages . entityVal) history
+              oldDates   = maybe [] (historyDates    . entityVal) history
+              newHistory = History { historyPostId   = postKey
+                                   , historyMessages = oldMessage : oldMessages
+                                   , historyDates    = oldDate    : oldDates
+                                   }
+          runDB $ update postKey ([PostMessage =. messageFormatted
+                                 , PostRawMessage =. fromMaybe editMessage filteredMsg]
+                                 ++[PostLastModified =. Just now | not (ShadowEditP `elem` permissions && shadowEdit)])
+          unless (ShadowEditP `elem` permissions && shadowEdit) $
+            if isJust history
+              then runDB $ replace (entityKey $ fromJust history) newHistory
+              else void $ runDB $ insert newHistory
+          sendResponse $ object ["message" .= msgrender MsgPostEdited]
+        Nothing -> sendResponseStatus status404 $ object ["message" .= ("BOARD NOT FOUND"::Text)]
+    Nothing -> sendResponseStatus status404 $ object ["message" .= ("POST NOT FOUND"::Text)]
+

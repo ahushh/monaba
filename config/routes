@@ -124,7 +124,7 @@
 /rss/#Text        RssR     GET
 
 /api/post                    ApiPostR PUT
-/api/post/#Int               ApiPostByIdR GET
+/api/post/#Int               ApiPostByIdR GET PATCH
 /api/board/#Text/#Int        ApiBoardR GET
 /api/board/#Text/thread/#Int ApiThreadR GET
 /api/board/#Text/thread/#Int/deleted ApiDeletedPosts GET

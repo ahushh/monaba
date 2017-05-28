@@ -1,6 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE DeriveGeneric #-}
 module Request ( PostRequest(..)
+               , EditPostRequest(..)
                ) where
 
 import Prelude
@@ -20,4 +21,9 @@ data PostRequest = PostRequest { name :: Text
                                , nobump :: Bool
                                } deriving Generic
 
+data EditPostRequest = EditPostRequest { editMessage :: Text
+                                       , editPassword :: Text
+                                       }  deriving Generic
+
 instance FromJSON PostRequest
+instance FromJSON EditPostRequest

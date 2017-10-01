@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Import
     ( module Import
     ) where
@@ -576,3 +577,52 @@ cleanBoardStats board = do
       return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
     else return s
   saveBoardStats newStats
+
+
+appUploadDir' = "upload"
+appStaticDir' = "static"
+
+instance ToJSON Attachedfile where
+    toJSON Attachedfile {..} = object
+        [ "hashsum"         .= attachedfileHashsum
+        , "name"        .= attachedfileName
+        , "extension"   .= attachedfileExtension
+        , "thumbSize"   .= attachedfileThumbSize
+        , "thumbWidth"  .= attachedfileThumbWidth
+        , "thumbHeight" .= attachedfileThumbHeight
+        , "size"        .= attachedfileSize
+        , "info"        .= attachedfileInfo
+        , "path"        .= attachedfilePath
+        , "rating"      .= attachedfileRating  
+        , "thumb_path"  .= thumbUrlPath appUploadDir' appStaticDir' attachedfileThumbSize attachedfileFiletype attachedfileExtension attachedfileHashsum attachedfileOnion 
+        ]
+
+instance ToJSON Post where
+    toJSON Post {..} = object
+        [ "board"       .= postBoard
+        , "id"    .= postLocalId
+        , "parent"      .= postParent
+        , "date"        .= postDate
+        , "bumped"      .= postBumped
+        , "sticked"     .= postSticked
+        , "locked"      .= postLocked
+        , "autosage"    .= postAutosage
+        , "message"     .= postMessage
+        , "rawMessage"  .= postRawMessage
+        , "title"       .= postTitle
+        , "name"        .= postName
+        , "deletedByOp" .= postDeletedByOp
+        ]
+    
+
+instance ToJSON (Entity Attachedfile) where
+    toJSON (Entity k v) = object
+           [ "id"    .= k
+           , "value" .= v
+           ]
+
+instance ToJSON (Entity Post) where
+    toJSON (Entity k v) = object
+           [ "id"    .= k
+           , "value" .= v
+           ]

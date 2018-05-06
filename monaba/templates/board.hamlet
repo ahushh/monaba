@@ -1,0 +1,55 @@
+$maybe banner <- mBanner
+  $with (img, url) <- banner
+    <div .banner>
+      <a href="#{url}">
+        <img src="#{img}">
+
+<div id="board-header"> #{appSiteName} — #{title}
+  <a title="RSS" href=@{RssR board}>
+    &nbsp;
+    <i .fa .fa-rss>
+  <a title="_{MsgCatalog}" href=@{CatalogR board}>
+    &nbsp;
+    <i .fa .fa-table>
+$if not $ T.null summary
+    <div id="board-summary">#{summary}
+
+$if hasAccessToNewThread
+    <div #show-plain-form>
+        [ <a onclick="showPlainPostForm();">_{MsgNewThread}</a> ]
+$with na <- not hasAccessToNewThread 
+  <form :na:style="display:none" .plain-post-form #post-form method=post enctype=#{formEnctype} action=@{BoardNoPageR board} data-max-msg-length=#{maxMessageLength} data-board=#{board}>
+    ^{postFormWidget captchaImg}
+            
+$if null threadsAndPreviews
+    <p> _{MsgNoThreads}
+$else
+    <form .delete-form method=get action=@{DeleteR}>
+        $forall ((eOpPost, opPostFiles), ps, omitted) <- threadsAndPreviews
+            <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}">
+                ^{postWidget eOpPost opPostFiles False hasAccessToReply False geoIpEnabled showPostDate permissions 0 enablePM}
+                $if omitted > 0
+                    <div .omitted>
+                      _{MsgPostsOmitted omitted}
+                      <i .fa .fa-expand>
+                      <a onclick=expandThread('#{board}',#{show $ postLocalId $ entityVal eOpPost })>_{MsgExpandThread}
+                      <i .ajax-loading .fa .fa-refresh .fa-spin style="display:none">
+                    <div style="display:none" .truncate-thread>
+                      _{MsgThreadIsExpanded}
+                      <i .fa .fa-compress>
+                      <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost },'#{board}',false)>_{MsgTruncateThread}
+                $forall (ePreview, previewFiles)  <- ps
+                    ^{postWidget ePreview previewFiles False hasAccessToReply False geoIpEnabled showPostDate permissions 0 enablePM}
+                <div style="display:none" .truncate-thread-after>
+                  _{MsgThreadIsExpanded}
+                  <i .fa .fa-compress>
+                  <a onclick=truncateThread(#{show $ postLocalId $ entityVal eOpPost},'#{board}',true)>_{MsgTruncateThread}
+        ^{deleteWidget permissions}
+    <div #edit-form style=display:none data-max-msg-length=#{maxMessageLength}>
+        ^{editFormWidget}
+
+<form .search-form method=get action=@{SearchR}>
+  ^{searchWidget}
+  <input type=submit value=_{MsgSearch}>
+
+^{paginationWidget page pages (BoardR board)}

@@ -1,7 +1,0 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-    initMathjax();
-    var sl = document.getElementById('supported-languages');
-    document.getElementById('supported-languages-toggle').onclick = function() {
-        toggleBlock(sl);
-    };
-});

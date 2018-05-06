@@ -1,0 +1,22 @@
+^{adminNavbarWidget}
+^{formWidget}
+<table .admin-table>
+    <tr>
+        <th>         
+        <th> ID 
+        <th>_{MsgBanIp}
+        <th>_{MsgBanReason}
+        <th>_{MsgBanExpires}
+        <th>_{MsgBanBoard }
+    $forall Entity bId b <- bans
+        <tr>
+            <td>
+                <a href=@{BanDeleteR $ fromIntegral $ fromSqlKey bId}>_{MsgDeleteBtn}
+            <td>##{fromSqlKey bId} 
+            <td>#{show $ banIpBegin b} - #{show $ banIpEnd b}
+            <td>#{banReason b}
+            $if isJust $ banExpires b
+                <td>#{myFormatTime timeZone $ fromJust $ banExpires b}
+            $else
+                <td>_{MsgNeverExpires}
+            <td>#{T.intercalate ", " $ banBoards b}

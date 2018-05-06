@@ -1,0 +1,128 @@
+/static StaticR Static appStatic
+/auth   AuthR   Auth   getAuth
+
+/favicon.png FaviconR GET
+/robots.txt RobotsR GET
+
+/                    HomeR         GET
+/captcha             CaptchaR      GET
+/captcha/check/#Text CheckCaptchaR GET
+/feed                FeedR         GET
+/delete              DeleteR       GET 
+/delete/file/#Int    DeleteFileR   GET
+/deleted/#Text/#Int  DeletedByOpR  GET
+/edit                PostEditR     POST
+/history/#Int        EditHistoryR  GET
+/settings            SettingsR     GET POST
+
+/help                HelpR         GET
+/help/markup         HelpMarkupR   GET
+/help/search         HelpSearchR   GET
+
+/online              OnlineR       GET
+/event               EventR        GET
+
+/catalog/#Text       CatalogR      GET
+
+/bookmarks           BookmarksR    GET
+/bookmarks/add/#Int  BookmarksAddR GET
+/bookmarks/del/#Int  BookmarksDelR GET
+/bookmarks/upd/#Int  BookmarksUpdR GET
+
+/search         SearchR  GET
+/search/xmlpipe XmlpipeR GET
+/search/more/#Text/#Text/#Int SearchMoreR GET
+
+/ajax/post/preview                AjaxPostPreviewR  POST
+/ajax/postform/#Text              AjaxGetPostFormR  GET
+/ajax/thread/#Text/#Int/new/#Int  AjaxNewPostsR     GET
+/ajax/thread/#Text/#Int/last/#Int AjaxLastPostsR    GET
+/ajax/thread/#Text/#Int/all       AjaxAllPostsR     GET
+/ajax/thread/#Text/#Int/deleted   AjaxDeletedPostsR GET
+/ajax/postbyid/#Int               AjaxPostByIdR     GET
+/ajax/post/#Text/#Int             AjaxPostR         GET
+/ajax/post/#Text/#Int/rawmsg      AjaxPostRawMsgR   GET
+/ajax/feed/#Int                   AjaxFeedOffsetR   GET
+/ajax/newfeed/#Int                AjaxNewFeedR      GET
+/ajax/hide/thread/#Text/#Int/#Int AjaxHideThreadR   GET
+/ajax/unhide/thread/#Text/#Int    AjaxUnhideThreadR GET
+/ajax/board/stats                 AjaxBoardStatsR   GET
+/ajax/board/stats/read            AjaxBoardStatsReadR GET
+/jsonfrommsg/#Text                JsonFromMsgR      GET
+
+
+/admin                     AdminR        GET
+/admin/login/modlog        ModlogLoginR  GET
+/admin/logout/modlog       ModlogLogoutR GET
+/admin/modlog/#Int         ModlogR       GET 
+/admin/stick/#Text/#Int    StickR        GET
+/admin/lock/#Text/#Int     LockR         GET
+/admin/autosage/#Text/#Int AutoSageR     GET
+
+/admin/move/#Text/#Int/#Text  MoveThreadR   GET 
+/admin/changethread/#Int/#Int ChangeThreadR GET 
+
+/admin/ban/#Text/#Text         BanByIpR          GET POST
+/admin/banandel/#Text/#Text    BanByIpAndDeleteR GET
+/admin/bandelete/#Int          BanDeleteR        GET
+
+/admin/deletepostsbyip/#Text   DeletePostsByIPR  GET
+
+/admin/hellban                     HellBanNoPageR GET
+/admin/hellban/#Int                HellBanR       GET
+/admin/hellban/action/#Int         HellBanActionR POST
+/admin/hellban/getForm/#Int        HellBanGetFormR GET
+
+/admin/boards/new               NewBoardsR    POST
+/admin/boards/update/#Text      UpdateBoardsR POST
+/admin/boards/all               AllBoardsR    POST
+/admin/boards/list/#ManageBoardAction/#Text   ManageBoardsR GET
+/admin/boards/delete/#ManageBoardAction/#Text DeleteBoardR  GET
+/admin/boards/clean/#ManageBoardAction/#Text  CleanBoardR   GET
+/admin/boards/rebuild/#ManageBoardAction/#Text  RebuildPostsMessagesOnBoardR   GET
+
+/admin/search/ip/#Text/#Int             AdminSearchIPR              GET
+/admin/search/ip/#Text                  AdminSearchIPNoPageR        GET
+/admin/search/uid/#Text/#Int            AdminSearchUIDR             GET
+/admin/search/uid/#Text                 AdminSearchUIDNoPageR       GET
+/admin/search/hellbanned/uid/#Text/#Int AdminSearchHBUIDR           GET
+/admin/search/hellbanned/uid/#Text      AdminSearchHBUIDNoPageR     GET
+/admin/search/hellbanned/users          AdminSearchHBUsersNoPageR   GET
+/admin/search/hellbanned/users/#Int     AdminSearchHBUsersR         GET
+
+/admin/groups              ManageGroupsR GET POST
+/admin/groups/delete/#Text DeleteGroupsR GET
+/admin/users               UsersR        GET POST
+/admin/users/delete/#Text  UsersDeleteR  GET
+
+/admin/account             AccountR      GET
+/admin/account/password    NewPasswordR  POST
+
+/admin/wordfilter           AdminWordfilterR GET POST
+/admin/wordfilter/del/#Int  AdminWordfilterDeleteR GET
+
+/admin/rating/#Int/#Censorship ManageCensorshipR GET
+
+/admin/deleted/#Int        AdminDeletedR GET
+/admin/deleted/filtered/#Text/#Int/#Int AdminDeletedFilteredR GET
+/admin/recover/deleted     AdminRecoverDeletedR GET
+
+/admin/editing/lock/#Int   AdminLockEditingR GET
+
+/admin/config              ConfigR       GET POST
+/admin/restart             AdminRestartR GET
+/admin/git/pull            AdminGitPullR GET
+
+/admin/setup               AdminSetupR GET
+
+
+/admin/reports          AdminReportsR    GET
+/admin/reports/del/#Int AdminReportsDelR GET
+/reprot                 ReportPostR      POST
+/report/form/#Int       ReportFormR      GET
+
+/rss/#Text        RssR     GET
+
+!/#Text/#Int      ThreadR       GET POST
+!/#Text/page/#Int BoardR        GET POST
+!/#Text           BoardNoPageR  GET POST

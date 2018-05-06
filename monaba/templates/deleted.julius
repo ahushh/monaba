@@ -1,0 +1,7 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    fillPasswords();
+    checkHighlighted();
+    makeRefmap();
+    initAllPosts();
+    initMathjax();
+});

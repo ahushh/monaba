@@ -1,0 +1,150 @@
+<form style=display:inline method=post action=@{chooseManageBoarUrl action bname}>
+    #{extra}
+    $if action == NewBoard
+        <input type=submit value=_{MsgAddBoardBtn}>
+    $else
+        <input type=submit value=_{MsgUpdateBoardsBtn}>
+    <table>
+        $if action == AllBoards
+            <tr style=display:none>
+                <td>_{MsgBoardName}
+                <td> ^{fvInput nameView}
+                <td>&nbsp;
+        $else
+            <tr style>
+                <td>_{MsgBoardName}
+                <td> ^{fvInput nameView}
+                <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardIndexNumber }
+            <td>^{fvInput indexView}
+        <tr>
+            <td>_{MsgBoardTitle }
+            <td>^{fvInput titleView}
+            <td>_{MsgBoardTitleEG}
+        <tr>
+            <td>_{MsgBoardSummary }
+            <td>^{fvInput summaryView}
+            <td>_{MsgOptional}, _{MsgBoardSummaryEG}
+        <tr>
+            <td>_{MsgBoardBumpLimit}
+            <td>^{fvInput bumpLimitView}
+            <td>_{MsgXForUnlim "0"}
+        <tr>
+            <td>_{MsgBoardNumberFiles}
+            <td>^{fvInput numberFilesView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardAllowedTypes}
+            <td>^{fvInput allowedTypesView}
+            <td>_{MsgSeparateBySpace}
+        <tr>
+            <td>_{MsgBoardExtraRules}
+            <td>^{fvInput extraRulesView}
+            <td>_{MsgOptional}, raw HTML, _{MsgSeparateBy ";"}
+        <tr>
+            <td>_{MsgBoardDefaultName }
+            <td>^{fvInput defaultNameView}
+            <td>_{MsgOptional}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardMaxMsgLength}
+            <td>^{fvInput maxMsgLengthView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardThumbSize}
+            <td>^{fvInput thumbSizeView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardThreadsPerPage}
+            <td>^{fvInput threadsPerPageView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardPreviewsPerThread}
+            <td>^{fvInput previewsPerThreadView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardThreadLimit}
+            <td>^{fvInput threadLimitView}
+            <td>_{MsgXForUnlim "-1"}
+        $if action == AllBoards
+            <tr>
+                <td colspan=2><strong>_{MsgWontBeUpdatedIfNone}:</strong>
+                <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardHidden}
+            <td>^{fvInput isHiddenView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardOpFile}
+            <td>^{fvInput opFileView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardReplyFile}
+            <td>^{fvInput replyFileView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardEnableCaptcha}
+            <td>^{fvInput enableCaptchaView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardEnableGeoIp}
+            <td>^{fvInput enableGeoIpView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardEnablePM}
+            <td>^{fvInput enablePMView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardEnableForcedAnon}
+            <td>^{fvInput enableForcedAnonView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardRequiredThreadTitle}
+            <td>^{fvInput requiredThreadTitleView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgOpModeration}
+            <td>^{fvInput opModerationView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgOpEditing}
+            <td>^{fvInput opEditingView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgPostEditing}
+            <td>^{fvInput postEditingView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgShowEditHistory}
+            <td>^{fvInput showEditHistoryView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgShowPostDate}
+            <td>^{fvInput showPostDateView}
+            <td>&nbsp;
+        $if action == NewBoard
+            <tr>
+                <td colspan=2><strong>_{MsgOptional}:</strong>
+                <td>&nbsp;
+                <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardCategory}
+            <td>^{fvInput categoryView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardViewAccess} 
+            <td>^{fvInput viewAccessView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardReplyAccess}
+            <td>^{fvInput replyAccessView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardThreadAccess}
+            <td> ^{fvInput threadAccessView}
+            <td>&nbsp;
+        <tr>
+            <td>_{MsgBoardOnion}
+            <td> ^{fvInput onionView}
+            <td>&nbsp;

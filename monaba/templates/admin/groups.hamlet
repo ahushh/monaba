@@ -1,0 +1,15 @@
+^{adminNavbarWidget}
+^{formWidget}
+$forall g <- groups
+    <table .admin-table style=display:inline >
+        <tr>
+            <th>_{MsgName}
+            <td>#{groupName g}
+        <tr>
+            <th colspan=2 style=text-align:center>_{MsgPermissions}
+        $forall p <- groupPermissions g
+            <tr>
+                <td colspan=2>_{showPermission p}
+        <tr>
+            <td style=text-align:center colspan=2>
+               <a href=@{DeleteGroupsR $ groupName g}>_{MsgDeleteBtn}

@@ -1,0 +1,30 @@
+#{extra}
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <i .fa .fa-clock-o>
+        _{MsgTimeZone}
+      <td>^{fvInput timezoneView}
+    <tr>
+      <td>
+        <i .fa .fa-paint-brush>
+        _{MsgStyle}
+      <td>^{fvInput styleView}
+    <tr>
+      <td>
+        <i .fa .fa-globe>
+        _{MsgLanguage}
+      <td>^{fvInput langView}
+    <tr>
+      <td>
+        <i .fa .fa-eye-slash>
+        _{MsgFeedIgnoredBoards}
+      <td>^{fvInput boardViews}
+    <tr>
+      <td>
+        <i .fa .fa-registered>
+        _{MsgMaxAllowedRating}
+      <td>
+        ^{fvInput ratingView}
+        <i .clickable .fa .fa-question title="SFW − safe for work 1&#013;R-15 − restricted for 15 years 1&#013;R-18 − restricted for 18 years 1&#013;R-18G − restricted for 18 years, guidance advised">

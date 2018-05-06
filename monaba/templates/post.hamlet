@@ -1,0 +1,198 @@
+<div .post class=#{pClass} id=p#{sPostId} data-post-local-id=#{sPostLocalId} data-thread-local-id=#{sThreadLocalId} data-board=#{board}>
+    <div .post-header>
+        <span .mark-to-delete onclick="markToDelete(this)">
+            <input type=checkbox name=postdelete value=#{sPostId}>
+            <i title=_{MsgMarkToDeleteIcon} .icon-del-post .fa .fa-close .clickable>
+        <i title=_{MsgEditIcon} onclick="showEditForm(#{sPostId})" .icon-edit-post .fa .fa-edit .clickable>
+        $if elem EditPostsP permissions
+          <a .ajax-admin href=@{AdminLockEditingR (fromIntegral postId)}>
+            $if postLockEditing postVal
+              <i title=_{MsgUnlockEditing} .fa .fa-unlock-alt>
+            $else
+              <i title=_{MsgLockEditing} .fa .fa-lock>
+        $if isThread
+          <i title=_{MsgHideThread} onclick="hideThread(#{sPostLocalId},'#{board}','p#{sPostId}');" .fa .fa-minus-circle .icon-hide-thread .clickable>
+        $if inBookmarks
+          <i title=_{MsgBookmarksDel} onclick="bookmarks('#{sPostId}','del')" .fa .fa-star .bookmarks-del .clickable>
+          <i title=_{MsgBookmarksAdd} onclick="bookmarks('#{sPostId}','add')" .fa .fa-star-o style="display:none" .bookmarks-add .clickable>
+        $else
+          <i title=_{MsgBookmarksDel} onclick="bookmarks('#{sPostId}','del')" .fa .fa-star style="display:none" .bookmarks-del .clickable>
+          <i title=_{MsgBookmarksAdd} onclick="bookmarks('#{sPostId}','add')" .fa .fa-star-o .bookmarks-add .clickable>
+        $if isJust destUID
+          <i .fa .fa-envelope-o title=_{MsgPrivateMessage}>
+        $if geoIp
+            $maybe GeoCountry code name <- postCountry postVal
+                <img src=#{geoIconPath appStaticDir code} title=#{name}>
+        <i title=_{MsgToReport} onclick="reportPost(#{sPostId});" .fa .fa-exclamation-circle .clickable>
+        <span .reply-title>#{postTitle $ postVal}
+        <span .poster-name>#{postName $ postVal}
+        $if showPostDate
+            <span .time>#{myFormatTime timeZone $ postDate postVal}
+        $if isThread
+            <div .thread-status>
+                $if postSticked postVal
+                    <i title=_{MsgThreadIsSticked} .fa .fa-thumb-tack>
+                $if postLocked postVal
+                    <i title=_{MsgThreadIsLocked} .fa .fa-lock>
+                $if postAutosage postVal
+                    <i title=_{MsgThreadAutosage} .fa .fa-angle-double-down>
+        <span .reflink>
+            $if isThread
+                <a onclick=highlightPost('p#{postId}') href=@{ThreadR board postLocalId'}#p#{sPostId}>##{sPostLocalId}#
+            $else
+                <a onclick=highlightPost('p#{postId}') href=@{ThreadR board threadLocalId}#p#{sPostId}>##{sPostLocalId}#
+        $if number > 0
+          <span .index-number>
+            #{number}
+        $if canPost
+            <i title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .icon-reply .fa .fa-toggle-right .clickable>
+            $if enablePM
+              <i title=_{MsgPrivateMessage} onclick="showQuickPostForm('p#{sPostId}',true);insertQuoted('>>#{sPostLocalId}','post-form');" .fa .fa-envelope-square .clickable>
+            <a title=_{MsgReplyIcon} onclick="showQuickPostForm('p#{sPostId}');insertQuoted('>>#{sPostLocalId}','post-form');" .text-reply>
+              _{MsgReplyIcon}
+        <span .cpanel>
+           $if isThread
+             $if not inThread
+               [ <a href=@{ThreadR board postLocalId'}>_{MsgOpen}</a> ]
+             $if elem ManageThreadP permissions
+               [ 
+               $with m <- ifelseall (postSticked postVal) MsgUnstickThread MsgStickThread
+                 <a .ajax-admin title=_{m} href=@{StickR board postLocalId'}>
+                   S                
+               $with m <- ifelseall (postLocked postVal) MsgUnlockThread MsgLockThread
+                 <a .ajax-admin title=_{m} href=@{LockR board postLocalId'}>
+                   L
+               $with m <- ifelseall (postAutosage postVal) MsgAutosage MsgAutosage
+                 <a .ajax-admin title=_{m} href=@{AutoSageR board postLocalId'}>
+                   A 
+               ]
+           $if elem ManageThreadP permissions
+               <i title=_{MsgMoveThread} onclick="moveThread('#{board}',#{sPostLocalId})" .fa .fa-arrows-h .clickable>
+               <i title=_{MsgChangeThread} onclick="changeThread('#{sPostId}')" .fa .fa-arrows .clickable>
+           $if elem ManageBanP permissions
+               [ 
+               $if elem DeletePostsP permissions
+                 <a title=_{MsgDeleteByIP} href=@{DeletePostsByIPR (postIp postVal)}>
+                   D 
+                 <a title=_{MsgBanPosterAndDelete} href=@{BanByIpAndDeleteR board (postIp postVal)}>
+                   & 
+               <a title=_{MsgBanPoster} href=@{BanByIpR board (postIp postVal)}>
+                 B 
+               ]
+           $if elem ViewIPAndIDP permissions
+             [
+             <a title="IP & UID" onclick="toggleInline( document.querySelector('#p#{sPostId} .id-container') )">IP & UID
+             <a title="IP & UID global" onclick="toggleInlineSelector('.id-container')">(G)
+             <span .id-container style="display:none">
+               : 
+               <a title="_{MsgAdminSearchIP}" href=@{AdminSearchIPNoPageR (postIp postVal)}>#{postIp postVal}
+               /
+               <a title="_{MsgAdminSearchUID}" href=@{AdminSearchUIDNoPageR (postPosterId postVal)}>#{postPosterId postVal}
+             ]
+           $if elem HellBanP permissions
+               [ 
+               $if postHellbanned postVal
+                  <i title=_{MsgPostIsVisibleOnlyForAuthor} title=_{MsgPostIsVisibleOnlyForAuthor} .fa .fa-eye-slash>
+               <a title="_{MsgHellbanning}" onclick="showHellbanForm( '#{sPostId}' )">HB
+               <a title="_{MsgShkrinkHellbanned}" onclick="shrinkHellbanned()">S
+               ]
+       $if showParent
+         &nbsp;
+         $if isThread
+             <a .thread-parent href=@{BoardNoPageR board}>>>/#{board}/
+         $else
+             <a .thread-parent onmouseover="showPopupPost(this,event,null,#{sThreadLocalId},'#{board}')" onclick="highlightPost('p#{sPostId}')" href=@{ThreadR board (read sThreadLocalId)}>#{postParentTitle postVal} >>/#{board}/#{sThreadLocalId}
+    $forall Entity fileKey file <- eFiles
+        $with fKey <- fromIntegral $ fromSqlKey fileKey
+          $with c <- ifelse (length eFiles == 1) "file" "multi-file"
+            $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file) (attachedfileOnion file)
+              $with up <- attachedfilePath file
+                $with fi <- makeFileInfo file
+                  <div class=#{c} id="file-#{fKey}">
+                    <div .file-name>
+                        <a title=#{attachedfileName file} target=_blank href="/#{up}">#{truncateFileName appMaxLenOfFileName $ attachedfileName file}
+                        <a onclick="return confirm('_{MsgDeleteFileConfirm}')" href=@{DeleteFileR fKey}>
+                          <i title=_{MsgDeleteFile} .fa .fa-trash>
+                        $if attachedfileFiletype file == FileImage
+                          <ul .dropdown-menu>
+                            <li>
+                              <i title=_{MsgImageSource} .fa .fa-search .clickable>
+                              <ul>
+                                <li>
+                                  <a title=Google target=_blank href="//www.google.com/searchbyimage?image_url=#{approot'}/#{up}">G
+                                <li>
+                                  <a title=Yandex target=_blank href="//yandex.ru/images/search?rpt=imageview&img_url=#{approot'}/#{up}">Y
+                                <li>
+                                  <a title=TinEye target=_blank href="//tineye.com/search/?url=#{approot'}/#{up}">T
+                                <li>
+                                  <a title=SauceNAO target=_blank href="//saucenao.com/search.php?url=#{approot'}/#{up}">S
+                                <li>
+                                  <a title=Iqdb target=_blank href="//iqdb.org/?url=#{approot'}/#{up}">Iq
+                                <li>
+                                  <a title="What Anime Is This?" target=_blank href="//whatanime.ga//?url=#{approot'}/#{up}">W
+                    <div .file-info>
+                      $if attachedfileFiletype file == FileVideo
+                        <i .fa .fa-video-camera>
+                      $elseif attachedfileFiletype file == FileAudio
+                        <i .fa .fa-music>
+                      $elseif attachedfileFiletype file == FileImage
+                        <i .fa .fa-photo>
+                      $elseif attachedfileFiletype file == FileFlash
+                        <i .fa .fa-file-flash>
+                      $else
+                        <i .fa .fa-file-o>
+                      #{fi}
+                    $if elem ChangeFileRatingP permissions
+                       <div .rating-management>
+                         $with fRating <- tread (attachedfileRating file)
+                           $if fRating == SFW
+                               SFW&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey SFW}>SFW
+                           $if fRating == R15
+                               R-15&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R15}>R-15
+                           $if fRating == R18
+                               R-18&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R18}>R-18
+                           $if fRating == R18G
+                               R-18G&nbsp;
+                           $else
+                               <a href=@{ManageCensorshipR fKey R18G}>R-18G
+                    $with fRating <- tread (attachedfileRating file)
+                      $if fRating > rating
+                        $case fRating
+                          $of R15
+                            <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18
+                            <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of R18G
+                            <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                          $of SFW
+                            Suppress warnings.
+                      $else
+                        $if attachedfileThumbWidth file == -1
+                            <img src="#{tp}" .thumb title="#{fi}">
+                        $elseif attachedfileFiletype file == FileVideo
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb .video data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileAudio
+                            <audio controls>
+                              <source src="/#{up}">
+                            <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileImage
+                            <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+                        $elseif attachedfileFiletype file == FileFlash
+                            <img src="#{tp}" .thumb .flash data-url="/#{up}" title="#{fi}">
+                        $else
+                            <img src="#{tp}" .thumb data-url="/#{up}" title="#{fi}">
+    $if itsforMe posterId
+      $with m <- preEscapedToHtml $ unTextarea $ postMessage postVal
+          <div .message>#{m}
+      $maybe lm <- postLastModified postVal
+          <span .last-modified>
+              <i .fa .fa-history>
+              <a href=@{EditHistoryR $ fromIntegral $ fromSqlKey $ entityKey ePost}>_{MsgLastModified} #{myFormatTime timeZone lm}
+    $else
+      <div .message>_{MsgPrivateMessage}

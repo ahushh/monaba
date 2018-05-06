@@ -1,6 +1,0 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-    makeRefmap();
-    initAllPosts('.news');
-    initImageExpanding('#recent-images');
-    initMathjax();
-});

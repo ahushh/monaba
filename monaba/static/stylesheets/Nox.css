@@ -1,0 +1,272 @@
+#message {
+    font-size: 1.5em;
+    color: red;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: 2px dashed rgba(100, 100, 100, 0.7);
+    border-top: 0;
+}
+
+header, .pagination {
+    background-color: black;;
+}
+
+html, body {
+    background-image: url('/static/img/snow.jpg');
+    background-color: black;;
+    color: #7c7c7c;
+    font-family: serif;
+    font-size: 1em;
+    padding: 10px;
+}
+
+img {
+    /* for Webkit browsere, Chrome 19+, Safari 6+ ... */
+    -webkit-filter: grayscale(1);
+    /* this is for Firefox 3.5+, Firefox mobile */
+            filter: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'gs\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#gs');
+    /* for IE6+ */
+            filter: gray;
+}
+
+footer {
+    background-image: url('/static/img/candle.gif');
+    background-position: right bottom;
+    background-repeat: no-repeat, no-repeat;
+}
+
+
+
+form {
+    font-size: 0.9em;
+}
+
+textarea, input, select {
+    border-top: 1px solid rgba(100, 100, 100, 0.5);
+    border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+    border-right: 0;
+    border-left: 0;
+    background-color: black;
+    color: #7c7c7c;
+}
+
+input[type=submit]:hover {
+    background-color: #191919;
+}
+
+input[type=submit] {
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+.time {
+    font-size: 0.8em;
+    color: #555555;
+}
+
+a {
+    color: #964509;
+    padding: 0;
+}
+
+a:hover {
+    color: #742307;
+}
+
+header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    margin: 2em 0 0;
+    text-align: center;
+    border-top: 1px solid rgba(100, 100, 100, 0.3);
+    padding-top: 10px;
+}
+
+.reflink {
+    font-size: 85%;
+    font-weight: bold;
+}
+
+.file-info {
+    color: #666666;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.reply.post, .feed .post {
+    background: none repeat scroll 0 0 #050505;
+    border: 1px solid #383838;
+    margin: 3px;
+    padding: 5px;
+}
+
+.popup-post {
+    background: none repeat scroll 0 0 #050505;
+    border: 1px solid #383838;
+    margin: 3px;
+    padding: 5px;
+}
+
+.reply.post.highlighted, .feed .post.highlighted {
+    background: none repeat scroll 0 0 #181818;
+    border: 1px solid #050505;
+}
+
+.op.post.highlighted {
+    background: none repeat scroll 0 0 #181818;
+}
+
+.thread {
+    margin: 2px;
+    border-top: 1px solid rgba(100, 100, 100, 0.3);
+    padding: 25px 2px;
+}
+
+.reply-title {
+    color: #005566;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+hr {
+    border-color: #505050;
+    border-style: solid none none;
+    border-width: 1px;
+}
+
+table {
+    border-style: none;
+}
+
+table td {
+    border-style: none;
+}
+
+#delete-container {
+    text-align: right;
+}
+
+pre {
+    background-color: black;
+    border: 1px dashed #dfdfdf;
+    padding: 10px;
+}
+
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #202020;
+}
+
+#board-list-full {
+    border: 1px dotted rgba(50,50,50,0.5);
+}
+
+.block {
+    border: 1px dotted rgba(50,50,50,0.5);
+}
+
+.block > .title {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #202020;
+}
+
+.popup-message {
+    background: none repeat scroll 0 0 #050505;
+    border: 1px solid #707070;
+}
+
+.quick-post-form {
+    background: none repeat scroll 0 0 #050505;
+    border: 1px solid #383838;
+    padding: 5px;
+}
+
+.hist-msg {
+    background: none repeat scroll 0 0 #050505;
+    border: 1px solid #383838;
+    margin: 3px;
+    padding: 5px;
+}
+
+#board-header {
+    color: #800000;
+}
+
+#board-long-desc {
+    color: #800000;
+}
+
+#board-subtitle {
+    color: #800000;
+}
+
+.admin-navbar {
+    background-color: #050505;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    padding: 3px;
+    margin-bottom: 10px;
+}
+
+#delete-container {
+    border-top: 1px solid rgba(100, 100, 100, 0.3);
+    padding-top: 10px;
+}
+
+.show-plain-form {
+    margin-bottom: 10px;
+}
+
+.expand-post {
+    color: #666666;
+}
+
+.quote {
+    color: #105510 !important;
+}
+
+.pagination .previous {
+    border-right: 1px solid rgba(100, 100, 100, 0.7);
+    padding-right: 5px;
+}
+.pagination .next {
+    border-left: 1px solid rgba(100, 100, 100, 0.7);
+    padding-left: 5px;
+}
+
+#thread-header {
+    background-color: #050505;
+    padding: 2px;
+}
+
+#main-image {
+    opacity: 0.4;
+}
+
+.spoiler, .spoiler a {
+    background-image: url("/static/img/snow.jpg")
+    background-color: #050505;
+    color: #050505;
+}
+
+.spoiler a:hover, .highlighted .spoiler a:hover {
+    color: #742307;
+}
+
+.spoiler:hover, .highlighted .spoiler:hover {
+    color: white;
+}
+
+.highlighted .spoiler, .highlighted .spoiler a {
+    color: #181818;
+    background-color: #181818;
+}
+.dropdown-menu ul li {
+    background-color: #050505;
+}

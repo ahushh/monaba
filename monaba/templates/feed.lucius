@@ -1,0 +1,13 @@
+.mark-to-delete {
+    display: none !important;
+}
+
+#go-back-block {
+    display: none;
+}
+#refresh-feed {
+    text-align: center;
+}
+.captcha-content {
+    display: inline-block;
+}

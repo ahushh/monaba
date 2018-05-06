@@ -1,0 +1,32 @@
+^{adminNavbarWidget}
+^{formWidget}
+<table .admin-table>
+  <tr>
+    <th>
+      _{MsgName}:
+    <td>
+      #{userName user}
+  <tr>
+    <th>
+      _{MsgGroup}:
+    <td>
+      #{userGroup user}
+  <tr>
+    <th>
+      _{MsgPostsSent}:
+    <td>
+      #{posts}
+<table .admin-table>
+  <tr>
+    <th>&nbsp;
+    <th>
+      _{MsgPermissions}:
+  $forall (n,p) <- enumerate (groupPermissions group)
+    <tr>
+      <td>
+        #{inc n}
+      <td>
+        _{showPermission p} 
+                     
+
+        

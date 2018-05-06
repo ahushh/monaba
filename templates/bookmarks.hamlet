@@ -1,8 +1,0 @@
-<h2>
-  _{MsgBookmarks}
-
-<div .feed>
-  $forall (e, files, n) <- postsAndFiles
-    ^{postWidget e files False False True False True permissions 0 False}
-    $if n > 0
-     _{MsgBookmarksNewPosts}: #{n}

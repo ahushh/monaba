@@ -1,0 +1,6 @@
+<form .users method=post action=@{UsersR}>
+    #{extra}
+    _{MsgName}: ^{fvInput userNameView}
+    _{MsgPassword}: ^{fvInput userPasswordView}
+    _{MsgGroup}: ^{fvInput userGroupView}
+    <input type=submit value=_{MsgAddNewUserOrUpdate}>

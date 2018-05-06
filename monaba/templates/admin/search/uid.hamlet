@@ -1,0 +1,19 @@
+^{adminNavbarWidget}
+<h2 style=text-align:center> UID: #{posterId}
+$if onlyHellbanned
+    <div style=text-align:center>
+      <a href=@{AdminSearchUIDNoPageR posterId}>_{MsgDisplayAllPosts}
+$else
+  $if elem HellBanP permissions
+    <div style=text-align:center>
+      <a href=@{AdminSearchHBUIDNoPageR posterId}>_{MsgDisplayOnlyHellbanned}
+<div .feed>
+  <form .delete-form method=get action=@{DeleteR}>
+    $forall (e, files) <- postsAndFiles
+      ^{postWidget e files False False True True True permissions 0 False}
+    ^{deleteWidget permissions}
+
+$if onlyHellbanned
+  ^{paginationWidget page pages (AdminSearchHBUIDR posterId)}
+$else
+  ^{paginationWidget page pages (AdminSearchUIDR posterId)}

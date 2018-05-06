@@ -1,0 +1,81 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    fillPasswords();
+    checkHighlighted();
+    makeRefmap();
+    initAllPosts();
+    initCodeButton('post-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('post-form');
+    initCodeButton('edit-form',#{toJSON $ msgrender MsgPlainText});
+    initSymbolCounter('edit-form');
+    initMathjax();
+    initPostsAutoload(function(){ refreshThread(#{toJSON board},#{toJSON $ postLocalId $ entityVal eOpPost}, true, getUpdateTitle() ) });
+
+    var postform = document.getElementById('post-form');
+    initDragAndDrop(postform);
+    postform.onsubmit = function(event) {
+        event.preventDefault();
+        var formData = makePostFormData(postform);
+        var pmsg;
+        httpRequest({
+            method: 'POST',
+            action: postform.action,
+            data: formData,
+            onloadstart: function() {
+                pmsg = popupMessage(#{toJSON $ msgrender MsgLoading}, null, true);
+                postform.querySelector("input[type='submit']").disabled = 1;
+            },
+            onloadend: function() {
+                postform.querySelector("input[type='submit']").removeAttribute('disabled');
+            },
+            onloadBefore: function() {
+                closePopupMessage(pmsg);
+            },
+            onprogress: function(event) {
+                pmsg.querySelector(".popup-message-text").innerHTML = #{toJSON $ msgrender MsgLoading} + Math.round((event.loaded*100)/event.total) + "%";
+            },
+            onloadOk: function(request) {
+                var data = JSON.parse(request.responseText);
+                if (data.ok) {
+                    clearPostFormFields();
+                    popupMessage(data.ok, getConfig("popup_message_display_time"));
+                    closePostForm();
+                    var thread   = document.getElementsByClassName("thread")[0];
+                    var threadId = /thread-(\d+)/.exec( thread.id )[1];
+                    var board    = thread.dataset.board;
+                    refreshThread(board, threadId);
+                } else {
+                    popupMessage(data.error, getConfig("popup_message_display_time"));
+                }
+            }
+        });
+    };
+
+});
+
+function showQuickPostForm(postId, isPrivate) {
+    closePostForm();
+    refreshCaptcha()
+    var p = document.getElementById(postId);
+    var pf = document.getElementById('post-form');
+    pf.className = "quick-post-form";
+    insertAfter(pf, p);
+    // p.parentNode.insertBefore( pf, p.nextSibling );
+    pf.style.display = 'table';
+    // document.getElementById("go-back-block").style.display = 'none';
+    var inp = pf.getElementsByClassName("dest-input")[0];
+    if (isPrivate) {
+        inp.value = postId.substring(1);
+    } else {
+        inp.value = "";
+    }
+} 
+
+function showPlainPostForm(bottom) {
+    refreshCaptcha()
+    var pf = document.getElementById('post-form');
+    pf.className = "plain-post-form";
+    var spf = document.getElementById(bottom ? 'show-plain-form-bottom' : 'show-plain-form');
+    insertAfter(pf, spf);
+    spf.style.display = 'none';
+    pf.style.display = 'block';
+}

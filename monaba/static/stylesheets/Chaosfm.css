@@ -1,0 +1,246 @@
+html, body {
+    background-color: #000505;
+    color: #00cccc;
+    font-family: serif;
+    font-size: 1em;
+    padding: 15px;
+}
+
+header, .pagination {
+    background-color: #000505;
+}
+
+#message {
+    font-size: 1.7em;
+    border: 1px dashed red;
+    color: red;
+}
+
+* {
+    font-family: terminus, Arial, sans-serif;
+    font-size: 10pt;
+}
+
+form {
+    font-size: 0.9em;
+}
+
+textarea {
+    background-color: #001010;
+    border: 1px dotted #00cccc;
+    color: #00cccc;
+}
+
+input {
+    background-color: #001010;
+    border: 1px dotted #00cccc;
+    color: #00cccc;
+}
+
+input.submit {
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.poster-name {
+    color: #ff0000;
+}
+
+.post-block-named {
+    background-color: #001010;
+    font-weight: bold;
+    padding: 5px;
+}
+
+a {
+    color: #cc0000;
+    padding: 0;
+    border-bottom: #cc0000 1px dotted;
+}
+
+a:hover {
+    color: #dd0000;
+}
+
+header {
+    border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+    clear: both;
+    color: #995b46;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+footer {
+    font-family: serif;
+    font-size: 12px;
+    margin: 2em 0 0;
+    text-align: center;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
+}
+
+.reflink {
+    font-size: 85%;
+    font-weight: bold;
+}
+
+.file-info {
+    color: #666666;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+
+.file-name {
+    font-size: 0.8em;
+}
+
+.quote {
+    color: #ff0000;
+}
+.spoiler, .spoiler a {
+    color: black;
+    background-color: black;
+    border-bottom: none;
+}
+.spoiler a:hover {
+    color: #dd0000;
+    border-bottom: #cc0000 1px dotted;
+}
+.spoiler:hover {
+    color:white;
+}
+
+.reply.post, .feed .post {
+    background: none repeat scroll 0 0 #001010;
+    margin: 4px;
+    padding: 5px;
+    border: 1px dotted #00cccc;
+}
+
+.popup-post {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    margin: 4px;
+    padding: 5px;
+}
+
+.reply.post.highlighted, .feed .post.highlighted {
+    background: none repeat scroll 0 0 #000505;
+    border: 1px double #00cccc;
+}
+
+.op.post.highlighted {
+    background: none repeat scroll 0 0 #000505;
+}
+
+.thread {
+    margin: 2px;
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding: 25px 2px;
+}
+
+.reply-title {
+    color: #002244;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+hr {
+    border-style: solid none #bbbbbb;
+    border-width: 1px;
+}
+
+table {
+    border-style: none;
+}
+
+table td {
+    border-style: none;
+}
+
+#delete-container {
+    text-align: right;
+}
+
+pre {
+    background-color: #eeeeee;
+    border: 1px dashed #dfdfdf;
+    padding: 10px;
+}
+
+.board-category {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #001010;
+}
+
+#board-list-full {
+    border: 1px solid #001010;
+}
+
+.block {
+    border: 1px solid #001010;
+}
+
+#news-title {
+    font-weight: bold;
+    background: none repeat scroll 0 0 #001010;
+}
+
+.popup-message {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+}
+
+.quick-post-form {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    padding: 5px;
+}
+
+.hist-msg {
+    background: none repeat scroll 0 0 #001010;
+    border: 1px solid #393939;
+    margin: 4px;
+    padding: 5px;
+}
+
+.admin-navbar {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    margin-bottom: 10px;
+    padding: 3px;
+    background-color: #001010;
+}
+
+#delete-container {
+    border-top: 1px solid rgba(50,50,50,0.5);
+    padding-top: 10px;
+}
+
+.show-plain-form {
+    margin-bottom: 10px;
+}
+
+.markup-wrapper {
+    background-color: #001010;
+}
+
+.expand-post {
+    color: #666666;
+}
+
+.reply-title {
+    color: #cc1105;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#pages-list {
+    border: 1px solid grey;
+    padding: 0 3px;
+}
+.dropdown-menu ul li {
+    background-color: #001010;
+}

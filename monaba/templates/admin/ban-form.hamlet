@@ -1,0 +1,17 @@
+<form method=post action=@{BanByIpR "" ""}>
+    #{extra}
+    <table>
+      <tr>
+        <td>_{MsgBanIp}
+        <td>^{fvInput ipBegView} - ^{fvInput ipEndView}
+      <tr>
+        <td>_{MsgBanReason}
+        <td>^{fvInput reasonView}
+      <tr>
+        <td>_{MsgBanExpiresInHours}
+        <td>^{fvInput expiresView}
+      <tr>
+        <td>_{MsgBanBoard}
+        <td>^{fvInput boardView}
+    <input type=submit value=_{MsgBan}>
+

@@ -1,0 +1,35 @@
+<div .post>  
+  <a href=@{ThreadR (postBoard post) (postLocalId post)}>
+    $maybe Entity _ file <- mFile
+      $with tp <- thumbUrlPath appUploadDir appStaticDir (attachedfileThumbSize file) (attachedfileFiletype file) (attachedfileExtension file) (attachedfileHashsum file) (attachedfileOnion file)
+        $with up <- attachedfilePath file
+          $with fi <- makeFileInfo file
+            $with fRating <- tread (attachedfileRating file)
+                $if fRating > rating
+                  $case fRating
+                    $of R15
+                      <img src="@{StaticR img_r15_png}" width=#{attachedfileThumbSize file} .censored>
+                    $of R18
+                      <img src="@{StaticR img_r18_png}" width=#{attachedfileThumbSize file} .censored>
+                    $of R18G
+                      <img src="@{StaticR img_r18g_png}" width=#{attachedfileThumbSize file} .censored>
+                    $of SFW
+                      Suppress warnings.
+                $else
+                  $if attachedfileThumbWidth file == -1
+                      <img src="#{tp}" title="#{fi}">
+                  $elseif attachedfileFiletype file == FileVideo
+                      <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" .video data-url="/#{up}" title="#{fi}">
+                  $elseif attachedfileFiletype file == FileAudio
+                      <img src="#{tp}" data-url="/#{up}" title="#{fi}">
+                  $elseif attachedfileFiletype file == FileImage
+                      <img width=#{attachedfileThumbWidth file} height=#{attachedfileThumbHeight file} src="#{tp}" data-url="/#{up}" title="#{fi}">
+                  $elseif attachedfileFiletype file == FileFlash
+                      <img src="#{tp}" .flash data-url="/#{up}" title="#{fi}">
+                  $else
+                      <img src="#{tp}" data-url="/#{up}" title="#{fi}">
+    <div .reply-title>
+      #{postTitle post}
+    $with m <- preEscapedToHtml $ T.take msgLength $ stripTags $ unTextarea $ postMessage post
+      <div .message>#{m}
+    _{MsgCatalogReplies replies}

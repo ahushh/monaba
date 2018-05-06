@@ -1,0 +1,84 @@
+# Values formatted like "_env:ENV_VAR_NAME:default_value" can be overridden by the specified environment variable.
+# See https://github.com/yesodweb/yesod/wiki/Configuration#overriding-configuration-values-with-environment-variables
+
+upload-dir:     "_env:UPLOAD_DIR:upload"
+static-dir:     "_env:STATIC_DIR:static"
+host:           "_env:HOST:*4" # any IPv4 host
+port:           "_env:PORT:3000"
+#approot:        "_env:APPROOT:http://haibane.dev"
+ip-from-header: "_env:IP_FROM_HEADER:false"
+
+# Optional values with the following production defaults.
+# In development, they default to the inverse.
+#
+# development: false
+# detailed-logging: false
+# should-log-all: false
+# reload-templates: false
+# mutable-static: false
+# skip-combining: false
+
+database:
+  user:     "_env:PGUSER:monaba"
+  password: "_env:PGPASS:monaba"
+  host:     "_env:PGHOST:localhost"
+  port:     "_env:PGPORT:5432"
+  database: "_env:PGDATABASE:monaba"
+  poolsize: "_env:PGPOOLSIZE:100"
+
+footer: Insert copyright statement here
+#analytics: UA-YOURCODE
+
+sitename:          "Monaba"
+geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
+timezone:          14400 # default time offset in seconds, see Handler/Settings.hs for list of timezones and offsets
+stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayuri, Nox or whatever you put into static/stylesheets directory)
+maxLenOfPostTitle: 60
+maxLenOfPostName:  20
+maxLenOfFileName:  40
+captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
+metaKeywords:      "haskell,yesod"
+metaDescription:   "haskell imageboard"
+titleDelimiter:    " / "
+ffmpeg:            "/usr/bin/ffmpeg"
+exiftool:          "/usr/bin/exiftool"
+animatedThumbs:    false
+randomBanners:     false # true - show banners from differents boards, false - same board
+restartCmd:        "systemctl --user restart monaba"
+
+# default JS settings
+jsDesktopNotification:            true
+jsPostsAutoloadInterval:          30000
+jsMathjax:                        true
+jsEventsource:                    true
+jsExpandFilesInPost:              false
+jsBoardStatsUpdate:               30000
+jsAnimationSpeed:                 300
+jsPopupMessageDisplayTime:        2000
+jsPopupPostDelayBeforeDisplaying: 500
+jsPopupPostRemovingOnMouseOut:    false
+jsPopupPostDelayBeforeRemoving:   500
+jsVideoRememberVolume:            true
+jsVideoDefaultVolume:             1
+jsVideoAutoplay:                  true
+jsVideoLoop:                      true
+jsVideoScaleWidth:                0
+jsVideoScaleHeight:               2
+jsVimeoEnable:                    true
+jsCoubEnable:                     true
+jsYoutubeEnable:                  true
+jsYoutubeLoadTitles:              true
+jsYoutubeHtml5:                   true
+jsUrlVideoWidth:                  360
+jsUrlVideoHeight:                 270
+jsFlashHeight:                    400
+jsFlashWidth:                     400
+jsIframelyAPIKey:                 "a24983cf9554abfbd77bd2"
+jsYoutubeAPIKey:                  "AIzaSyCrp-LbJAjq-J2inq7fhmSIptQ-UhL1iyw"
+jsCssWidePosts:                   true
+jsCssSideMargin:                  0
+jsCssHideFilesNames:              false
+jsCssHideFilesInfo:               false
+jsCssHideMarkupButtons:           false
+jsCssAttachmentThumbWidth:        0
+jsCssCustom:                      ""

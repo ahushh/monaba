@@ -1,0 +1,3 @@
+form input, form select {
+    vertical-align: top;
+}

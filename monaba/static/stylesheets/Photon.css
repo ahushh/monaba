@@ -1,0 +1,169 @@
+/* gl0bal */
+
+html,body {
+	background-color:#EEEEEE;
+	color:#333333;
+	font-family:"Trebuchet MS",Trebuchet,tahoma,serif;
+  font-size: 11pt;}
+a {
+	color:#FF6600;
+}
+.fa {
+	color: #333333;
+}
+a:hover, .fa:hover, .reflink a:hover, .spoiler a:hover {
+	color:#0066FF;
+}
+textarea, input, select {
+  margin: 1px;
+}
+.spoiler, .spoiler a {
+	background: #BBBBBB;
+	color: #BBBBBB;
+}
+.spoiler:hover {
+	color: #333333;
+}
+.quote, .symbol-counter {
+	color: #789922 !important;
+}
+pre {
+	background: #BBBBBB;
+	padding: 10px;
+}
+
+/* home page */
+
+#board-list-full, .block {
+	background: #DDDDDD;
+	border: 1px solid #CCCCCC;
+}
+#board-list-full .board-category {
+	display: none;
+}
+#board-list-full .title {
+	background: #CCCCCC;
+	margin-left: -2px !important;
+}
+.block > .title {
+	background: #CCCCCC;
+	font-weight: bold;
+}
+.news > .title {
+	text-align: left !important;
+}
+.news > .title strong {
+	font-weight: bold;
+	color: #002244;
+}
+.news > .title time {
+	font-size: 10pt;
+	color: #333333;
+}
+hr {
+	height: 1px;
+	border: none !important;
+	background: #CCCCCC;
+}
+
+/* board */
+
+header {
+	background: #CCCCCC;
+	border-bottom: 1px solid #BBBBBB;
+	padding: 1px 0px;
+}
+.banner {
+	margin-top: 15px !important;
+}
+#board-summary, #board-subtitle {
+	display: none;
+}
+#show-plain-form {
+	margin-bottom: 10px !important;
+}
+.thread {
+	border-top: 1px solid #BBBBBB;
+	padding: 10px 0px;
+}
+.reply.post, .feed .post, .popup-post {
+	background: #DDDDDD;
+	border: 1px solid #CCCCCC;
+	margin: 3px;
+	padding: 5px;
+}
+.reply.post.highlighted, .feed .post.highlighted {
+	background: #BBBBBB;
+	border: 1px solid #AAAAAA;
+}
+.popup-message {
+	background: #DDDDDD;
+	border: 1px solid #CCCCCC;
+}
+.reply-title {
+	font-size: 15pt;
+	font-weight: bold;
+	color: #002244;
+}
+.poster-name {
+	font-weight: bold;
+	color: #004A99;
+}
+.time {
+	font-size: 10pt;
+}
+.reflink a {
+	color: #333333;
+	font-size: 10pt;
+	font-weight: bold;
+}
+.index-number {
+  font: bold 11px tahoma !important;
+  color: #4F7942;
+}
+.file-info, .file-name {
+	font-size: 8pt;
+}
+.reply.post .dropdown-menu li ul {
+	background: #DDDDDD;
+	padding: 3px;
+}
+.op.post .dropdown-menu li ul {
+	background: #EEEEEE;
+	padding: 3px;
+}
+#delete-container {
+	text-align: right;
+	border-top: 1px solid #BBBBBB;
+	padding-top: 10px;
+	margin-top: 5px;
+}
+.pagination {
+	background: #CCCCCC;
+	padding: 3px;
+	border-top: 1px solid #BBBBBB;
+	border-right: 1px solid #BBBBBB;
+}
+footer {
+	text-align: center;
+	font-size: 10pt;
+}
+
+/* settings page */
+
+#message {
+	color: #FF6600;
+	font-size: 20pt;
+}
+
+/* h's on feed, home, help, settings and login pages */
+
+h1, h2{
+  color: #333333;
+  font-size: 18pt;
+  font-weight: bold;
+  margin: 10px 0px;
+}
+h2 .fa, h2 a {
+  color: #333333;
+}

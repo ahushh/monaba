@@ -1,8 +1,0 @@
-^{adminNavbarWidget}
-$if elem AppControlP permissions
-  <ul>
-    <li>
-      <a href=@{AdminGitPullR}>_{MsgAppGitPull}
-    <li>
-      <a href=@{AdminRestartR}>_{MsgAppRestart}
-

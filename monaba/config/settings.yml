@@ -26,26 +26,28 @@ database:
   database: "_env:PGDATABASE:monaba"
   poolsize: "_env:PGPOOLSIZE:100"
 
+highlight:         "/opt/monaba/highlight.php"
+captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
+geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
+ffmpeg:            "/usr/bin/avconv"
+exiftool:          "/usr/bin/exiftool"
+restartCmd:        "systemctl --user restart monaba"
+
+############# CUSTOMIZE ################
 footer: Insert copyright statement here
 #analytics: UA-YOURCODE
 
 sitename:          "Monaba"
-geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
 timezone:          14400 # default time offset in seconds, see Handler/Settings.hs for list of timezones and offsets
 stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayuri, Nox or whatever you put into static/stylesheets directory)
 maxLenOfPostTitle: 60
 maxLenOfPostName:  20
 maxLenOfFileName:  40
-highlight:         "/opt/monaba/highlight.php"
-captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
 metaKeywords:      "haskell,yesod"
 metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "
-ffmpeg:            "/usr/bin/avconv"
-exiftool:          "/usr/bin/exiftool"
 animatedThumbs:    false
 randomBanners:     false # true - show banners from differents boards, false - same board
-restartCmd:        "systemctl --user restart monaba"
 
 # default JS settings
 jsDesktopNotification:            true

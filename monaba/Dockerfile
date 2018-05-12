@@ -24,11 +24,6 @@ FROM ubuntu:16.04
 RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
 
-COPY --from=build-env /opt/monaba-build/extra/GeSHi-1.0.8.11.tar.gz geshi.tar.gz
-RUN tar -zxvf geshi.tar.gz
-COPY geshi .
-ADD http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
-
 RUN apt-get update && apt-get -y install \
   php7.0-fpm \
   libav-tools \
@@ -39,6 +34,9 @@ RUN apt-get update && apt-get -y install \
   libgeoip-dev \
   libicu-dev \
   libcrypto++-dev
+
+COPY ./geshi ./geshi
+ADD http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
 COPY --from=build-env /opt/monaba-build/highlight.php ./highlight.php
 COPY --from=build-env /opt/monaba-build/config ./config

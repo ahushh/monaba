@@ -41,85 +41,52 @@ Features
 
 Requirements
 ------
-* Nginx (for serving uploaded files)
-* Postgresql >= 9.1
-* PHP5 to use GeSHi for code highlighting
-* Imagemagick (image thumbnails)
-* ffmpeg/libav (webm thumbnails)
-* exiftool (for audio and webm files)
-* Sphinx (post search)
-
-Required for building from source:
-
-* stack
-* cabal-install 1.22.8
+* Unix-like distro supported by Docker
 
 Installation
 ======
 
-Open the prompt and type:
+Open your CLI and type:
 
     git clone https://github.com/ahushh/Monaba
     cd Monaba
 
-Main configuration file `config/settings.yml`
+You've got the repo. Let's install docker & docker-compose.
 
-The maximum files size is hard coded and can be changed in `Foundation.hs` before building. Default value is 25 MB.
+That's official install script for Debian:
 
-### Geolocation
+    cd /usr/local/src && wget -qO- https://get.docker.com/ | sh
 
-Download GeoIPCity by running the following commands:
+And download docker-compose - yeah, just download it:
 
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-    gzip -d GeoLiteCity.dat.gz
-    cp GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat # or whatever path you want
+   sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+   sudo chmod +x /usr/local/bin/docker-compose
 
-Or it can be installed from repositories. You can change the  in `config/settings.yml`
+### Set up some local dependencies by running build script:
 
-### Download GeSHi
+   ./build.sh
 
-    wget http://sourceforge.net/projects/geshi/files/geshi/GeSHi%201.0.8.11/GeSHi-1.0.8.11.tar.gz
-    tar -zxvf GeSHi-1.0.8.11.tar.gz
-    mv geshi ~/
+The previous command has just created `settings.yml` file that contains all run configurations. All you want to edit is under `CUSTOMIZE` section.
 
-Set your path to GeSHi in `highlight.php`. Home directory is usually good.
+### Build
 
-## Using a binary packages
+Once you're ready to go further let's create all docker images by running this command:
 
-Download an archive of the latest version of Monaba here: https://github.com/ahushh/Monaba/releases/ and unpack it to current directory. 
+   docker-compose up --no-start
 
-If it's not working or outdated, try to build from source.
+It takes rather long time so be patient.
 
-## Building from source
+### Run
 
-Sample list of the required packages on debian:
+Start the application:
 
-    apt-get install haskell-stack zlibc libgeoip-dev libcrypto++-dev libssl-dev postgresql-server-dev-9.1 libmagickwand-dev libmagickcore-dev libicu-dev
+    docker-compose up
 
-### Execute the following commands
+Visit `/admin/setup` page and use `admin` both for login and password to log in admin panel.
 
-    wget https://hackage.haskell.org/package/nano-md5-0.1.2/nano-md5-0.1.2.tar.gz
-    tar -zxvf nano-md5-0.1.2.tar.gz
-    patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < extra/MD5.hs.patch
+The maximum files size is hardcoded and can be changed in `Foundation.hs` before building. Default value is 25 MB. After you made your changes, docker image must be rebuilt:
 
-    stack setup
-    stack build
-    stack install
-    cp ~/.local/bin/{Captcha,Monaba} .
-
-## Setup database
-
-Create a database:
-
-    psql -U postgres -c 'create database monabas';
-
-Run the application to initialize database schema:
-
-    ./Monaba config/settings.yml
-
-Wait until it finish (a few seconds) and fill the database with default values by visiting `/admin/setup` page. Now you're ready to log in.
-
-Default login/password: admin
+   docker-compose build app
 
 ## Configuring Sphinx search
 

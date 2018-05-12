@@ -61,6 +61,7 @@ data AppSettings = AppSettings
     , appMaxLenOfPostTitle   :: Int
     , appMaxLenOfPostName    :: Int
     , appCaptcha             :: Text
+    , appHighlight           :: Text
     , appMaxLenOfFileName    :: Int
     , appMetaKeywords        :: Text
     , appMetaDescription     :: Text
@@ -139,6 +140,7 @@ instance FromJSON AppSettings where
         appMaxLenOfPostTitle      <- o .: "maxLenOfPostTitle"
         appMaxLenOfPostName       <- o .: "maxLenOfPostName"
         appCaptcha                <- o .: "captcha"
+        appHighlight              <- o .: "highlight"
         appMaxLenOfFileName       <- o .: "maxLenOfFileName"
         appMetaKeywords           <- o .: "metaKeywords"
         appMetaDescription        <- o .: "metaDescription"

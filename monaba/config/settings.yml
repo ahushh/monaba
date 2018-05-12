@@ -36,11 +36,12 @@ stylesheet:        Chaos # default stylesheet (Ash, Futaba, Chaos, Chaosfm, Mayu
 maxLenOfPostTitle: 60
 maxLenOfPostName:  20
 maxLenOfFileName:  40
+highlight:         "/opt/monaba/highlight.php"
 captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
 metaKeywords:      "haskell,yesod"
 metaDescription:   "haskell imageboard"
 titleDelimiter:    " / "
-ffmpeg:            "/usr/bin/ffmpeg"
+ffmpeg:            "/usr/bin/avconv"
 exiftool:          "/usr/bin/exiftool"
 animatedThumbs:    false
 randomBanners:     false # true - show banners from differents boards, false - same board

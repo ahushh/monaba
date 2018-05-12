@@ -1,0 +1,28 @@
+name:                nano-md5
+version:             0.1.2
+description:         Efficient, ByteString bindings to OpenSSL.
+synopsis:            Efficient, ByteString bindings to OpenSSL.
+license:             BSD3
+license-file:        LICENSE
+homepage:            http://code.haskell.org/~dons/code/nano-md5
+author:              Don Stewart 
+category:            Codec
+maintainer:          <dons@galois.com>
+build-type:          Simple
+Cabal-Version: >= 1.2
+
+flag split-base
+library
+  if flag(split-base)
+    build-depends:     base >= 3, bytestring
+  else
+    build-depends:     base < 3
+  exposed-modules:     Data.Digest.OpenSSL.MD5
+  ghc-options:         -Wall 
+                       -O2
+                       -fvia-C
+  extensions:          ForeignFunctionInterface,
+                       CPP
+  includes:            openssl/md5.h
+  extra-libraries:     crypto
+

@@ -1,26 +1,37 @@
 version: "3.3"
 services:
-  database:
+  db:
     image: postgres
-    env_file:
-      - database/dev_env
-    ports:
-      - "5432:5432"
-  monaba:
+    env_file: env_prod
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  app:
     build: ./monaba
-    image: monaba
+    image: monaba_app
     command: /opt/monaba/Monaba
     #command: yesod devel
     environment:
-      - PGHOST=database
+      - PGHOST=db
+    env_file: env_prod  
     depends_on:
-      - database
+      - db
     tty:
       false
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
     volumes:
-      - upload:/opt/server/upload
-
+      - upload:/opt/monaba/upload
+  webserver:
+    build: ./webserver
+    image: monaba_webserver
+    ports:
+      - "80:80"
+    links:
+      - app  
+    volumes:
+      - upload:/opt/monaba/upload
 volumes:
   upload:
+  pgdata:

@@ -42,8 +42,6 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           | Newline              -- \n
           deriving (Show)
 -------------------------------------------------------------------------------------------------------------------
-geshi :: String
-geshi = "./highlight.php"
 php :: String
 php = "/usr/bin/php"
 -------------------------------------------------------------------------------------------------------------------
@@ -115,8 +113,8 @@ doYobaMarkup (Just s) board thread = do
 -------------------------------------------------------------------------------------------------------------------
 -- Processing
 -------------------------------------------------------------------------------------------------------------------    
-codeHighlight :: Text -> Text -> IO Text
-codeHighlight lang source = pack <$> readProcess php [geshi, unpack lang] (unpack source)
+codeHighlight :: Text -> Text -> Text -> IO Text
+codeHighlight lang source geshi = pack <$> readProcess php [unpack geshi, unpack lang] (unpack source)
 
 processMarkup :: [Expr] -> Text -> Int -> Handler Textarea
 processMarkup xs board thread = Textarea <$> foldM f "" xs
@@ -175,7 +173,9 @@ processMarkup xs board thread = Textarea <$> foldM f "" xs
     ----------------------------------------------------------------------------------------------------------
     -- Function that process each Expr
     ----------------------------------------------------------------------------------------------------------
-    f acc (Code  lang code') = T.append acc <$> liftIO (codeHighlight lang code')
+    f acc (Code  lang code') = do
+      AppSettings{..} <- appSettings <$> getYesod
+      T.append acc <$> liftIO (codeHighlight lang code' appHighlight)
     f acc (Plain          x) = return $ T.append acc $ escapeHTML x
     f acc (Color color' msg) = colorHandler      acc color' msg
     f acc (Dice  n   m   mo) = diceHandler       acc n m mo

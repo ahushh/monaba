@@ -26,6 +26,8 @@ database:
   database: "_env:PGDATABASE:monaba"
   poolsize: "_env:PGPOOLSIZE:100"
 
+sphinx-host:       "search"
+sphinx-port:       9312
 highlight:         "/opt/monaba/highlight.php"
 captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
 geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"

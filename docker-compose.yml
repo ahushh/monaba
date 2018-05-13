@@ -1,22 +1,25 @@
-version: "3.3"
+version: "3.6"
 services:
   db:
     image: postgres
     env_file: env_prod
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      main:
   app:
     build: ./monaba
+    hostname: monaba.in
     image: monaba/app
     command: /opt/monaba/Monaba /var/settings.yml
     env_file: env_prod  
     depends_on:
       - db
-    tty:
-      false
     volumes:
       - upload:/opt/monaba/upload
       - ./settings.yml:/var/settings.yml
+    networks:
+      main:
   webserver:
     build: ./webserver
     image: monaba/db
@@ -26,6 +29,25 @@ services:
       - app  
     volumes:
       - upload:/opt/monaba/upload
+    networks:
+      main:
+  search:
+    build: ./search
+    hostname: search.in
+    image: monaba/search
+    links:
+      - app
+    depends_on:
+      - app
+    volumes:
+      - searchdata:/var/lib/sphinxsearch/data
+    networks:
+      main:
+        aliases:
+          - search.in
 volumes:
   upload:
   pgdata:
+  searchdata:
+networks:
+  main:    

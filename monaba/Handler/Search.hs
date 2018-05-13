@@ -15,6 +15,7 @@ searchLimit = 50
 
 getSearchR :: Handler Html
 getSearchR = do
+  AppSettings{..} <- appSettings <$> getYesod
   ((formRes, searchWidget), _) <- runFormGet $ searchForm Nothing
   let offset = 0
   case formRes of
@@ -57,25 +58,27 @@ getResults qstring board offset = do
       checkHB      p = not (postHellbanned p) || (postHellbanned p || postPosterId p == posterId) || elem HellBanP permissions
       checkAll     p = checkBoard p && checkAccess p && checkDeleted p && checkPM p && checkHB p
 
-  sphinxRes' <- liftIO $ S.query config "monaba" qstring
+  AppSettings{..} <- appSettings <$> getYesod
+  sphinxRes' <- liftIO $ S.query (config appSphinxPort (unpack appSphinxHost)) "monaba" qstring
   case sphinxRes' of
         ST.Ok sphinxRes -> do
             let postIds = map (toSqlKey . ST.documentId) $ ST.matches sphinxRes
             posts <- fmap (filter checkAll . catMaybes) $ runDB $ forM postIds get
-            forM (zip postIds posts) $ \(postId, post) -> liftIO $ getResult postId post qstring
+            forM (zip postIds posts) $ \(postId, post) -> liftIO $ getResult postId post qstring appSphinxPort (unpack appSphinxHost)
         _ -> error $ show sphinxRes'
   where
-    config = S.defaultConfig
-        { S.port   = 9312
+    config port host = S.defaultConfig
+        { S.port   = port
+        , S.host   = host
         , S.mode   = ST.Extended
         , S.offset = offset
         , S.limit  = searchLimit
         }
 
-getResult :: PostId -> Post -> Text -> IO SearchResult
-getResult postId post qstring = do
+getResult :: PostId -> Post -> Text -> Int -> String -> IO SearchResult
+getResult postId post qstring port host = do
     excerpt' <- S.buildExcerpts
-        excerptConfig
+        (excerptConfig port host)
         [escapeHTML $ postRawMessage post]
         "monaba"
         qstring
@@ -89,7 +92,8 @@ getResult postId post qstring = do
         , searchResultExcerpt = excerpt
         }
   where
-    excerptConfig = E.altConfig { E.port = 9312
+    excerptConfig port host = E.altConfig { E.port = port
+                                , E.host = host
                                 , E.beforeMatch = "<span class='match'>"
                                 , E.afterMatch = "</span>"
                                 , E.around = 10

@@ -15,6 +15,7 @@ fi
 echo 'Installing nano-md5...'
 wget -q https://hackage.haskell.org/package/nano-md5-0.1.2/nano-md5-0.1.2.tar.gz
 tar -zxf nano-md5-0.1.2.tar.gz
+rm nano-md5-0.1.2.tar.gz
 patch nano-md5-0.1.2/Data/Digest/OpenSSL/MD5.hs < monaba/extra/MD5.hs.patch
 cp -r nano-md5-0.1.2 monaba/nano-md5-0.1.2
 rm -fr nano-md5-0.1.2

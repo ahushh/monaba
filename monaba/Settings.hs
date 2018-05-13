@@ -54,6 +54,8 @@ data AppSettings = AppSettings
     -- ^ Footer of the page
     , appAnalytics           :: Maybe Text
     -- ^ Google Analytics code
+    , appSphinxPort          :: Int
+    , appSphinxHost          :: Text
     , appSiteName            :: Text
     , appGeoIPCityPath       :: Text
     , appTimezone            :: Int
@@ -132,6 +134,9 @@ instance FromJSON AppSettings where
 
         appFooter                 <- o .: "footer"
         appAnalytics              <- o .:? "analytics"
+
+        appSphinxPort             <- o .: "sphinx-port"
+        appSphinxHost             <- o .: "sphinx-host"
 
         appSiteName               <- o .: "sitename"
         appGeoIPCityPath          <- o .: "geoipcitypath"

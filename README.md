@@ -88,35 +88,3 @@ The maximum files size is hardcoded and can be changed in `Foundation.hs` before
 
    docker-compose build app
 
-## Configuring Sphinx search
-
-See `extra/sphinx.conf`
-
-Create the search index by running `sudo indexer --rotate monaba` and add this command to cron job so the index is regularly updated
-
-Start `searchd` service:
-
-`systemctl start sphinxsearch.service`
-
-## Configuring Nginx for serving uploaded files
-
-See `extra/nginx.conf`
-
-## Init scripts
-
-init.d script for gentoo: `extra/monaba`
-
-For systemd users:
-
-Firstly install `libpam-systemd` package and relogin.
-
-Configure `extra/monaba.service` and put this file into `/etc/systemd/user/` or `~/.config/systemd/user/` directory
-
-Example of usage:
-
-`systemctl --user start monaba`
-
-`systemctl --user stop monaba`
-
-`systemctl --user restart monaba`
-

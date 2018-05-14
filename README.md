@@ -59,12 +59,12 @@ That's official install script for Debian:
 
 And download docker-compose - yeah, just download it:
 
-   sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-   sudo chmod +x /usr/local/bin/docker-compose
+    sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
 
 ### Set up some local dependencies by running build script:
 
-   ./build.sh
+    ./build.sh
 
 The previous command has just created `settings.yml` file that contains all run configurations. All you want to edit is under `CUSTOMIZE` section.
 
@@ -72,7 +72,7 @@ The previous command has just created `settings.yml` file that contains all run 
 
 Once you're ready to go further let's create all docker images by running this command:
 
-   docker-compose up --no-start
+    docker-compose up --no-start
 
 It takes rather long time so be patient.
 
@@ -86,5 +86,5 @@ Visit `/admin/setup` page and use `admin` both for login and password to log in 
 
 The maximum files size is hardcoded and can be changed in `Foundation.hs` before building. Default value is 25 MB. After you made your changes, docker image must be rebuilt:
 
-   docker-compose build app
+    docker-compose build app
 

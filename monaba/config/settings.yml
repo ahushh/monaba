@@ -21,7 +21,7 @@ ip-from-header: "_env:IP_FROM_HEADER:false"
 database:
   user:     "_env:PGUSER:monaba"
   password: "_env:PGPASS:monaba"
-  host:     "_env:PGHOST:localhost"
+  host:     "_env:PGHOST_APP:localhost"
   port:     "_env:PGPORT:5432"
   database: "_env:PGDATABASE:monaba"
   poolsize: "_env:PGPOOLSIZE:100"

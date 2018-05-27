@@ -14,7 +14,7 @@ RUN stack setup --silent
 COPY Monaba.cabal ./Monaba.cabal
 COPY nano-md5-0.1.2 ./nano-md5-0.1.2
 RUN stack build --only-snapshot --silent
-
+RUN stack install --only-dependencies
 COPY . ./
 
 RUN stack install

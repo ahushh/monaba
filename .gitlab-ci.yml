@@ -6,6 +6,6 @@ build:
   stage: build
   script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-    - ./build.sh
+    - sh ./build.sh
     - docker-compose build
     - docker-compose push registry.gitlab.com/ahushh/monaba

@@ -1,0 +1,11 @@
+image: docker:stable
+services:
+- docker:dind
+
+build:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - docker-compose build
+    - docker-compose push registry.gitlab.com/ahushh/monaba
+    

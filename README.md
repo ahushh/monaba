@@ -48,8 +48,7 @@ Installation
 
 Open your CLI and type:
 
-    git clone https://github.com/ahushh/Monaba
-    cd Monaba
+    git clone https://github.com/ahushh/Monaba && cd Monaba
 
 You've got the repo. Let's install docker & docker-compose.
 
@@ -57,10 +56,18 @@ That's official install script for Debian:
 
     cd /usr/local/src && wget -qO- https://get.docker.com/ | sh
 
+Run Docker service:
+
+    sudo systemctl start docker
+
 And download docker-compose - yeah, just download it:
 
     sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
+
+Go back to Monaba folder:
+
+   cd ~/Monaba
 
 ### Set up some local dependencies by running build script:
 
@@ -72,7 +79,7 @@ The previous command has just created `settings.yml` file that contains all run 
 
 Once you're ready to go further let's create all docker images by running this command:
 
-    docker-compose up --no-start
+    docker-compose build
 
 It takes rather long time so be patient.
 

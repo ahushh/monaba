@@ -8,4 +8,5 @@ build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - sh ./build.sh
     - docker-compose build
+    - docker login -u ahushh -p $CI_BUILD_TOKEN
     - docker-compose push registry.gitlab.com/ahushh/monaba

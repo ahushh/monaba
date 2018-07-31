@@ -7,26 +7,26 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       main:
-# app:
-#   build: ./monaba
-#   hostname: monaba.in
-#   image: registry.gitlab.com/ahushh/monaba/app:latest
-#   command: /opt/monaba/Monaba /var/settings.yml
-#   env_file: env_prod  
-#   depends_on:
-#     - db
-#   volumes:
-#     - upload:/opt/monaba/upload
-#     - ./settings.yml:/var/settings.yml
-#   networks:
-#     main:
+  app:
+    build: ./monaba
+    hostname: monaba.in
+    image: registry.gitlab.com/ahushh/monaba/app:latest
+    command: /opt/monaba/Monaba /var/settings.yml
+    env_file: env_prod  
+    depends_on:
+      - db
+    volumes:
+      - upload:/opt/monaba/upload
+      - ./settings.yml:/var/settings.yml
+    networks:
+      main:
   webserver:
     build: ./webserver
     image: registry.gitlab.com/ahushh/monaba/webserver:latest
     ports:
       - "80:80"
-#   links:
-#     - app  
+    links:
+      - app  
     volumes:
       - upload:/opt/monaba/upload
     networks:
@@ -35,10 +35,10 @@ services:
     build: ./search
     hostname: search.in
     image: registry.gitlab.com/ahushh/monaba/search:latest
-#   links:
-#     - app
-#   depends_on:
-#     - app
+    links:
+      - app
+    depends_on:
+      - app
     volumes:
       - searchdata:/var/lib/sphinxsearch/data
     networks:

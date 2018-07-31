@@ -25,7 +25,7 @@ services:
     image: monaba/db
     ports:
       - "80:80"
-    links:
+#   links:
 #     - app  
     volumes:
       - upload:/opt/monaba/upload

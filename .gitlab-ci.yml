@@ -5,8 +5,7 @@ services:
 build:
   stage: build
   script:
-    - echo $CI_BUILD_TOKEN
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD registry.gitlab.com
     - sh ./build.sh
     - docker-compose build
     - docker-compose push registry.gitlab.com

@@ -8,4 +8,4 @@ build:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD registry.gitlab.com
 #   - sh ./build.sh
 #   - docker-compose build
-    - docker-compose push registry.gitlab.com/ahushh/monaba
+    - docker-compose push

@@ -10,7 +10,7 @@ services:
 # app:
 #   build: ./monaba
 #   hostname: monaba.in
-#   image: monaba/app
+#   image: registry.gitlab.com/ahushh/monaba/app:latest
 #   command: /opt/monaba/Monaba /var/settings.yml
 #   env_file: env_prod  
 #   depends_on:
@@ -22,7 +22,7 @@ services:
 #     main:
   webserver:
     build: ./webserver
-    image: monaba/db
+    image: registry.gitlab.com/ahushh/monaba/webserver:latest
     ports:
       - "80:80"
 #   links:
@@ -34,7 +34,7 @@ services:
   search:
     build: ./search
     hostname: search.in
-    image: monaba/search
+    image: registry.gitlab.com/ahushh/monaba/search:latest
 #   links:
 #     - app
 #   depends_on:

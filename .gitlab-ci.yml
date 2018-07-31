@@ -5,9 +5,9 @@ services:
 build:
   stage: build
   script:
+    - echo $REGISTRY_USER
+    - echo $REGISTRY_PASSWORD
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD registry.gitlab.com
 #   - sh ./build.sh
 #   - docker-compose build
-    - echo $REGISTRY_USER
-    - echo $REGISTRY_PASSWORD
     - docker-compose push registry.gitlab.com

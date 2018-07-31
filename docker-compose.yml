@@ -35,9 +35,9 @@ services:
     build: ./search
     hostname: search.in
     image: monaba/search
-    links:
+#   links:
 #     - app
-    depends_on:
+#   depends_on:
 #     - app
     volumes:
       - searchdata:/var/lib/sphinxsearch/data

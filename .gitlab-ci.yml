@@ -5,6 +5,7 @@ services:
 build:
   stage: build
   script:
+    - echo $TOKEN      
     - docker login -u ahushh -p $TOKEN registry.gitlab.com
     - sh ./build.sh
     - docker-compose build

@@ -6,6 +6,6 @@ build:
   stage: build
   script:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD registry.gitlab.com
-#   - sh ./build.sh
-#   - docker-compose build
+    - sh ./build.sh
+    - docker-compose build
     - docker-compose push

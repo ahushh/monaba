@@ -75,9 +75,13 @@ Open your CLI and type:
 
 The previous command has just created `settings.yml` file that contains all run configurations. All you want to edit is under `CUSTOMIZE` section.
 
-### Build
+### Pull Docker images
 
-Once you're ready to go further let's create all docker images by running this command:
+Once you're ready to go further let's get all docker images by running this command:
+
+    docker-compose pull
+
+Or build them by yourself:
 
     docker-compose build
 

@@ -95,9 +95,28 @@ The maximum files size is hardcoded and can be changed in `Foundation.hs` before
 
     docker-compose build app
 
-### Deploy to cluster
+### Configure Cluster
+
+Create SSH key and add it to our server:
+
+    ssh-keygen -f ~/.ssh/monaba
+
+    ssh-copy-id -i ~/.ssh/monaba ahushh@haibane.tk
+
+Create docker instance on the server:
+
+    docker-machine create --driver generic --generic-ip-address 37.48.87.35 --generic-ssh-user ahushh --generic-ssh-key ~/.ssh/haibane1 --engine-storage-driver=overlay2 monaba
+
+Tell Docker to run all further commands on remote machine:
+
+    eval $(docker-machine env monaba)
+
+Initialize Cluster:
 
     docker swarm init
 
-    docker stack deploy --compose-file docker-compose.yml monaba
+### Deploy to Cluster or pull new images and update
 
+    eval $(docker-machine env monaba)
+
+    docker stack deploy --compose-file docker-compose.yml monaba

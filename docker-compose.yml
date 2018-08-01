@@ -62,6 +62,19 @@ services:
       main:
         aliases:
           - search.in
+  torgate:
+    build: ./torgate
+    image: registry.gitlab.com/ahushh/monaba/torgate:latest
+    env_file: env_prod
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      update_config:
+        parallelism: 1
+        delay: 2s
+        monitor: 2s
 volumes:
   upload:
   pgdata:

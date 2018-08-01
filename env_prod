@@ -3,3 +3,8 @@ POSTGRES_USER=monaba
 POSTGRES_PASSWORD=monaba
 MAX_UPLOAD_SIZE=50
 PGHOST_APP=db
+
+## uncomment to enable torgate
+#TORGATE_HOSTNAME=yourhost.onion
+#TORGATE_PRIVATE_KEY=key in single line
+#TORGATE_ENDPOINT=ip.of.front.end:80

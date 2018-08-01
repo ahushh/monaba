@@ -4,7 +4,7 @@ services:
     image: postgres
     env_file: env_prod
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ~/monaba/pgdata:/var/lib/postgresql/data
     networks:
       main:
     deploy:
@@ -14,12 +14,13 @@ services:
     build: ./monaba
     hostname: monaba.in
     image: registry.gitlab.com/ahushh/monaba/app:latest
-    command: /opt/monaba/Monaba /opt/monaba/config/settings.yml
+    command: /opt/monaba/Monaba /var/settings.yml
     env_file: env_prod  
     depends_on:
       - db
     volumes:
-      - upload:/opt/monaba/upload
+      - ./monaba/upload:/opt/monaba/upload
+      - ./settings.yml:/var/settings.yml
     tmpfs:
       - /opt/monaba/static/tmp:size=1G
     deploy:
@@ -40,7 +41,7 @@ services:
     links:
       - app  
     volumes:
-      - upload:/opt/monaba/upload
+      - ./monaba/upload:/opt/monaba/upload
     networks:
       main:
     deploy:
@@ -55,7 +56,7 @@ services:
     depends_on:
       - app
     volumes:
-      - searchdata:/var/lib/sphinxsearch/data
+      - ./monaba/searchdata:/var/lib/sphinxsearch/data
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -78,9 +79,5 @@ services:
         parallelism: 1
         delay: 2s
         monitor: 2s
-volumes:
-  upload:
-  pgdata:
-  searchdata:
 networks:
   main:    

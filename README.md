@@ -43,16 +43,10 @@ Requirements
 ------
 * Unix-like distro supported by Docker
 
-Installation
-======
+Docker & docker-compose Installation
+=====
 
-Open your CLI and type:
-
-    git clone https://github.com/ahushh/Monaba && cd Monaba
-
-You've got the repo. Let's install docker & docker-compose.
-
-That's official install script for Debian:
+That's official Docker install script for Debian:
 
     cd /usr/local/src && wget -qO- https://get.docker.com/ | sh
 
@@ -65,9 +59,12 @@ And download docker-compose - yeah, just download it:
     sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
 
-Go back to Monaba folder:
+Monaba Installation
+======
 
-   cd ~/Monaba
+Open your CLI and type:
+
+    git clone https://github.com/ahushh/Monaba && cd Monaba
 
 ### Set up some local dependencies by running build script:
 
@@ -87,7 +84,7 @@ It takes rather long time so be patient.
 
 Start the application:
 
-    docker-compose up
+    docker-compose up -d
 
 Visit `/admin/setup` page and use `admin` both for login and password to log in admin panel.
 
@@ -95,7 +92,10 @@ The maximum files size is hardcoded and can be changed in `Foundation.hs` before
 
     docker-compose build app
 
-### Configure Cluster
+Installation using Docker Swarm
+======
+
+Assuming you have a VPS with SSH access.
 
 Create SSH key and add it to our server:
 
@@ -107,16 +107,19 @@ Create docker instance on the server:
 
     docker-machine create --driver generic --generic-ip-address 37.48.87.35 --generic-ssh-user ahushh --generic-ssh-key ~/.ssh/haibane1 --engine-storage-driver=overlay2 monaba
 
-Tell Docker to run all further commands on remote machine:
+Connect to the server using SSH:
 
-    eval $(docker-machine env monaba)
+    docker-machine ssh monaba
+
+Install docker & docker-compose, clone repository and change dir.
 
 Initialize Cluster:
 
     docker swarm init
 
-### Deploy to Cluster or pull new images and update
+### Deploy
 
-    eval $(docker-machine env monaba)
+This command pulls the latest monaba images from registry and runs everything:
 
     docker stack deploy --compose-file docker-compose.yml monaba
+

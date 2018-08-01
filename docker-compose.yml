@@ -4,7 +4,7 @@ services:
     image: postgres
     env_file: env_prod
     volumes:
-      - ./monaba/pgdata:/var/lib/postgresql/data
+      - ./storage/pgdata:/var/lib/postgresql/data
     networks:
       main:
     deploy:
@@ -19,7 +19,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./monaba/upload:/opt/monaba/upload
+      - ./storage/upload:/opt/monaba/upload
       - ./settings.yml:/var/settings.yml
     tmpfs:
       - /opt/monaba/static/tmp:size=1G
@@ -41,7 +41,7 @@ services:
     links:
       - app  
     volumes:
-      - ./monaba/upload:/opt/monaba/upload
+      - ./storage/upload:/opt/monaba/upload
     networks:
       main:
     deploy:
@@ -56,7 +56,7 @@ services:
     depends_on:
       - app
     volumes:
-      - ./monaba/searchdata:/var/lib/sphinxsearch/data
+      - ./storage/searchdata:/var/lib/sphinxsearch/data
     deploy:
       placement:
         constraints: [node.role == manager]

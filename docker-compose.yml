@@ -4,7 +4,7 @@ services:
     image: postgres
     env_file: env_prod
     volumes:
-      - ~/monaba/pgdata:/var/lib/postgresql/data
+      - ./monaba/pgdata:/var/lib/postgresql/data
     networks:
       main:
     deploy:

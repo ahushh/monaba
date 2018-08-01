@@ -62,6 +62,9 @@ And download docker-compose - yeah, just download it:
 Monaba Installation
 ======
 
+Option #1. Plain Docker
+------
+
 Open your CLI and type:
 
     git clone https://github.com/ahushh/Monaba && cd Monaba
@@ -92,28 +95,32 @@ The maximum files size is hardcoded and can be changed in `Foundation.hs` before
 
     docker-compose build app
 
-Installation using Docker Swarm
-======
+Option #2. Docker Swarm
+------
 
-Assuming you have a VPS with SSH access.
+Assuming you have a server on haibane.tk with ssh access for user ahushh.
 
-Create SSH key and add it to our server:
+Open terminal on your local machine and follow the instructions.
+
+### Create SSH key and add it to our server:
 
     ssh-keygen -f ~/.ssh/monaba
 
     ssh-copy-id -i ~/.ssh/monaba ahushh@haibane.tk
 
-Create docker instance on the server:
+### Create docker instance on the server:
 
-    docker-machine create --driver generic --generic-ip-address 37.48.87.35 --generic-ssh-user ahushh --generic-ssh-key ~/.ssh/haibane1 --engine-storage-driver=overlay2 monaba
+    docker-machine create --driver generic --generic-ip-address haibane.tk --generic-ssh-user ahushh --generic-ssh-key ~/.ssh/haibane1 --engine-storage-driver=overlay2 monaba
 
-Connect to the server using SSH:
+### Connect to the server using SSH:
 
     docker-machine ssh monaba
 
-Install docker & docker-compose, clone repository and change dir.
+### Install docker & docker-compose, clone repository and change dir, run build.sh script:
 
-Initialize Cluster:
+    See the previous sections. 
+
+### Initialize Docker Cluster:
 
     docker swarm init
 

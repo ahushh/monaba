@@ -27,3 +27,6 @@ rm -fr geshi
 
 echo 'Creating settings file...'
 cp monaba/config/settings.yml .
+
+echo 'Creating upload dir...'
+mkdir monaba/upload

@@ -29,8 +29,6 @@ echo 'Creating settings file...'
 cp monaba/config/settings.yml .
 
 echo 'Creating storage dirs...'
-mkdir storage/upload
-mkdir storage/pgdata
-mkdir storage/searchdata
+mkdir -p storage/upload storage/pgdata storage/searchdata
 
 echo 'Done'

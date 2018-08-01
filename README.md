@@ -95,3 +95,9 @@ The maximum files size is hardcoded and can be changed in `Foundation.hs` before
 
     docker-compose build app
 
+### Deploy to cluster
+
+    docker swarm init
+
+    docker stack deploy --compose-file docker-compose.yml monaba
+

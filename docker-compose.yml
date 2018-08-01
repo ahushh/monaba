@@ -7,6 +7,9 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       main:
+    deploy:
+      placement:
+        constraints: [node.role == manager]
   app:
     build: ./monaba
     hostname: monaba.in
@@ -18,6 +21,14 @@ services:
     volumes:
       - upload:/opt/monaba/upload
       - ./settings.yml:/var/settings.yml
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints: [node.role == manager]
+      update_config:
+        parallelism: 1
+        delay: 2s
     networks:
       main:
   webserver:
@@ -31,6 +42,9 @@ services:
       - upload:/opt/monaba/upload
     networks:
       main:
+    deploy:
+      placement:
+        constraints: [node.role == manager]
   search:
     build: ./search
     hostname: search.in
@@ -41,6 +55,9 @@ services:
       - app
     volumes:
       - searchdata:/var/lib/sphinxsearch/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
     networks:
       main:
         aliases:

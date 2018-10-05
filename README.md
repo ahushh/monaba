@@ -43,6 +43,11 @@ Requirements
 ------
 * Unix-like distro supported by Docker
 
+Known issues
+=====
+
+Monaba gets incorrect anon's IP if Docker Swarm is used
+
 Docker & docker-compose Installation
 =====
 

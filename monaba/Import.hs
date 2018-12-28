@@ -507,8 +507,8 @@ getAllHiddenPostsIds boards = do
 -- | Gets IP from X-Real-IP/CF-Connecting-I or remote-host header
 getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
-  realIp <- B.toString <$> getIpReal
-  cfIp   <- B.toString <$> getIpCF
+  realIp <- fmap B.toString <$> getIpReal
+  cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- Just <$> getIpFromHost
   return $ if isOnion realIp then realIp else fromJust (cfIp <|> realIp <|> hostIp)
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest

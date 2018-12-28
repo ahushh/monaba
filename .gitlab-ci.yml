@@ -1,12 +1,12 @@
 image: jonaskello/docker-and-compose:latest
 services:
-- docker:dind
+  - docker:dind
 
 stages:
   - build
   - deploy
 
-build monaba:
+build-monaba:
   stage: build
   script:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD registry.gitlab.com
@@ -14,7 +14,7 @@ build monaba:
     - docker-compose build
     - docker-compose push
 
-deploy to server:
+deploy-to-server:
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -22,5 +22,5 @@ deploy to server:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+  script:
     - ssh -t "$SSH_USER"@"$SSH_HOST" "cd $REPO_PATH && docker-compose pull && docker-compose down && docker-compose up -d"
-

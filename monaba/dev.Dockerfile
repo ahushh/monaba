@@ -27,7 +27,7 @@ RUN stack build --only-snapshot --silent
 
 RUN stack install --only-dependencies
 # XSexec -- cabal install --only-dependencies
-RUN stack install yesod-bin
+RUN stack install yesod-bin-1.4.18.7
 
 COPY ./geshi ./geshi
 ADD http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat

@@ -70,6 +70,7 @@ services:
     env_file: env_prod
     networks:
       main:
+        ipv4_address: 172.19.0.6
     deploy:
       mode: replicated
       replicas: 1
@@ -81,3 +82,7 @@ services:
         monitor: 2s
 networks:
   main:    
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+

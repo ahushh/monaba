@@ -421,7 +421,7 @@ checkViewAccess mgroup boardVal = do
          (boardOnion boardVal && not (isOnion ip))
        ) notFound
 
-isOnion = (=="127.0.0.1")
+isOnion = (=="172.19.0.6")
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)

@@ -510,7 +510,9 @@ getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- Just <$> getIpFromHost
-  return $ if isOnion realIp then realIp else fromJust (cfIp <|> realIp <|> hostIp)
+  case of isIonion <$> realIp of
+    Just True -> fromJust realIp
+    _         -> fromJust (cfIp <|> realIp <|> hostIp)
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
         getIpFromHost  = takeWhile (not . (`elem` (":"::String))) . show . remoteHost . reqWaiRequest <$> getRequest

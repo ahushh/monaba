@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   db:
-    image: postgres
+    image: postgres:10
     env_file: env_prod
     volumes:
       - ./storage/pgdata:/var/lib/postgresql/data
@@ -17,6 +17,8 @@ services:
     command: /opt/monaba/Monaba /var/settings.yml
     env_file: env_prod  
     depends_on:
+      - db
+    links:
       - db
     volumes:
       - ./storage/upload:/opt/monaba/upload
@@ -68,6 +70,8 @@ services:
     build: ./torgate
     image: registry.gitlab.com/ahushh/monaba/torgate:latest
     env_file: env_prod
+    links:
+      - webserver
     networks:
       main:
         ipv4_address: 172.19.0.6

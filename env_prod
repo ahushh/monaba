@@ -7,4 +7,4 @@ PGHOST_APP=db
 ## uncomment to enable torgate
 #TORGATE_HOSTNAME=yourhost.onion
 #TORGATE_PRIVATE_KEY=key in single line
-#TORGATE_ENDPOINT=ip.of.front.end:80
+TORGATE_ENDPOINT=webserver:80

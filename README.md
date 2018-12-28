@@ -1,52 +1,104 @@
+<img src="https://assets.gitlab-static.net/uploads/-/system/project/avatar/6507113/monaba-logo.png?width=64" alt="Monaba" width="64"/>
+
 Monaba
 ======
 
-Wakaba-like imageboard written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
+Imageboard engine written in Haskell and powered by Yesod. [Demo board](http://haibane.ru).
+
+It's a classic web application with the flavour of AJAX and EventSource used to extend UI of good ol' design insipred by Wakaba.
+
+GitLab CI/CD: https://gitlab.com/ahushh/Monaba
 
 Features
 ------
-* Multiple file attachment
-* Webm and audio support
-* AJAX posting and quick reply
-* Feed page and RSS
-* Online user counter
-* New posts counter
-* Answer map and previews
-* Thread and image expanding
-* Thread hiding
-* Post deletion and editing by user
-* Prooflables as replacement of tripcodes
-* Kusaba-like formatting with code highlighting and LaTeX support
-* Custom CAPTCHA
-* Internationalization (English, Русский, Português, Brasil)
-* Country flag support
-* Switchable stylesheets
-* YouTube, vimeo, coub embedding
-* Works fine with JavaScript disabled
-* Thread catalog
-* Bookmarks
-* Private messages
-* Full-text search
-* Administration
+* Main capabilities:
+    - Boards groupping by categories
+    - Hiding boards from the list
+    - Easy Tor configuration
+    - Making boards to be accessed through Tor only
+    - Feed page and RSS
+    - Threads catalog
+    - Threads bookmarks
+    - Post deletion and editing
+    - Post editing history
+    - Multiple file attachment
+    - File deletion
+    - Video, audio and flash support
+    - File rating system: SFW, R15, R18, R18G
+    - Text formatting based on BBCode
+    - Code highlighting and dice support
+    - Prooflables as replacement of tripcodes
+    - Private messages
+    - Online users counter
+    - New posts counter displayed for each board
+    - Embedded and customizable CAPTCHA
+    - Full-text search
+    - Internationalization (English, Русский, Português, Brasil)
+    - Country flag support
+    - Works fine with JavaScript disabled
+    - Custom banners at the top of the page
+    - Reports system
+   
+* UI enhancements:
+    - Posting through AJAX and quick reply
+    - Threads hiding
+    - Answer map and post previews
+    - Expanding of threads and images
+    - YouTube, Vimeo, Coub embedding
+    - 20+ switchable stylesheets
+    - Buttons for searching selected image using several search engines like Google, TinEye, etc.
+    - Desktop notifications of new posts
+    - Each UI feature can be configured or disabled
+
+* Administration features:
     - [Hellbanning](http://en.wikipedia.org/wiki/Hellbanning) by session
     - Banning by IP
-    - Thread moderation by OP
+    - Listing and recovering deleted posts
+    - OP can moderate his own thread
     - Flexible account system with customizable groups and permissions
     - Ability to stick and lock threads and to put on auto-sage
     - Moving threads between boards
-    - Changing post's parent
+    - Moving posts between threads
     - Modlog which allows to view previous actions done by staff
     - Post search by ID and UID
-    - Wordfilter with regex support
+    - Wordfilter with regex support which can trigger different actions (ban, replace text, hide post, deny posting and so on)
+    - Each board can be configured independently and has a lot of options
+    - Home and about pages and footer can be filled in with custom HTML
+
+Cons
+-----
+
+* Bad UI/UX design of administration tools
+
+* Can be slow in some cases
+
+* Have not been tested much, no unit/integration tests
+
+* Difficult to contribute: slow building, legacy dependencies, ugly code
+
+* Not scalable due to sessions which are being stored on disk
+
+* Not under active development
+
+Known issues
+------
+
+* Docker Swarm: Monaba gets incorrect anon's IP. Onion detection doesn't work too.
+
+* Memory leak while building: https://github.com/ahushh/Monaba/issues/14
+
+* Incorrect pagination of search results
 
 Requirements
 ------
 * Unix-like distro supported by Docker
 
-Known issues
-=====
+* Server with 2GB RAM and 2 CPU cores would be fine
 
-Monaba gets incorrect anon's IP if Docker Swarm is used
+* If you are going to build Monaba from source, you'd better have 16GB RAM and i7 CPU. MacBook Pro 13 2017 without TouchBar has been dying on build.
+
+Installation guide
+======
 
 Docker & docker-compose Installation
 =====
@@ -54,6 +106,12 @@ Docker & docker-compose Installation
 That's official Docker install script for Debian:
 
     cd /usr/local/src && wget -qO- https://get.docker.com/ | sh
+
+Make Docker to work without sudo:
+
+`sudo groupadd docker && sudo usermod -aG docker $USER`
+
+Then log out and log back in your system.
 
 Run Docker service:
 
@@ -98,16 +156,20 @@ Start the application:
 
     docker-compose up -d
 
-Visit `/admin/setup` page and use `admin` both for login and password to log in admin panel.
+Visit `/admin/setup` page and use `admin` both for login and password to log in the admin panel. Don't forget to change your password on `/admin/account` page afterwards.
 
-The maximum files size is hardcoded and can be changed in `Foundation.hs` before building. Default value is 25 MB. After you made your changes, docker image must be rebuilt:
+### Note
+
+The maximum files size is hardcoded, but it can be changed in `Foundation.hs` before building. Default value is 25 MB. After you made your changes, docker image must be rebuilt:
 
     docker-compose build app
 
 Option #2. Docker Swarm
 ------
 
-Assuming you have a server on haibane.tk with ssh access for user ahushh.
+This is an experimental options and is not recommended to use. Furthermore, it has no reasonable advantages as Monaba is not a stateless server.
+
+Assuming you have a server on `haibane.tk` with ssh access for user `ahushh`.
 
 Open terminal on your local machine and follow the instructions.
 
@@ -139,3 +201,43 @@ This command pulls the latest monaba images from registry and runs everything:
 
     docker stack deploy --compose-file docker-compose.yml monaba
 
+Cheatsheet
+======
+
+### Setting up onion service
+
+1. Install Eschalot
+
+    sudo apt-get install openssl
+    
+    git clone https://github.com/ReclaimYourPrivacy/eschalot.git
+    
+    cd eschalot && make
+    
+2. Generate a domain name
+
+   ./eschalot -vct4 -p desiredDomainPrefix
+   
+Wait until you get a domain name you like. Remove `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` from the key and encode it with `base64` using the tool with the same name.
+
+3. Open `env_prod` file and uncomment the last three lines, fill in `TORGATE_HOSTNAME` and `TORGATE_PRIVATE_KEY` with the domain name and encoded key.
+
+4. Restart torgate service: `docker-compose restart torgate`
+
+### Update and restart
+
+    cd ~/haibane.ru/Monaba
+
+    docker-compose pull
+
+    docker-compose down
+    
+    docker-compose up -d
+    
+### Check the status of all services
+    
+    docker-compose ps
+    
+### Check the logs of the selected service
+
+    docker-compose logs webserver | less

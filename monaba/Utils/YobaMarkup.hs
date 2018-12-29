@@ -7,8 +7,9 @@ module Utils.YobaMarkup
        ) where
 
 import           Import
-import           System.Process
+import           System.Process 
 import           System.Random
+import           System.Exit (ExitCode(..))
 import           Text.HTML.TagSoup  (escapeHTML)
 import           Text.Parsec hiding (newline)
 import           Text.Parsec.Text
@@ -43,7 +44,7 @@ data Expr = Bold          [Expr] -- [b]bold[/b]
           deriving (Show)
 -------------------------------------------------------------------------------------------------------------------
 php :: String
-php = "/usr/bin/php"
+php = "/usr/bin/php3423"
 -------------------------------------------------------------------------------------------------------------------
 -- Parse only external referency
 -------------------------------------------------------------------------------------------------------------------
@@ -114,7 +115,11 @@ doYobaMarkup (Just s) board thread = do
 -- Processing
 -------------------------------------------------------------------------------------------------------------------    
 codeHighlight :: Text -> Text -> Text -> IO Text
-codeHighlight lang source geshi = pack <$> readProcess php [unpack geshi, unpack lang] (unpack source)
+codeHighlight lang source geshi = do
+  result <- readProcessWithExitCode php [unpack geshi, unpack lang] (unpack source)
+  case result of
+    (ExitSuccess, x, _) -> return $ pack x
+    _                   -> return $ source
 
 processMarkup :: [Expr] -> Text -> Int -> Handler Textarea
 processMarkup xs board thread = Textarea <$> foldM f "" xs

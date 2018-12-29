@@ -26,10 +26,10 @@ database:
   database: "_env:PGDATABASE:monaba"
   poolsize: "_env:PGPOOLSIZE:100"
 
-sphinx-host:       "search"
+sphinx-host:       "_env:SEARCH_HOST:search"
 sphinx-port:       9312
-highlight:         "/opt/monaba/highlight.php"
-captcha:           "/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
+highlight:         "_env:HIGHLIGHT_PATH:/opt/monaba/highlight.php"
+captcha:           "_env:CAPTCHA_PATH:/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
 geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
 ffmpeg:            "/usr/bin/avconv"
 exiftool:          "/usr/bin/exiftool"

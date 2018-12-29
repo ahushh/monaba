@@ -208,15 +208,15 @@ Cheatsheet
 
 1. Install Eschalot
 
-    sudo apt-get install openssl
+   `sudo apt-get install openssl`
     
-    git clone https://github.com/ReclaimYourPrivacy/eschalot.git
+   `git clone https://github.com/ReclaimYourPrivacy/eschalot.git`
     
-    cd eschalot && make
+   `cd eschalot && make`
     
 2. Generate a domain name
 
-   ./eschalot -vct4 -p desiredDomainPrefix
+   `./eschalot -vct4 -p desiredDomainPrefix`
    
 Wait until you get a domain name you like. Remove `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----` from the key and encode it with `base64` using the tool with the same name.
 
@@ -241,3 +241,64 @@ Wait until you get a domain name you like. Remove `-----BEGIN RSA PRIVATE KEY---
 ### Check the logs of the selected service
 
     docker-compose logs webserver | less
+
+### Contribution
+
+Recommended OS: Linux Mint 18.2 Sonya
+
+Docker version: 18.09
+
+Install stack:
+
+    curl -sSL https://get.haskellstack.org/ | sh
+
+Install local deps:
+
+    sudo apt-get update && sudo apt-get -y install \
+      php7.0-fpm \
+      libav-tools \
+      exiftool \
+      libpq-dev \
+      libmagickwand-dev \
+      libmagickcore-dev \
+      libgeoip-dev \
+      libicu-dev \
+      libcrypto++-dev
+
+Go to the project and install some local deps:
+
+    cd Monaba
+
+    ./build.sh
+
+Run nginx, postgres, sphinx:
+
+    docker-compose -f docker-compose.dev.yml up
+
+Configure Monaba dev server:
+
+    cd monaba
+
+    stack setup && stack build && stack install yesod-bin-1.4.18.2
+
+    stack install && cp ~/.local/bin/PlainCaptcha .
+    
+
+    export PGHOST_APP=localhost
+
+    export SEARCH_HOST=localhost
+
+    export HIGHLIGHT_PATH=./highlight.php
+
+    export CAPTCHA_PATH=./PlainCaptcha
+
+    chmod 777 upload
+
+Run:
+
+    stack exec yesod devel
+
+Update /etc/hosts with:
+
+    127.0.0.1       monaba.in
+    

@@ -1,54 +1,41 @@
 # remove .dockerignore
-version: "3.3"
+version: "3.7"
 services:
   db:
-    image: postgres
+    image: postgres:10
+    hostname: db
     env_file: env_prod
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     networks:
-      main:
-  app:
-    build:
-      context: ./monaba
-      dockerfile: dev.Dockerfile
-    hostname: monaba.in
-    image: monaba/app:dev
-    env_file: env_prod  
-    stdin_open: true
-    depends_on:
-      - db
-    volumes:
-      - ./monaba:/opt/monaba
-    networks:
-      main:
+      - main
   webserver:
     build: ./webserver
+    hostname: monaba.in
     image: monaba/webserver
     ports:
       - "80:80"
-    links:
-      - app  
     volumes:
       - ./monaba/upload:/opt/monaba/upload
-    networks:
-      main:
+    extra_hosts:
+      app: 127.0.0.1
+    network_mode: host  
+
   search:
     build: ./search
     hostname: search.in
     image: monaba/search
-    links:
-      - app
-    depends_on:
-      - app
+    ports:
+      - "9312:9312"
     volumes:
       - searchdata:/var/lib/sphinxsearch/data
     networks:
-      main:
-        aliases:
-          - search.in
+      - main
 volumes:
   pgdata:
   searchdata:
 networks:
-  main:    
+  main:
+    driver: bridge

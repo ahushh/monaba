@@ -9,6 +9,7 @@ import Control.Arrow        as Import (first, second, (&&&), (***))
 import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
 
 import           Control.Applicative     (liftA2, (<|>))
+import           Data.String
 import           Data.Char               (toLower, isPrint)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import           Data.Geolocation.GeoIP
@@ -421,6 +422,7 @@ checkViewAccess mgroup boardVal = do
          (boardOnion boardVal && not (isOnion ip))
        ) notFound
 
+isOnion :: forall a. (Eq a, Data.String.IsString a) => a -> Bool
 isOnion = (=="172.19.0.6")
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
@@ -509,10 +511,10 @@ getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
-  hostIp <- Just <$> getIpFromHost
-  case of isIonion <$> realIp of
-    Just True -> fromJust realIp
-    _         -> fromJust (cfIp <|> realIp <|> hostIp)
+  hostIp <- getIpFromHost
+  case isOnion <$> realIp of
+    Just True -> return $ fromJust realIp
+    _         -> return $ fromJust (cfIp <|> realIp <|> Just hostIp)
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
         getIpFromHost  = takeWhile (not . (`elem` (":"::String))) . show . remoteHost . reqWaiRequest <$> getRequest

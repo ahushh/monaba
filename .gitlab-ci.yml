@@ -16,6 +16,7 @@ build-monaba:
 
 deploy-to-server:
   stage: deploy
+  when: manual
   before_script:
     - apk update && apk add 
     - 'which ssh-agent || ( apk update -y && apk add openssh-client -y )'

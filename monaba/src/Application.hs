@@ -17,6 +17,7 @@ import Database.Persist.Postgresql          (createPostgresqlPool, pgConnStr,
                                              pgPoolSize, runSqlPool)
 import Import
 import Language.Haskell.TH.Syntax           (qLocation)
+import Network.Wai (Middleware)
 import Network.Wai.Handler.Warp             (Settings, defaultSettings,
                                              defaultShouldDisplayException,
                                              runSettings, setHost,
@@ -111,11 +112,17 @@ makeFoundation appSettings = do
     -- Return the foundation
     return $ mkFoundation pool
 
--- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
--- applyng some additional middlewares.
 makeApplication :: App -> IO Application
 makeApplication foundation = do
-    logWare <- mkRequestLogger def
+    logWare <- makeLogWare foundation
+    -- Create the WAI application and apply middlewares
+    appPlain <- toWaiAppPlain foundation
+    return $ logWare $ defaultMiddlewaresNoLogging appPlain
+
+
+makeLogWare :: App -> IO Middleware
+makeLogWare foundation =
+    mkRequestLogger def
         { outputFormat =
             if appDetailedRequestLogging $ appSettings foundation
                 then Detailed True
@@ -126,9 +133,6 @@ makeApplication foundation = do
         , destination = Logger $ loggerSet $ appLogger foundation
         }
 
-    -- Create the WAI application and apply middlewares
-    appPlain <- toWaiAppPlain foundation
-    return $ logWare $ defaultMiddlewaresNoLogging appPlain
 
 -- | Warp settings for the given foundation value.
 warpSettings :: App -> Settings

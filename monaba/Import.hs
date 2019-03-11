@@ -510,7 +510,12 @@ getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- getIpFromHost
-  return $ fromJust (cfIp <|> realIp <|> Just hostIp)
+  let resultIp = fromJust (cfIp <|> realIp <|> Just hostIp)
+  $logWarn (">>>"::Text)
+  $logWarn $ pack $ resultIp
+  $logWarn $ tshow $ isOnion resultIp
+  $logWarn ("<<<"::Text)
+  return resultIp
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
         getIpFromHost  = takeWhile (not . (`elem` (":"::String))) . show . remoteHost . reqWaiRequest <$> getRequest

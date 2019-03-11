@@ -422,7 +422,7 @@ checkViewAccess mgroup boardVal = do
        ) notFound
 
 isOnion :: forall a. (Eq a, Data.String.IsString a) => a -> Bool
-isOnion = (=="172.19.0.6")
+isOnion = (=="172.19.0.4")
 
 getPermissions :: Maybe (Entity Group) -> [Permission]
 getPermissions = maybe [] (groupPermissions . entityVal)
@@ -510,14 +510,7 @@ getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- getIpFromHost
-  $logWarn (">>>>>"::Text)
-  $logWarn $ pack $ fromMaybe "none" realIp
-  $logWarn $ pack $ fromMaybe "none" cfIp
-  $logWarn $ pack hostIp
-  $logWarn "<<<<"
-  case isOnion hostIp of
-    True -> return hostIp
-    _         -> return $ fromJust (cfIp <|> realIp <|> Just hostIp)
+  return $ fromJust (cfIp <|> realIp <|> Just hostIp)
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
         getIpFromHost  = takeWhile (not . (`elem` (":"::String))) . show . remoteHost . reqWaiRequest <$> getRequest

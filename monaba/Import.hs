@@ -512,6 +512,11 @@ getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- getIpFromHost
+  liftIO $ print "###"
+  liftIO $ print realIp
+  liftIO $ print cfIp
+  liftIO $ print hostIp
+  liftIO $ print "###"
   case isOnion hostIp of
     True -> return hostIp
     _         -> return $ fromJust (cfIp <|> realIp <|> Just hostIp)

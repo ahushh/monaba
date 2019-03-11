@@ -412,7 +412,6 @@ checkAccessToNewThread mgroup boardVal =
       access = boardThreadAccess boardVal
   in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
-checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
 checkViewAccess mgroup boardVal = do
   let group  = (groupName . entityVal) <$> mgroup
       access = boardViewAccess boardVal
@@ -507,15 +506,14 @@ getAllHiddenPostsIds boards = do
 -- IP getter
 -------------------------------------------------------------------------------------------------------------------
 -- | Gets IP from X-Real-IP/CF-Connecting-I or remote-host header
-getIp :: forall (m :: * -> *). MonadHandler m => m String
 getIp = do
   realIp <- fmap B.toString <$> getIpReal
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- getIpFromHost
-  $logWarn ">>>>>"
-  $logWarn realIp
-  $logWarn cfIp
-  $logWarn hostIp
+  $logWarn (">>>>>"::Text)
+  $logWarn $ pack $ fromMaybe "none" realIp
+  $logWarn $ pack $ fromMaybe "none" cfIp
+  $logWarn $ pack hostIp
   $logWarn "<<<<"
   case isOnion hostIp of
     True -> return hostIp

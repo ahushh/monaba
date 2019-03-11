@@ -22,6 +22,7 @@ services:
       - db
     volumes:
       - ./storage/upload:/opt/monaba/upload
+      - ./storage/banners:/opt/monaba/static/banners
       - ./settings.yml:/var/settings.yml
     tmpfs:
       - /opt/monaba/static/tmp:size=1G

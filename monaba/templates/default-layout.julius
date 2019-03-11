@@ -857,7 +857,7 @@ function fillPasswords() {
         setItem('password', password);
     }
     Array.prototype.forEach.call(document.querySelectorAll('input[type=password]'), function(el, i) {
-        el.value = password;
+//        el.value = password;
     });
 }
 
@@ -1098,7 +1098,7 @@ function initPostForm() {
         fs[i].value = '';
     }
     var af = document.getElementById("attach-file");
-    af.onclick = function() {
+    var onClick = function() {
         var fsNodeList = document.querySelectorAll("input[type='file']");
         var fs = [];
         for (var i = 0; i < fsNodeList.length; i++)
@@ -1128,6 +1128,8 @@ function initPostForm() {
         };
         fInput.click();
     };
+    af.onclick = onClick;
+    af.onkeydown=function(event){ if (event.keyCode === 13) { onClick() } };
     var textarea = pf.querySelector("textarea");
     textarea.addEventListener('keydown', function(e) {
         if (e.keyCode == 13 && e.ctrlKey)

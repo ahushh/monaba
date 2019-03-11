@@ -5,7 +5,7 @@
       ^{fvInput nameView}#
   ^{fvInput passwordView}#
   ^{fvInput subjectView}#
-  <input type=submit value=_{MsgSubmitBtn}>#
+  <input tabindex=2 type=submit value=_{MsgSubmitBtn}>#
   &nbsp;
   <i title="_{MsgPostPreview}" .fa .fa-eye .preview-toggle onclick="previewToggle()" .clickable>
   ^{fvInput messageView}
@@ -45,7 +45,7 @@
        &nbsp;
        <span style=display:inline .symbol-counter>
   $if length fileviews > 0
-    <div #attach-file>
+    <div #attach-file tabindex=1>
       <i .fa .fa-paperclip .clickable>
       _{MsgAttachFile}
     <div #attachment-thumbs>

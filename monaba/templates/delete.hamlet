@@ -13,5 +13,5 @@
       <input type=checkbox name=onlyfiles value=1>
     $with nopas <- elem DeletePostsP permissions
         <label :nopas:style=display:none>
-            _{MsgPassword}: <input type=password value="" size=15 name=postpassword>
+            _{MsgPassword}: <input type=password value="" size=15 name=postpassword autocomplete=poastpassword>
     <input type=submit value=_{MsgDeleteBtn}>

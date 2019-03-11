@@ -11,8 +11,8 @@ import           Data.Text                       (isPrefixOf)
 import           Text.Printf
 import           System.Directory                (copyFile, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
 --import           Filesystem.Path.CurrentOS       (fromText)
-import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
-import qualified Graphics.ImageMagick.MagickWand as IM
+--import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
+--import qualified Graphics.ImageMagick.MagickWand as IM
 import           Control.Monad.Trans.Resource    (release)
 import           System.FilePath                 ((</>))
 import           System.Process                  (readProcess)
@@ -57,8 +57,8 @@ insertFiles files ratings thumbSize postId onion = do
                                     }
         case filetype of
           FileImage -> do
-            (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath
-            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs
+            (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath (unpack appExiftool)
+            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs (unpack appExiftool)
             void $ runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
                                             , attachedfileThumbWidth  = thumbW
                                             , attachedfileThumbHeight = thumbH
@@ -68,7 +68,7 @@ insertFiles files ratings thumbSize postId onion = do
             -- make thumbnail
             let thumbpath = appUploadDir' </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
             void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
-            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False
+            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False (unpack appExiftool)
             -- get video info
             info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
             let info   = parseExifInfo info'
@@ -167,24 +167,28 @@ parseExifInfo = filter f2 . map f1 . lines
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 ------------------------------------------------------------------------------------------------
-getImageResolution :: FilePath -> IO ImageResolution
-getImageResolution filepath = withMagickWandGenesis $ do
-  (_,w) <- magickWand
-  readImage w (pack filepath)
-  width  <- getImageWidth w
-  height <- getImageHeight w
-  return (width, height)
+getImageResolution :: FilePath -> FilePath -> IO ImageResolution
+getImageResolution filepath exiftoolPath = do
+  info' <- liftIO $ readProcess exiftoolPath ["-t", filepath] []
+  let info   = parseExifInfo info'
+      width  = fromMaybe "0" $ lookup "Image Width" info
+      height = fromMaybe "0" $ lookup "Image Height" info
 
--- -- | Resizes an image file and saves the result to a new file.
--- resizeImage :: FilePath           -- ^ Source image file
---             -> FilePath           -- ^ Destination image file
---             -> ImageResolution    -- ^ The maximum dimensions of the output file
---             -> IO ImageResolution -- ^ The size of the output file
--- resizeImage from to maxSz = do
---   void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
---   void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
---   outSz <- liftIO $ getImageResolution to
---   return outSz
+  return (read width, read height)
+
+-- | Resizes an image file and saves the result to a new file.
+resizeImage :: FilePath           -- ^ Source image file
+            -> FilePath           -- ^ Destination image file
+            -> ImageResolution    -- ^ The maximum dimensions of the output file
+            -> Bool               -- ^ Is a gif or not
+            -> Bool               -- ^ Animated thumbnails
+            -> FilePath           -- ^ Exiftool path
+            -> IO ImageResolution -- ^ The size of the output file
+resizeImage from to maxSz gif animatedThumbs exiftoolPath = do
+  void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
+  void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
+  outSz <- liftIO $ getImageResolution to exiftoolPath
+  return outSz
 
 calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
 calcResolution (inW,inH) (outW,outH)
@@ -194,42 +198,6 @@ calcResolution (inW,inH) (outW,outH)
     where inAspect  = inW  % inH
           outAspect = outW % outH
 
--- | Resizes an image file and saves the result to a new file.
-resizeImage :: FilePath           -- ^ Source image file
-            -> FilePath           -- ^ Destination image file
-            -> ImageResolution    -- ^ The maximum dimensions of the output file
-            -> Bool               -- ^ Is a gif or not
-            -> Bool               -- ^ Animated thumbnails
-            -> IO ImageResolution -- ^ The size of the output file
-resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
-  (_,w) <- magickWand
-  readImage w (pack from)
-  width  <- getImageWidth w
-  height <- getImageHeight w
-  let inSz                    = (width, height)
-      outSz@(width', height') = calcResolution inSz maxSz
-  (pointer, images) <- coalesceImages w
-  numberImages <- getNumberImages images
-  if gif && numberImages > 1
-    then do
-      (_,w1) <- magickWand
-      let n = if animatedThumbs then numberImages else 2
-      forM_ [1..(n-1)] $ \i -> localGenesis $ do
-        images `setIteratorIndex` i
-        (_,image) <- getImage images
-        IM.resizeImage w width' height' lanczosFilter 1
-        addImage w1 image
-      resetIterator w1
-      release pointer
-      writeImages w1 (pack to) True
-      return outSz
-    else do
-      IM.resizeImage w width' height' lanczosFilter 1
-      setImageCompressionQuality w 95
-      writeImages w (pack to) True
-      release pointer
-      return outSz
-
 -- | Make a thumbnail for an image file
 makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                FilePath        ->  -- ^ Upload dir 
@@ -238,12 +206,13 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                String          ->  -- ^ Hashsum of source file
                ImageResolution ->  -- ^ Width and height of the source file
                Bool            ->  -- ^ Animated thumbnails
+               FilePath        ->   -- ^ Exiftool path
                IO ImageResolution -- ^ Width and height of the destination file
-makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs = do
+makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs exiftoolPath = do
   unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory)) $
     createDirectory (appUploadDir </> thumbDirectory)
   if height > thumbSize || width > thumbSize || fileext == "gif"
-    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs
+    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs exiftoolPath
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)
 

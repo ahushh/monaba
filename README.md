@@ -279,7 +279,7 @@ Configure Monaba dev server:
 
     cd monaba
 
-    stack setup && stack build && stack install yesod-bin-1.4.18.2
+    stack setup && stack build && stack install yesod-bin
 
     stack install && cp ~/.local/bin/PlainCaptcha .
     

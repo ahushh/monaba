@@ -234,10 +234,10 @@ instance Yesod App where
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
-    shouldLog app _source level =
-        appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+    --shouldLog app _source level =
+    --    appShouldLogAll (appSettings app)
+    --         || level == LevelWarn
+    --        || level == LevelError
 
     makeLogger = return . appLogger
 
@@ -318,18 +318,18 @@ instance YesodAuth App where
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _ = [ authHashDBWithForm authForm (Just . UserUniqName) ]
-    authenticate creds = runDB $ do
-        x <- getBy $ UserUniqName $ credsIdent creds
-        case x of
-            Just (Entity uid _) -> return $ Authenticated uid
-            Nothing -> Authenticated <$> insert User
-                { userName     = credsIdent creds
-                , userPassword = Nothing
-                , userGroup    = ""
-                }
+    --authenticate creds = runDB $ do
+    --    x <- getBy $ UserUniqName $ credsIdent creds
+    --    case x of
+    --        Just (Entity uid _) -> return $ Authenticated uid
+    --        Nothing -> Authenticated <$> insert User
+    --            { userName     = credsIdent creds
+    --            , userPassword = Nothing
+    --            , userGroup    = ""
+    --            }
 
 
-    authHttpManager = getHttpManager
+    --authHttpManager = getHttpManager
     onLogin  = setMessageI NowLoggedIn >> redirect ModlogLoginR
 
 

@@ -1,228 +1,324 @@
-name:              Monaba
-version:           2.5.0
-cabal-version:     >= 1.8
-build-type:        Simple
+cabal-version: 1.12
 
-Flag dev
-    Description:   Turn on development settings, like auto-reload templates.
-    Default:       False
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 3f21c8922075c4121896123337bd6befaf4d88e58a450ad6e87a07492d135049
 
-Flag library-only
-    Description:   Build for use with "yesod devel"
-    Default:       False
+name:           Monaba
+version:        2.5.0
+build-type:     Simple
+
+flag dev
+  description: Turn on development settings, like auto-reload templates.
+  manual: False
+  default: False
+
+flag library-only
+  description: Build for use with "yesod devel"
+  manual: False
+  default: False
 
 library
-    hs-source-dirs: ., app
-    exposed-modules: Application
-                     Foundation
-                     Import
-                     Import.NoFoundation
-                     Model
-                     ModelTypes
-                     Settings
-                     Settings.StaticFiles
-                     Handler.Common
-                     Handler.Home
-                     Handler.Help
-                     Handler.Thread
-                     Handler.Board
-                     Handler.Catalog
-                     Handler.Bookmarks
-                     Handler.Edit
-                     Handler.Feed
-                     Handler.Posting
-                     Handler.Delete
-                     Handler.EventSource
-                     Handler.Admin
-                     Handler.Admin.Ban
-                     Handler.Admin.Hellban
-                     Handler.Admin.Board
-                     Handler.Admin.Config
-                     Handler.Admin.Group
-                     Handler.Admin.User
-                     Handler.Admin.Modlog
-                     Handler.Admin.Search
-                     Handler.Admin.Delete
-                     Handler.Admin.Wordfilter
-                     Handler.Admin.Reports
-                     Handler.Ajax
-                     Handler.Settings
-                     Handler.Captcha
-                     Handler.RSS
-                     Handler.Search
-                     Utils.File
-                     Utils.YobaMarkup
+  exposed-modules:
+      Application
+      Foundation
+      Handler.Admin
+      Handler.Admin.Ban
+      Handler.Admin.Board
+      Handler.Admin.Config
+      Handler.Admin.Delete
+      Handler.Admin.Group
+      Handler.Admin.Hellban
+      Handler.Admin.Modlog
+      Handler.Admin.Reports
+      Handler.Admin.Search
+      Handler.Admin.User
+      Handler.Admin.Wordfilter
+      Handler.Ajax
+      Handler.Board
+      Handler.Bookmarks
+      Handler.Captcha
+      Handler.Catalog
+      Handler.Common
+      Handler.Delete
+      Handler.Edit
+      Handler.EventSource
+      Handler.Feed
+      Handler.Help
+      Handler.Home
+      Handler.Posting
+      Handler.RSS
+      Handler.Search
+      Handler.Settings
+      Handler.Thread
+      Import
+      Import.NoFoundation
+      Model
+      ModelTypes
+      Settings
+      Settings.StaticFiles
+      Utils.File
+      Utils.YobaMarkup
+  other-modules:
+      Paths_Monaba
+  hs-source-dirs:
+      src
+  default-extensions: TemplateHaskell QuasiQuotes OverloadedStrings NoImplicitPrelude CPP MultiParamTypeClasses TypeFamilies GADTs GeneralizedNewtypeDeriving FlexibleContexts EmptyDataDecls NoMonomorphismRestriction DeriveDataTypeable ViewPatterns TupleSections RecordWildCards ExistentialQuantification
+  build-depends:
+      MissingH
+    , aeson >=1.4 && <1.5
+    , array
+    , base >=4.9.1.0 && <5
+    , base64-bytestring
+    , blaze-builder
+    , blaze-html
+    , blaze-markup
+    , bytestring >=0.10 && <0.11
+    , case-insensitive
+    , classy-prelude >=1.5 && <1.6
+    , classy-prelude-conduit >=1.5 && <1.6
+    , classy-prelude-yesod >=1.5 && <1.6
+    , conduit >=1.0 && <2.0
+    , containers
+    , data-default
+    , directory >=1.1 && <1.4
+    , esqueleto
+    , fast-logger >=2.2 && <2.5
+    , file-embed
+    , filepath
+    , foreign-store
+    , hjsmin >=0.1 && <0.3
+    , hs-GeoIP
+    , http-client-tls >=0.3 && <0.4
+    , http-conduit >=2.3 && <2.4
+    , http-types
+    , iproute
+    , monad-control >=0.3 && <1.1
+    , monad-logger >=0.3 && <0.4
+    , mtl
+    , nano-md5
+    , old-locale
+    , parsec
+    , pcre-heavy
+    , persistent
+    , persistent-postgresql >=2.9 && <2.10
+    , persistent-template >=2.5 && <2.9
+    , process
+    , random
+    , resourcet
+    , safe
+    , shakespeare >=2.0 && <2.1
+    , sphinx
+    , split
+    , stm
+    , system-filepath
+    , tagsoup
+    , template-haskell
+    , text >=0.11 && <2.0
+    , time
+    , unix
+    , unix-time
+    , unordered-containers
+    , utf8-string
+    , vector
+    , wai
+    , wai-extra >=3.0 && <3.1
+    , wai-logger >=2.2 && <2.4
+    , warp >=3.0 && <3.3
+    , xml-conduit
+    , xml-types
+    , yaml >=0.11 && <0.12
+    , yesod >=1.6 && <1.7
+    , yesod-auth >=1.6 && <1.7
+    , yesod-auth-hashdb
+    , yesod-core >=1.6 && <1.7
+    , yesod-eventsource
+    , yesod-form >=1.6 && <1.7
+    , yesod-newsfeed
+    , yesod-persistent
+    , yesod-static >=1.6 && <1.7
+  if (flag(dev)) || (flag(library-only))
+    ghc-options: -Wall -fwarn-tabs -O0
+    cpp-options: -DDEVELOPMENT
+  else
+    ghc-options: -Wall -fwarn-tabs -O2
+  default-language: Haskell2010
 
-    if flag(dev) || flag(library-only)
-        cpp-options:   -DDEVELOPMENT
-        ghc-options:   -Wall -fwarn-tabs -O0
-    else
-        ghc-options:   -Wall -fwarn-tabs -O0
+executable Monaba
+  main-is: main.hs
+  other-modules:
+      DevelMain
+      Paths_Monaba
+  hs-source-dirs:
+      app
+  default-extensions: TemplateHaskell QuasiQuotes OverloadedStrings NoImplicitPrelude CPP MultiParamTypeClasses TypeFamilies GADTs GeneralizedNewtypeDeriving FlexibleContexts EmptyDataDecls NoMonomorphismRestriction DeriveDataTypeable ViewPatterns TupleSections RecordWildCards ExistentialQuantification
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      MissingH
+    , Monaba
+    , aeson >=1.4 && <1.5
+    , array
+    , base >=4.9.1.0 && <5
+    , base64-bytestring
+    , blaze-builder
+    , blaze-html
+    , blaze-markup
+    , bytestring >=0.10 && <0.11
+    , case-insensitive
+    , classy-prelude >=1.5 && <1.6
+    , classy-prelude-conduit >=1.5 && <1.6
+    , classy-prelude-yesod >=1.5 && <1.6
+    , conduit >=1.0 && <2.0
+    , containers
+    , data-default
+    , directory >=1.1 && <1.4
+    , esqueleto
+    , fast-logger >=2.2 && <2.5
+    , file-embed
+    , filepath
+    , foreign-store
+    , hjsmin >=0.1 && <0.3
+    , hs-GeoIP
+    , http-client-tls >=0.3 && <0.4
+    , http-conduit >=2.3 && <2.4
+    , http-types
+    , iproute
+    , monad-control >=0.3 && <1.1
+    , monad-logger >=0.3 && <0.4
+    , mtl
+    , nano-md5
+    , old-locale
+    , parsec
+    , pcre-heavy
+    , persistent
+    , persistent-postgresql >=2.9 && <2.10
+    , persistent-template >=2.5 && <2.9
+    , process
+    , random
+    , resourcet
+    , safe
+    , shakespeare >=2.0 && <2.1
+    , sphinx
+    , split
+    , stm
+    , system-filepath
+    , tagsoup
+    , template-haskell
+    , text >=0.11 && <2.0
+    , time
+    , unix
+    , unix-time
+    , unordered-containers
+    , utf8-string
+    , vector
+    , wai
+    , wai-extra >=3.0 && <3.1
+    , wai-logger >=2.2 && <2.4
+    , warp >=3.0 && <3.3
+    , xml-conduit
+    , xml-types
+    , yaml >=0.11 && <0.12
+    , yesod >=1.6 && <1.7
+    , yesod-auth >=1.6 && <1.7
+    , yesod-auth-hashdb
+    , yesod-core >=1.6 && <1.7
+    , yesod-eventsource
+    , yesod-form >=1.6 && <1.7
+    , yesod-newsfeed
+    , yesod-persistent
+    , yesod-static >=1.6 && <1.7
+  if flag(library-only)
+    buildable: False
+  default-language: Haskell2010
 
-    extensions: TemplateHaskell
-                QuasiQuotes
-                OverloadedStrings
-                NoImplicitPrelude
-                CPP
-                MultiParamTypeClasses
-                TypeFamilies
-                GADTs
-                GeneralizedNewtypeDeriving
-                FlexibleContexts
-                EmptyDataDecls
-                NoMonomorphismRestriction
-                DeriveDataTypeable
-                ViewPatterns
-                TupleSections
-                RecordWildCards
-                ExistentialQuantification
-
-    build-depends: base                          >= 4          && < 5
-                 , yesod                         >= 1.4.3      && < 1.5
-                 , yesod-core                    >= 1.4.17     && < 1.5
-                 , yesod-auth                    >= 1.4.0      && < 1.5
-                 , yesod-static                  >= 1.4.0.3    && < 1.6
-                 , yesod-form                    >= 1.4.0      && < 1.5
-                 , classy-prelude                >= 0.10.2
-                 , classy-prelude-conduit        >= 0.10.2
-                 , classy-prelude-yesod          >= 0.10.2
-                 , bytestring                    >= 0.9        && < 0.11
-                 , text                          >= 0.11       && < 2.0
-                 , persistent                    >= 2.0        && < 2.6
-                 , persistent-postgresql         >= 2.1.1      && < 2.6
-                 , persistent-template           >= 2.0        && < 2.6
-                 , template-haskell
-                 , shakespeare                   >= 2.0        && < 2.1
-                 , hjsmin                        >= 0.1        && < 0.3
-                 , monad-control                 >= 0.3        && < 1.1
-                 , wai-extra                     >= 3.0        && < 3.1
-                 , yaml                          >= 0.8        && < 0.9
-                 , http-conduit                  >= 2.1        && < 2.2
-                 , directory                     >= 1.1        && < 1.3
-                 , warp                          >= 3.0        && < 3.3
-                 , data-default
-                 , aeson                         >= 0.6        && < 0.12
-                 , conduit                       >= 1.0        && < 2.0
-                 , monad-logger                  >= 0.3        && < 0.4
-                 , fast-logger                   >= 2.2        && < 2.5
-                 , wai-logger                    >= 2.2        && < 2.3
-                 , file-embed
-                 , safe
-                 , unordered-containers
-                 , containers
-                 , vector
-                 , time
-                 , case-insensitive
-                 , wai
-
-                 , filepath
-                 , unix-time                     
-                 , unix                          
-                 , process                       
-                 , system-filepath
-                 , blaze-markup                  
-                 , old-locale                    
-                 , persistent                    
-                 , yesod-persistent              
-                 , blaze-html                    
-                 , MissingH                      
-                 , utf8-string                   
-                 , array                         
-                 , split                         
-                 , esqueleto                     
-                 , containers                    
-                 , http-types                    
-                 , nano-md5
-                 , hs-GeoIP                      
-                 , tagsoup                       
-                 , parsec                        
-                 , yesod-auth-hashdb
-                 , random
-                 , imagemagick
-                 , resourcet
-                 , yesod-eventsource
-                 , stm
-                 , blaze-builder
-                 , base64-bytestring
-                 , mtl
-                 , yesod-newsfeed
-                 , sphinx
-                 , xml-conduit
-                 , xml-types
-                 , iproute
-                 , pcre-heavy
-
-executable         Monaba
-    if flag(library-only)
-        Buildable: False
-
-    main-is:           main.hs
-    hs-source-dirs:    app
-    build-depends:     base, Monaba
-
-    ghc-options:       -threaded -O0 -rtsopts -with-rtsopts=-N
-
-executable         PlainCaptcha
-    if flag(library-only)
-        Buildable: False
-
-    main-is:           PlainCaptcha.hs
-    hs-source-dirs:    Utils
-    build-depends:     base
-    ghc-options:       -threaded -O0 -rtsopts -with-rtsopts=-N
-    build-depends: random
-                 , imagemagick
-                 , system-filepath
-                 , text
-                 , transformers
-
-executable         YobaCaptcha
-    if flag(library-only)
-        Buildable: False
-
-    main-is:           YobaCaptcha.hs
-    hs-source-dirs:    Utils
-    build-depends:     base
-    ghc-options:       -threaded -O0 -rtsopts -with-rtsopts=-N
-    build-depends: random
-                 , imagemagick
-                 , system-filepath
-                 , text
-                 , transformers
-
-test-suite test
-    type:              exitcode-stdio-1.0
-    main-is:           Spec.hs
-    hs-source-dirs:    test
-    ghc-options:       -Wall
-
-    extensions: TemplateHaskell
-                QuasiQuotes
-                OverloadedStrings
-                NoImplicitPrelude
-                CPP
-                MultiParamTypeClasses
-                TypeFamilies
-                GADTs
-                GeneralizedNewtypeDeriving
-                FlexibleContexts
-                EmptyDataDecls
-                NoMonomorphismRestriction
-                DeriveDataTypeable
-                ViewPatterns
-                TupleSections
-
-    build-depends: base
-                 , Monaba
-                 , yesod-test
-                 , yesod-core
-                 , yesod
-                 , persistent
-                 , persistent-postgresql
-                 , resourcet
-                 , monad-logger
-                 , shakespeare
-                 , transformers
-                 , hspec >= 2.0.0
-                 , classy-prelude
-                 , classy-prelude-yesod
+test-suite Monaba-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Handler.CommonSpec
+      Handler.HomeSpec
+      TestImport
+      Paths_Monaba
+  hs-source-dirs:
+      test
+  default-extensions: TemplateHaskell QuasiQuotes OverloadedStrings NoImplicitPrelude CPP MultiParamTypeClasses TypeFamilies GADTs GeneralizedNewtypeDeriving FlexibleContexts EmptyDataDecls NoMonomorphismRestriction DeriveDataTypeable ViewPatterns TupleSections RecordWildCards ExistentialQuantification
+  ghc-options: -Wall
+  build-depends:
+      MissingH
+    , Monaba
+    , aeson >=1.4 && <1.5
+    , array
+    , base >=4.9.1.0 && <5
+    , base64-bytestring
+    , blaze-builder
+    , blaze-html
+    , blaze-markup
+    , bytestring >=0.10 && <0.11
+    , case-insensitive
+    , classy-prelude >=1.5 && <1.6
+    , classy-prelude-conduit >=1.5 && <1.6
+    , classy-prelude-yesod >=1.5 && <1.6
+    , conduit >=1.0 && <2.0
+    , containers
+    , data-default
+    , directory >=1.1 && <1.4
+    , esqueleto
+    , fast-logger >=2.2 && <2.5
+    , file-embed
+    , filepath
+    , foreign-store
+    , hjsmin >=0.1 && <0.3
+    , hs-GeoIP
+    , hspec >=2.0.0
+    , http-client-tls >=0.3 && <0.4
+    , http-conduit >=2.3 && <2.4
+    , http-types
+    , iproute
+    , monad-control >=0.3 && <1.1
+    , monad-logger >=0.3 && <0.4
+    , mtl
+    , nano-md5
+    , old-locale
+    , parsec
+    , pcre-heavy
+    , persistent
+    , persistent-postgresql >=2.9 && <2.10
+    , persistent-template >=2.5 && <2.9
+    , process
+    , random
+    , resourcet
+    , safe
+    , shakespeare >=2.0 && <2.1
+    , sphinx
+    , split
+    , stm
+    , system-filepath
+    , tagsoup
+    , template-haskell
+    , text >=0.11 && <2.0
+    , time
+    , unix
+    , unix-time
+    , unordered-containers
+    , utf8-string
+    , vector
+    , wai
+    , wai-extra >=3.0 && <3.1
+    , wai-logger >=2.2 && <2.4
+    , warp >=3.0 && <3.3
+    , xml-conduit
+    , xml-types
+    , yaml >=0.11 && <0.12
+    , yesod >=1.6 && <1.7
+    , yesod-auth >=1.6 && <1.7
+    , yesod-auth-hashdb
+    , yesod-core >=1.6 && <1.7
+    , yesod-eventsource
+    , yesod-form >=1.6 && <1.7
+    , yesod-newsfeed
+    , yesod-persistent
+    , yesod-static >=1.6 && <1.7
+    , yesod-test
+  default-language: Haskell2010

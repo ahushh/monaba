@@ -1,7 +1,6 @@
 .idea
 Monaba
 YobaCaptcha
-PlainCaptcha
 .stack-work
 static/banners/*
 !static/banners/feed

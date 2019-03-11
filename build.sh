@@ -30,5 +30,6 @@ cp monaba/config/settings.yml .
 
 echo 'Creating storage dirs...'
 mkdir -p storage/upload storage/pgdata storage/searchdata
+cp -r monaba/static/banners storage/banners
 
 echo 'Done'

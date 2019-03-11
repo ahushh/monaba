@@ -1,0 +1,4 @@
+export PGHOST_APP=localhost
+export SEARCH_HOST=localhost
+export HIGHLIGHT_PATH=./highlight.php
+export CAPTCHA_PATH=./PlainCaptcha

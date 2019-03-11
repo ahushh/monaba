@@ -283,16 +283,9 @@ Configure Monaba dev server:
 
     stack install && cp ~/.local/bin/PlainCaptcha .
     
-
-    export PGHOST_APP=localhost
-
-    export SEARCH_HOST=localhost
-
-    export HIGHLIGHT_PATH=./highlight.php
-
-    export CAPTCHA_PATH=./PlainCaptcha
-
     chmod 777 upload
+
+    source ../monaba_dev_env
 
 Run:
 

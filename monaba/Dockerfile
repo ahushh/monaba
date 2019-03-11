@@ -36,7 +36,7 @@ RUN apt-get update && apt-get -y install \
   libcrypto++-dev
 
 COPY ./geshi ./geshi
-ADD ./GeoLiteCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
+ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
 COPY --from=build-env /opt/monaba-build/highlight.php ./highlight.php
 COPY --from=build-env /opt/monaba-build/config ./config

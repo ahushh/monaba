@@ -285,6 +285,10 @@ Configure Monaba dev server:
 
     source ../monaba_dev_env
 
+Build captcha:
+
+    cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha . && cd ..
+
 Run:
 
     stack exec yesod devel

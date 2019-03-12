@@ -1,0 +1,41 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 1710d3441b31d7bfbc03d5fd92a4b9fb7d6f4cb485ac6418a066f6112265d57a
+
+name:           MonabaCaptcha
+version:        2.5.0.0
+build-type:     Simple
+
+executable PlainCaptcha
+  main-is: Main.hs
+  other-modules:
+      Paths_MonabaCaptcha
+  hs-source-dirs:
+      Plain
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <4.9
+    , imagemagick
+    , random
+    , text
+    , transformers
+  default-language: Haskell2010
+
+executable YobaCaptcha
+  main-is: Main.hs
+  other-modules:
+      Paths_MonabaCaptcha
+  hs-source-dirs:
+      Yoba
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <4.9
+    , imagemagick
+    , random
+    , text
+    , transformers
+  default-language: Haskell2010

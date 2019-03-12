@@ -7,6 +7,7 @@ services:
       - ./storage/pgdata:/var/lib/postgresql/data
     networks:
       main:
+        ipv4_address: 172.19.0.6
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -36,6 +37,7 @@ services:
         delay: 2s
     networks:
       main:
+        ipv4_address: 172.19.0.5
   webserver:
     build: ./webserver
     image: registry.gitlab.com/ahushh/monaba/webserver:latest
@@ -47,6 +49,7 @@ services:
       - ./storage/upload:/opt/monaba/upload
     networks:
       main:
+        ipv4_address: 172.19.0.4
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -65,6 +68,7 @@ services:
         constraints: [node.role == manager]
     networks:
       main:
+        ipv4_address: 172.19.0.3
         aliases:
           - search.in
   torgate:
@@ -75,7 +79,7 @@ services:
       - webserver
     networks:
       main:
-        ipv4_address: 172.19.0.6
+        ipv4_address: 172.19.0.2
     deploy:
       mode: replicated
       replicas: 1

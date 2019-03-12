@@ -287,7 +287,7 @@ Configure Monaba dev server:
 
 Build captcha:
 
-    cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha . && cd ..
+    cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha .. && cd ..
 
 Run:
 

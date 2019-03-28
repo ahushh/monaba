@@ -7,7 +7,7 @@ cabal-version: 1.12
 -- hash: 3f21c8922075c4121896123337bd6befaf4d88e58a450ad6e87a07492d135049
 
 name:           Monaba
-version:        2.5.0
+version:        2.6.0
 build-type:     Simple
 
 flag dev

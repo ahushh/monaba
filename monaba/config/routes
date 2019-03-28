@@ -123,6 +123,20 @@
 
 /rss/#Text        RssR     GET
 
+/api/posts                             ApiPostR PUT
+/api/posts/#Int                        ApiPostByIdR GET PATCH
+
+/api/boards                            ApiListBoardsR GET
+/api/boards/#Text/page/#Int            ApiBoardR GET
+/api/boards/#Text/threads/#Int         ApiThreadR GET
+/api/boards/#Text/threads/#Int/deleted ApiDeletedPosts GET
+
+/api/feed/page/#Int                    ApiFeedR GET
+/api/catalog/#Text                     ApiCatalogR GET
+/api/home                              ApiHomeR GET
+/api/captcha                           ApiCaptchaR GET
+/api/file                              ApiFileR PUT
+
 !/#Text/#Int      ThreadR       GET POST
 !/#Text/page/#Int BoardR        GET POST
 !/#Text           BoardNoPageR  GET POST

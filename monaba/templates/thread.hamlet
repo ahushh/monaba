@@ -28,7 +28,7 @@ $if hasAccessToReply
     <div .thread id="thread-#{show $ postLocalId $ entityVal eOpPost }-#{board}" data-board=#{board}>
         ^{postWidget eOpPost opPostFiles True hasAccessToReply False geoIpEnabled showPostDate permissions 0 enablePM}
     
-        $forall (i, (eReply, files)) <- enumerate repliesAndFiles
+        $forall (i, (PostAndFiles (eReply, files))) <- enumerate repliesAndFiles
           ^{postWidget eReply (reverse files) True hasAccessToReply False geoIpEnabled showPostDate permissions (inc i) enablePM}
 
     $if hasAccessToReply

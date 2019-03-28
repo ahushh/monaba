@@ -69,6 +69,7 @@ instance FromJSON FileType where
   parseJSON (String x) = return $ read $ unpack x
   parseJSON _          = return FileUndetected
 
+
 derivePersistField "Permission"
 derivePersistField "FileType"
 derivePersistField "GeoCountry"

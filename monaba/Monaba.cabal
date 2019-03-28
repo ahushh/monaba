@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3f21c8922075c4121896123337bd6befaf4d88e58a450ad6e87a07492d135049
+-- hash: b8f4c9097338656514255919e06e891d47dd56fc34d9771360990e8bd0ac83a7
 
 name:           Monaba
 version:        2.6.0
@@ -37,6 +37,7 @@ library
       Handler.Admin.User
       Handler.Admin.Wordfilter
       Handler.Ajax
+      Handler.API
       Handler.Board
       Handler.Bookmarks
       Handler.Captcha
@@ -57,6 +58,7 @@ library
       Import.NoFoundation
       Model
       ModelTypes
+      Request
       Settings
       Settings.StaticFiles
       Utils.File

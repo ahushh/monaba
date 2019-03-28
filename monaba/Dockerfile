@@ -19,6 +19,11 @@ COPY . ./
 
 RUN stack install
 
+COPY captcha captcha
+WORKDIR /opt/monaba-build/captcha
+RUN stack setup --silent
+RUN stack install
+
 # run
 FROM ubuntu:16.04
 RUN mkdir -p /opt/monaba
@@ -27,6 +32,7 @@ WORKDIR /opt/monaba
 RUN apt-get update && apt-get -y install \
   php7.0-fpm \
   libav-tools \
+  imagemagick \
   exiftool \
   libpq-dev \
   libmagickwand-dev \

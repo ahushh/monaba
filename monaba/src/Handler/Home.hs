@@ -3,7 +3,7 @@ module Handler.Home where
 import Import
 import qualified Data.Text as T (null)
 
-getHomeR :: Handler Html
+getHomeR :: Handler TypedContent
 getHomeR = do
   AppSettings{..} <- appSettings <$> getYesod
   group  <- (fmap $ userGroup . entityVal) <$> maybeAuth
@@ -31,6 +31,17 @@ getHomeR = do
 
   ip              <- pack <$> getIp
   recentImages    <- runDB $ selectList ([AttachedfileFiletype ==. FileImage]++ if not (isOnion ip) then [AttachedfileOnion ==. False] else []) [Desc AttachedfileId, LimitTo lastPics]
-  defaultLayout $ do
-    setTitle $ toHtml appSiteName
-    $(widgetFile "homepage")
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+      setTitle $ toHtml appSiteName
+      $(widgetFile "homepage")
+    provideJson $ object [ "stats" .= object [ "posts"   .= statsAllPosts
+                                             , "deleted" .= statsAllDeleted
+                                             , "month"   .= statsMonth
+                                             , "day"     .= statsDay
+                                             , "files"   .= statsAllFiles  
+                                             ]
+                         , "recent_images" .= recentImages
+                         , "news"          .= newsAndFiles
+                         , "title"         .= appSiteName  
+                         ]

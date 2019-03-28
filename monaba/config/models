@@ -11,7 +11,7 @@ User
     group            Text
     password         Text Maybe
     deriving         Typeable
-Board
+Board json
     index             Int default=0
     name              Text
     BoardUniqName     name
@@ -94,6 +94,14 @@ Attachedfile
     info         String
     rating       Text default='SFW'
     onion        Bool default=false
+TempFile
+    hashsum     String
+    name        String
+    extension   String
+    filetype    FileType
+    path        FilePath
+    size        String
+    rating      Text
 Ban
     ipBegin      IP
     ipEnd        IP

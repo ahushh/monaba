@@ -11,6 +11,7 @@ import           Graphics.ImageMagick.MagickWand
 import           Prelude
 import           System.Random                   (randomRIO)
 import           System.Environment             (getArgs)
+
 ------------------------------------------------------------------------------------------------
 -- | Takes a random element from list
 pick :: [a] -> IO a

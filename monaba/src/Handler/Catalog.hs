@@ -4,7 +4,7 @@ import           Import
 import qualified Data.Text          as T
 import           Handler.Posting
 -------------------------------------------------------------------------------------------------------------------
-getCatalogR :: Text -> Handler Html
+getCatalogR :: Text -> Handler TypedContent
 getCatalogR board = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
@@ -36,7 +36,14 @@ getCatalogR board = do
   AppSettings{..} <- appSettings <$> getYesod
   mBanner         <- randomBanner
   msgrender       <- getMessageRender
-  defaultLayout $ do
-    setUltDestCurrent
-    defaultTitle $ T.concat [title, appTitleDelimiter, msgrender MsgCatalog]
-    $(widgetFile "catalog")
+  let pageTitle = T.concat [title, appTitleDelimiter, msgrender MsgCatalog]
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+     setUltDestCurrent
+     defaultTitle $ pageTitle
+     $(widgetFile "catalog")
+    provideJson $ object [ "banner" .= mBanner
+                         , "posts"  .= postsAndFiles
+                         , "board"  .= boardVal
+                         , "title"  .= pageTitle
+                         ]

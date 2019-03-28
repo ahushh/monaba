@@ -9,17 +9,103 @@ import qualified Data.Conduit.List               as CL
 import           Data.Ratio
 import           Data.Text                       (isPrefixOf)
 import           Text.Printf
-import           System.Directory                (copyFile, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory)
+import           System.Directory                (copyFile, doesDirectoryExist, createDirectory, getDirectoryContents, getCurrentDirectory, renameFile)
 --import           Filesystem.Path.CurrentOS       (fromText)
-import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
-import qualified Graphics.ImageMagick.MagickWand as IM
-import           Control.Monad.Trans.Resource    (release)
+--import           Graphics.ImageMagick.MagickWand hiding (resizeImage, getImageResolution)
+--import qualified Graphics.ImageMagick.MagickWand as IM
 import           System.FilePath                 ((</>))
 import           System.Process                  (readProcess)
 import           System.Posix                    (FileOffset())
 import           System.Posix.Files              (createSymbolicLink, getFileStatus, fileSize)
+import           System.Posix.Temp               (mkstemp)
+import           GHC.IO.Handle                   (hClose)
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
+createTempFile :: FileInfo -> Censorship -> Handler (Key TempFile)
+createTempFile file rating = do
+  AppSettings{..} <- appSettings <$> getYesod
+  hashsum   <- md5sum <$> BS.concat <$> (fileSource file $$ CL.consume)
+  (path, handle) <- liftIO $ mkstemp (appUploadDir </> "tmp/monaba") -- TODO: autoremove file after inserting
+  liftIO $ hClose handle
+  liftIO $ fileMove file path
+  filesize  <- liftIO $ formatFileSize <$> getFileSize path
+  let filetype = detectFileType file
+      filename = sanitizeFileName $ unpack $ fileName file
+      fileext  = fileExt file
+      newFile  = TempFile { tempFileHashsum    = hashsum
+                          , tempFileName       = filename
+                          , tempFileExtension  = fileext
+                          , tempFileFiletype   = filetype
+                          , tempFilePath       = path
+                          , tempFileSize       = filesize
+                          , tempFileRating     = tshow rating
+                          }
+  runDB $ insert newFile
+
+
+insertTempFile :: TempFile -> Int -> Key Post -> Bool -> Handler (Maybe (Entity Attachedfile))
+insertTempFile file thumbSize postId onion = do
+  uploadPath <- saveFile (pack $ tempFileName file) (tempFileHashsum file) onion (renameFile (tempFilePath file))
+  let newFile  = Attachedfile { attachedfileParentId    = postId
+                              , attachedfileHashsum     = tempFileHashsum file
+                              , attachedfileName        = tempFileName file
+                              , attachedfileExtension   = tempFileExtension file
+                              , attachedfileFiletype    = tempFileFiletype file
+                              , attachedfilePath        = uploadPath
+                              , attachedfileSize        = tempFileSize file
+                              , attachedfileThumbSize   = thumbSize
+                              , attachedfileThumbWidth  = 0
+                              , attachedfileThumbHeight = 0
+                              , attachedfileInfo        = ""
+                              , attachedfileRating      = tempFileRating file
+                              , attachedfileOnion       = onion
+                              }
+  -- TODO: make a function from the code below
+  AppSettings{..} <- appSettings <$> getYesod
+  let appUploadDir' = if onion then appUploadDir </> "onion" else appUploadDir
+      hashsum       = tempFileHashsum file
+      filetype      = tempFileFiletype file 
+      fileext       = tempFileExtension file 
+  case filetype of
+    FileImage -> do
+      (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath (unpack appExiftool)
+      (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs (unpack appExiftool)
+      key <- runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
+                                     , attachedfileThumbWidth  = thumbW
+                                     , attachedfileThumbHeight = thumbH
+                                     }
+      val <- runDB $ get key
+      return $ (fmap (Entity key) val)
+    FileVideo -> do
+      liftIO $ unlessM (doesDirectoryExist $ appUploadDir' </> thumbDirectory) $ createDirectory (appUploadDir' </> thumbDirectory)
+      -- make thumbnail
+      let thumbpath = appUploadDir' </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
+      void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
+      (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False (unpack appExiftool)
+      -- get video info
+      info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
+      let info   = parseExifInfo info'
+          width  = fromMaybe "0" $ lookup "Image Width" info
+          height = fromMaybe "0" $ lookup "Image Height" info
+          duration = fromMaybe "N/A" $ lookup "Duration" info
+      key <- runDB $ insert $ newFile { attachedfileInfo        = width++"x"++height++", "++duration
+                                     , attachedfileThumbWidth  = thumbW
+                                     , attachedfileThumbHeight = thumbH
+                                     }
+      val <- runDB $ get key
+      return $ (fmap (Entity key) val)
+    FileAudio -> do
+      info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
+      let info      = parseExifInfo info'
+          bitrate1  = lookup "Audio Bitrate" info
+          bitrate2  = lookup "Nominal Bitrate" info
+          bitrate   = fromMaybe "0 kbps" $ mplus bitrate1 bitrate2
+          duration  = takeWhile (/=' ') $ fromMaybe "0" $ lookup "Duration" info
+      key <- runDB $ insert $ newFile { attachedfileInfo = bitrate++", "++duration }
+      val <- runDB $ get key
+      return $ (fmap (Entity key) val)
+    
+
 insertFiles :: [FormResult (Maybe FileInfo)] -> -- ^ Files
               [FormResult Censorship]       -> -- ^ Censorship ratings
               Int      -> -- ^ Thumbnail height and width
@@ -34,7 +120,7 @@ insertFiles files ratings thumbSize postId onion = do
     case formfile of
       FormSuccess (Just f) -> do
         hashsum    <- md5sum <$> BS.concat <$> (fileSource f $$ CL.consume) 
-        uploadPath <- saveFile f hashsum onion
+        uploadPath <- saveFile (fileName f) hashsum onion (fileMove f)
         filesize   <- liftIO $ formatFileSize <$> getFileSize uploadPath
         let filetype = detectFileType f
             filename = sanitizeFileName $ unpack $ fileName f
@@ -57,8 +143,8 @@ insertFiles files ratings thumbSize postId onion = do
                                     }
         case filetype of
           FileImage -> do
-            (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath
-            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs
+            (imgW  , imgH  ) <- liftIO $ getImageResolution uploadPath (unpack appExiftool)
+            (thumbW, thumbH) <- liftIO $ makeThumbImg thumbSize appUploadDir' uploadPath fileext hashsum (imgW, imgH) appAnimatedThumbs (unpack appExiftool)
             void $ runDB $ insert $ newFile { attachedfileInfo        = (show imgW)++"x"++(show imgH)
                                             , attachedfileThumbWidth  = thumbW
                                             , attachedfileThumbHeight = thumbH
@@ -68,7 +154,7 @@ insertFiles files ratings thumbSize postId onion = do
             -- make thumbnail
             let thumbpath = appUploadDir' </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ ".png")
             void $ liftIO $ readProcess (unpack appFfmpeg) ["-y","-i", uploadPath, "-vframes", "1", thumbpath] []
-            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False
+            (thumbW, thumbH) <- liftIO $ resizeImage thumbpath thumbpath (thumbSize,thumbSize) False False (unpack appExiftool)
             -- get video info
             info' <- liftIO $ readProcess (unpack appExiftool) ["-t",uploadPath] []
             let info   = parseExifInfo info'
@@ -91,11 +177,12 @@ insertFiles files ratings thumbSize postId onion = do
           _         -> void $ runDB $ insert newFile
       _                    -> return ())
 
-saveFile :: FileInfo -> String -> Bool -> Handler FilePath
-saveFile file hashsum onion = do
+-- saveFile :: Text -> String -> Bool -> Handler FilePath
+saveFile :: Text -> [Char] -> Bool -> (FilePath -> IO a) -> HandlerFor App FilePath
+saveFile filename hashsum onion move = do
   AppSettings{..} <- appSettings <$> getYesod
   let appUploadDir' = if onion then appUploadDir </> "onion" else appUploadDir
-  let fn = sanitizeFileName $ unpack $ fileName file
+  let fn = sanitizeFileName $ unpack filename
   n <- storageUploadDir . entityVal . fromJust <$> runDB (selectFirst ([]::[Filter Storage]) [])
   dirExists'  <- liftIO $ doesDirectoryExist appUploadDir'
   unless dirExists' $ liftIO $ createDirectory appUploadDir
@@ -109,7 +196,8 @@ saveFile file hashsum onion = do
       dirExists'' <- liftIO $ doesDirectoryExist (appUploadDir' </> show (n+1))
       unless dirExists'' $ liftIO $ createDirectory (appUploadDir' </> show (n+1))
       let path = appUploadDir' </> show (n+1) </> fn
-      liftIO $ fileMove file path
+      liftIO $ move path
+      -- liftIO $ fileMove file path
       return path
     else do
       fileExists <- runDB $ selectFirst [AttachedfileHashsum ==. hashsum] []
@@ -122,7 +210,8 @@ saveFile file hashsum onion = do
           return path
         else do
           let path = appUploadDir' </> show n </> fn
-          liftIO $ fileMove file path
+          -- liftIO $ fileMove file path
+          liftIO $ move path
           return path
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
@@ -167,24 +256,28 @@ parseExifInfo = filter f2 . map f1 . lines
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 ------------------------------------------------------------------------------------------------
-getImageResolution :: FilePath -> IO ImageResolution
-getImageResolution filepath = withMagickWandGenesis $ do
-  (_,w) <- magickWand
-  readImage w (pack filepath)
-  width  <- getImageWidth w
-  height <- getImageHeight w
-  return (width, height)
+getImageResolution :: FilePath -> FilePath -> IO ImageResolution
+getImageResolution filepath exiftoolPath = do
+  info' <- liftIO $ readProcess exiftoolPath ["-t", filepath] []
+  let info   = parseExifInfo info'
+      width  = fromMaybe "0" $ lookup "Image Width" info
+      height = fromMaybe "0" $ lookup "Image Height" info
 
--- -- | Resizes an image file and saves the result to a new file.
--- resizeImage :: FilePath           -- ^ Source image file
---             -> FilePath           -- ^ Destination image file
---             -> ImageResolution    -- ^ The maximum dimensions of the output file
---             -> IO ImageResolution -- ^ The size of the output file
--- resizeImage from to maxSz = do
---   void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
---   void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
---   outSz <- liftIO $ getImageResolution to
---   return outSz
+  return (read width, read height)
+
+-- | Resizes an image file and saves the result to a new file.
+resizeImage :: FilePath           -- ^ Source image file
+            -> FilePath           -- ^ Destination image file
+            -> ImageResolution    -- ^ The maximum dimensions of the output file
+            -> Bool               -- ^ Is a gif or not
+            -> Bool               -- ^ Animated thumbnails
+            -> FilePath           -- ^ Exiftool path
+            -> IO ImageResolution -- ^ The size of the output file
+resizeImage from to maxSz gif animatedThumbs exiftoolPath = do
+  void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
+  void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
+  outSz <- liftIO $ getImageResolution to exiftoolPath
+  return outSz
 
 calcResolution :: ImageResolution -> ImageResolution -> ImageResolution
 calcResolution (inW,inH) (outW,outH)
@@ -194,42 +287,6 @@ calcResolution (inW,inH) (outW,outH)
     where inAspect  = inW  % inH
           outAspect = outW % outH
 
--- | Resizes an image file and saves the result to a new file.
-resizeImage :: FilePath           -- ^ Source image file
-            -> FilePath           -- ^ Destination image file
-            -> ImageResolution    -- ^ The maximum dimensions of the output file
-            -> Bool               -- ^ Is a gif or not
-            -> Bool               -- ^ Animated thumbnails
-            -> IO ImageResolution -- ^ The size of the output file
-resizeImage from to maxSz gif animatedThumbs = withMagickWandGenesis $ do
-  (_,w) <- magickWand
-  readImage w (pack from)
-  width  <- getImageWidth w
-  height <- getImageHeight w
-  let inSz                    = (width, height)
-      outSz@(width', height') = calcResolution inSz maxSz
-  (pointer, images) <- coalesceImages w
-  numberImages <- getNumberImages images
-  if gif && numberImages > 1
-    then do
-      (_,w1) <- magickWand
-      let n = if animatedThumbs then numberImages else 2
-      forM_ [1..(n-1)] $ \i -> localGenesis $ do
-        images `setIteratorIndex` i
-        (_,image) <- getImage images
-        IM.resizeImage w width' height' lanczosFilter 1
-        addImage w1 image
-      resetIterator w1
-      release pointer
-      writeImages w1 (pack to) True
-      return outSz
-    else do
-      IM.resizeImage w width' height' lanczosFilter 1
-      setImageCompressionQuality w 95
-      writeImages w (pack to) True
-      release pointer
-      return outSz
-
 -- | Make a thumbnail for an image file
 makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                FilePath        ->  -- ^ Upload dir 
@@ -238,12 +295,13 @@ makeThumbImg :: Int             ->  -- ^ The maximum thumbnail width and height
                String          ->  -- ^ Hashsum of source file
                ImageResolution ->  -- ^ Width and height of the source file
                Bool            ->  -- ^ Animated thumbnails
+               FilePath        ->   -- ^ Exiftool path
                IO ImageResolution -- ^ Width and height of the destination file
-makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs = do
+makeThumbImg thumbSize appUploadDir filepath fileext hashsum (width, height) animatedThumbs exiftoolPath = do
   unlessM (doesDirectoryExist (appUploadDir </> thumbDirectory)) $
     createDirectory (appUploadDir </> thumbDirectory)
   if height > thumbSize || width > thumbSize || fileext == "gif"
-    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs
+    then resizeImage filepath thumbpath (thumbSize,thumbSize) (fileext == "gif") animatedThumbs exiftoolPath
     else copyFile filepath thumbpath >> return (width, height)
     where thumbpath = appUploadDir </> thumbDirectory </> (show thumbSize ++ "thumb-" ++ hashsum ++ "." ++ fileext)
 

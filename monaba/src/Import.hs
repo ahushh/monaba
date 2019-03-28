@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Import
     ( module Import
     ) where
@@ -412,6 +413,17 @@ checkAccessToNewThread mgroup boardVal =
       access = boardThreadAccess boardVal
   in isNothing access || (isJust group && elem (fromJust group) (fromJust access))
 
+checkViewAccess' :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m Bool
+checkViewAccess' mgroup boardVal = do
+  let group  = (groupName . entityVal) <$> mgroup
+      access = boardViewAccess boardVal
+  ip <- pack <$> getIp
+  return $ not ( (isJust access && isNothing group) ||
+               (isJust access && notElem (fromJust group) (fromJust access)) ||
+               (boardOnion boardVal && not (isOnion ip))
+             )
+
+checkViewAccess :: forall (m :: * -> *). MonadHandler m => Maybe (Entity Group) -> Board -> m () 
 checkViewAccess mgroup boardVal = do
   let group  = (groupName . entityVal) <$> mgroup
       access = boardViewAccess boardVal
@@ -511,10 +523,6 @@ getIp = do
   cfIp   <- fmap B.toString <$> getIpCF
   hostIp <- getIpFromHost
   let resultIp = fromJust (cfIp <|> realIp <|> Just hostIp)
-  $logWarn (">>>"::Text)
-  $logWarn $ pack $ resultIp
-  $logWarn $ tshow $ isOnion resultIp
-  $logWarn ("<<<"::Text)
   return resultIp
   where getIpReal      = lookup "X-Real-IP" . requestHeaders <$> waiRequest
         getIpCF        = lookup "CF-Connecting-IP" . requestHeaders <$> waiRequest
@@ -571,3 +579,72 @@ cleanBoardStats board = do
       return (b, maybe 0 (postLocalId . entityVal) lastPost, 0)
     else return s
   saveBoardStats newStats
+
+
+-------------------------------------------------------------------------------------------------------------------
+-- JSON instances
+-------------------------------------------------------------------------------------------------------------------
+data PostAndFiles = PostAndFiles (Entity Post, [Entity Attachedfile])
+type OpPostAndFiles = PostAndFiles
+data ThreadsAndPreviews = ThreadsAndPreviews [( OpPostAndFiles
+                                              , [PostAndFiles]
+                                              , Int
+                                              )]
+
+appUploadDir' :: String
+appUploadDir' = "upload"
+
+appStaticDir' :: String
+appStaticDir' = "static"
+
+instance ToJSON Attachedfile where
+    toJSON Attachedfile {..} = object
+        [ "hashsum"         .= attachedfileHashsum
+        , "name"        .= attachedfileName
+        , "extension"   .= attachedfileExtension
+        , "thumbSize"   .= attachedfileThumbSize
+        , "thumbWidth"  .= attachedfileThumbWidth
+        , "thumbHeight" .= attachedfileThumbHeight
+        , "size"        .= attachedfileSize
+        , "info"        .= attachedfileInfo
+        , "path"        .= attachedfilePath
+        , "rating"      .= attachedfileRating  
+        , "thumb_path"  .= thumbUrlPath appUploadDir' appStaticDir' attachedfileThumbSize attachedfileFiletype attachedfileExtension attachedfileHashsum attachedfileOnion 
+        ]
+
+instance ToJSON Post where
+    toJSON Post {..} = object
+        [ "board"       .= postBoard
+        , "id"          .= postLocalId
+        , "parent"      .= postParent
+        , "date"        .= postDate
+        , "bumped"      .= postBumped
+        , "sticked"     .= postSticked
+        , "locked"      .= postLocked
+        , "autosage"    .= postAutosage
+        , "message"     .= postMessage
+        , "rawMessage"  .= postRawMessage
+        , "title"       .= postTitle
+        , "name"        .= postName
+        , "deletedByOp" .= postDeletedByOp
+        ]
+    
+
+instance ToJSON (Entity Attachedfile) where
+    toJSON (Entity k v) = toJSON v
+
+instance ToJSON (Entity Post) where
+    toJSON (Entity k v) = toJSON v
+
+instance ToJSON PostAndFiles where
+  toJSON (PostAndFiles (post, files)) = object [ "post"  .= post,
+                                                 "files" .= files
+                                               ]
+
+instance ToJSON ThreadsAndPreviews where
+  toJSON (ThreadsAndPreviews threads) = array $ map
+                                        (\(op, replies, omitted) -> object [ "op"      .= op
+                                                                           , "replies" .= replies
+                                                                           , "omitted" .= omitted
+                                                                           ])
+                                        threads

@@ -11,7 +11,7 @@ import           Data.Digest.OpenSSL.MD5 (md5sum)
 import qualified Data.ByteString.UTF8    as B
 import           Handler.Common
 ---------------------------------------------------------------------------------------------
-getDeletedByOpR :: Text -> Int -> Handler Html
+getDeletedByOpR :: Text -> Int -> Handler TypedContent
 getDeletedByOpR board thread = do
   when (thread == 0) notFound
   muser    <- maybeAuth
@@ -35,10 +35,12 @@ getDeletedByOpR board thread = do
   let allPosts = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts'
   ------------------------------------------------------------------------------------------------------- 
   AppSettings{..}  <- appSettings <$> getYesod
-  defaultLayout $ do
-    setUltDestCurrent
-    defaultTitleMsg MsgDeletedPosts
-    $(widgetFile "deleted")
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+      setUltDestCurrent
+      defaultTitleMsg MsgDeletedPosts
+      $(widgetFile "deleted")
+    provideJson $ object ["posts" .= allPosts]
 
 getDeleteFileR :: Int -> Handler Html
 getDeleteFileR fileId = do

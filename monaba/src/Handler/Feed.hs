@@ -4,7 +4,7 @@ import           Import
 import           Handler.Posting (takeBanner, randomBanner, postForm, editForm)
 import           Handler.Captcha (captchaWidget)
 -------------------------------------------------------------------------------------------------------------
-getFeedR :: Handler Html
+getFeedR :: Handler TypedContent
 getFeedR = getAjaxFeedOffsetR 0
 
 getAjaxGetPostFormR :: Text -> Handler Html
@@ -26,7 +26,7 @@ getAjaxGetPostFormR board = do
                         ^{formWidget captchaImg}
                      |]
 
-getAjaxFeedOffsetR :: Int -> Handler Html
+getAjaxFeedOffsetR :: Int -> Handler TypedContent
 getAjaxFeedOffsetR offset = do
   muser  <- maybeAuth
   mgroup <- getMaybeGroup muser
@@ -60,11 +60,20 @@ getAjaxFeedOffsetR offset = do
   (editFormWidget, _) <- generateFormPost $ editForm permissions
   ((_, searchWidget), _) <- runFormGet $ searchForm $ Just ""
   if offset == 0
-     then defaultLayout $ do
-            setUltDestCurrent
-            defaultTitleMsg MsgFeed
-            $(widgetFile "feed")
-    else bareLayout $(widgetFile "feed")
+     then selectRep $ do
+            provideRep $ defaultLayout $ do
+              setUltDestCurrent
+              defaultTitleMsg MsgFeed
+              $(widgetFile "feed")
+            provideJson $ object [ "posts" .= map (\(post, files) -> PostAndFiles (post, files)) postsAndFiles
+                                 , "banner" .= mBanner
+                                 ]
+    else selectRep $ do
+           provideRep $ bareLayout $(widgetFile "feed")
+           provideJson $ object [ "posts" .= map (\(post, files) -> PostAndFiles (post, files)) postsAndFiles
+                                , "banner" .= mBanner
+                                ]
+
   
 getAjaxNewFeedR :: Int -> Handler Html
 getAjaxNewFeedR lastPostId = do

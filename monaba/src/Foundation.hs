@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE InstanceSigs #-}
 module Foundation where
 
 import Import.NoFoundation
@@ -9,6 +11,7 @@ import Yesod.Auth.Message
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
+import Control.Monad.Logger (LogSource)
 
 -- Used only in Foundation.hs
 import qualified Data.Text   as T
@@ -234,7 +237,9 @@ instance Yesod App where
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
-    shouldLog app _source level =
+    shouldLogIO :: App -> LogSource -> LogLevel -> IO Bool
+    shouldLogIO app _source level =
+        return $
         appShouldLogAll (appSettings app)
             || level == LevelWarn
             || level == LevelError
@@ -318,7 +323,7 @@ instance YesodAuth App where
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _ = [ authHashDBWithForm authForm (Just . UserUniqName) ]
-    authenticate creds = runDB $ do
+    authenticate creds =  liftHandler $ runDB $ do
         x <- getBy $ UserUniqName $ credsIdent creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
@@ -328,9 +333,9 @@ instance YesodAuth App where
                 , userGroup    = ""
                 }
 
+--    authHttpManager = liftHandler getHttpManager
+    onLogin  = liftHandler (setMessageI NowLoggedIn >> redirect ModlogLoginR)
 
-    authHttpManager = getHttpManager
-    onLogin  = setMessageI NowLoggedIn >> redirect ModlogLoginR
 
 
 instance YesodAuthPersist App

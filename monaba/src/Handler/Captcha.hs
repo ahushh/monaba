@@ -14,21 +14,24 @@ makeCaptcha path = do
   captcha <- appCaptcha . appSettings <$> getYesod
   liftIO $ (first T.strip . (pack***pack) . read) <$> readProcess (unpack captcha) [path] ""
 
+updateCaptcha :: Handler (String, Text)
+updateCaptcha = do
+  AppSettings{..} <- appSettings <$> getYesod
+  oldCId <- lookupSession "captchaId"
+  case oldCId of
+    Just c -> let path = captchaFilePath appStaticDir (unpack c) ++ captchaExt
+              in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
+    Nothing -> return ()
+  cId <- liftIO (abs <$> randomIO :: IO Int)
+  setSession "captchaId" (tshow cId)
+  (value, hint) <- makeCaptcha $ captchaFilePath appStaticDir (show cId) ++ captchaExt
+  setSession "captchaValue" value
+  setSession "captchaHint"  hint
+  return ("/"++captchaFilePath appStaticDir (show cId) ++ captchaExt, hint)
+
 captchaWidget :: Widget
 captchaWidget = do
-  (path, hint) <- handlerToWidget $ do
-    AppSettings{..} <- appSettings <$> getYesod
-    oldCId <- lookupSession "captchaId"
-    case oldCId of
-      Just c -> let path = captchaFilePath appStaticDir (unpack c) ++ captchaExt
-                 in when (isJust oldCId) $ whenM (liftIO $ doesFileExist path) $ liftIO $ removeFile path
-      Nothing -> return ()
-    cId <- liftIO (abs <$> randomIO :: IO Int)
-    setSession "captchaId" (tshow cId)
-    (value, hint) <- makeCaptcha $ captchaFilePath appStaticDir (show cId) ++ captchaExt
-    setSession "captchaValue" value
-    setSession "captchaHint"  hint
-    return ("/"++captchaFilePath appStaticDir (show cId) ++ captchaExt, hint)
+  (path, hint) <- handlerToWidget updateCaptcha
   [whamlet|
     <img #captcha onclick="refreshCaptcha()" src=#{path}>
     #{preEscapedToHtml hint}

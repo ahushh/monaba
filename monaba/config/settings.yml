@@ -1,8 +1,8 @@
 # Values formatted like "_env:ENV_VAR_NAME:default_value" can be overridden by the specified environment variable.
 # See https://github.com/yesodweb/yesod/wiki/Configuration#overriding-configuration-values-with-environment-variables
 
-upload-dir:     "_env:UPLOAD_DIR:upload"
-static-dir:     "_env:STATIC_DIR:static"
+upload-dir:     "_env:UPLOAD_DIR:upload" # DO NOT TOUCH
+static-dir:     "_env:STATIC_DIR:static" # DO NOT TOUCH
 host:           "_env:HOST:*4" # any IPv4 host
 port:           "_env:PORT:3000"
 #approot:        "_env:APPROOT:http://haibane.dev"

@@ -12,7 +12,7 @@ import           Utils.YobaMarkup      (doYobaMarkup)
 import           Data.Digest.OpenSSL.MD5 (md5sum)
 import qualified Data.ByteString.UTF8    as B
 --------------------------------------------------------------------------------------------------------- 
-getBoardNoPageR :: Text -> Handler Html
+getBoardNoPageR :: Text -> Handler TypedContent
 getBoardNoPageR board = getBoardR board 0
 
 postBoardNoPageR :: Text -> Handler Html
@@ -25,10 +25,7 @@ selectThreadsAndPreviews :: Text  -> -- ^ Board name
                            Text  -> -- ^ posterId
                            [Permission] ->
                            [Int] -> -- ^ Hidden threads
-                           Handler [(  (Entity Post, [Entity Attachedfile])
-                                    , [(Entity Post, [Entity Attachedfile])]
-                                    , Int
-                                    )]
+                           Handler ThreadsAndPreviews
 selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads =
   let selectThreadsAll = selectList [PostBoard ==. board, PostParent ==. 0, PostDeleted ==. False, PostLocalId /<-. hiddenThreads]
                                     [Desc PostSticked, Desc PostBumped, LimitTo threadsPerPage, OffsetBy $ page*threadsPerPage]
@@ -59,9 +56,11 @@ selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId pe
          previewFiles <- selectFiles $ entityKey pr
          return (pr, previewFiles))
        postsInThread <- count (countPosts t)
-       return ((th, threadFiles), reverse previewsAndFiles, postsInThread - previewsPerThread))
+       return $ (PostAndFiles (th, threadFiles)
+                , reverse $ map (\(post, files) -> PostAndFiles (post, files)) previewsAndFiles
+                , postsInThread - previewsPerThread)) >>= (\posts -> return $ ThreadsAndPreviews posts)
 --------------------------------------------------------------------------------------------------------- 
-getBoardR :: Text -> Int -> Handler Html
+getBoardR :: Text -> Int -> Handler TypedContent
 getBoardR board page = do
   muser    <- maybeAuth
   mgroup   <- getMaybeGroup muser
@@ -85,7 +84,8 @@ getBoardR board page = do
       showPostDate      = boardShowPostDate      boardVal
       enablePM          = boardEnablePM          boardVal
       pages             = listPages threadsPerPage numberOfThreads
-  threadsAndPreviews <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
+  threadsAndPreviewsJson <- selectThreadsAndPreviews board page threadsPerPage previewsPerThread posterId permissions hiddenThreads
+  let threadsAndPreviews = (\(ThreadsAndPreviews x) -> x) threadsAndPreviewsJson
   ------------------------------------------------------------------------------------------------------- 
   adaptiveCaptcha <- getConfig configAdaptiveCaptcha
   pc <- lookupSession "post-count"
@@ -98,11 +98,20 @@ getBoardR board page = do
   AppSettings{..} <- appSettings <$> getYesod
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   ((_, searchWidget), _) <- runFormGet $ searchForm $ Just board
-  defaultLayout $ do
-    setUltDestCurrent
-    let p = if page > 0 then T.concat [" (", tshow page, ") "] else ""
-      in defaultTitleReverse (title <> p)
-    $(widgetFile "board")
+  let pageTitle = if page > 0 then T.concat [" (", tshow page, ") "] else ""
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+      setUltDestCurrent
+      defaultTitleReverse (title <> pageTitle)
+      $(widgetFile "board")
+    provideJson $ object [ "threads" .= threadsAndPreviewsJson
+                         , "banner" .= mBanner
+                         , "board" .= boardVal
+                         , "title" .= (T.concat $ reverse [appSiteName, appTitleDelimiter, pageTitle])
+                         , "can_reply" .= hasAccessToReply
+                         , "can_post"  .= hasAccessToNewThread
+                         , "page" .= page
+                         ]
     
 postBoardR :: Text -> Int -> Handler Html
 postBoardR board _ = do

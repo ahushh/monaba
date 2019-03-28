@@ -24,7 +24,7 @@ getJsonFromMsgR status = do
     Just msg -> selectRep $ provideJson $ object [(status, toJSON $ renderHtml msg)]
     Nothing  -> selectRep $ provideJson $ object [(status, toJSON $ msgrender MsgUnknownError)]
 -------------------------------------------------------------------------------------------------------------------
-selectThread :: Text -> Int -> Handler [(Entity Post, [Entity Attachedfile])]
+selectThread :: Text -> Int -> Handler [PostAndFiles]
 selectThread board thread = do
   allPosts <- runDB $ E.select $ E.from $ \(post `E.LeftOuterJoin` file) -> do
     E.on $ (E.just (post E.^. PostId)) E.==. (file E.?. AttachedfileParentId)
@@ -34,10 +34,12 @@ selectThread board thread = do
              ((post E.^. PostParent      ) E.==. (E.val thread) E.||.
              ((post E.^. PostParent      ) E.==. (E.val 0     ) E.&&. (post E.^. PostLocalId) E.==. (E.val thread))))
     return (post, file)
-  let t = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
-  return $ (filter (\((Entity _ p1),_) -> postParent p1 == 0) t) ++ (filter (\((Entity _ p1),_) -> postParent p1 /= 0) t)
+  let t       = map (second catMaybes) $ Map.toList $ keyValuesToMap allPosts
+      opPost  = filter (\((Entity _ p1),_) -> postParent p1 == 0) t
+      replies = filter (\((Entity _ p1),_) -> postParent p1 /= 0) t
+  return $ map (\p -> PostAndFiles p) $ opPost ++ replies
 
-getThreadR :: Text -> Int -> Handler Html
+getThreadR :: Text -> Int -> Handler TypedContent
 getThreadR board thread = do
   when (thread == 0) notFound
   muser    <- maybeAuth
@@ -57,9 +59,10 @@ getThreadR board thread = do
   posterId <- getPosterId
   allPosts <- selectThread board thread
   when (null allPosts) notFound
-  let repliesAndFiles = filter (\(eReply, _) -> checkHellbanned (entityVal eReply) permissions posterId) $ drop 1 allPosts
-      eOpPost         = fst $ head allPosts
-      opPostFiles     = reverse $ snd $ head allPosts
+  let repliesAndFiles = filter (\(PostAndFiles (eReply, _)) -> checkHellbanned (entityVal eReply) permissions posterId) $ drop 1 allPosts
+      eOp             = head allPosts
+      eOpPost         = (\(PostAndFiles (post, _)) -> post) eOp
+      opPostFiles     = reverse $ (\(PostAndFiles (_, files)) -> files) eOp
       pagetitle       = makeThreadtitle eOpPost
   -------------------------------------------------------------------------------------------------------
   unless (checkHellbanned (entityVal $ eOpPost) permissions posterId) notFound
@@ -78,10 +81,20 @@ getThreadR board thread = do
   mBanner         <- if appRandomBanners then randomBanner else takeBanner board
   bookmarksUpdateLastReply eOpPost
   ((_, searchWidget), _) <- runFormGet $ searchForm $ Just board
-  defaultLayout $ do
-    setUltDestCurrent
-    defaultTitleReverse $ T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
-    $(widgetFile "thread")
+  let title = T.concat [boardTitleVal, if T.null pagetitle then "" else appTitleDelimiter, pagetitle]
+  selectRep $ do
+    provideRep $ defaultLayout $ do
+      setUltDestCurrent
+      defaultTitleReverse $ title
+      $(widgetFile "thread")
+    provideJson $ object [ "replies"   .= repliesAndFiles
+                         , "op"        .= eOp
+                         , "title"     .= title
+                         , "banner"    .= mBanner
+                         , "can_reply" .= hasAccessToReply
+                         , "board"     .= boardVal
+                         ]
+
 -------------------------------------------------------------------------------------------------------------------
 getDestinationUID :: Maybe Text -> Handler (Maybe Text)
 getDestinationUID (Just postId) = fmap (Just . postPosterId) $ runDB $ get404 ((toSqlKey $ fromIntegral $ tread postId) :: Key Post)
@@ -192,7 +205,7 @@ postThreadR board thread = do
         -------------------------------------------------------------------------------------------------------
         -- bump thread if necessary
         isBumpLimit <- (\x -> x >= bumpLimit && bumpLimit > 0) <$> runDB (count [PostParent ==. thread])
-        unless ((fromMaybe False nobump) || isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
+        unless (isBumpLimit || postAutosage (entityVal $ fromJust maybeParent)) $ bumpThread board thread now
         -------------------------------------------------------------------------------------------------------
         case name of
           Just name' -> setSession "name" name'

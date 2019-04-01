@@ -145,7 +145,7 @@ library
     ghc-options: -Wall -fwarn-tabs -O0
     cpp-options: -DDEVELOPMENT
   else
-    ghc-options: -Wall -fwarn-tabs -O2
+    ghc-options: -Wall -fwarn-tabs -O1
   default-language: Haskell2010
 
 executable Monaba

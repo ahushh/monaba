@@ -49,7 +49,7 @@
       <i .fa .fa-paperclip .clickable>
       _{MsgAttachFile}
     <div #attachment-thumbs>
-    $forall (i, (fv, rv)) <- enumerate (zip fileviews ratingviews)
+    $forall (_, (fv, rv)) <- enumerate (zip fileviews ratingviews)
       ^{fvInput fv}
       ^{fvInput rv}
           <!-- <i title=_{MsgRemoveFileIcon} onclick="clearFile('#{unpack $ fvId fv}')" .fa .fa-close .icon-close> -->

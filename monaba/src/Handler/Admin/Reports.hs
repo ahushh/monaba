@@ -1,7 +1,7 @@
 module Handler.Admin.Reports where
 
 import           Import
-import           Handler.Admin.Modlog (addModlogEntry) 
+-- import           Handler.Admin.Modlog (addModlogEntry) 
 import           Utils.YobaMarkup     (makeExternalRef)
 import qualified Data.Text as T
 
@@ -46,7 +46,7 @@ getAdminReportsDelR rId = do
 postReportPostR :: Handler TypedContent
 postReportPostR = do
   ((result, _), _) <- runFormPost $ reportForm 0
-  let msgRedirect msg = setMessageI msg >> redirect HomeR
+  -- let msgRedirect msg = setMessageI msg >> redirect HomeR
   msgrender <- getMessageRender
   case result of
     FormFailure []                  -> selectRep $ provideJson $ object [("error", toJSON $ msgrender MsgBadFormData)]
@@ -57,7 +57,7 @@ postReportPostR = do
           report = Report { reportPostId = postKey
                           , reportReason = reason
                           }
-      runDB $ insert report
+      void $ runDB $ insert report
       selectRep $ do
         provideJson $ object [("ok","reported")]
         provideRep $ defaultLayout $ [whamlet|ok|]

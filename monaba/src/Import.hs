@@ -28,6 +28,10 @@ import qualified Data.Text               as T (concat, toLower, append, take)
 -------------------------------------------------------------------------------------------------------------------
 -- | If ajax request, redirects to page that makes JSON from message and status string.
 --   If regular request, redirects to given URL.
+trickyRedirect :: (MonadHandler m,
+                   RenderMessage (HandlerSite m) msg, RedirectUrl (HandlerSite m) url,
+                   RedirectUrl (HandlerSite m) (Route App)) =>
+                  Text -> Either msg Text -> url -> m b
 trickyRedirect status msg url = do
   let th t = preEscapedToHtml t
       th :: Text -> Html
@@ -235,8 +239,10 @@ incPostCount :: Handler ()
 incPostCount = do
   pc <- lookupSession "post-count"
   case pc of
-    Just n -> setSession "post-count" $ tshow $ ((+)1) $ tread n
+    Just n -> setSession "post-count" $ tshow $ plus 1 $ tread n
     Nothing -> setSession "post-count" "1"
+    where plus :: Integer -> Integer -> Integer
+          plus = (+)
 
 listPages :: Int -> Int -> [Int]
 listPages elemsPerPage numberOfElems =

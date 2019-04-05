@@ -33,7 +33,7 @@ postForm :: Bool  -> -- ^ Is a new thread
                                      , Maybe Text     -- ^ Destination post ID
                                      )
                          , Maybe (PageContent (Route App)) -> Widget)
-postForm isNewThread boardVal muser extra = do
+postForm isNewThread boardVal _ extra = do
   lastName    <- lookupSession "name"
   lastGoback  <- lookupSession "goback"
   lastMessage <- lookupSession "message"
@@ -45,7 +45,7 @@ postForm isNewThread boardVal muser extra = do
 
   let maxMessageLength = boardMaxMsgLength  boardVal
       numberFiles      = boardNumberFiles   boardVal
-      enableCaptcha    = boardEnableCaptcha boardVal
+--      enableCaptcha    = boardEnableCaptcha boardVal
       forcedAnon       = boardEnableForcedAnon boardVal
       myMessageField = checkBool (not . tooLongMessage maxMessageLength)
                                  (MsgTooLongMessage maxMessageLength )
@@ -124,7 +124,7 @@ randomBanner = do
         Nothing -> return Nothing
      Nothing -> return Nothing
 
-checkBan :: IP -> Text -> (Either AppMessage Text -> HandlerT App IO ()) -> HandlerT App IO ()
+checkBan :: IP -> Text -> (Either AppMessage Text -> HandlerFor App ()) -> HandlerFor App ()
 checkBan ip board redirectSomewhere = do
   bans <- runDB $ selectList [BanIpBegin <=. ip, BanIpEnd >=. ip] [Desc BanId]
   let bans' = flip filter bans $ \(Entity _ b) -> board `elem` banBoards b
@@ -137,7 +137,7 @@ checkBan ip board redirectSomewhere = do
      redirectSomewhere m
    Nothing -> return ()
 
-checkTooFastPosting :: Filter Post -> Text -> UTCTime -> HandlerT App IO () -> HandlerT App IO ()
+checkTooFastPosting :: Filter Post -> Text -> UTCTime -> HandlerFor App () -> HandlerFor App ()
 checkTooFastPosting cond ip now redirectSomewhere = do
   lastPost <- runDB $ selectFirst [PostIp ==. ip, cond] [Desc PostDate]
   case lastPost of
@@ -147,7 +147,7 @@ checkTooFastPosting cond ip now redirectSomewhere = do
    Nothing             -> return ()
 
 
-checkWordfilter :: Maybe Textarea -> Text -> (Either AppMessage Text -> HandlerT App IO ()) -> Handler ()
+checkWordfilter :: Maybe Textarea -> Text -> (Either AppMessage Text -> HandlerFor App ()) -> HandlerFor App ()
 checkWordfilter Nothing _ _ = return ()
 checkWordfilter (Just (Textarea msg)) board redirectSomewhere = do
   posterId <- getPosterId

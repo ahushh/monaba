@@ -1,7 +1,7 @@
 module Handler.Admin.Wordfilter where
 
 import           Import
-import           Handler.Admin.Modlog (addModlogEntry) 
+--import           Handler.Admin.Modlog (addModlogEntry) 
 import qualified Data.Text as T (intercalate)
 
 form :: Html -> MForm Handler (FormResult (Maybe Text, WordfilterDataType, Textarea, [WordfilterAction], Textarea, Maybe Textarea) , Widget)

@@ -130,10 +130,9 @@ getAjaxPostR board postId = do
   let post    = fromJust maybePost
       postKey = entityKey $ fromJust maybePost
   files  <- runDB $ selectList [AttachedfileParentId ==. postKey] []
-  let postAndFiles = (entityVal post, map entityVal files)
-      widget       = if postParent (entityVal $ fromJust maybePost) == 0
-                       then postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
-                       else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
+  let widget = if postParent (entityVal $ fromJust maybePost) == 0
+               then postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
+               else postWidget post files False True False geoIpEnabled showPostDate permissions 0 enablePM
   selectRep $ do
     provideRep $ bareLayout widget
 
@@ -144,8 +143,6 @@ getAjaxPostRawMsgR board postId = do
   boardVal <- getBoardVal404 board
   checkViewAccess mgroup boardVal
   let permissions  = getPermissions   mgroup
-      geoIpEnabled = boardEnableGeoIp boardVal
-      showPostDate = boardShowPostDate boardVal
       enablePM     = boardEnablePM boardVal
   posterId  <- getPosterId
   maybePost <- runDB $ selectFirst [PostBoard ==. board, PostLocalId ==. postId] []
@@ -216,7 +213,7 @@ getAjaxBoardStatsReadR = do
 ---------------------------------------------------------------------------------------------------------
 postAjaxPostPreviewR :: Handler Html
 postAjaxPostPreviewR = do
-  value <- requireJsonBody
+  value <- requireCheckJsonBody
   let message = Textarea <$> M.lookup ("msg" :: Text) value
       board   = fromMaybe "error " $ M.lookup ("board" :: Text) value
       thread  = maybe (0::Int) tread $ M.lookup ("thread" :: Text) value

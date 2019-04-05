@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE MultiWayIf #-}
 module Handler.Thread where
  
@@ -128,7 +129,7 @@ postThreadR board thread = do
     FormFailure []                     -> trickyRedirect "error" (Left MsgBadFormData) threadUrl
     FormFailure xs                     -> trickyRedirect "error" (Left $ MsgError $ T.intercalate "; " xs) threadUrl
     FormMissing                        -> trickyRedirect "error" (Left MsgNoFormData) threadUrl
-    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, nobump, destPost)
+    FormSuccess (name, title, message, captcha, pswd, files, ratings, goback, _, destPost)
       | isNothing maybeParent                             -> trickyRedirect "error" (Left MsgNoSuchThread)        boardUrl
       | (\(Just (Entity _ p)) -> postLocked p) maybeParent -> trickyRedirect "error" (Left MsgLockedThread)        threadUrl
       | replyFile == "Disabled"&& not (noFiles files)         -> trickyRedirect "error" (Left MsgReplyFileIsDisabled) threadUrl

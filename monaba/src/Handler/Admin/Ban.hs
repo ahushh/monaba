@@ -26,6 +26,7 @@ banByIpForm ip allBoards board extra = do
       widget = $(widgetFile "admin/ban-form")
   return (result, widget)
                                           
+fetchAllBoards :: HandlerFor App [(Text, Text)]
 fetchAllBoards = do
   mgroup <- (fmap $ userGroup . entityVal) <$> maybeAuth
   map ((boardTitle &&& boardName) . entityVal) . filter (not . isBoardHidden' mgroup) <$> runDB (selectList ([]::[Filter Board]) [])

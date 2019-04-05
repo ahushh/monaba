@@ -84,7 +84,7 @@ getAdminRestartR :: Handler Html
 getAdminRestartR = do
   AppSettings{..} <- appSettings <$> getYesod
   addModlogEntry MsgModlogAppRestart
-  liftIO $ runCommand $ unpack appRestartCmd
+  void $ liftIO $ runCommand $ unpack appRestartCmd
   defaultLayout $ [whamlet|
                     ^{adminNavbarWidget}
                      ok

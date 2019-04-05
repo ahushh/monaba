@@ -301,7 +301,7 @@ dice = do
   n <- nat
   void $ oneOf "dд"
   m <- nat
-  mo <- option 0 (do{ sign <- do{ char '-'; return negate } <|> do{ char '+'; return id }
+  mo <- option 0 (do{ sign <- do{ void (char '-'); return negate } <|> do{ void (char '+'); return id }
                    ; mo'  <- many1 digit
                    ; return $ sign $ read mo'
                    })
@@ -351,6 +351,7 @@ tryWakabaTags = try spoilerwakaba
 --------------------------------------------------------------
 -- Other
 --------------------------------------------------------------
+nat :: Stream s m Char => ParsecT s u m [Char]
 nat = do
   n0 <- oneOf "123456789"
   n  <- many digit

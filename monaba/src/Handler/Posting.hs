@@ -55,13 +55,13 @@ postForm isNewThread boardVal _ extra = do
       ratings :: [(Text, Censorship)]
       ratings = map (pack . show &&& id) [minBound..maxBound]
       ratingInput  lbl = lbl { fsAttrs = [("class","rating-input"),("data-used","0"),("tabindex", "1")] }
-      passInput    lbl = lbl { fsName = Just "postpassword", fsAttrs = [("autocomplete", "postpassword"),("tabindex", "1")] }
-      captchaInput lbl = lbl { fsAttrs = [("class", "captcha-input"),("placeholder",msgrender MsgCaptcha),("tabindex", "1")] }
+      passInput    lbl = lbl { fsName = Just "postpassword", fsAttrs = [("autocomplete", "postpassword"),("tabindex", "4")] }
+      captchaInput lbl = lbl { fsAttrs = [("class", "captcha-input"),("placeholder",msgrender MsgCaptcha),("tabindex", "2")] }
       msgInput     lbl = lbl { fsAttrs = [("placeholder",msgrender MsgMessage),("tabindex", "1")] }
-      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",tshow appMaxLenOfPostName ),("placeholder",msgrender MsgName),("tabindex", "1")] }
+      nameInput    lbl = lbl { fsAttrs = [("autocomplete","off"),("maxlength",tshow appMaxLenOfPostName ),("placeholder",msgrender MsgName),("tabindex", "3")] }
       gobackInput  lbl = lbl { fsAttrs = [("class","goback-input")] }
       destInput lbl = lbl { fsAttrs = [("class","dest-input")] }
-      subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("tabindex", "1"),("maxlength",tshow appMaxLenOfPostTitle),
+      subjectInput lbl = lbl { fsAttrs = [("class","subject-input"),("autocomplete","off"),("tabindex", "5"),("maxlength",tshow appMaxLenOfPostTitle),
                                           if isNewThread then ("placeholder",msgrender MsgThreadSubject) else ("placeholder",msgrender MsgPostSubject)]++
                                          [("required","required") | boardRequiredThreadTitle boardVal && isNewThread] }
   ----------------------------------------------------------------------------------------------------------------

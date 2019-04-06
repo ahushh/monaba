@@ -5,7 +5,7 @@
       ^{fvInput nameView}#
   ^{fvInput passwordView}#
   ^{fvInput subjectView}#
-  <input tabindex=2 type=submit value=_{MsgSubmitBtn}>#
+  <input tabindex=6 type=submit value=_{MsgSubmitBtn}>#
   &nbsp;
   <i title="_{MsgPostPreview}" .fa .fa-eye .preview-toggle onclick="previewToggle()" .clickable>
   ^{fvInput messageView}

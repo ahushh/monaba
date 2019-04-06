@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b8f4c9097338656514255919e06e891d47dd56fc34d9771360990e8bd0ac83a7
+-- hash: 8b83218c7f0104e927d0bca7f824f1c606da916714db0c2dc1d74e8cc6bffb11
 
 name:           Monaba
 version:        2.6.0
@@ -55,7 +55,9 @@ library
       Handler.Settings
       Handler.Thread
       Import
+      Import.File
       Import.NoFoundation
+      Import.Utils
       Model
       ModelTypes
       Request

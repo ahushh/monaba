@@ -5,6 +5,8 @@ module Import
 
 import Foundation            as Import
 import Import.NoFoundation   as Import
+import Import.Utils          as Import
+import Import.File           as Import
 
 import Control.Arrow        as Import (first, second, (&&&), (***))
 import Database.Persist.Sql as Import (toSqlKey, fromSqlKey)
@@ -40,6 +42,7 @@ trickyRedirect status msg url = do
   if t
     then redirect (JsonFromMsgR status)
     else redirect url
+
 -------------------------------------------------------------------------------------------------------------------
 showWordfilterAction :: WordfilterAction -> AppMessage
 showWordfilterAction a = let m' = lookup a xs
@@ -156,81 +159,9 @@ searchForm board = renderDivs $ (,)
 -------------------------------------------------------------------------------------------------------------------
 -- Handful functions
 -------------------------------------------------------------------------------------------------------------------
--- | Takes a random element from list
-pick :: [a] -> IO (Maybe a)
-pick xs
-  | length xs == 0 = return Nothing
-  | otherwise = (Just . (xs!!)) <$> randomRIO (0, length xs - 1)
-
-whenM :: Monad m => m Bool -> m () -> m ()
-whenM = (. flip when) . (>>=)
-
-unlessM :: Monad m => m Bool -> m () -> m ()
-unlessM = (. flip unless) . (>>=)
-
-tshow :: Show a => a -> Text
-tshow = pack . show
-
-tread :: Read a => Text -> a
-tread = read . unpack
-
-readIP :: String -> IP
-readIP = read
-
-pair :: forall t1 t2 t3. (t1 -> t2) -> (t1 -> t3) -> t1 -> (t2, t3)
-pair f g x = (f x, g x)
-
-keyValuesToMap :: (Ord k) => [(k, a)] -> MapS.Map k [a]  
-keyValuesToMap = MapS.fromListWith (++) . map (\(k,v) -> (k,[v]))
-
--- | Add UTCTime with Integer seconds
-addUTCTime' :: Int -> UTCTime -> UTCTime
-addUTCTime' sec t = addUTCTime (realToFrac $ secondsToDiffTime $ toInteger sec) t
 -------------------------------------------------------------------------------------------------------------------
 -- Files
 -------------------------------------------------------------------------------------------------------------------
-thumbFileTypes :: [FileType]
-thumbFileTypes = [FileVideo, FileImage] --, FileSource, FileDoc] TODO: thumbnails for docs and source files
-
-sanitizeFileName :: String -> String
-sanitizeFileName = filter (\x -> x `notElem` ("\\/"::String) && isPrint x)
-
-fileExt :: FileInfo -> String
-fileExt = map toLower . reverse . takeWhile (/='.') . reverse . sanitizeFileName . unpack . fileName
-
-extractFileExt :: String -> String
-extractFileExt = map toLower . reverse . takeWhile (/='.') . reverse
--------------------------------------------------------------------------------------------------------------------
--- Paths
--------------------------------------------------------------------------------------------------------------------
-geoIconPath :: String -> Text -> Text
-geoIconPath staticDir code = pack $  "/" </> staticDir </> "geoicons" </> (unpack $ (T.toLower code) <> ".png")
-
-captchaFilePath :: String -> String -> String
-captchaFilePath staticDir file = staticDir </> "captcha" </> file
--- Thumbnails
-choseFileIcon :: FileType -> String
-choseFileIcon ft = case ft of
-    FileAudio      -> "audio"
-    FileFlash      -> "flash"
-    FileArchive    -> "archive"
-    FileUndetected -> "default"
-    _              -> "default"
-
-thumbIconExt :: String
-thumbIconExt = "png"
-
-thumbDirectory :: FilePath
-thumbDirectory = "thumb"
-
-thumbUrlPath :: String -> String -> Int -> FileType -> String -> String -> Bool -> FilePath
-thumbUrlPath uploadDir staticDir size filetype fileext hashsum onion = "/" </> (thumbFilePath (if onion then uploadDir </> "onion" else uploadDir) staticDir size filetype fileext hashsum)
-
-thumbFilePath :: String -> String -> Int -> FileType -> String -> String -> FilePath
-thumbFilePath uploadDir staticDir size filetype fileext hashsum
-  | filetype == FileVideo           = uploadDir </> thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ ".png")
-  | filetype `elem` thumbFileTypes = uploadDir </> thumbDirectory </> (show size ++ "thumb-" ++ hashsum ++ "." ++ fileext)
-  | otherwise                      = staticDir </> "fileicons" </> ((choseFileIcon filetype) ++ "." ++ thumbIconExt)
 
 -------------------------------------------------------------------------------------------------------------------
 -- Handler helpers

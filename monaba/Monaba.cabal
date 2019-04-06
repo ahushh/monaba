@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8b83218c7f0104e927d0bca7f824f1c606da916714db0c2dc1d74e8cc6bffb11
+-- hash: 5c1610b8f8cd458f84017444f088e90749cdb5e1943dbf7a6cc0af5375ef4736
 
 name:           Monaba
-version:        2.6.0
+version:        2.6.1
 build-type:     Simple
 
 flag dev

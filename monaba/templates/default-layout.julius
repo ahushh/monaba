@@ -435,6 +435,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 // Initialization functions
 //-----------------------------------------------------------------
 function loadConfig() {
+    setConfigIfNull("remember_password", false);
     setConfigIfNull("desktop_notification", #{toJSON $ appJsDesktopNotification settings});
     setConfigIfNull("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfigIfNull("mathjax", #{toJSON $ appJsMathjax settings});
@@ -473,6 +474,7 @@ function loadConfig() {
 }
 
 function resetConfig() {
+    setConfig("remember_password", false);
     setConfig("desktop_notification", #{toJSON $ appJsDesktopNotification settings});
     setConfig("posts_autoload_interval", #{toJSON $ appJsPostsAutoloadInterval settings});
     setConfig("mathjax", #{toJSON $ appJsMathjax settings});
@@ -857,7 +859,9 @@ function fillPasswords() {
         setItem('password', password);
     }
     Array.prototype.forEach.call(document.querySelectorAll('input[type=password]'), function(el, i) {
-//        el.value = password;
+        if (getConfig("remember_password")) {
+            el.value = password;
+        }
     });
 }
 

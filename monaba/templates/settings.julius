@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     tbody.appendChild(tr);
 
     var opts = [
+                ["checkbox", "remember_password"                 , #{toJSON $ msgrender MsgRememberPassword}],
                 ["checkbox", "desktop_notification"              , #{toJSON $ msgrender MsgDesktopNotification}],
                 ["number"  , "board_stats_update"                , #{toJSON $ msgrender MsgBoardStatsUpdate}],
                 ["checkbox", "eventsource"                       , #{toJSON $ msgrender MsgEventsource}],

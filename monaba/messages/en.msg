@@ -512,6 +512,7 @@ MoveElement: Move
 ######################################################################################
 ## JS Settings
 ######################################################################################
+RememberPassword: remember_password
 DesktopNotification: desktop_notification
 BoardStatsUpdate: board_stats_update
 Eventsource: eventsource

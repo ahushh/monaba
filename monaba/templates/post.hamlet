@@ -129,7 +129,7 @@
                                 <li>
                                   <a title=Iqdb target=_blank href="//iqdb.org/?url=#{approot'}/#{up}">Iq
                                 <li>
-                                  <a title="What Anime Is This?" target=_blank href="//whatanime.ga//?url=#{approot'}/#{up}">W
+                                  <a title="What Anime Is This?" target=_blank href="//trace.moe/?url=#{approot'}/#{up}">W
                     <div .file-info>
                       $if attachedfileFiletype file == FileVideo
                         <i .fa .fa-video-camera>

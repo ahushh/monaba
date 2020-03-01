@@ -1,5 +1,5 @@
 # build
-FROM fpco/stack-build AS build-env
+FROM fpco/stack-build:lts-15 AS build-env
 
 RUN mkdir -p /opt/monaba-build
 WORKDIR /opt/monaba-build
@@ -10,10 +10,10 @@ RUN apt-get update && apt-get -y install \
   libgeoip-dev
 
 COPY stack.yaml ./stack.yaml
-RUN stack setup --silent
 COPY Monaba.cabal ./Monaba.cabal
 COPY nano-md5-0.1.2 ./nano-md5-0.1.2
-RUN stack build --only-snapshot --silent
+RUN stack setup
+RUN stack build --only-snapshot
 RUN stack install --only-dependencies
 COPY . ./
 

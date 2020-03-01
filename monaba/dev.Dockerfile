@@ -1,5 +1,5 @@
 # build
-FROM fpco/stack-build
+FROM fpco/stack-build:lts-15
 
 RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
@@ -7,8 +7,8 @@ WORKDIR /opt/monaba
 RUN apt-get update && apt-get -y install \
   libssl-dev \
   libgeoip-dev \
-  php7.0-fpm \
-  libav-tools \
+  php7.2-fpm \
+  ffmpeg \
   exiftool \
   libpq-dev \
   libmagickwand-dev \
@@ -18,10 +18,10 @@ RUN apt-get update && apt-get -y install \
 
 RUN ls
 COPY stack.yaml ./stack.yaml
-RUN stack setup --silent
 COPY Monaba.cabal ./Monaba.cabal
 COPY nano-md5-0.1.2 ./nano-md5-0.1.2
-RUN stack build --only-snapshot --silent
+RUN stack setup
+RUN stack build --only-snapshot
 
 # RUN apt-get update && apt-get -y install nslookup
 

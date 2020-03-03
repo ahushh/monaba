@@ -128,17 +128,17 @@ Monaba Installation
 Option #1. Plain Docker
 ------
 
-Open your CLI and type:
+**Open your CLI and type:**
 
     git clone https://github.com/ahushh/Monaba && cd Monaba
 
-### Prepare local dependencies by running build script:
+**Prepare local dependencies by running build script:**
 
     ./build.sh
 
 The previous command has just created `settings.yml` file that contains all run configurations. All you want to edit is under `CUSTOMIZE` section.
 
-### Pull Docker images
+**Pull Docker images**
 
 Once you're ready to go further let's get all docker images by running this command:
 
@@ -156,7 +156,15 @@ Start the application:
 
     docker-compose up -d
 
-Visit `/admin/setup` page and use `admin` both for login and password to log in the admin panel. Don't forget to change your password on `/admin/account` page afterwards.
+In production mode Monaba binds 80 port.
+
+### Almost there
+
+Now open you browser and visit `/admin/setup` page and you will be redirected to the login form. Use `admin` both for login and password to log in the admin panel. **Don't forget to change your password** on `/admin/account` page afterwards.
+
+*By opnening `/admin/setup` Monaba creates `admin` user with default password `admin`. This method works only once.*
+
+Open `admin/boards/list/NewBoard/-` and create your first board.
 
 ### Note
 

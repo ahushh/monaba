@@ -296,6 +296,9 @@ For macOS:
     # required for postgresql-libpq
     brew install postgres libpq
 
+    # set geoipcitypath to the file path in settings.yml
+    wget https://github.com/ahushh/monaba/releases/download/v2.5.0/GeoIPCity.dat
+
     # required for hs-GeoIP
     brew install libpq libgeoip
 

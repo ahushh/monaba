@@ -132,7 +132,7 @@ Open your CLI and type:
 
     git clone https://github.com/ahushh/Monaba && cd Monaba
 
-### Set up some local dependencies by running build script:
+### Prepare local dependencies by running build script:
 
     ./build.sh
 
@@ -244,15 +244,27 @@ Wait until you get a domain name you like. Remove `-----BEGIN RSA PRIVATE KEY---
 
 ### Contribution
 
-Recommended OS: Linux Mint 18.2 Sonya
+#### Guide to install development environment
 
-Docker version: 18.09
+Tested on: Linux Mint 18.2 Sonya / macOS Catalina
 
-Install stack:
+Docker version: 18.09 / 19.03
+
+dontremembershouldbethesame / GHC 8.8.2 and stack 2.1.3
+
+It is possible to run Monaba in dev mode through Docker using dev.Dockefile, but it has been a while since I tried that last time
+
+Install stack (Linux):
 
     curl -sSL https://get.haskellstack.org/ | sh
 
-Install local deps:
+It's the best way to get the latest version. You can use package manager of course.
+
+For macOS:
+
+    brew install haskell-stack
+
+Install local deps (Linux):
 
     sudo apt-get update && sudo apt-get -y install \
       php7.0-fpm \
@@ -265,35 +277,71 @@ Install local deps:
       libicu-dev \
       libcrypto++-dev
 
-Go to the project and install some local deps:
+For non-apt distro you have to look for equivalent version of these packages.
+
+For macOS:
+
+    # binary tools used by Monaba
+    brew install php libav
+    brew cask install exiftool
+
+    # required for postgresql-libpq
+    brew install postgres libpq
+
+    # required for hs-GeoIP
+    brew install libpq libgeoip
+
+    # required for nano-md5 
+    brew install openssl 
+
+    # required text-icu
+    brew install icu4c
+
+Go to the project and prepare some local deps:
 
     cd Monaba
 
     ./build.sh
 
+Let's install all those Haskell packages...
+
+    cd monaba
+
+    stack setup
+
+Build Monaba:
+
+    stack build
+
+If you gen an error try this:
+
+    stack build --extra-lib-dirs=/usr/local/opt/icu4c/lib --extra-include-dirs=/usr/local/opt/icu4c/include --extra-lib-dirs=/usr/local/opt/openssl@1.1/lib --extra-include-dirs=/usr/local/opt/openssl@1.1/include
+
+Then we need executable version of yesod which support hot reloading:
+
+    stack install yesod-bin
+
+Give all access to file upload directory:
+
+    chmod 777 upload
+
+Build captcha executable file (if you are going to use it):
+
+    cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha .. && cd ..
+
 Run nginx, postgres, sphinx:
 
     docker-compose -f docker-compose.dev.yml up
 
-Configure Monaba dev server:
-
-    cd monaba
-
-    stack setup && stack build && stack install yesod-bin
-
-    chmod 777 upload
+Load env variables:
 
     source ../monaba_dev_env
-
-Build captcha:
-
-    cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha .. && cd ..
 
 Run:
 
     stack exec yesod devel
 
-Update /etc/hosts with:
+And do not forget to update /etc/hosts with:
 
     127.0.0.1       monaba.in
     

@@ -10,3 +10,9 @@ extra-deps:
 # - yaml-0.8.18
 # system-ghc: true
 resolver: lts-13.12
+extra-include-dirs:
+- /usr/local/opt/openssl@1.1/include
+- /usr/local/opt/icu4c/include
+extra-lib-dirs:
+- /usr/local/opt/openssl@1.1/lib
+- /usr/local/opt/icu4c/lib

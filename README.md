@@ -290,8 +290,8 @@ For non-apt distro you have to look for equivalent version of these packages.
 For macOS:
 
     # binary tools used by Monaba
-    brew install php libav
-    brew cask install exiftool
+    brew install php libav imagemagick
+    # download dmg here https://exiftool.org/
 
     # required for postgresql-libpq
     brew install postgres libpq

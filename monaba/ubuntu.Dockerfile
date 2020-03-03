@@ -25,11 +25,21 @@ RUN stack setup --silent
 RUN stack install --silent
 
 # run
-FROM alpine:latest
+FROM ubuntu:16.04
 RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
 
-RUN apk update && apk add php7 ffmpeg imagemagick exiftool libpq libmagic geoip-dev geoip icu-dev icu
+RUN apt-get update && apt-get -y install \
+  php7.0-fpm \
+  libav-tools \
+  imagemagick \
+  exiftool \
+  libpq-dev \
+  libmagickwand-dev \
+  libmagickcore-dev \
+  libgeoip-dev \
+  libicu-dev \
+  libcrypto++-dev
 
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat

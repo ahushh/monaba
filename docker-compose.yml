@@ -14,7 +14,7 @@ services:
   app:
     build: ./monaba
     hostname: monaba.in
-    image: registry.gitlab.com/ahushh/monaba/app:latest
+    image: docker.pkg.github.com/ahushh/monaba/app:latest
     command: /opt/monaba/Monaba /var/settings.yml
     env_file: env_prod  
     depends_on:
@@ -40,7 +40,7 @@ services:
         ipv4_address: 172.19.0.5
   webserver:
     build: ./webserver
-    image: registry.gitlab.com/ahushh/monaba/webserver:latest
+    image: docker.pkg.github.com/ahushh/monaba/webserver:latest
     ports:
       - "80:80"
     links:
@@ -56,7 +56,7 @@ services:
   search:
     build: ./search
     hostname: search.in
-    image: registry.gitlab.com/ahushh/monaba/search:latest
+    image: docker.pkg.github.com/ahushh/monaba/search:latest
     links:
       - app
     depends_on:
@@ -73,7 +73,7 @@ services:
           - search.in
   torgate:
     build: ./torgate
-    image: registry.gitlab.com/ahushh/monaba/torgate:latest
+    image: docker.pkg.github.com/ahushh/monaba/torgate:latest
     env_file: env_prod
     links:
       - webserver

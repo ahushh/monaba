@@ -12,16 +12,14 @@ services:
     networks:
       - main
   webserver:
-    build: ./webserver
+    build: ./dev-webserver
     hostname: monaba.in
-    image: monaba/webserver
     ports:
       - "80:80"
     volumes:
       - ./monaba/upload:/opt/monaba/upload
-    extra_hosts:
-      app: 127.0.0.1
-    network_mode: host  
+    networks:
+      - main
 
   search:
     build: ./search

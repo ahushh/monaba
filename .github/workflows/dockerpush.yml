@@ -64,4 +64,5 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
+          docker tag docker.pkg.github.com/ahushh/monaba/app $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION

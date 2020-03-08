@@ -340,6 +340,10 @@ Build captcha executable file (if you are going to use it):
 
     cd captcha && stack setup && stack install && cp ~/.local/bin/PlainCaptcha .. && cd ..
 
+Unarchive `GeoIPCity.data` file:
+
+    gunzip ./GeoIPCity.dat.gz
+
 Run nginx, postgres, sphinx:
 
     docker-compose -f docker-compose.dev.yml up
@@ -348,11 +352,13 @@ Load env variables:
 
     source ../monaba_dev_env
 
+Open `monaba/config/settings.yml` and check all paths are set correctly.
+
 Run:
 
     stack exec yesod devel
 
-And do not forget to update /etc/hosts with:
+And do not forget to update /etc/hosts for your convenience with:
 
     127.0.0.1       monaba.in
     

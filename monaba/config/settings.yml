@@ -31,10 +31,12 @@ sphinx-port:       9312
 highlight:         "_env:HIGHLIGHT_PATH:/opt/monaba/highlight.php"
 captcha:           "_env:CAPTCHA_PATH:/opt/monaba/PlainCaptcha" # takes a path to a captcha image as the first argument, prints "("%captcha text%","%captcha hint%")" to STDIN
 geoipcitypath:     "/usr/share/GeoIP/GeoIPCity.dat"
-# dev macOS
+# dev 
+#geoipcitypath:     "./GeoIPCity.dat"
+# dev only macOS
 #ffmpeg:           "/usr/local/bin/avconv"
 ffmpeg:            "/usr/bin/avconv"
-# dev macOS
+# dev only macOS
 #exiftool:          "/usr/local/bin/exiftool"
 exiftool:          "/usr/bin/exiftool"
 restartCmd:        "systemctl --user restart monaba"

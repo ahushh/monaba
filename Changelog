@@ -1,0 +1,30 @@
+# Changelog
+
+## [2.6.2] - 2020-03-09
+### Added
+- Add guide for developers on macOS
+- Add script for updating version
+- Add changelog
+- Add link to API docs
+
+### Changed
+- Fix broken post preview button
+- Migrate from Gitlab CI to GitHub Actions
+- Update README
+
+## [2.6.1] - 2019-04-06
+### Added
+- Add option to remember password
+- Add test version of API
+
+### Changed
+- Split Import to File and Utils modules
+- Update WAIT domain
+- Better tabindex navigation
+- Fix some build warnings
+- O2 -> O1
+- Update haskell dependencies
+
+## [2.6.0] - 2019-03-28
+### Added
+- Too much to describe here

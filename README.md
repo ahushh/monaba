@@ -291,6 +291,12 @@ For macOS:
 
     # binary tools used by Monaba
     brew install php libav imagemagick
+    sudo ln -s /usr/local/bin/convert /usr/bin/convert
+    # You may need to run these commands in order to edit /usr/bin directory
+    # csrutil disable
+    # reboot 
+    # Or just update convertPath to point /usr/local/bin/convert in src/Utils/File.hs during development
+
     # download dmg here https://exiftool.org/
 
     # required for postgresql-libpq

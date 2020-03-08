@@ -256,6 +256,8 @@ parseExifInfo = filter f2 . map f1 . lines
 -------------------------------------------------------------------------------------------------------------------
 type ImageResolution = (Int, Int)
 ------------------------------------------------------------------------------------------------
+convertPath = "/usr/bin/convert"
+
 getImageResolution :: FilePath -> FilePath -> IO ImageResolution
 getImageResolution filepath exiftoolPath = do
   info' <- liftIO $ readProcess exiftoolPath ["-t", filepath] []
@@ -274,8 +276,8 @@ resizeImage :: FilePath           -- ^ Source image file
             -> FilePath           -- ^ Exiftool path
             -> IO ImageResolution -- ^ The size of the output file
 resizeImage from to maxSz gif animatedThumbs exiftoolPath = do
-  void $ liftIO $ readProcess "/usr/bin/convert" [from, "-coalesce", to] []
-  void $ liftIO $ readProcess "/usr/bin/convert" ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
+  void $ liftIO $ readProcess convertPath [from, "-coalesce", to] []
+  void $ liftIO $ readProcess convertPath ["-thumbnail", show (fst maxSz)++"x"++show (snd maxSz), to, to] []
   outSz <- liftIO $ getImageResolution to exiftoolPath
   return outSz
 

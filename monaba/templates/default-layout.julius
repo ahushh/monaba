@@ -1330,7 +1330,7 @@ function previewToggle() {
     httpRequest({
         method: 'POST',
         action: "@{AjaxPostPreviewR}",
-        headers: { 'Accept': 'application/json' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         data: JSON.stringify({ board: board, thread: thread.toString(), msg: textarea.value }),
         onloadOk: function(request) {
             preview.innerHTML = request.responseText;

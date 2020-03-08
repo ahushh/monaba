@@ -4,6 +4,8 @@ FROM fpco/stack-build:lts-15 AS build-env
 RUN mkdir -p /opt/monaba-build
 WORKDIR /opt/monaba-build
 
+ENV LANG en_US.UTF-8
+
 RUN apt-get update && apt-get -y install \
   libcrypto++-dev \
   libssl-dev \
@@ -28,6 +30,8 @@ RUN stack install --silent
 FROM alpine:latest
 RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
+
+ENV LANG en_US.UTF-8
 
 RUN apk update && apk add php7 ffmpeg imagemagick exiftool libpq libmagic geoip-dev geoip icu-dev icu
 

@@ -4,7 +4,11 @@ FROM fpco/stack-build:lts-15 AS build-env
 RUN mkdir -p /opt/monaba-build
 WORKDIR /opt/monaba-build
 
-ENV LANG en_US.UTF-8
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+ && locale-gen "en_US.UTF-8"
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 RUN apt-get update && apt-get -y install \
   libcrypto++-dev \
@@ -27,13 +31,21 @@ RUN stack setup --silent
 RUN stack install --silent
 
 # run
-FROM alpine:latest
+#FROM ubuntu:16.04
 RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
 
-ENV LANG en_US.UTF-8
-
-RUN apk update && apk add php7 ffmpeg imagemagick exiftool libpq libmagic geoip-dev geoip icu-dev icu
+RUN apt-get update && apt-get -y install \
+  php7.0-fpm \
+  libav-tools \
+  imagemagick \
+  exiftool \
+  libpq-dev \
+  libmagickwand-dev \
+  libmagickcore-dev \
+  libgeoip-dev \
+  libicu-dev \
+  libcrypto++-dev
 
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat

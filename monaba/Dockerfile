@@ -36,8 +36,8 @@ RUN mkdir -p /opt/monaba
 WORKDIR /opt/monaba
 
 RUN apt-get update && apt-get -y install \
-  php7.0-fpm \
-  libav-tools \
+  php7.2-fpm \
+  ffmpeg \
   imagemagick \
   exiftool \
   libpq-dev \

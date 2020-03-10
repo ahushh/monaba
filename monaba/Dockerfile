@@ -50,8 +50,8 @@ RUN apt-get update && apt-get -y install \
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
-COPY --from=build-env /opt/monaba-build/highlight.php ./highlight.php
-COPY --from=build-env /opt/monaba-build/config ./config
-COPY --from=build-env /opt/monaba-build/static ./static
-COPY --from=build-env /root/.local/bin ./
+COPY /opt/monaba-build/highlight.php ./highlight.php
+COPY /opt/monaba-build/config ./config
+COPY /opt/monaba-build/static ./static
+COPY /root/.local/bin ./
 RUN mkdir -p ./upload

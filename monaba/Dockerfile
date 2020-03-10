@@ -1,8 +1,8 @@
 # build
 FROM fpco/stack-build:lts-15 AS build-env
 
-RUN mkdir -p /opt/monaba-build
-WORKDIR /opt/monaba-build
+RUN mkdir -p /opt/monaba
+WORKDIR /opt/monaba
 
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
  && locale-gen "en_US.UTF-8"
@@ -26,14 +26,9 @@ COPY . ./
 RUN stack install
 
 COPY captcha captcha
-WORKDIR /opt/monaba-build/captcha
+WORKDIR /opt/monaba/captcha
 RUN stack setup --silent
 RUN stack install --silent
-
-# run
-#FROM ubuntu:16.04
-RUN mkdir -p /opt/monaba
-WORKDIR /opt/monaba
 
 RUN apt-get update && apt-get -y install \
   php7.2-fpm \
@@ -47,11 +42,10 @@ RUN apt-get update && apt-get -y install \
   libicu-dev \
   libcrypto++-dev
 
+WORKDIR /opt/monaba
+
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
-COPY /opt/monaba-build/highlight.php ./highlight.php
-COPY /opt/monaba-build/config ./config
-COPY /opt/monaba-build/static ./static
 COPY /root/.local/bin ./
 RUN mkdir -p ./upload

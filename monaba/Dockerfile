@@ -30,7 +30,9 @@ RUN stack install --only-dependencies --silent
 COPY . ./
 
 # install to /root/local/.bin
-RUN stack install --silent
+RUN stack install
+COPY /root/.local/bin ./
+
 
 RUN mkdir -p ./upload
 
@@ -38,7 +40,8 @@ RUN mkdir -p ./upload
 WORKDIR /opt/monaba/captcha
 RUN stack setup --silent
 # install to /root/local/.bin
-RUN stack install --silent
+RUN stack install
+COPY /root/.local/bin ./
 
 # run dependencies
 RUN apt-get update && apt-get -y install \
@@ -52,6 +55,3 @@ RUN apt-get update && apt-get -y install \
   libgeoip-dev \
   libicu-dev \
   libcrypto++-dev
-
-# copy Monaba and captcha executables
-COPY /root/.local/bin ./

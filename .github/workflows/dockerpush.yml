@@ -14,7 +14,6 @@ on:
   pull_request:
 
 env:
-  # TODO: Change variable to your image's name.
   IMAGE_NAME: app
 
 jobs:
@@ -50,7 +49,6 @@ jobs:
       - name: Push image
         run: |
           REPO=$(echo "${{ github.repository }}" | awk '{print tolower($0)}')
-          IMAGE_ID=docker.pkg.github.com/$REPO/$IMAGE_NAME
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
@@ -61,8 +59,13 @@ jobs:
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
 
-          echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
-          docker tag docker.pkg.github.com/ahushh/monaba/app $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          IMAGES=( app webserver search torgate )
+
+          for image in ${IMAGES[*]}
+          do
+            IMAGE_FULL="$repo/$image"
+            docker tag $IMAGE_FULL $IMAGE_FULL:$VERSION
+            docker push $IMAGE_FULL:$VERSION
+          done

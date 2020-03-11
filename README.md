@@ -144,6 +144,10 @@ The previous command has just created `settings.yml` file that contains all run 
 
 **Pull Docker images**
 
+Log in to github registry to get access to pull Monaba images:
+
+    docker login docker.pkg.github.com -u ahushh -p 18ba5e57502213ad4218a61e73d107096e249a85
+
 Once you're ready to go further let's get all docker images by running this command:
 
     docker-compose pull

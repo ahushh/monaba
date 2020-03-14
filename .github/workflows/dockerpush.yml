@@ -65,7 +65,7 @@ jobs:
 
           for image in ${IMAGES[*]}
           do
-            IMAGE_FULL="$repo/$image"
+            IMAGE_FULL="$REPO/$image"
             docker tag $IMAGE_FULL $IMAGE_FULL:$VERSION
             docker push $IMAGE_FULL:$VERSION
           done

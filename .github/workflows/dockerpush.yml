@@ -48,7 +48,7 @@ jobs:
 
       - name: Push image
         run: |
-          REPO=$(echo "${{ github.repository }}" | awk '{print tolower($0)}')
+          REPO=docker.pkg.github.com/ahushh/monaba
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')

@@ -36,7 +36,7 @@ RUN mkdir -p ./upload
 
 # build captcha executable
 WORKDIR /opt/monaba/captcha
-RUN stack setup --silent
+RUN stack setup
 # install to /root/local/.bin
 RUN stack install
 

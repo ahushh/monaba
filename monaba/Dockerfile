@@ -39,8 +39,9 @@ WORKDIR /opt/monaba/captcha
 RUN stack setup --silent
 # install to /root/local/.bin
 RUN stack install
+
+WORKDIR /opt/monaba
 RUN ln -s /root/.local/bin/Monaba ./Monaba
-RUN ln -s /root/.local/bin/Captcha ./Captcha
 
 # run dependencies
 RUN apt-get update && apt-get -y install \

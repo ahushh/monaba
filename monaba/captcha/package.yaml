@@ -10,7 +10,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base >= 4.7 && < 4.9
+    - base >=4.9.1.0 && <5
     - imagemagick
     - text
     - transformers
@@ -23,7 +23,7 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base >= 4.7 && < 4.9
+    - base >=4.9.1.0 && <5
     - imagemagick
     - text
     - transformers

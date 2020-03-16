@@ -4,4 +4,4 @@ packages:
 - '.'
 extra-deps:
 - imagemagick-0.0.4.2@sha256:3bbd2a38b54f5c945b74514c87989c96044bb1f9aa15568a4c47905cffbc7d24
-resolver: lts-6.7
+resolver: lts-13.12

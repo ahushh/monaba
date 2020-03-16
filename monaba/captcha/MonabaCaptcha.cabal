@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.31.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1710d3441b31d7bfbc03d5fd92a4b9fb7d6f4cb485ac6418a066f6112265d57a
+-- hash: 23580369fe526a6ab468b1dc4490b2f66eebc061b20484308a7789514f4aa9df
 
 name:           MonabaCaptcha
 version:        2.5.0.0
@@ -18,7 +18,7 @@ executable PlainCaptcha
       Plain
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <4.9
+      base >=4.9.1.0 && <5
     , imagemagick
     , random
     , text
@@ -33,7 +33,7 @@ executable YobaCaptcha
       Yoba
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <4.9
+      base >=4.9.1.0 && <5
     , imagemagick
     , random
     , text

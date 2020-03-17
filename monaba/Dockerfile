@@ -35,12 +35,12 @@ RUN stack install
 RUN mkdir -p ./upload
 
 # build captcha executable
-WORKDIR /opt/monaba/captcha
-RUN stack setup
+#WORKDIR /opt/monaba/captcha
+#RUN stack setup
 # install to /root/local/.bin
-RUN stack install
+#RUN stack install
 
-WORKDIR /opt/monaba
+#WORKDIR /opt/monaba
 RUN ln -s /root/.local/bin/Monaba ./Monaba
 
 # run dependencies

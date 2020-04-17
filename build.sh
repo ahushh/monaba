@@ -1,5 +1,9 @@
 #!/bin/bash
 
+df -h
+
+du -sh .
+
 which docker > /dev/null
 if [ $? -eq 1 ]; then
   echo 'You must install Docker first';

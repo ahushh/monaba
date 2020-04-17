@@ -1,8 +1,16 @@
 #!/bin/bash
 
+du -sh .
+
+docker volume ls
+
 df -h
 
-du -sh .
+docker volume prune
+
+docker volume ls
+
+df -h
 
 which docker > /dev/null
 if [ $? -eq 1 ]; then

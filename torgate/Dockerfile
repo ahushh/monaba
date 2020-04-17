@@ -1,4 +1,4 @@
-FROM ubuntu:19.04
+FROM debian:stretch
 
 RUN apt-get update && apt-get install -y tor
 

@@ -67,7 +67,7 @@ CatalogReplies vv@Int: Replies: #{show vv}
 Catalog: Catalog
 News: News
 Feed: Feed
-Iwantmore: I wanna moar
+Iwantmore: Wanna get MOAR
 ## thread
 Open: Open
 PostsOmitted n@Int: #{show n} #{plural n "post" "posts"} omitted.

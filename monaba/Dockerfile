@@ -24,7 +24,7 @@ COPY nano-md5-0.1.2 ./nano-md5-0.1.2
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
-RUN stack setup --silent
+RUN stack setup
 RUN stack build
 RUN stack install
 COPY . ./

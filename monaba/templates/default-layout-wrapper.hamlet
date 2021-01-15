@@ -24,6 +24,7 @@ $newline never
     \<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     \<![endif]-->
 
+    #{preEscapedToHtml $ appHeadExtra $ appSettings master}
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
 

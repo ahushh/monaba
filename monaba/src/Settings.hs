@@ -51,6 +51,7 @@ data AppSettings = AppSettings
 
     -- Example app-specific configuration values.
     , appFooter              :: Text
+    , appHeadExtra           :: Text
     -- ^ Footer of the page
     , appAnalytics           :: Maybe Text
     -- ^ Google Analytics code

@@ -43,6 +43,7 @@ restartCmd:        "systemctl --user restart monaba"
 
 ############# CUSTOMIZE ################
 footer: Insert copyright statement here
+headExtra: <script />
 #analytics: UA-YOURCODE
 
 sitename:          "Monaba"

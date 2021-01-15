@@ -32,7 +32,17 @@ COPY . ./
 # install to /root/local/.bin
 RUN stack install
 
+FROM fpco/stack-build:lts-15
+
+RUN mkdir -p /opt/monaba
+WORKDIR /opt/monaba
+
+COPY --from=build-env /root/.local /root/.local
+
 RUN mkdir -p ./upload
+
+COPY ./geshi ./geshi
+ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
 # build captcha executable
 #WORKDIR /opt/monaba/captcha

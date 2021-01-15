@@ -25,8 +25,8 @@ COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 
 RUN stack setup --silent
-RUN stack build --only-snapshot --silent
-RUN stack install --only-dependencies --silent
+RUN stack build
+RUN stack install
 COPY . ./
 
 # install to /root/local/.bin

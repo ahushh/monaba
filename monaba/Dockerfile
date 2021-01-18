@@ -43,6 +43,7 @@ RUN mkdir -p ./upload
 
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
+COPY --from=build-env ./config ./config
 
 # build captcha executable
 #WORKDIR /opt/monaba/captcha

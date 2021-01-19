@@ -135,6 +135,7 @@ instance FromJSON AppSettings where
 
         appFooter                 <- o .: "footer"
         appAnalytics              <- o .:? "analytics"
+        appHeadExtra              <- o .: "headExtra"
 
         appSphinxPort             <- o .: "sphinx-port"
         appSphinxHost             <- o .: "sphinx-host"

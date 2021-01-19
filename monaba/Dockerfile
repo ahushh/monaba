@@ -44,6 +44,7 @@ RUN mkdir -p ./upload
 COPY ./geshi ./geshi
 ADD ./GeoIPCity.dat.gz /usr/share/GeoIP/GeoIPCity.dat
 COPY --from=build-env /opt/monaba/config ./config
+COPY --from=build-env /opt/monaba/static ./static
 
 # build captcha executable
 #WORKDIR /opt/monaba/captcha
@@ -53,6 +54,7 @@ COPY --from=build-env /opt/monaba/config ./config
 
 #WORKDIR /opt/monaba
 RUN ln -s /root/.local/bin/Monaba ./Monaba
+RUN ln -s /root/.local/bin/PlainCaptcha ./PlainCaptchz
 
 # run dependencies
 RUN apt-get update && apt-get -y install \
